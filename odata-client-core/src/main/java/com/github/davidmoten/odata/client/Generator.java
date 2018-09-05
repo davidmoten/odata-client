@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
+import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 
@@ -18,6 +19,7 @@ public final class Generator {
     private final Schema schema;
 
     private static final String PKG_SUFFIX_ENUM = ".enums";
+    private static final String PKG_SUFFIX_ENTITY = ".entity";
 
     public Generator(Options options, Schema schema) {
         this.options = options;
@@ -37,6 +39,11 @@ public final class Generator {
                 .forEach(x -> writeEnum(output, PKG_SUFFIX_ENUM, x));
 
         // write entityTypes
+        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
+        .stream() //
+        .filter(x -> x instanceof TEntityType) //
+        .map(x -> ((TEntityType) x)) //
+        .forEach(x -> writeEntity(output, PKG_SUFFIX_ENUM, x));
 
         // write complexTypes
 
@@ -46,6 +53,16 @@ public final class Generator {
 
         // consume annotations
 
+    }
+    
+    private void writeEntity(File output, String pkgSuffix, TEntityType t) {
+        Imports imports = new Imports();
+        Indent indent = new Indent();
+        String pkg = options.pkg() + pkgSuffix;
+        File dir = toDirectory(output, options.pkg() + pkgSuffix);
+        dir.mkdirs();
+        String simpleClassName = toSimpleClassName(t.getName());
+        File file = new File(dir, simpleClassName + ".java");
     }
 
     private void writeEnum(File output, String pkgSuffix, TEnumType t) {
@@ -57,7 +74,6 @@ public final class Generator {
         String simpleClassName = toSimpleClassName(t.getName());
         File file = new File(dir, simpleClassName + ".java");
         try {
-            file.createNewFile();
             StringWriter w = new StringWriter();
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", pkg);
