@@ -1,2 +1,5 @@
 # odata-client
-Generate java client for a service described by OData CSDL 4.0 metadata
+Generates java client for a service described by OData CSDL 4.0 metadata.
+
+
+Status: *pre-alpha* (in development)
