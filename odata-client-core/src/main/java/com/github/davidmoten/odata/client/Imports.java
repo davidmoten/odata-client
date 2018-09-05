@@ -34,6 +34,11 @@ final class Imports {
     public String toString() {
         return map.values().stream().sorted() //
                 .filter(c -> !c.startsWith("java.lang.")) //
+                .filter(c -> !c.equals("boolean")) //
+                .filter(c -> !c.equals("short")) //
+                .filter(c -> !c.equals("float")) //
+                .filter(c -> !c.equals("double")) //
+                .filter(c -> !c.equals("int")) //
                 .map(c -> "import " + c + ";").collect(Collectors.joining("\n")) + "\n";
     }
 
