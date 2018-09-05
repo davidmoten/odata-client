@@ -70,7 +70,7 @@ public final class Generator {
                         .stream() //
                         .filter(x -> x instanceof TEnumTypeMember) //
                         .map(x -> ((TEnumTypeMember) x)) //
-                        .map(x -> String.format("%s%s(\"%s\",\"%s\")", indent, x.getName().toUpperCase(), x.getName(),
+                        .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent, toConstant(x.getName()), x.getName(),
                                 x.getValue()))
                         .collect(Collectors.joining(",\n"));
                 indent.minus();
@@ -86,18 +86,18 @@ public final class Generator {
                 p.format("%sthis.name = name;\n", indent.add());
                 p.format("%sthis.value = value;\n", indent);
                 p.format("%s}\n\n", indent.minus());
-                
+
                 // add methods
                 p.format("%s@%s\n", indent, imports.add(Override.class));
                 p.format("%spublic %s enumName() {\n", indent, imports.add(String.class));
                 p.format("%sreturn name;\n", indent.add());
                 p.format("%s}\n\n", indent.minus());
-                
+
                 p.format("%s@%s\n", indent, imports.add(Override.class));
-                p.format("%spublic %s enumValue() {\n",indent,  imports.add(String.class));
+                p.format("%spublic %s enumValue() {\n", indent, imports.add(String.class));
                 p.format("%sreturn value;\n", indent.add());
                 p.format("%s}\n\n", indent.minus());
-                
+
                 // close class
                 p.format("}\n");
             }
@@ -110,7 +110,17 @@ public final class Generator {
     }
 
     private static String toSimpleClassName(String name) {
+        return upperFirst(name);
+    }
+    
+    private static String upperFirst(String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+    }
+
+    private static String toConstant(String name) {
+        String regex = "([a-z])([A-Z]+)";
+        String replacement = "$1_$2";
+        return name.replaceAll(regex, replacement).toUpperCase();
     }
 
     private static File toDirectory(File base, String pkg) {
