@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.stream.Collectors;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -14,6 +16,7 @@ import org.oasisopen.odata.csdl.v4.TEdmx;
 import org.oasisopen.odata.csdl.v4.TEntityContainer;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
+import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TTerm;
 
@@ -27,11 +30,7 @@ public class ReadTest {
                 .unmarshal(new StreamSource(ReadTest.class.getResourceAsStream("/msgraph-1.0-20180905.xml")),
                         TEdmx.class)
                 .getValue();
-        t.getDataServices().getSchema().stream().forEach(s -> s.getComplexTypeOrEntityTypeOrTypeDefinition().stream()
-                .peek(ReadTest::handle)
-                .map(x -> x.getClass().getName()) //
-                .distinct() //
-                .count());
+        new Generator(new Options(), t.getDataServices().getSchema().get(0)).generate();
     }
 
     private static void handle(Object o) {
@@ -56,28 +55,34 @@ public class ReadTest {
             throw new RuntimeException("unexpected");
         }
     }
-    
+
     private static void log(Object o) {
         System.out.println(o.getClass().getName() + "=" + o);
     }
-    
+
     private static void handle(TEnumType t) {
-        System.out.println(t.getName()  + "="+ t.getMemberOrAnnotation());
+        System.out.println(t.getName() + ":" + t.getMemberOrAnnotation().stream().map(x -> ((TEnumTypeMember) x))
+                .map(x -> x.getName() + "=" + x.getValue()).collect(Collectors.joining(",")));
     }
-    
+
     private static void handle(TEntityType t) {
     }
-    
+
     private static void handle(TComplexType t) {
-    } 
+    }
+
     private static void handle(TAction t) {
-    } 
+    }
+
     private static void handle(TFunction t) {
-    } 
+    }
+
     private static void handle(TTerm t) {
-    } 
+    }
+
     private static void handle(TEntityContainer t) {
-    } 
+    }
+
     private static void handle(TAnnotations t) {
-    } 
+    }
 }
