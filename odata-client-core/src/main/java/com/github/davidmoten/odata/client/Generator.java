@@ -111,7 +111,7 @@ public final class Generator {
                 return Integer.class.getCanonicalName();
             }
         } else {
-            return "String";
+            return "java.lang.String";
         }
     }
 
