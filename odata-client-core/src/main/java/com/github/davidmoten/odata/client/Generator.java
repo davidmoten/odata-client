@@ -6,7 +6,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.sql.Date;
+import java.time.OffsetDateTime;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
@@ -15,6 +16,8 @@ import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
+import com.github.davidmoten.guavamini.Sets;
+
 public final class Generator {
 
     private final Options options;
@@ -22,6 +25,14 @@ public final class Generator {
 
     private static final String PKG_SUFFIX_ENUM = ".enums";
     private static final String PKG_SUFFIX_ENTITY = ".entity";
+
+    private static Set<String> javaReservedWords = Sets.newHashSet("abstract", "assert", "boolean",
+            "break", "byte", "case", "catch", "char", "class", "const", "continue", "default", "do",
+            "double", "else", "extends", "false", "final", "finally", "float", "for", "goto", "if",
+            "implements", "import", "instanceof", "int", "interface", "long", "native", "new",
+            "null", "package", "private", "protected", "public", "return", "short", "static",
+            "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
+            "true", "try", "void", "volatile", "while");
 
     public Generator(Options options, Schema schema) {
         this.options = options;
@@ -79,7 +90,8 @@ public final class Generator {
                     .filter(x -> (x instanceof TProperty)) //
                     .map(x -> ((TProperty) x)) //
                     .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, imports.add(toType(x)), x.getName());
+                        p.format("%sprivate %s %s;\n", indent, imports.add(toType(x, schema, pkg)),
+                                toIdentifier(x.getName()));
                     });
 
             p.format("}\n");
@@ -91,7 +103,14 @@ public final class Generator {
         }
     }
 
-    private static String toType(TProperty x) {
+    private static String toIdentifier(String s) {
+        if (javaReservedWords.contains(s)) {
+            s = s + "_";
+        }
+        return lowerFirst(s);
+    }
+
+    private static String toType(TProperty x, Schema schema, String entityBasePkg) {
         String t = x.getType().get(0);
         System.out.println("type=" + t);
         if (t.equals("Edm.String")) {
@@ -103,13 +122,19 @@ public final class Generator {
                 return boolean.class.getCanonicalName();
             }
         } else if (t.equals("Edm.DateTimeOffset")) {
-            return Date.class.getCanonicalName();
+            return OffsetDateTime.class.getCanonicalName();
         } else if (t.equals("Edm.Int32")) {
             if (x.isNullable()) {
                 return int.class.getCanonicalName();
             } else {
                 return Integer.class.getCanonicalName();
             }
+        } else if (t.equals("Edm.Guid")) {
+            return String.class.getCanonicalName();
+        } else if (t.startsWith(schema.getNamespace())) {
+            String suffix = t.substring(schema.getNamespace().length() + 1, t.length());
+            String classSimpleName = upperFirst(suffix);
+            return entityBasePkg + "." + classSimpleName;
         } else {
             return "java.lang.String";
         }
@@ -184,6 +209,10 @@ public final class Generator {
 
     private static String upperFirst(String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+    }
+
+    private static String lowerFirst(String name) {
+        return name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
     }
 
     private static String toConstant(String name) {
