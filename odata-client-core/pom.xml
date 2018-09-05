@@ -51,6 +51,24 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-        </plugins>
-    </build>
+      <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>jaxb2-maven-plugin</artifactId>
+         <version>1.6</version>
+         <executions>
+            <execution>
+               <id>edm-xsd</id>
+               <goals>
+                  <goal>xjc</goal>
+               </goals>
+               <configuration>
+                  <packageName>org.oasisopen.odata.csdl.v4</packageName>
+                  <schemaDirectory>src/xsd</schemaDirectory>
+                  <clearOutputDir>false</clearOutputDir>
+               </configuration>
+            </execution>
+         </executions>
+      </plugin>
+   </plugins>
+</build>
 </project>
