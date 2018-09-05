@@ -10,7 +10,7 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>odata-client</artifactId>
+    <artifactId>odata-client-core</artifactId>
 
     <name>${project.artifactId}</name>
     <description>Public private key encryption</description>
