@@ -90,7 +90,8 @@ public final class Generator {
             String simpleClassName = names.getSimpleClassNameEntity(t.getName());
             final String extension;
             if (t.getBaseType() != null) {
-                extension = " extends " + imports.add(names.getFullGeneratedClassNameFromNamespacedType(t.getBaseType()));
+                extension = " extends "
+                        + imports.add(names.getFullGeneratedClassNameFromNamespacedType(t.getBaseType()));
             } else {
                 extension = "";
             }
@@ -128,6 +129,11 @@ public final class Generator {
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                     p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName, Names.getSetterMethod(x.getName()),
                             typeName, fieldName);
+                    if (x.isUnicode() != null && !x.isUnicode()) {
+                        p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(EntityPreconditions.class),
+                                fieldName, fieldName);
+                        indent.left();
+                    }
                     p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
                     p.format("%sreturn this;\n", indent);
                     p.format("%s}\n", indent.left());
