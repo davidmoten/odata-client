@@ -1,6 +1,6 @@
 package com.github.davidmoten.odata.client;
 
-public class UnsignedByte {
+public final class UnsignedByte {
     private int value;
 
     public UnsignedByte(int value) {

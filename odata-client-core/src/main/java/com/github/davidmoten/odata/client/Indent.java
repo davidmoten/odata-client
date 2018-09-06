@@ -1,15 +1,15 @@
 package com.github.davidmoten.odata.client;
 
-public class Indent {
+class Indent {
 
     private String value = ""; 
     
-    public Indent left() {
+    Indent left() {
         value = value.substring(0, value.length() - 4);
         return this;
     }
     
-    public Indent right() {
+    Indent right() {
         value +="    ";
         return this;
     }
