@@ -4,12 +4,12 @@ public class Indent {
 
     private String value = ""; 
     
-    public Indent minus() {
+    public Indent left() {
         value = value.substring(0, value.length() - 4);
         return this;
     }
     
-    public Indent add() {
+    public Indent right() {
         value +="    ";
         return this;
     }
