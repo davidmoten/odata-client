@@ -10,7 +10,6 @@ import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 
-import com.fasterxml.jackson.databind.ser.std.MapSerializer;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
 
@@ -22,15 +21,13 @@ final class Names {
             "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return",
             "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
             "true", "try", "void", "volatile", "while");
-    
-    private final Schema schema;
+
     private final Options options;
     private final File output;
 
     private final Map<String, String> classNamesFromNamespacedType;
 
     private Names(Schema schema, Options options) {
-        this.schema = schema;
         this.options = options;
         File output = new File(options.outputDirectory());
         Util.deleteDirectory(output);
@@ -40,7 +37,7 @@ final class Names {
     }
 
     // factory method
-    public static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
+    static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
         Names names = new Names(schema, options);
         names.getDirectoryEntity().mkdirs();
         names.getDirectoryEnum().mkdirs();
@@ -86,7 +83,7 @@ final class Names {
         }
         return lowerFirst(s);
     }
-    
+
     static String getGetterMethod(String name) {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
@@ -94,7 +91,7 @@ final class Names {
         return "get" + upperFirst(name);
     }
 
-    public static String getSetterMethod(String name) {
+    static String getSetterMethod(String name) {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
         }
@@ -106,47 +103,47 @@ final class Names {
         return new File(path);
     }
 
-    public File getDirectoryEntity() {
+    File getDirectoryEntity() {
         return toDirectory(output, options.pkg() + options.packageSuffixEntity());
     }
 
-    public File getDirectoryEnum() {
+    File getDirectoryEnum() {
         return toDirectory(output, options.pkg() + options.packageSuffixEnum());
     }
 
-    public File getDirectoryComplexType() {
+    File getDirectoryComplexType() {
         return toDirectory(output, options.pkg() + options.packageSuffixComplexType());
     }
 
-    public String getPackageEnum() {
+    String getPackageEnum() {
         return options.pkg() + options.packageSuffixEnum();
     }
 
-    public String getPackageEntity() {
+    String getPackageEntity() {
         return options.pkg() + options.packageSuffixEntity();
     }
 
-    public String getPackageComplexType() {
+    String getPackageComplexType() {
         return options.pkg() + options.packageSuffixComplexType();
     }
 
-    public String getSimpleClassNameEnum(String name) {
+    String getSimpleClassNameEnum(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    public String getSimpleClassNameEntity(String name) {
+    String getSimpleClassNameEntity(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    public String getSimpleClassNameComplexType(String name) {
+    String getSimpleClassNameComplexType(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    public String getFullClassNameEnum(String name) {
+    String getFullClassNameEnum(String name) {
         return getPackageEnum() + "." + getSimpleClassNameEnum(name);
     }
 
-    public String getFullClassNameEntity(String name) {
+    String getFullClassNameEntity(String name) {
         return getPackageEntity() + "." + getSimpleClassNameEntity(name);
     }
 
@@ -154,19 +151,19 @@ final class Names {
         return getPackageComplexType() + "." + getSimpleClassNameComplexType(name);
     }
 
-    public File getClassFileEnum(String name) {
+    File getClassFileEnum(String name) {
         return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
     }
 
-    public File getClassFileComplexType(String name) {
+    File getClassFileComplexType(String name) {
         return new File(getDirectoryComplexType(), getSimpleClassNameComplexType(name) + ".java");
     }
 
-    public File getClassFileEntity(String name) {
+    File getClassFileEntity(String name) {
         return new File(getDirectoryEntity(), getSimpleClassNameEntity(name) + ".java");
     }
 
-    public String getFullGeneratedClassNameFromNamespacedType(String type) {
+    String getFullGeneratedClassNameFromNamespacedType(String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
     }
 
