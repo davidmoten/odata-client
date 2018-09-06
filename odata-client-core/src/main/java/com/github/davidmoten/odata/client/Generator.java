@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
@@ -20,6 +21,7 @@ import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Generator {
@@ -63,15 +65,16 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageComplexType());
             p.format("IMPORTSHERE");
             String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
-            p.format("public class %s {\n", simpleClassName);
+            p.format("public final class %s {\n\n", simpleClassName);
 
             // write fields from properties
             indent.right();
             Util.filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
                     .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.toIdentifier(x.getName()));
+                        p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
                     });
-            p.format("}\n");
+
+            p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileComplexType(t.getName()).toPath(), bytes);
         } catch (IOException e) {
@@ -86,17 +89,38 @@ public final class Generator {
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageEntity());
-            p.format("IMPORTSHERE\n");
+            p.format("IMPORTSHERE");
             String simpleClassName = names.getSimpleClassNameEntity(t.getName());
-            p.format("public class %s {\n", simpleClassName);
+            p.format("public final class %s {\n\n", simpleClassName);
 
             // write fields from properties
             indent.right();
-            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class).forEach(x -> {
-                p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.toIdentifier(x.getName()));
-            });
+            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                    .forEach(x -> {
+                        p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                    });
 
-            p.format("}\n");
+            // write getters and setters
+            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                    .forEach(x -> {
+                        String fieldName = Names.getIdentifier(x.getName());
+                        String typeName = toType(x, imports);
+                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+                        p.format("%spublic %s %s() {\n", indent, typeName,
+                                Names.getGetterMethod(x.getName()));
+                        p.format("%sreturn %s;\n", indent.right(), fieldName);
+                        p.format("%s}\n", indent.left());
+                        
+                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+                        p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
+                                Names.getSetterMethod(x.getName()), typeName, fieldName);
+                        p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
+                        p.format("%sreturn this;\n", indent);
+                        p.format("%s}\n", indent.left());
+
+                    });
+
+            p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileEntity(t.getName()).toPath(), bytes);
         } catch (IOException e) {
@@ -107,7 +131,20 @@ public final class Generator {
     private String toType(TProperty x, Imports imports) {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
-        return toType(t, !x.isNullable(), imports);
+        if (x.isNullable() && !isCollection(x)) {
+            String r = toType(t, false, imports);
+            return imports.add(Optional.class) + "<" + r + ">";
+        } else {
+            return toType(t, true, imports);
+        }
+    }
+
+    private static boolean isCollection(TProperty x) {
+        return isCollection(x.getType().get(0));
+    }
+
+    private static boolean isCollection(String t) {
+        return t.startsWith("Collection(") && t.endsWith(")");
     }
 
     private String toType(String t, boolean canUsePrimitive, Imports imports) {
@@ -115,7 +152,7 @@ public final class Generator {
             return toTypeFromEdm(t, canUsePrimitive, imports);
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullGeneratedClassNameFromNamespacedType(t));
-        } else if (t.startsWith("Collection(")) {
+        } else if (isCollection(t)) {
             String inner = t.substring("Collection(".length(), t.length() - 1);
             return imports.add(List.class) + "<" + toType(inner, false, imports) + ">";
         } else {
@@ -129,9 +166,9 @@ public final class Generator {
             result = imports.add(String.class);
         } else if (t.equals("Edm.Boolean")) {
             if (canUsePrimitive) {
-                result = imports.add(Boolean.class);
-            } else {
                 result = boolean.class.getCanonicalName();
+            } else {
+                result = imports.add(Boolean.class);
             }
         } else if (t.equals("Edm.DateTimeOffset")) {
             result = imports.add(OffsetDateTime.class);
@@ -154,6 +191,8 @@ public final class Generator {
                 result = imports.add(Short.class);
             }
         } else if (t.equals("Edm.Byte")) {
+            result = imports.add(UnsignedByte.class);
+        } else if (t.equals("Edm.SByte")) {
             if (canUsePrimitive) {
                 result = byte.class.getCanonicalName();
             } else {
