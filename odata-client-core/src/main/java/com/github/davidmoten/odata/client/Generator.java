@@ -88,7 +88,7 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageEntity());
             p.format("IMPORTSHERE");
             String simpleClassName = names.getSimpleClassNameEntity(t.getName());
-            p.format("public %s class %s {\n\n", t.isAbstract()?"abstract":"final", simpleClassName);
+            p.format("public %s class %s {\n\n", t.isAbstract() ? "abstract" : "final", simpleClassName);
 
             // write fields from properties
             indent.right();
@@ -115,14 +115,13 @@ public final class Generator {
                     String fieldName = Names.getIdentifier(x.getName());
                     String typeName = toType(x, imports);
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                    p.format("%spublic %s %s() {\n", indent, typeName,
-                            Names.getGetterMethod(x.getName()));
+                    p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
                     p.format("%sreturn %s;\n", indent.right(), fieldName);
                     p.format("%s}\n", indent.left());
-                    
+
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                    p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
-                            Names.getSetterMethod(x.getName()), typeName, fieldName);
+                    p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName, Names.getSetterMethod(x.getName()),
+                            typeName, fieldName);
                     p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
                     p.format("%sreturn this;\n", indent);
                     p.format("%s}\n", indent.left());
