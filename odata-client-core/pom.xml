@@ -14,10 +14,14 @@
     <artifactId>odata-client-core</artifactId>
 
     <name>${project.artifactId}</name>
-    <description>Public private key encryption</description>
+    <description>OData client generator</description>
     <packaging>jar</packaging>
 
     <url>http://github.com/davidmoten/odata-client</url>
+
+    <properties>
+        <jackson.version>2.9.6</jackson.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -35,7 +39,13 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.6</version>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->
