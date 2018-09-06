@@ -40,23 +40,15 @@ final class Names {
 
     private Map<String, String> createMap(Schema schema, Options options) {
         Map<String, String> map = new HashMap<>();
-        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
-                .stream() //
-                .filter(x -> x instanceof TEnumType) //
-                .map(x -> ((TEnumType) x)) //
+        Util.types(schema, TEnumType.class) //
                 .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEnum(x.getName())));
 
-        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
-                .stream() //
-                .filter(x -> x instanceof TEntityType) //
-                .map(x -> ((TEntityType) x)) //
+        Util.types(schema, TEntityType.class) //
                 .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEntity(x.getName())));
-        
-        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
-        .stream() //
-        .filter(x -> x instanceof TComplexType) //
-        .map(x -> ((TComplexType) x)) //
-        .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameComplexType(x.getName())));
+
+        Util.types(schema, TComplexType.class) //
+                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                        getFullClassNameComplexType(x.getName())));
         return map;
     }
 
@@ -113,11 +105,19 @@ final class Names {
         return options.pkg() + options.packageSuffixEntity();
     }
 
+    public String getPackageComplexType() {
+        return options.pkg() + options.packageSuffixComplexType();
+    }
+
     public String getSimpleClassNameEnum(String name) {
         return Names.toSimpleClassName(name);
     }
 
     public String getSimpleClassNameEntity(String name) {
+        return Names.toSimpleClassName(name);
+    }
+
+    public String getSimpleClassNameComplexType(String name) {
         return Names.toSimpleClassName(name);
     }
 
@@ -128,13 +128,17 @@ final class Names {
     public String getFullClassNameEntity(String name) {
         return getPackageEntity() + "." + getSimpleClassNameEntity(name);
     }
-    
+
     private String getFullClassNameComplexType(String name) {
-        return getPackageEntity() + "." + getSimpleClassNameEntity(name);
+        return getPackageComplexType() + "." + getSimpleClassNameComplexType(name);
     }
 
     public File getClassFileEnum(String name) {
         return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
+    }
+
+    public File getClassFileComplexType(String name) {
+        return new File(getDirectoryEnum(), getSimpleClassNameComplexType(name) + ".java");
     }
 
     public File getClassFileEntity(String name) {
@@ -144,4 +148,5 @@ final class Names {
     public String getFullGeneratedClassNameFromNamespacedType(String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
     }
+
 }

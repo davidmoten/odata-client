@@ -6,13 +6,17 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
+import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TProperty;
+
+import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Generator {
 
@@ -27,20 +31,17 @@ public final class Generator {
     public void generate() {
 
         // write enums
-        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
-                .stream() //
-                .filter(x -> x instanceof TEnumType) //
-                .map(x -> ((TEnumType) x)) //
+        Util.types(schema, TEnumType.class) //
                 .forEach(x -> writeEnum(x));
 
         // write entityTypes
-        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
-                .stream() //
-                .filter(x -> x instanceof TEntityType) //
-                .map(x -> ((TEntityType) x)) //
+        Util.types(schema, TEntityType.class) //
                 .forEach(x -> writeEntity(x));
 
         // write complexTypes
+        Util.types(schema, TComplexType.class) //
+                .peek(x -> System.out.println(x.getName())) //
+                .forEach(x -> writeComplexType(x));
 
         // write actions
 
@@ -48,6 +49,31 @@ public final class Generator {
 
         // consume annotations
 
+    }
+
+    private void writeComplexType(TComplexType t) {
+        Imports imports = new Imports();
+        Indent indent = new Indent();
+
+        StringWriter w = new StringWriter();
+        try (PrintWriter p = new PrintWriter(w)) {
+            p.format("package %s;\n\n", names.getPackageComplexType());
+            p.format("IMPORTSHERE\n");
+            String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
+            p.format("public class %s {\n", simpleClassName);
+
+            // write fields from properties
+            indent.right();
+            Util.filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
+                    .forEach(x -> {
+                        p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.toIdentifier(x.getName()));
+                    });
+            p.format("}\n");
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+            Files.write(names.getClassFileComplexType(t.getName()).toPath(), bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void writeEntity(TEntityType t) {
@@ -63,13 +89,9 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
-            t.getKeyOrPropertyOrNavigationProperty() //
-                    .stream() //
-                    .filter(x -> (x instanceof TProperty)) //
-                    .map(x -> ((TProperty) x)) //
-                    .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, imports.add(toType(x)), Names.toIdentifier(x.getName()));
-                    });
+            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class).forEach(x -> {
+                p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.toIdentifier(x.getName()));
+            });
 
             p.format("}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
@@ -79,34 +101,49 @@ public final class Generator {
         }
     }
 
-    private String toType(TProperty x) {
+    private String toType(TProperty x, Imports imports) {
+        Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
-        System.out.println("type=" + t);
-        if (t.equals("Edm.String")) {
-            return String.class.getCanonicalName();
-        } else if (t.equals("Edm.Boolean")) {
-            if (x.isNullable()) {
-                return Boolean.class.getCanonicalName();
-            } else {
-                return boolean.class.getCanonicalName();
-            }
-        } else if (t.equals("Edm.DateTimeOffset")) {
-            return OffsetDateTime.class.getCanonicalName();
-        } else if (t.equals("Edm.Int32")) {
-            if (x.isNullable()) {
-                return int.class.getCanonicalName();
-            } else {
-                return Integer.class.getCanonicalName();
-            }
-        } else if (t.equals("Edm.Guid")) {
-            return String.class.getCanonicalName();
+        return toType(t, !x.isNullable(), imports);
+    }
+
+    private String toType(String t, boolean canUsePrimitive, Imports imports) {
+        if (t.startsWith("Edm.")) {
+            return toTypeFromEdm(t, canUsePrimitive, imports);
         } else if (t.startsWith(schema.getNamespace())) {
             return names.getFullGeneratedClassNameFromNamespacedType(t);
         } else if (t.startsWith("Collection(")) {
-            String inner = t.substring("Collection(".length(), t.length() -1);
+            String inner = t.substring("Collection(".length(), t.length() - 1);
+            return imports.add(List.class) + "<" + toType(inner, false, imports) + ">";
         } else {
             return "Unknown_" + t;
         }
+    }
+
+    private String toTypeFromEdm(String t, boolean canUsePrimitive, Imports imports) {
+        final String result;
+        if (t.equals("Edm.String")) {
+            result = String.class.getCanonicalName();
+        } else if (t.equals("Edm.Boolean")) {
+            if (canUsePrimitive) {
+                result = Boolean.class.getCanonicalName();
+            } else {
+                result = boolean.class.getCanonicalName();
+            }
+        } else if (t.equals("Edm.DateTimeOffset")) {
+            result = OffsetDateTime.class.getCanonicalName();
+        } else if (t.equals("Edm.Int32")) {
+            if (canUsePrimitive) {
+                result = int.class.getCanonicalName();
+            } else {
+                result = Integer.class.getCanonicalName();
+            }
+        } else if (t.equals("Edm.Guid")) {
+            result = String.class.getCanonicalName();
+        } else {
+            result = "Unknown_" + t;
+        }
+        return imports.add(result);
     }
 
     private void writeEnum(TEnumType t) {
@@ -122,10 +159,7 @@ public final class Generator {
 
                 // add members
                 indent.right();
-                String s = t.getMemberOrAnnotation() //
-                        .stream() //
-                        .filter(x -> x instanceof TEnumTypeMember) //
-                        .map(x -> ((TEnumTypeMember) x)) //
+                String s = Util.filter(t.getMemberOrAnnotation(), TEnumTypeMember.class) //
                         .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent, Names.toConstant(x.getName()),
                                 x.getName(), x.getValue()))
                         .collect(Collectors.joining(",\n"));
