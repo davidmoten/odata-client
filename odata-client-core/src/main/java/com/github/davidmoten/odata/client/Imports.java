@@ -42,7 +42,7 @@ final class Imports {
                 .filter(c -> !c.equals("byte")) //
                 .map(c -> "import " + c + ";").collect(Collectors.joining("\n"));
         if (!x.isEmpty()) {
-            x = x + "\n";
+            x = x + "\n\n";
         }
         return x;
     }

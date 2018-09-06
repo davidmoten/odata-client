@@ -79,11 +79,19 @@ final class Names {
         return name.replaceAll(regex, replacement).toUpperCase();
     }
 
-    static String toIdentifier(String s) {
+    static String getIdentifier(String s) {
         if (javaReservedWords.contains(s)) {
             s = s + "_";
         }
         return lowerFirst(s);
+    }
+    
+    static String getGetterMethod(String name) {
+        return "get" + upperFirst(name);
+    }
+
+    public static String getSetterMethod(String name) {
+        return "set" + upperFirst(name);
     }
 
     private static File toDirectory(File base, String pkg) {
