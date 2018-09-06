@@ -38,6 +38,15 @@ final class Names {
         this.classNamesFromNamespacedType = createMap(schema, options);
     }
 
+    // factory method
+    public static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
+        Names names = new Names(schema, options);
+        names.getDirectoryEntity().mkdirs();
+        names.getDirectoryEnum().mkdirs();
+        names.getDirectoryComplexType().mkdirs();
+        return names;
+    }
+
     private Map<String, String> createMap(Schema schema, Options options) {
         Map<String, String> map = new HashMap<>();
         Util.types(schema, TEnumType.class) //
@@ -90,11 +99,8 @@ final class Names {
         return toDirectory(output, options.pkg() + options.packageSuffixEnum());
     }
 
-    public static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
-        Names names = new Names(schema, options);
-        names.getDirectoryEntity().mkdirs();
-        names.getDirectoryEnum().mkdirs();
-        return names;
+    public File getDirectoryComplexType() {
+        return toDirectory(output, options.pkg() + options.packageSuffixComplexType());
     }
 
     public String getPackageEnum() {
@@ -138,7 +144,7 @@ final class Names {
     }
 
     public File getClassFileComplexType(String name) {
-        return new File(getDirectoryEnum(), getSimpleClassNameComplexType(name) + ".java");
+        return new File(getDirectoryComplexType(), getSimpleClassNameComplexType(name) + ".java");
     }
 
     public File getClassFileEntity(String name) {
