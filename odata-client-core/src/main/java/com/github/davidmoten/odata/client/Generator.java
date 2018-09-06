@@ -69,10 +69,7 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
-            Util.filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
-                    .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
-                    });
+            printProperties(imports, indent, p, simpleClassName, t.getPropertyOrNavigationPropertyOrAnnotation());
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
@@ -95,30 +92,7 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
-            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
-                    .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
-                    });
-
-            // write getters and setters
-            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
-                    .forEach(x -> {
-                        String fieldName = Names.getIdentifier(x.getName());
-                        String typeName = toType(x, imports);
-                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                        p.format("%spublic %s %s() {\n", indent, typeName,
-                                Names.getGetterMethod(x.getName()));
-                        p.format("%sreturn %s;\n", indent.right(), fieldName);
-                        p.format("%s}\n", indent.left());
-                        
-                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                        p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
-                                Names.getSetterMethod(x.getName()), typeName, fieldName);
-                        p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
-                        p.format("%sreturn this;\n", indent);
-                        p.format("%s}\n", indent.left());
-
-                    });
+            printProperties(imports, indent, p, simpleClassName, t.getKeyOrPropertyOrNavigationProperty());
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
@@ -126,6 +100,33 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void printProperties(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
+            List<Object> properties) {
+        Util.filter(properties, TProperty.class) //
+                .forEach(x -> {
+                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                });
+
+        // write getters and setters
+        Util.filter(properties, TProperty.class) //
+                .forEach(x -> {
+                    String fieldName = Names.getIdentifier(x.getName());
+                    String typeName = toType(x, imports);
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+                    p.format("%spublic %s %s() {\n", indent, typeName,
+                            Names.getGetterMethod(x.getName()));
+                    p.format("%sreturn %s;\n", indent.right(), fieldName);
+                    p.format("%s}\n", indent.left());
+                    
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+                    p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
+                            Names.getSetterMethod(x.getName()), typeName, fieldName);
+                    p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
+                    p.format("%sreturn this;\n", indent);
+                    p.format("%s}\n", indent.left());
+                });
     }
 
     private String toType(TProperty x, Imports imports) {
