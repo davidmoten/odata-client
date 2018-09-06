@@ -1,10 +1,16 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.oasisopen.odata.csdl.v4.Schema;
+import org.oasisopen.odata.csdl.v4.TComplexType;
+import org.oasisopen.odata.csdl.v4.TEntityType;
+import org.oasisopen.odata.csdl.v4.TEnumType;
 
+import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
 
 final class Names {
@@ -20,6 +26,8 @@ final class Names {
     private final Options options;
     private final File output;
 
+    private final Map<String, String> classNamesFromNamespacedType;
+
     private Names(Schema schema, Options options) {
         this.schema = schema;
         this.options = options;
@@ -27,6 +35,29 @@ final class Names {
         Util.deleteDirectory(output);
         output.mkdirs();
         this.output = output;
+        this.classNamesFromNamespacedType = createMap(schema, options);
+    }
+
+    private Map<String, String> createMap(Schema schema, Options options) {
+        Map<String, String> map = new HashMap<>();
+        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
+                .stream() //
+                .filter(x -> x instanceof TEnumType) //
+                .map(x -> ((TEnumType) x)) //
+                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEnum(x.getName())));
+
+        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
+                .stream() //
+                .filter(x -> x instanceof TEntityType) //
+                .map(x -> ((TEntityType) x)) //
+                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEntity(x.getName())));
+        
+        schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
+        .stream() //
+        .filter(x -> x instanceof TComplexType) //
+        .map(x -> ((TComplexType) x)) //
+        .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameComplexType(x.getName())));
+        return map;
     }
 
     static String toSimpleClassName(String name) {
@@ -86,15 +117,31 @@ final class Names {
         return Names.toSimpleClassName(name);
     }
 
-    public File getClassFileEnum(String name) {
-        return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
-    }
-
     public String getSimpleClassNameEntity(String name) {
         return Names.toSimpleClassName(name);
     }
 
+    public String getFullClassNameEnum(String name) {
+        return getPackageEnum() + "." + getSimpleClassNameEnum(name);
+    }
+
+    public String getFullClassNameEntity(String name) {
+        return getPackageEntity() + "." + getSimpleClassNameEntity(name);
+    }
+    
+    private String getFullClassNameComplexType(String name) {
+        return getPackageEntity() + "." + getSimpleClassNameEntity(name);
+    }
+
+    public File getClassFileEnum(String name) {
+        return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
+    }
+
     public File getClassFileEntity(String name) {
         return new File(getDirectoryEntity(), getSimpleClassNameEntity(name) + ".java");
+    }
+
+    public String getFullGeneratedClassNameFromNamespacedType(String type) {
+        return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
     }
 }

@@ -25,8 +25,7 @@ public final class Generator {
     }
 
     public void generate() {
-        
-        
+
         // write enums
         schema.getComplexTypeOrEntityTypeOrTypeDefinition() //
                 .stream() //
@@ -54,7 +53,7 @@ public final class Generator {
     private void writeEntity(TEntityType t) {
         Imports imports = new Imports();
         Indent indent = new Indent();
-        
+
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageEntity());
@@ -69,20 +68,18 @@ public final class Generator {
                     .filter(x -> (x instanceof TProperty)) //
                     .map(x -> ((TProperty) x)) //
                     .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, imports.add(toType(x, schema, names.getPackageEntity())),
-                                Names.toIdentifier(x.getName()));
+                        p.format("%sprivate %s %s;\n", indent, imports.add(toType(x)), Names.toIdentifier(x.getName()));
                     });
 
             p.format("}\n");
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
-                    .getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileEntity(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static String toType(TProperty x, Schema schema, String entityBasePkg) {
+    private String toType(TProperty x) {
         String t = x.getType().get(0);
         System.out.println("type=" + t);
         if (t.equals("Edm.String")) {
@@ -104,11 +101,11 @@ public final class Generator {
         } else if (t.equals("Edm.Guid")) {
             return String.class.getCanonicalName();
         } else if (t.startsWith(schema.getNamespace())) {
-            String suffix = t.substring(schema.getNamespace().length() + 1, t.length());
-            String classSimpleName = Names.toSimpleClassName(suffix);
-            return entityBasePkg + "." + classSimpleName;
+            return names.getFullGeneratedClassNameFromNamespacedType(t);
+        } else if (t.startsWith("Collection(")) {
+            String inner = t.substring("Collection(".length(), t.length() -1);
         } else {
-            return "java.lang.String";
+            return "Unknown_" + t;
         }
     }
 
@@ -121,8 +118,7 @@ public final class Generator {
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", names.getPackageEnum());
                 p.format("IMPORTSHERE\n");
-                p.format("public enum %s implements %s {\n", simpleClassName,
-                        imports.add(Enum.class));
+                p.format("public enum %s implements %s {\n", simpleClassName, imports.add(Enum.class));
 
                 // add members
                 indent.right();
@@ -130,8 +126,8 @@ public final class Generator {
                         .stream() //
                         .filter(x -> x instanceof TEnumTypeMember) //
                         .map(x -> ((TEnumTypeMember) x)) //
-                        .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent,
-                                Names.toConstant(x.getName()), x.getName(), x.getValue()))
+                        .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent, Names.toConstant(x.getName()),
+                                x.getName(), x.getValue()))
                         .collect(Collectors.joining(",\n"));
                 indent.left();
                 p.format("\n%s;\n\n", s);
@@ -141,8 +137,8 @@ public final class Generator {
                 p.format("%sprivate final %s value;\n\n", indent, imports.add(String.class));
 
                 // add constructor
-                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName,
-                        imports.add(String.class), imports.add(String.class));
+                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName, imports.add(String.class),
+                        imports.add(String.class));
                 p.format("%sthis.name = name;\n", indent.right());
                 p.format("%sthis.value = value;\n", indent);
                 p.format("%s}\n\n", indent.left());
@@ -161,8 +157,7 @@ public final class Generator {
                 // close class
                 p.format("}\n");
             }
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
-                    .getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileEnum(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
