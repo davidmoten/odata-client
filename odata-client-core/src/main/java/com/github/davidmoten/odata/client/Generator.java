@@ -88,7 +88,7 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageEntity());
             p.format("IMPORTSHERE");
             String simpleClassName = names.getSimpleClassNameEntity(t.getName());
-            p.format("public final class %s {\n\n", simpleClassName);
+            p.format("public %s class %s {\n\n", t.isAbstract()?"abstract":"final", simpleClassName);
 
             // write fields from properties
             indent.right();
