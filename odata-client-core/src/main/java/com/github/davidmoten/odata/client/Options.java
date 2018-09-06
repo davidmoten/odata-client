@@ -18,4 +18,8 @@ public class Options {
         return ".entity";
     }
 
+    public String packageSuffixComplexType() {
+        return ".complex";
+    }
+
 }
