@@ -20,14 +20,14 @@ import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TTerm;
 
-public class ReadTest {
+public class GenerateTest {
 
     @Test
     public void testReadMsgraphCsdl() throws JAXBException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
         TEdmx t = unmarshaller
-                .unmarshal(new StreamSource(ReadTest.class.getResourceAsStream("/msgraph-1.0-20180905.xml")),
+                .unmarshal(new StreamSource(GenerateTest.class.getResourceAsStream("/msgraph-1.0-20180905.xml")),
                         TEdmx.class)
                 .getValue();
         new Generator(new Options(), t.getDataServices().getSchema().get(0)).generate();

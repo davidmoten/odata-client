@@ -10,6 +10,7 @@ import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 
+import com.fasterxml.jackson.databind.ser.std.MapSerializer;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
 
@@ -21,7 +22,7 @@ final class Names {
             "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return",
             "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
             "true", "try", "void", "volatile", "while");
-
+    
     private final Schema schema;
     private final Options options;
     private final File output;
@@ -87,10 +88,16 @@ final class Names {
     }
     
     static String getGetterMethod(String name) {
+        if (name.equalsIgnoreCase("class")) {
+            name = "cls";
+        }
         return "get" + upperFirst(name);
     }
 
     public static String getSetterMethod(String name) {
+        if (name.equalsIgnoreCase("class")) {
+            name = "cls";
+        }
         return "set" + upperFirst(name);
     }
 
