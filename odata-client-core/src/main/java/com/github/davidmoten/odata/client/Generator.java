@@ -1,10 +1,14 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +44,6 @@ public final class Generator {
 
         // write complexTypes
         Util.types(schema, TComplexType.class) //
-                .peek(x -> System.out.println(x.getName())) //
                 .forEach(x -> writeComplexType(x));
 
         // write actions
@@ -58,7 +61,7 @@ public final class Generator {
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageComplexType());
-            p.format("IMPORTSHERE\n");
+            p.format("IMPORTSHERE");
             String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
             p.format("public class %s {\n", simpleClassName);
 
@@ -111,37 +114,73 @@ public final class Generator {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, canUsePrimitive, imports);
         } else if (t.startsWith(schema.getNamespace())) {
-            return names.getFullGeneratedClassNameFromNamespacedType(t);
+            return imports.add(names.getFullGeneratedClassNameFromNamespacedType(t));
         } else if (t.startsWith("Collection(")) {
             String inner = t.substring("Collection(".length(), t.length() - 1);
             return imports.add(List.class) + "<" + toType(inner, false, imports) + ">";
         } else {
-            return "Unknown_" + t;
+            throw new RuntimeException("unhandled type: " + t);
         }
     }
 
     private String toTypeFromEdm(String t, boolean canUsePrimitive, Imports imports) {
         final String result;
         if (t.equals("Edm.String")) {
-            result = String.class.getCanonicalName();
+            result = imports.add(String.class);
         } else if (t.equals("Edm.Boolean")) {
             if (canUsePrimitive) {
-                result = Boolean.class.getCanonicalName();
+                result = imports.add(Boolean.class);
             } else {
                 result = boolean.class.getCanonicalName();
             }
         } else if (t.equals("Edm.DateTimeOffset")) {
-            result = OffsetDateTime.class.getCanonicalName();
+            result = imports.add(OffsetDateTime.class);
+        } else if (t.equals("Edm.Duration")) {
+            result = imports.add(Duration.class);
+        } else if (t.equals("Edm.TimeOfDay")) {
+            result = imports.add(LocalTime.class);
+        } else if (t.equals("Edm.Date")) {
+            result = imports.add(LocalDate.class);
         } else if (t.equals("Edm.Int32")) {
             if (canUsePrimitive) {
                 result = int.class.getCanonicalName();
             } else {
-                result = Integer.class.getCanonicalName();
+                result = imports.add(Integer.class);
+            }
+        } else if (t.equals("Edm.Int16")) {
+            if (canUsePrimitive) {
+                result = short.class.getCanonicalName();
+            } else {
+                result = imports.add(Short.class);
+            }
+        } else if (t.equals("Edm.Byte")) {
+            if (canUsePrimitive) {
+                result = byte.class.getCanonicalName();
+            } else {
+                result = imports.add(byte.class);
+            }
+        } else if (t.equals("Edm.Single")) {
+            if (canUsePrimitive) {
+                result = float.class.getCanonicalName();
+            } else {
+                result = imports.add(Float.class);
+            }
+        } else if (t.equals("Edm.Double")) {
+            if (canUsePrimitive) {
+                result = double.class.getCanonicalName();
+            } else {
+                result = imports.add(Double.class);
             }
         } else if (t.equals("Edm.Guid")) {
-            result = String.class.getCanonicalName();
+            result = imports.add(String.class);
+        } else if (t.equals("Edm.Int64")) {
+            return canUsePrimitive ? long.class.getCanonicalName() : imports.add(Long.class);
+        } else if (t.equals("Edm.Binary")) {
+            return "byte[]";
+        } else if (t.equals("Edm.Stream")) {
+            return imports.add(InputStream.class);
         } else {
-            result = "Unknown_" + t;
+            throw new RuntimeException("unhandled type: " + t);
         }
         return imports.add(result);
     }
