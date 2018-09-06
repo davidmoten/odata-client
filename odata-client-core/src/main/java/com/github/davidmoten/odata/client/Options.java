@@ -9,5 +9,13 @@ public class Options {
     public String pkg() {
         return "microsoft.graph.generated";
     }
+    
+    public String packageSuffixEnum() {
+        return ".enums";
+    }
+    
+    public String packageSuffixEntity() {
+        return ".entity";
+    }
 
 }
