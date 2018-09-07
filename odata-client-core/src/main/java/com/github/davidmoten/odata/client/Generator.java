@@ -19,6 +19,7 @@ import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
+import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -69,7 +70,9 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
-            printProperties(imports, indent, p, simpleClassName, t.getPropertyOrNavigationPropertyOrAnnotation());
+            printPropertyFields(imports, indent, p, t.getPropertyOrNavigationPropertyOrAnnotation());
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
+                    t.getPropertyOrNavigationPropertyOrAnnotation());
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
@@ -95,11 +98,17 @@ public final class Generator {
             } else {
                 extension = "";
             }
-            p.format("public %sclass %s%s {\n\n", t.isAbstract() ? "abstract " : "", simpleClassName, extension);
+            p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "", simpleClassName,
+                    extension, imports.add(ODataEntity.class));
 
             // write fields from properties
             indent.right();
-            printProperties(imports, indent, p, simpleClassName, t.getKeyOrPropertyOrNavigationProperty());
+            printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
+            printNavigationPropertyFields(imports, indent, p, simpleClassName,
+                    t.getKeyOrPropertyOrNavigationProperty());
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
+                    t.getKeyOrPropertyOrNavigationProperty());
+            printNavigationPropertyGetterAndSetters(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
@@ -109,12 +118,8 @@ public final class Generator {
         }
     }
 
-    private void printProperties(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
+    private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
             List<Object> properties) {
-        Util.filter(properties, TProperty.class) //
-                .forEach(x -> {
-                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
-                });
 
         // write getters and setters
         Util.filter(properties, TProperty.class) //
@@ -140,14 +145,58 @@ public final class Generator {
                 });
     }
 
+    private void printPropertyFields(Imports imports, Indent indent, PrintWriter p, List<Object> properties) {
+        Util.filter(properties, TProperty.class) //
+                .forEach(x -> {
+                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                });
+    }
+
+    private void printNavigationPropertyFields(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
+            List<Object> properties) {
+        Class<TNavigationProperty> cls = TNavigationProperty.class;
+        Util.filter(properties, cls) //
+                .forEach(x -> {
+                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                });
+
+    }
+
+    private void printNavigationPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
+            List<Object> properties) {
+        Class<TNavigationProperty> cls = TNavigationProperty.class;
+
+        // write getters and setters
+        Util.filter(properties, cls) //
+                .forEach(x -> {
+                    String fieldName = Names.getIdentifier(x.getName());
+                    String typeName = toType(x, imports);
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+                    p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
+                    p.format("%sreturn %s;\n", indent.right(), fieldName);
+                    p.format("%s}\n", indent.left());
+                });
+    }
+
+    private String toType(TNavigationProperty x, Imports imports) {
+        Preconditions.checkArgument(x.getType().size() == 1);
+        String t = x.getType().get(0);
+        if (x.isNullable() != null && x.isNullable() && !isCollection(x)) {
+            String r = toType(t, false, imports, List.class);
+            return imports.add(Optional.class) + "<" + r + ">";
+        } else {
+            return toType(t, true, imports, CollectionPage.class);
+        }
+    }
+
     private String toType(TProperty x, Imports imports) {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
         if (x.isNullable() && !isCollection(x)) {
-            String r = toType(t, false, imports);
+            String r = toType(t, false, imports, List.class);
             return imports.add(Optional.class) + "<" + r + ">";
         } else {
-            return toType(t, true, imports);
+            return toType(t, true, imports, List.class);
         }
     }
 
@@ -155,18 +204,22 @@ public final class Generator {
         return isCollection(x.getType().get(0));
     }
 
+    private static boolean isCollection(TNavigationProperty x) {
+        return isCollection(x.getType().get(0));
+    }
+
     private static boolean isCollection(String t) {
         return t.startsWith("Collection(") && t.endsWith(")");
     }
 
-    private String toType(String t, boolean canUsePrimitive, Imports imports) {
+    private String toType(String t, boolean canUsePrimitive, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, canUsePrimitive, imports);
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullGeneratedClassNameFromNamespacedType(t));
         } else if (isCollection(t)) {
             String inner = t.substring("Collection(".length(), t.length() - 1);
-            return imports.add(List.class) + "<" + toType(inner, false, imports) + ">";
+            return imports.add(collectionClass) + "<" + toType(inner, false, imports, collectionClass) + ">";
         } else {
             throw new RuntimeException("unhandled type: " + t);
         }
