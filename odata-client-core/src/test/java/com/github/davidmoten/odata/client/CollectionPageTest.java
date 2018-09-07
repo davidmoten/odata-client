@@ -13,17 +13,17 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CollectionPageImplTest {
+public class CollectionPageTest {
 
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths.get(
-                        CollectionPageImplTest.class.getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths
+                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
-        Serializer serializer = new Serializer() {};
+        Serializer serializer = new Serializer() {
+        };
         Service service = new Service() {
 
             @Override
@@ -32,15 +32,14 @@ public class CollectionPageImplTest {
             }
         };
         Context context = new Context(serializer, service);
-        Optional<CollectionPage<Person>> c = CollectionPageImpl.nextPage(json, Serialization.MAPPER, Person.class,
-                context);
+        Optional<CollectionPage<Person>> c = CollectionPage.nextPage(json, Person.class, context);
         assertTrue(c.isPresent());
         assertEquals(2, c.get().currentPage().size());
         assertEquals("Russell", c.get().currentPage().get(0).firstName);
     }
 
     static final class Person implements ODataEntity {
-        
+
         @JsonProperty("UserName")
         public String userName;
 

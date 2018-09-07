@@ -1,7 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 public final class QueryOption {
-    
+
     private final String name;
     private final String value;
 
@@ -17,5 +17,5 @@ public final class QueryOption {
     public String value() {
         return value;
     }
-    
+
 }
