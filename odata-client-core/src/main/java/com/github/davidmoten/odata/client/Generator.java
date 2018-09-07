@@ -49,12 +49,47 @@ public final class Generator {
         Util.types(schema, TComplexType.class) //
                 .forEach(x -> writeComplexType(x));
 
+        // write requests
+        Util.types(schema, TEntityType.class) //
+                .forEach(x -> writeRequest(x));
+
         // write actions
 
         // write functions
 
         // consume annotations
 
+    }
+
+    private void writeRequest(TEntityType t) {
+        Imports imports = new Imports();
+        Indent indent = new Indent();
+
+        StringWriter w = new StringWriter();
+        try (PrintWriter p = new PrintWriter(w)) {
+            p.format("package %s;\n\n", names.getPackageRequest());
+            p.format("IMPORTSHERE");
+            String simpleClassName = names.getSimpleClassNameRequest(t.getName());
+            p.format("public final class %s {\n\n", simpleClassName);
+
+            // write fields from properties
+            indent.right();
+            p.format("%spublic %s<%s> get(%s... options) {\n", indent, //
+                    imports.add(CollectionPage.class), //
+                    imports.add(
+                            names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(QueryOption.class));
+            p.format("%sreturn null;\n", indent.right());
+            p.format("%s}\n", indent.left());
+            indent.left();
+            p.format("\n}\n");
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
+                    .getBytes(StandardCharsets.UTF_8);
+            Files.write(names.getClassFileRequest(t.getName()).toPath(), bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
     }
 
     private void writeComplexType(TComplexType t) {
@@ -70,12 +105,14 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
-            printPropertyFields(imports, indent, p, t.getPropertyOrNavigationPropertyOrAnnotation());
+            printPropertyFields(imports, indent, p,
+                    t.getPropertyOrNavigationPropertyOrAnnotation());
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getPropertyOrNavigationPropertyOrAnnotation());
 
             p.format("\n}\n");
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
+                    .getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileComplexType(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -93,13 +130,13 @@ public final class Generator {
             String simpleClassName = names.getSimpleClassNameEntity(t.getName());
             final String extension;
             if (t.getBaseType() != null) {
-                extension = " extends "
-                        + imports.add(names.getFullGeneratedClassNameFromNamespacedType(t.getBaseType()));
+                extension = " extends " + imports
+                        .add(names.getFullGeneratedClassNameFromTypeWithNamespace(t.getBaseType()));
             } else {
                 extension = "";
             }
-            p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "", simpleClassName,
-                    extension, imports.add(ODataEntity.class));
+            p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "",
+                    simpleClassName, extension, imports.add(ODataEntity.class));
 
             // write fields from properties
             indent.right();
@@ -108,35 +145,40 @@ public final class Generator {
                     t.getKeyOrPropertyOrNavigationProperty());
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getKeyOrPropertyOrNavigationProperty());
-            printNavigationPropertyGetters(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
+            printNavigationPropertyGetters(imports, indent, p,
+                    t.getKeyOrPropertyOrNavigationProperty());
 
             p.format("\n}\n");
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
+                    .getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileEntity(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
-            List<Object> properties) {
+    private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
+            String simpleClassName, List<Object> properties) {
 
         // write getters and setters
         Util.filter(properties, TProperty.class) //
                 .forEach(x -> {
                     String fieldName = Names.getIdentifier(x.getName());
                     String typeName = toType(x, imports);
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                    p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
+                            x.getName());
+                    p.format("%spublic %s %s() {\n", indent, typeName,
+                            Names.getGetterMethod(x.getName()));
                     p.format("%sreturn %s;\n", indent.right(), fieldName);
                     p.format("%s}\n", indent.left());
 
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                    p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName, Names.getSetterMethod(x.getName()),
-                            typeName, fieldName);
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
+                            x.getName());
+                    p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
+                            Names.getSetterMethod(x.getName()), typeName, fieldName);
                     if (x.isUnicode() != null && !x.isUnicode()) {
-                        p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(EntityPreconditions.class),
-                                fieldName, fieldName);
+                        p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
+                                imports.add(EntityPreconditions.class), fieldName, fieldName);
                         indent.left();
                     }
                     p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
@@ -145,19 +187,22 @@ public final class Generator {
                 });
     }
 
-    private void printPropertyFields(Imports imports, Indent indent, PrintWriter p, List<Object> properties) {
+    private void printPropertyFields(Imports imports, Indent indent, PrintWriter p,
+            List<Object> properties) {
         Util.filter(properties, TProperty.class) //
                 .forEach(x -> {
-                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                    p.format("%sprivate %s %s;\n", indent, toType(x, imports),
+                            Names.getIdentifier(x.getName()));
                 });
     }
 
-    private void printNavigationPropertyFields(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
-            List<Object> properties) {
+    private void printNavigationPropertyFields(Imports imports, Indent indent, PrintWriter p,
+            String simpleClassName, List<Object> properties) {
         Class<TNavigationProperty> cls = TNavigationProperty.class;
         Util.filter(properties, cls) //
                 .forEach(x -> {
-                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                    p.format("%sprivate %s %s;\n", indent, toType(x, imports),
+                            Names.getIdentifier(x.getName()));
                 });
 
     }
@@ -171,8 +216,10 @@ public final class Generator {
                 .forEach(x -> {
                     String fieldName = Names.getIdentifier(x.getName());
                     String typeName = toType(x, imports);
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-                    p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
+                            x.getName());
+                    p.format("%spublic %s %s() {\n", indent, typeName,
+                            Names.getGetterMethod(x.getName()));
                     p.format("%sreturn %s;\n", indent.right(), fieldName);
                     p.format("%s}\n", indent.left());
                 });
@@ -212,14 +259,16 @@ public final class Generator {
         return t.startsWith("Collection(") && t.endsWith(")");
     }
 
-    private String toType(String t, boolean canUsePrimitive, Imports imports, Class<?> collectionClass) {
+    private String toType(String t, boolean canUsePrimitive, Imports imports,
+            Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, canUsePrimitive, imports);
         } else if (t.startsWith(schema.getNamespace())) {
-            return imports.add(names.getFullGeneratedClassNameFromNamespacedType(t));
+            return imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
             String inner = t.substring("Collection(".length(), t.length() - 1);
-            return imports.add(collectionClass) + "<" + toType(inner, false, imports, collectionClass) + ">";
+            return imports.add(collectionClass) + "<"
+                    + toType(inner, false, imports, collectionClass) + ">";
         } else {
             throw new RuntimeException("unhandled type: " + t);
         }
@@ -298,13 +347,14 @@ public final class Generator {
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", names.getPackageEnum());
                 p.format("IMPORTSHERE\n");
-                p.format("public enum %s implements %s {\n", simpleClassName, imports.add(Enum.class));
+                p.format("public enum %s implements %s {\n", simpleClassName,
+                        imports.add(Enum.class));
 
                 // add members
                 indent.right();
                 String s = Util.filter(t.getMemberOrAnnotation(), TEnumTypeMember.class) //
-                        .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent, Names.toConstant(x.getName()),
-                                x.getName(), x.getValue()))
+                        .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent,
+                                Names.toConstant(x.getName()), x.getName(), x.getValue()))
                         .collect(Collectors.joining(",\n"));
                 indent.left();
                 p.format("\n%s;\n\n", s);
@@ -314,8 +364,8 @@ public final class Generator {
                 p.format("%sprivate final %s value;\n\n", indent, imports.add(String.class));
 
                 // add constructor
-                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName, imports.add(String.class),
-                        imports.add(String.class));
+                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName,
+                        imports.add(String.class), imports.add(String.class));
                 p.format("%sthis.name = name;\n", indent.right());
                 p.format("%sthis.value = value;\n", indent);
                 p.format("%s}\n\n", indent.left());
@@ -334,7 +384,8 @@ public final class Generator {
                 // close class
                 p.format("}\n");
             }
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
+                    .getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileEnum(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);

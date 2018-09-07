@@ -15,19 +15,22 @@ import com.github.davidmoten.guavamini.Sets;
 
 final class Names {
 
-    private static final Set<String> javaReservedWords = Sets.newHashSet("abstract", "assert", "boolean", "break",
-            "byte", "case", "catch", "char", "class", "const", "continue", "default", "do", "double", "else", "extends",
-            "false", "final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof", "int",
-            "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return",
-            "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
-            "true", "try", "void", "volatile", "while");
+    private static final Set<String> javaReservedWords = Sets.newHashSet("abstract", "assert",
+            "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue",
+            "default", "do", "double", "else", "extends", "false", "final", "finally", "float",
+            "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
+            "native", "new", "null", "package", "private", "protected", "public", "return", "short",
+            "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws",
+            "transient", "true", "try", "void", "volatile", "while");
 
     private final Options options;
     private final File output;
 
     private final Map<String, String> classNamesFromNamespacedType;
+    private final Schema schema;
 
     private Names(Schema schema, Options options) {
+        this.schema = schema;
         this.options = options;
         File output = new File(options.outputDirectory());
         Util.deleteDirectory(output);
@@ -42,16 +45,19 @@ final class Names {
         names.getDirectoryEntity().mkdirs();
         names.getDirectoryEnum().mkdirs();
         names.getDirectoryComplexType().mkdirs();
+        names.getDirectoryRequest().mkdirs();
         return names;
     }
 
     private Map<String, String> createMap(Schema schema, Options options) {
         Map<String, String> map = new HashMap<>();
         Util.types(schema, TEnumType.class) //
-                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEnum(x.getName())));
+                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                        getFullClassNameEnum(x.getName())));
 
         Util.types(schema, TEntityType.class) //
-                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEntity(x.getName())));
+                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                        getFullClassNameEntity(x.getName())));
 
         Util.types(schema, TComplexType.class) //
                 .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
@@ -99,7 +105,8 @@ final class Names {
     }
 
     private static File toDirectory(File base, String pkg) {
-        String path = base.getAbsolutePath() + File.separatorChar + pkg.replace('.', File.separatorChar);
+        String path = base.getAbsolutePath() + File.separatorChar
+                + pkg.replace('.', File.separatorChar);
         return new File(path);
     }
 
@@ -115,12 +122,20 @@ final class Names {
         return toDirectory(output, options.pkg() + options.packageSuffixComplexType());
     }
 
+    File getDirectoryRequest() {
+        return toDirectory(output, options.pkg() + options.packageSuffixRequest());
+    }
+
     String getPackageEnum() {
         return options.pkg() + options.packageSuffixEnum();
     }
 
     String getPackageEntity() {
         return options.pkg() + options.packageSuffixEntity();
+    }
+
+    String getPackageRequest() {
+        return options.pkg() + options.packageSuffixRequest();
     }
 
     String getPackageComplexType() {
@@ -133,6 +148,10 @@ final class Names {
 
     String getSimpleClassNameEntity(String name) {
         return Names.toSimpleClassName(name);
+    }
+
+    String getSimpleClassNameRequest(String name) {
+        return Names.toSimpleClassName(name + options.requestClassSuffix());
     }
 
     String getSimpleClassNameComplexType(String name) {
@@ -163,8 +182,19 @@ final class Names {
         return new File(getDirectoryEntity(), getSimpleClassNameEntity(name) + ".java");
     }
 
-    String getFullGeneratedClassNameFromNamespacedType(String type) {
-        return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
+    File getClassFileRequest(String name) {
+        return new File(getDirectoryRequest(), getSimpleClassNameRequest(name) + ".java");
+    }
+
+    String getFullGeneratedClassNameFromTypeWithNamespace(String type) {
+        return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type),
+                "class name not found for " + type);
+    }
+
+    String getFullGeneratedClassNameFromTypeWithoutNamespace(String type) {
+        return Preconditions.checkNotNull(
+                classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
+                "class name not found for " + type);
     }
 
 }
