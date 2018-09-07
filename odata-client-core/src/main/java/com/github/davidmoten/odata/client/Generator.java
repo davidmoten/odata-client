@@ -108,7 +108,7 @@ public final class Generator {
                     t.getKeyOrPropertyOrNavigationProperty());
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getKeyOrPropertyOrNavigationProperty());
-            printNavigationPropertyGetterAndSetters(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
+            printNavigationPropertyGetters(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
@@ -162,7 +162,7 @@ public final class Generator {
 
     }
 
-    private void printNavigationPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
+    private void printNavigationPropertyGetters(Imports imports, Indent indent, PrintWriter p,
             List<Object> properties) {
         Class<TNavigationProperty> cls = TNavigationProperty.class;
 
@@ -185,7 +185,7 @@ public final class Generator {
             String r = toType(t, false, imports, List.class);
             return imports.add(Optional.class) + "<" + r + ">";
         } else {
-            return toType(t, true, imports, CollectionPage.class);
+            return toType(t, true, imports, CollectionPageRequest.class);
         }
     }
 

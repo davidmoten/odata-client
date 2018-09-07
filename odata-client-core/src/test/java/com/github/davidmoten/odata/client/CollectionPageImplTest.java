@@ -23,18 +23,7 @@ public class CollectionPageImplTest {
                 Files.readAllBytes(Paths.get(
                         CollectionPageImplTest.class.getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
-        Serializer serializer = new Serializer() {
-
-            @Override
-            public <T> T deserialize(String json, Class<T> cls) {
-                ObjectMapper m = Serialization.MAPPER;
-                try {
-                    return m.readValue(json, cls);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
+        Serializer serializer = new Serializer() {};
         Service service = new Service() {
 
             @Override
