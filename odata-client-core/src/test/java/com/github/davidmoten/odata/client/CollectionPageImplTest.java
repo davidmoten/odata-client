@@ -52,15 +52,6 @@ public class CollectionPageImplTest {
 
     static final class Person implements ODataEntity {
         
-        @JsonProperty("@odata.id")
-        public String oDataId;
-
-        @JsonProperty("@odata.etag")
-        public String oDataETag;
-        
-        @JsonProperty("@odata.editLink")
-        public String oDataEditLink;
-        
         @JsonProperty("UserName")
         public String userName;
 
