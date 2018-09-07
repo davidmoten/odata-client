@@ -1,0 +1,47 @@
+{
+    "@odata.context": "serviceRoot/$metadata#People",
+    "@odata.nextLink": "serviceRoot/People?%24skiptoken=8",
+    "value": [
+        {
+            "@odata.id": "serviceRoot/People('russellwhyte')",
+            "@odata.etag": "W/"08D1694BD49A0F11"",
+            "@odata.editLink": "serviceRoot/People('russellwhyte')",
+            "UserName": "russellwhyte",
+            "FirstName": "Russell",
+            "LastName": "Whyte",
+            "Emails": [
+                "Russell@example.com",
+                "Russell@contoso.com"
+            ],
+            "AddressInfo": [
+                {
+                    "Address": "187 Suffolk Ln.",
+                    "City": {
+                        "CountryRegion": "United States",
+                        "Name": "Boise",
+                        "Region": "ID"
+                    }
+                }
+            ],
+            "Gender": "Male",
+            "Concurrency": 635404796846280400
+        },
+        ......
+        ,
+        {
+            "@odata.id": "serviceRoot/People('keithpinckney')",
+            "@odata.etag": "W/"08D1694BD49A0F11"",
+            "@odata.editLink": "serviceRoot/People('keithpinckney')",
+            "UserName": "keithpinckney",
+            "FirstName": "Keith",
+            "LastName": "Pinckney",
+            "Emails": [
+                "Keith@example.com",
+                "Keith@contoso.com"
+            ],
+            "AddressInfo": [],
+            "Gender": "Male",
+            "Concurrency": 635404796846280400
+        }
+    ]
+}
