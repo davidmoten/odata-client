@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
 public class CollectionPageImpl<T extends ODataEntity> implements CollectionPage<T> {
 
@@ -37,19 +38,25 @@ public class CollectionPageImpl<T extends ODataEntity> implements CollectionPage
             // see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
             ObjectMapper m = Serialization.MAPPER;
-            try {
-                ObjectNode o = m.readValue(response.getJson(), ObjectNode.class);
-                List<T> list2 = new ArrayList<T>();
-                for (JsonNode item : o.get("value")) {
-                    list2.add(context.serializer().deserialize(m.writeValueAsString(item), cls));
-                }
-                Optional<String> nextLink2 = Optional.ofNullable(o.get("@odata.nextLink").asText());
-                return Optional.ofNullable(new CollectionPageImpl<T>(cls, list2, nextLink2, context));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            return nextPage(response.getJson(), m, cls, context);
         } else {
             return Optional.empty();
+        }
+    }
+
+    @VisibleForTesting
+    static <T extends ODataEntity> Optional<CollectionPage<T>> nextPage(String json, ObjectMapper m, Class<T> cls,
+            Context context) {
+        try {
+            ObjectNode o = m.readValue(json, ObjectNode.class);
+            List<T> list2 = new ArrayList<T>();
+            for (JsonNode item : o.get("value")) {
+                list2.add(context.serializer().deserialize(m.writeValueAsString(item), cls));
+            }
+            Optional<String> nextLink2 = Optional.ofNullable(o.get("@odata.nextLink").asText());
+            return Optional.ofNullable(new CollectionPageImpl<T>(cls, list2, nextLink2, context));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,9 +1,7 @@
 package com.github.davidmoten.odata.client;
 
-public final class Service {
+public interface Service {
 
-    public ResponseGet getResponseGET(String link) {
-        return null;
-    }
+    public ResponseGet getResponseGET(String link);
 
 }

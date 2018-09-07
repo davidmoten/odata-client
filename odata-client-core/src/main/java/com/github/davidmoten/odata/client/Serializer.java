@@ -2,6 +2,6 @@ package com.github.davidmoten.odata.client;
 
 public interface Serializer {
 
-    <T> T deserialize(String writeValueAsString, Class<T> cls);
+    <T> T deserialize(String json, Class<T> cls);
     
 }
