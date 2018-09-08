@@ -170,6 +170,24 @@ final class Names {
         return getPackageComplexType() + "." + getSimpleClassNameComplexType(name);
     }
 
+    public String getFullClassNameRequestFromTypeWithNamespace(String name) {
+        String simple = getLastItemInDotDelimitedString(name);
+        return getPackageRequest() + "." + upperFirst(simple) + options.requestClassSuffix();
+    }
+
+    public String getSimpleTypeNameFromTypeWithNamespace(String name) {
+        return getLastItemInDotDelimitedString(name);
+    }
+
+    private static String getLastItemInDotDelimitedString(String name) {
+        int i = name.lastIndexOf(".");
+        if (i == -1) {
+            return name;
+        } else {
+            return name.substring(i + 1, name.length());
+        }
+    }
+
     File getClassFileEnum(String name) {
         return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
     }
@@ -196,5 +214,4 @@ final class Names {
                 classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
-
 }
