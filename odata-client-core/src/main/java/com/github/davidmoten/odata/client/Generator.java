@@ -83,13 +83,15 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
+                    .filter(x -> x.getType().get(0).startsWith("Collection(")) //
                     .forEach(n -> {
                         p.println();
                         p.format("%spublic %s %s() {\n", indent,
-                                names.getFullClassNameRequestFromTypeWithNamespace(n.getName()), //
-                                names.getSimpleTypeNameFromTypeWithNamespace(n.getName())
-                                );
-                        p.format("%s}\n", indent);
+                                names.getFullClassNameRequestFromTypeWithNamespace(
+                                        names.getInnerType(n.getType().get(0))), //
+                                names.getSimpleTypeNameFromTypeWithNamespace(n.getName()));
+                        p.format("%sreturn null;\n", indent.right());
+                        p.format("%s}\n", indent.left());
                     });
             ;
             indent.left();
