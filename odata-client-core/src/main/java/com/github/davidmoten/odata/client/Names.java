@@ -214,4 +214,12 @@ final class Names {
                 classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
+
+    public String getInnerType(String name) {
+        if (name.startsWith("Collection(")) {
+            return name.substring("Collection(".length(), name.length() - 1);
+        } else {
+            return name;
+        }
+    }
 }
