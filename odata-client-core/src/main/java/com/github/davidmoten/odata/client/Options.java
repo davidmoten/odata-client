@@ -27,7 +27,7 @@ public final class Options {
     }
 
     public String requestClassSuffix() {
-        return "Request";
+        return "Navigation";
     }
 
 }

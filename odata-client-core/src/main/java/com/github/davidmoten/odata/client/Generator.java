@@ -81,6 +81,17 @@ public final class Generator {
                     imports.add(QueryOption.class));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
+
+            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
+                    .forEach(n -> {
+                        p.println();
+                        p.format("%spublic %s %s() {\n", indent,
+                                names.getFullClassNameRequestFromTypeWithNamespace(n.getName()), //
+                                names.getSimpleTypeNameFromTypeWithNamespace(n.getName())
+                                );
+                        p.format("%s}\n", indent);
+                    });
+            ;
             indent.left();
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
@@ -89,7 +100,7 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+
     }
 
     private void writeComplexType(TComplexType t) {
