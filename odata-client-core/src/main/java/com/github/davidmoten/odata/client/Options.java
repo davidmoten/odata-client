@@ -22,12 +22,24 @@ public final class Options {
         return ".complex";
     }
 
-    public String packageSuffixRequest() {
-        return ".request";
+    public String packageSuffixCollectionRequest() {
+        return ".collection.request";
     }
 
-    public String requestClassSuffix() {
-        return "Navigation";
+    public String packageSuffixEntityRequest() {
+        return ".single.request";
+    }
+
+    public String collectionRequestClassSuffix() {
+        return "CollectionRequest";
+    }
+
+    public String packageSuffixContainer() {
+        return ".container";
+    }
+
+    public String entityRequestClassSuffix() {
+        return "Request";
     }
 
 }

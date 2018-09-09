@@ -45,7 +45,8 @@ final class Names {
         names.getDirectoryEntity().mkdirs();
         names.getDirectoryEnum().mkdirs();
         names.getDirectoryComplexType().mkdirs();
-        names.getDirectoryRequest().mkdirs();
+        names.getDirectoryCollectionRequest().mkdirs();
+        names.getDirectoryContainer().mkdirs();
         return names;
     }
 
@@ -114,6 +115,10 @@ final class Names {
         return toDirectory(output, options.pkg() + options.packageSuffixEntity());
     }
 
+    File getDirectoryContainer() {
+        return toDirectory(output, options.pkg() + options.packageSuffixContainer());
+    }
+
     File getDirectoryEnum() {
         return toDirectory(output, options.pkg() + options.packageSuffixEnum());
     }
@@ -122,8 +127,12 @@ final class Names {
         return toDirectory(output, options.pkg() + options.packageSuffixComplexType());
     }
 
-    File getDirectoryRequest() {
-        return toDirectory(output, options.pkg() + options.packageSuffixRequest());
+    File getDirectoryCollectionRequest() {
+        return toDirectory(output, options.pkg() + options.packageSuffixCollectionRequest());
+    }
+
+    File getDirectoryEntityRequest() {
+        return toDirectory(output, options.pkg() + options.packageSuffixEntityRequest());
     }
 
     String getPackageEnum() {
@@ -134,12 +143,20 @@ final class Names {
         return options.pkg() + options.packageSuffixEntity();
     }
 
-    String getPackageRequest() {
-        return options.pkg() + options.packageSuffixRequest();
+    String getPackageCollectionRequest() {
+        return options.pkg() + options.packageSuffixCollectionRequest();
+    }
+
+    String getPackageEntityRequest() {
+        return options.pkg() + options.packageSuffixEntityRequest();
     }
 
     String getPackageComplexType() {
         return options.pkg() + options.packageSuffixComplexType();
+    }
+
+    String getPackageContainer() {
+        return options.pkg() + options.packageSuffixContainer();
     }
 
     String getSimpleClassNameEnum(String name) {
@@ -150,8 +167,16 @@ final class Names {
         return Names.toSimpleClassName(name);
     }
 
-    String getSimpleClassNameRequest(String name) {
-        return Names.toSimpleClassName(name + options.requestClassSuffix());
+    String getSimpleClassNameContainer(String name) {
+        return Names.toSimpleClassName(name);
+    }
+
+    String getSimpleClassNameCollectionRequest(String name) {
+        return Names.toSimpleClassName(name + options.collectionRequestClassSuffix());
+    }
+
+    String getSimpleClassNameEntityRequest(String name) {
+        return Names.toSimpleClassName(name + options.entityRequestClassSuffix());
     }
 
     String getSimpleClassNameComplexType(String name) {
@@ -170,9 +195,16 @@ final class Names {
         return getPackageComplexType() + "." + getSimpleClassNameComplexType(name);
     }
 
-    public String getFullClassNameRequestFromTypeWithNamespace(String name) {
+    public String getFullClassNameCollectionRequestFromTypeWithNamespace(String name) {
         String simple = getLastItemInDotDelimitedString(name);
-        return getPackageRequest() + "." + upperFirst(simple) + options.requestClassSuffix();
+        return getPackageCollectionRequest() + "." + upperFirst(simple)
+                + options.collectionRequestClassSuffix();
+    }
+
+    public String getFullClassNameEntityRequestFromTypeWithNamespace(String name) {
+        String simple = getLastItemInDotDelimitedString(name);
+        return getPackageEntityRequest() + "." + upperFirst(simple)
+                + options.entityRequestClassSuffix();
     }
 
     public String getSimpleTypeNameFromTypeWithNamespace(String name) {
@@ -200,8 +232,18 @@ final class Names {
         return new File(getDirectoryEntity(), getSimpleClassNameEntity(name) + ".java");
     }
 
-    File getClassFileRequest(String name) {
-        return new File(getDirectoryRequest(), getSimpleClassNameRequest(name) + ".java");
+    File getClassFileContainer(String name) {
+        return new File(getDirectoryContainer(), getSimpleClassNameContainer(name) + ".java");
+    }
+
+    File getClassFileCollectionRequest(String name) {
+        return new File(getDirectoryCollectionRequest(),
+                getSimpleClassNameCollectionRequest(name) + ".java");
+    }
+
+    File getClassFileEntityRequest(String name) {
+        return new File(getDirectoryEntityRequest(),
+                getSimpleClassNameEntityRequest(name) + ".java");
     }
 
     String getFullGeneratedClassNameFromTypeWithNamespace(String type) {
@@ -222,4 +264,5 @@ final class Names {
             return name;
         }
     }
+
 }
