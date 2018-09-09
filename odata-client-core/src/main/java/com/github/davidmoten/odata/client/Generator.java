@@ -52,13 +52,17 @@ public final class Generator {
         Util.types(schema, TComplexType.class) //
                 .forEach(x -> writeComplexType(x));
 
-        // write requests
+        // write collection requests
         Util.types(schema, TEntityType.class) //
-                .forEach(x -> writeRequest(x));
+                .forEach(x -> writeCollectionRequest(x));
 
-        // write requests
+        // write containers
         Util.types(schema, TEntityContainer.class) //
                 .forEach(x -> writeContainer(x));
+
+        // write single requests
+        Util.types(schema, TEntityType.class) //
+                .forEach(x -> writeEntityRequest(x));
 
         // write actions
 
@@ -66,6 +70,36 @@ public final class Generator {
 
         // consume annotations
 
+    }
+
+    private void writeEntityRequest(TEntityType t) {
+        // TODO only write out those requests needed
+        Imports imports = new Imports();
+        Indent indent = new Indent();
+
+        StringWriter w = new StringWriter();
+        try (PrintWriter p = new PrintWriter(w)) {
+            p.format("package %s;\n\n", names.getPackageEntityRequest());
+            p.format("IMPORTSHERE");
+            String simpleClassName = names.getSimpleClassNameEntityRequest(t.getName());
+            p.format("public final class %s {\n\n", simpleClassName);
+
+            // write fields from properties
+            indent.right();
+            p.format("%spublic %s get(%s... options) {\n", indent, //
+                    imports.add(
+                            names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(QueryOption.class));
+            p.format("%sreturn null;\n", indent.right());
+            p.format("%s}\n", indent.left());
+            indent.left();
+            p.format("\n}\n");
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
+                    .getBytes(StandardCharsets.UTF_8);
+            Files.write(names.getClassFileEntityRequest(t.getName()).toPath(), bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void writeContainer(TEntityContainer t) {
@@ -110,7 +144,7 @@ public final class Generator {
         }
     }
 
-    private void writeRequest(TEntityType t) {
+    private void writeCollectionRequest(TEntityType t) {
         Imports imports = new Imports();
         Indent indent = new Indent();
 
