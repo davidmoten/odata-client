@@ -125,14 +125,18 @@ public final class Generator {
 
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
                     .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, toType(x, imports),
+                        p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
+                        p.format("%sreturn null;\n", indent.right());
+                        p.format("%s}\n", indent.left());
                     });
 
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TSingleton.class) //
                     .forEach(x -> {
-                        p.format("%sprivate %s %s;\n", indent, toType(x, imports),
+                        p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
+                        p.format("%sreturn null;\n", indent.right());
+                        p.format("%s}\n", indent.left());
                     });
 
             p.format("\n}\n");
@@ -349,7 +353,7 @@ public final class Generator {
 
     private String toType(TEntitySet x, Imports imports) {
         String t = x.getEntityType();
-        return wrapCollection(imports, CollectionPage.class, t);
+        return wrapCollection(imports, CollectionPageRequest.class, t);
     }
 
     private String toType(TProperty x, Imports imports) {
