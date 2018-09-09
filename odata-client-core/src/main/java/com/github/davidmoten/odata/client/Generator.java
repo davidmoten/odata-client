@@ -344,8 +344,7 @@ public final class Generator {
     private String toType(TSingleton x, Imports imports) {
         String t = x.getType();
         if (!isCollection(x.getType())) {
-            String r = toType(t, false, imports, List.class);
-            return imports.add(Optional.class) + "<" + r + ">";
+            return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
         } else {
             return toType(t, true, imports, CollectionPageRequest.class);
         }
@@ -353,6 +352,7 @@ public final class Generator {
 
     private String toType(TEntitySet x, Imports imports) {
         String t = x.getEntityType();
+        // an entity set is always a collection
         return wrapCollection(imports, CollectionPageRequest.class, t);
     }
 
