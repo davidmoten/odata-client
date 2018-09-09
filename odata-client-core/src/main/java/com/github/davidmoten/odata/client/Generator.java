@@ -16,11 +16,14 @@ import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
+import org.oasisopen.odata.csdl.v4.TEntityContainer;
+import org.oasisopen.odata.csdl.v4.TEntitySet;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
+import org.oasisopen.odata.csdl.v4.TSingleton;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -53,6 +56,10 @@ public final class Generator {
         Util.types(schema, TEntityType.class) //
                 .forEach(x -> writeRequest(x));
 
+        // write requests
+        Util.types(schema, TEntityContainer.class) //
+                .forEach(x -> writeContainer(x));
+
         // write actions
 
         // write functions
@@ -61,15 +68,57 @@ public final class Generator {
 
     }
 
+    private void writeContainer(TEntityContainer t) {
+        Imports imports = new Imports();
+        Indent indent = new Indent();
+
+        StringWriter w = new StringWriter();
+        try (PrintWriter p = new PrintWriter(w)) {
+            p.format("package %s;\n\n", names.getPackageContainer());
+            p.format("IMPORTSHERE");
+            String simpleClassName = names.getSimpleClassNameContainer(t.getName());
+            final String extension;
+            if (t.getExtends() != null) {
+                extension = " extends " + imports
+                        .add(names.getFullGeneratedClassNameFromTypeWithNamespace(t.getExtends()));
+            } else {
+                extension = "";
+            }
+            p.format("public final class %s%s {\n\n", simpleClassName, extension);
+
+            // write fields from properties
+            indent.right();
+
+            Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
+                    .forEach(x -> {
+                        p.format("%sprivate %s %s;\n", indent, toType(x, imports),
+                                Names.getIdentifier(x.getName()));
+                    });
+
+            Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TSingleton.class) //
+                    .forEach(x -> {
+                        p.format("%sprivate %s %s;\n", indent, toType(x, imports),
+                                Names.getIdentifier(x.getName()));
+                    });
+
+            p.format("\n}\n");
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
+                    .getBytes(StandardCharsets.UTF_8);
+            Files.write(names.getClassFileContainer(t.getName()).toPath(), bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void writeRequest(TEntityType t) {
         Imports imports = new Imports();
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
-            p.format("package %s;\n\n", names.getPackageRequest());
+            p.format("package %s;\n\n", names.getPackageCollectionRequest());
             p.format("IMPORTSHERE");
-            String simpleClassName = names.getSimpleClassNameRequest(t.getName());
+            String simpleClassName = names.getSimpleClassNameCollectionRequest(t.getName());
             p.format("public final class %s {\n\n", simpleClassName);
 
             // write fields from properties
@@ -83,22 +132,22 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
-                    .filter(x -> x.getType().get(0).startsWith("Collection(")) //
                     .forEach(n -> {
                         p.println();
-                        p.format("%spublic %s %s() {\n", indent,
-                                names.getFullClassNameRequestFromTypeWithNamespace(
-                                        names.getInnerType(n.getType().get(0))), //
-                                names.getSimpleTypeNameFromTypeWithNamespace(n.getName()));
-                        p.format("%sreturn null;\n", indent.right());
-                        p.format("%s}\n", indent.left());
+                        if (n.getType().get(0).startsWith("Collection(")) {
+                            p.format("%spublic %s %s() {\n", indent,
+                                    names.getFullClassNameCollectionRequestFromTypeWithNamespace(
+                                            names.getInnerType(n.getType().get(0))), //
+                                    names.getSimpleTypeNameFromTypeWithNamespace(n.getName()));
+                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%s}\n", indent.left());
+                        }
                     });
-            ;
             indent.left();
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
                     .getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileRequest(t.getName()).toPath(), bytes);
+            Files.write(names.getClassFileCollectionRequest(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -241,12 +290,32 @@ public final class Generator {
     private String toType(TNavigationProperty x, Imports imports) {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
-        if (x.isNullable() != null && x.isNullable() && !isCollection(x)) {
+        if (!isCollection(x)) {
+            if (x.isNullable() != null && x.isNullable()) {
+                String r = toType(t, false, imports, List.class);
+                return imports.add(Optional.class) + "<" + r + ">";
+            } else {
+                // is navigation property so must be an entity and is a single request
+                return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
+            }
+        } else {
+            return toType(t, true, imports, CollectionPageRequest.class);
+        }
+    }
+
+    private String toType(TSingleton x, Imports imports) {
+        String t = x.getType();
+        if (!isCollection(x.getType())) {
             String r = toType(t, false, imports, List.class);
             return imports.add(Optional.class) + "<" + r + ">";
         } else {
             return toType(t, true, imports, CollectionPageRequest.class);
         }
+    }
+
+    private String toType(TEntitySet x, Imports imports) {
+        String t = x.getEntityType();
+        return wrapCollection(imports, CollectionPage.class, t);
     }
 
     private String toType(TProperty x, Imports imports) {
@@ -280,11 +349,15 @@ public final class Generator {
             return imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
             String inner = t.substring("Collection(".length(), t.length() - 1);
-            return imports.add(collectionClass) + "<"
-                    + toType(inner, false, imports, collectionClass) + ">";
+            return wrapCollection(imports, collectionClass, inner);
         } else {
             throw new RuntimeException("unhandled type: " + t);
         }
+    }
+
+    private String wrapCollection(Imports imports, Class<?> collectionClass, String inner) {
+        return imports.add(collectionClass) + "<" + toType(inner, false, imports, collectionClass)
+                + ">";
     }
 
     private String toTypeFromEdm(String t, boolean canUsePrimitive, Imports imports) {
