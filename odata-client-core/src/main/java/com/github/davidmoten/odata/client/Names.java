@@ -47,6 +47,7 @@ final class Names {
         names.getDirectoryComplexType().mkdirs();
         names.getDirectoryCollectionRequest().mkdirs();
         names.getDirectoryContainer().mkdirs();
+        names.getDirectoryEntityRequest().mkdirs();
         return names;
     }
 
