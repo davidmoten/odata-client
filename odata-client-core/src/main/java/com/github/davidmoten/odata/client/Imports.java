@@ -33,6 +33,8 @@ final class Imports {
             if (c == null) {
                 map.put(simpleName, className);
                 return simpleName;
+            } else if (c.equals(className)) {
+                return simpleName;
             } else {
                 return className;
             }
