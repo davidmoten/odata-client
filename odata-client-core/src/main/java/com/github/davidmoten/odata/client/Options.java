@@ -27,7 +27,7 @@ public final class Options {
     }
 
     public String packageSuffixEntityRequest() {
-        return ".single.request";
+        return ".entity.request";
     }
 
     public String collectionRequestClassSuffix() {

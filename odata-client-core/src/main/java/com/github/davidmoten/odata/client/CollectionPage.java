@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 
-public class CollectionPage<T extends ODataEntity> {
+public class CollectionPage<T> {
 
     private final Class<T> cls;
     private final List<T> list;
@@ -42,7 +42,7 @@ public class CollectionPage<T extends ODataEntity> {
     }
 
     @VisibleForTesting
-    static <T extends ODataEntity> Optional<CollectionPage<T>> nextPage(String json, Class<T> cls,
+    static <T> Optional<CollectionPage<T>> nextPage(String json, Class<T> cls,
             Context context) {
         try {
             ObjectMapper m = Serialization.MAPPER;

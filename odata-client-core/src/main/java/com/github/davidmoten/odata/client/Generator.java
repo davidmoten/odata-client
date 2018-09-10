@@ -74,15 +74,18 @@ public final class Generator {
 
     private void writeEntityRequest(TEntityType t) {
         // TODO only write out those requests needed
-        Imports imports = new Imports();
+        String simpleClassName = names.getSimpleClassNameEntityRequest(t.getName());
+        Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageEntityRequest());
             p.format("IMPORTSHERE");
-            String simpleClassName = names.getSimpleClassNameEntityRequest(t.getName());
-            p.format("public final class %s {\n\n", simpleClassName);
+
+            p.format("public final class %s implements %s {\n\n", simpleClassName,
+                    imports.add(EntityRequest.class) + "<"
+                            + imports.add(names.getFullClassNameEntity(t.getName())) + ">");
 
             // write fields from properties
             indent.right();
@@ -103,14 +106,15 @@ public final class Generator {
     }
 
     private void writeContainer(TEntityContainer t) {
-        Imports imports = new Imports();
+        String simpleClassName = names.getSimpleClassNameContainer(t.getName());
+        Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageContainer());
             p.format("IMPORTSHERE");
-            String simpleClassName = names.getSimpleClassNameContainer(t.getName());
+
             final String extension;
             if (t.getExtends() != null) {
                 extension = " extends " + imports
@@ -149,14 +153,14 @@ public final class Generator {
     }
 
     private void writeCollectionRequest(TEntityType t) {
-        Imports imports = new Imports();
+        String simpleClassName = names.getSimpleClassNameCollectionRequest(t.getName());
+        Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageCollectionRequest());
             p.format("IMPORTSHERE");
-            String simpleClassName = names.getSimpleClassNameCollectionRequest(t.getName());
             p.format("public final class %s {\n\n", simpleClassName);
 
             // write fields from properties
@@ -193,14 +197,14 @@ public final class Generator {
     }
 
     private void writeComplexType(TComplexType t) {
-        Imports imports = new Imports();
+        String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
+        Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageComplexType());
             p.format("IMPORTSHERE");
-            String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
             p.format("public final class %s {\n\n", simpleClassName);
 
             // write fields from properties
@@ -220,14 +224,14 @@ public final class Generator {
     }
 
     private void writeEntity(TEntityType t) {
-        Imports imports = new Imports();
+        String simpleClassName = names.getSimpleClassNameEntity(t.getName());
+        Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageEntity());
             p.format("IMPORTSHERE");
-            String simpleClassName = names.getSimpleClassNameEntity(t.getName());
             final String extension;
             if (t.getBaseType() != null) {
                 extension = " extends " + imports
@@ -337,7 +341,7 @@ public final class Generator {
                 return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
             }
         } else {
-            return toType(t, true, imports, CollectionPageRequest.class);
+            return toType(t, true, imports, CollectionPageEntityRequest.class);
         }
     }
 
@@ -346,14 +350,14 @@ public final class Generator {
         if (!isCollection(x.getType())) {
             return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
         } else {
-            return toType(t, true, imports, CollectionPageRequest.class);
+            return toType(t, true, imports, CollectionPageEntityRequest.class);
         }
     }
 
     private String toType(TEntitySet x, Imports imports) {
         String t = x.getEntityType();
         // an entity set is always a collection
-        return wrapCollection(imports, CollectionPageRequest.class, t);
+        return wrapCollection(imports, CollectionPageEntityRequest.class, t);
     }
 
     private String toType(TProperty x, Imports imports) {
@@ -394,8 +398,17 @@ public final class Generator {
     }
 
     private String wrapCollection(Imports imports, Class<?> collectionClass, String inner) {
-        return imports.add(collectionClass) + "<" + toType(inner, false, imports, collectionClass)
-                + ">";
+        if (collectionClass.equals(CollectionPageEntityRequest.class)) {
+            // get the type without namespace
+            String entityRequestClass = names
+                    .getFullClassNameEntityRequestFromTypeWithNamespace(inner);
+            String a = toType(inner, false, imports, collectionClass);
+            return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass)
+                    + ">";
+        } else {
+            return imports.add(collectionClass) + "<"
+                    + toType(inner, false, imports, collectionClass) + ">";
+        }
     }
 
     private String toTypeFromEdm(String t, boolean canUsePrimitive, Imports imports) {
@@ -463,10 +476,10 @@ public final class Generator {
     }
 
     private void writeEnum(TEnumType t) {
-        Imports imports = new Imports();
+        String simpleClassName = names.getSimpleClassNameEnum(t.getName());
+        Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
         try {
-            String simpleClassName = names.getSimpleClassNameEnum(t.getName());
             StringWriter w = new StringWriter();
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", names.getPackageEnum());

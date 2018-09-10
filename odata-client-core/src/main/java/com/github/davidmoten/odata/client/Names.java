@@ -192,6 +192,10 @@ final class Names {
         return getPackageEntity() + "." + getSimpleClassNameEntity(name);
     }
 
+    String getFullClassNameEntityRequest(String name) {
+        return getPackageEntityRequest() + "." + getSimpleClassNameEntityRequest(name);
+    }
+
     private String getFullClassNameComplexType(String name) {
         return getPackageComplexType() + "." + getSimpleClassNameComplexType(name);
     }
