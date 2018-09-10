@@ -270,4 +270,15 @@ final class Names {
         }
     }
 
+    public boolean isEntityWithNamespace(String name) {
+        return classNamesFromNamespacedType.keySet().contains(name);
+    }
+
+    public static String getGetterMethodWithoutGet(String name) {
+        if (name.equalsIgnoreCase("class")) {
+            name = "cls";
+        }
+        return lowerFirst(name);
+    }
+
 }
