@@ -89,6 +89,7 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
+            p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s... options) {\n", indent, //
                     imports.add(
                             names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
