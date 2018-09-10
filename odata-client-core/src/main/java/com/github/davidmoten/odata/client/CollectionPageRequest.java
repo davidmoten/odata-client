@@ -4,6 +4,6 @@ public interface CollectionPageRequest<T extends ODataEntity, R extends EntityRe
 
     CollectionPage<T> get(QueryOption... options);
     
-    R id(String id, QueryOption...options);
+    R id(String id);
     
 }
