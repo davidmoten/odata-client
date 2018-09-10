@@ -98,22 +98,28 @@ public final class Generator {
             indent.left();
 
             Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
-                    .filter(x -> names.isEntityWithNamespace(x.getType().get(0))) //
+                    .filter(x -> names
+                            .isEntityWithNamespace(names.getInnerType(x.getType().get(0)))) //
                     .forEach(x -> {
                         indent.right();
                         final String returnClass;
                         String y = x.getType().get(0);
-                        if (!y.startsWith("Collection(")) {
-                            returnClass = names
-                                    .getFullClassNameEntityRequestFromTypeWithNamespace(y);
-                        } else {
+                        if (y.startsWith("Collection(")) {
+                            String inner = names.getInnerType(y);
                             returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
-                                    + imports.add(
-                                            names.getFullGeneratedClassNameFromTypeWithNamespace(y))
+                                    + imports.add(names
+                                            .getFullGeneratedClassNameFromTypeWithNamespace(inner))
+                                    + ", "
+                                    + imports.add(names
+                                            .getFullClassNameEntityRequestFromTypeWithNamespace(
+                                                    inner))
                                     + ">";
+                        } else {
+                            returnClass = imports.add(
+                                    names.getFullClassNameEntityRequestFromTypeWithNamespace(y));
                         }
                         p.format("\n%spublic %s %s() {\n", indent, //
-                                imports.add(returnClass), //
+                                returnClass, //
                                 Names.getGetterMethodWithoutGet(x.getName()));
                         p.format("%sreturn null;\n", indent.right());
                         p.format("%s}\n", indent.left());
