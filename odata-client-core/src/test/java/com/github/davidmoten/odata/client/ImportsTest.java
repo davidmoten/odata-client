@@ -17,6 +17,7 @@ public class ImportsTest {
         Imports imports = new Imports("Something");
         assertEquals("Boo", imports.add("fred.Boo"));
         assertEquals("jill.Boo", imports.add("jill.Boo"));
+        assertEquals("Boo", imports.add("fred.Boo"));
     }
 
     
