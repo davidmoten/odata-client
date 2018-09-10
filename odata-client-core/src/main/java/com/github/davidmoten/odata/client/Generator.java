@@ -96,6 +96,29 @@ public final class Generator {
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
             indent.left();
+
+            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
+                    .filter(x -> names.isEntityWithNamespace(x.getType().get(0))) //
+                    .forEach(x -> {
+                        indent.right();
+                        final String returnClass;
+                        String y = x.getType().get(0);
+                        if (!y.startsWith("Collection(")) {
+                            returnClass = names
+                                    .getFullClassNameEntityRequestFromTypeWithNamespace(y);
+                        } else {
+                            returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
+                                    + imports.add(
+                                            names.getFullGeneratedClassNameFromTypeWithNamespace(y))
+                                    + ">";
+                        }
+                        p.format("\n%spublic %s %s() {\n", indent, //
+                                imports.add(returnClass), //
+                                Names.getGetterMethodWithoutGet(x.getName()));
+                        p.format("%sreturn null;\n", indent.right());
+                        p.format("%s}\n", indent.left());
+                        indent.left();
+                    });
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
                     .getBytes(StandardCharsets.UTF_8);

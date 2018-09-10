@@ -23,8 +23,7 @@ public class GenerateTest {
         g.generate();
     }
     
-//    @Test
-//    public void generatedObjectCanMethodChain() {
-//        new ActivityHistoryItem().setActiveDurationSeconds(Optional.empty()).setCreatedDateTime(Optional.empty());
-//    }
+public void test() {
+//    new GraphService().devices().id("1").get(null);
+}
 }
