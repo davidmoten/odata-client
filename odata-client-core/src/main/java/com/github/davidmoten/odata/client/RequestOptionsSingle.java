@@ -1,5 +1,5 @@
 package com.github.davidmoten.odata.client;
 
-public interface QueryOptionCollection {
+public class RequestOptionsSingle {
 
 }
