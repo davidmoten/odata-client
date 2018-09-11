@@ -30,6 +30,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Generator {
 
+    private static final String COLLECTION_PREFIX = "Collection(";
     private final Schema schema;
     private final Names names;
 
@@ -87,7 +88,7 @@ public final class Generator {
                     imports.add(EntityRequest.class) + "<"
                             + imports.add(names.getFullClassNameEntity(t.getName())) + ">");
 
-            // write fields from properties
+            // write get
             indent.right();
             p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s... options) {\n", indent, //
@@ -105,7 +106,7 @@ public final class Generator {
                         indent.right();
                         final String returnClass;
                         String y = x.getType().get(0);
-                        if (y.startsWith("Collection(")) {
+                        if (y.startsWith(COLLECTION_PREFIX)) {
                             String inner = names.getInnerType(y);
                             returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
                                     + imports.add(names
@@ -124,6 +125,16 @@ public final class Generator {
                                 Names.getGetterMethodWithoutGet(x.getName()));
                         p.format("%sreturn null;\n", indent.right());
                         p.format("%s}\n", indent.left());
+                        if (y.startsWith(COLLECTION_PREFIX)) {
+                            //TODO use actual key name from metadata
+                            String inner = names.getInnerType(y);
+                            p.format("\n%spublic %s %s(%s id) {\n", indent, //
+                                    imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(inner)) ,//
+                                    Names.getGetterMethodWithoutGet(x.getName()), 
+                                    imports.add(String.class));
+                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%s}\n", indent.left());
+                        }
                         indent.left();
                     });
             p.format("\n}\n");
@@ -206,7 +217,7 @@ public final class Generator {
             Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
                     .forEach(n -> {
                         p.println();
-                        if (n.getType().get(0).startsWith("Collection(")) {
+                        if (n.getType().get(0).startsWith(COLLECTION_PREFIX)) {
                             p.format("%spublic %s %s() {\n", indent,
                                     names.getFullClassNameCollectionRequestFromTypeWithNamespace(
                                             names.getInnerType(n.getType().get(0))), //
@@ -410,7 +421,7 @@ public final class Generator {
     }
 
     private static boolean isCollection(String t) {
-        return t.startsWith("Collection(") && t.endsWith(")");
+        return t.startsWith(COLLECTION_PREFIX) && t.endsWith(")");
     }
 
     private String toType(String t, boolean canUsePrimitive, Imports imports,
@@ -420,7 +431,7 @@ public final class Generator {
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
-            String inner = t.substring("Collection(".length(), t.length() - 1);
+            String inner = t.substring(COLLECTION_PREFIX.length(), t.length() - 1);
             return wrapCollection(imports, collectionClass, inner);
         } else {
             throw new RuntimeException("unhandled type: " + t);
