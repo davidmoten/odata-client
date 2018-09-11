@@ -1,21 +1,9 @@
 package com.github.davidmoten.odata.client;
 
-public final class QueryOption {
+public interface QueryOption {
 
-    private final String name;
-    private final String value;
-
-    public QueryOption(String name, String value) {
-        this.name = name;
-        this.value = value;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public String value() {
-        return value;
+    public static QueryOptionsBuilder requestHeader(String key, String value) {
+        return new QueryOptionsBuilder().requestHeader(key, value);
     }
 
 }
