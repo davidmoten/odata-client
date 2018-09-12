@@ -62,6 +62,14 @@
             <version>0.3</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>java-builder2</artifactId>
+            <version>0.1</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
