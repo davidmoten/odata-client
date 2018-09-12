@@ -8,12 +8,14 @@ public class SingleEntityRequestOptions<T extends ODataEntity> {
     private final Map<String, String> requestHeaders;
     private final Optional<String> select;
     private final Optional<String> expand;
+    private final boolean useCaches;
 
     public SingleEntityRequestOptions(Map<String, String> requestHeaders, Optional<String> select,
-            Optional<String> expand) {
+            Optional<String> expand, boolean useCaches) {
         this.requestHeaders = requestHeaders;
         this.select = select;
         this.expand = expand;
+        this.useCaches = useCaches;
     }
 
     public Map<String, String> getRequestHeaders() {
@@ -26,6 +28,10 @@ public class SingleEntityRequestOptions<T extends ODataEntity> {
 
     public Optional<String> getExpand() {
         return expand;
+    }
+    
+    public boolean useCaches() {
+        return useCaches;
     }
 
 }

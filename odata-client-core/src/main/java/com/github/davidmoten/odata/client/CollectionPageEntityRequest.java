@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client;
 
 public interface CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
+    //TODO hide this method
     CollectionPage<T> get(CollectionEntityRequestOptions options);
 
     R id(String id);
