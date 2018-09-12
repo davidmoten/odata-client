@@ -12,7 +12,7 @@ public final class SingleEntityRequestOptionsBuilder<T extends ODataEntity> {
     private final Map<String, String> requestHeaders = new HashMap<>();
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
-    private boolean useCaches = false;
+    private boolean useCaches = false; 
 
     SingleEntityRequestOptionsBuilder(EntityRequest<T> request) {
         this.request = request;
@@ -49,7 +49,7 @@ public final class SingleEntityRequestOptionsBuilder<T extends ODataEntity> {
     }
 
     private SingleEntityRequestOptions<T> build() {
-        return new SingleEntityRequestOptions<T>(requestHeaders, select, expand);
+        return new SingleEntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
     }
 
 }
