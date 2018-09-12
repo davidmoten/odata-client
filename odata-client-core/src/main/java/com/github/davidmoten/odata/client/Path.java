@@ -7,61 +7,72 @@ import java.util.List;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
+/**
+ * Immutable!
+ */
 public final class Path {
 
+    private final String url;
+    private final List<String> queries; // unencoded
     private final PathStyle style;
-    private final StringBuilder url;
-    private final List<String> queries = new ArrayList<>();
 
-    public Path(String base, PathStyle style) {
-        this.url = new StringBuilder(base);
+    public Path(String url, List<String> queries, PathStyle style) {
+        this.url = url;
+        this.queries = queries;
         this.style = style;
     }
 
-    private Path append(String s) {
-        url.append(encode(s));
-        return this;
+    private String append(String url, String s) {
+        return url + encode(s);
     }
 
-    public void addSegment(String segment) {
-        addSegmentDelimiter();
-        append(segment);
+    public Path addSegment(String segment) {
+        String u = url;
+        u = addSegmentDelimiter(u);
+        u = append(u, segment);
+        return new Path(u, queries, style);
     }
 
-    private void addSegmentDelimiter() {
+    private static String addSegmentDelimiter(String url) {
         if (url.charAt(url.length() - 1) != '/') {
-            url.append('/');
+            return url + '/';
+        } else {
+            return url;
         }
     }
 
-    public void addKeys(String... keys) {
+    public Path addKeys(String... keys) {
+        String u = url;
         if (style == PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS) {
             if (keys.length > 0) {
-                append("(");
+                u = append(u, "(");
                 boolean first = true;
                 for (String key : keys) {
                     Preconditions.checkNotNull(key);
                     if (!first) {
-                        append(",");
+                        u = append(u, ",");
                         first = false;
                     }
-                    append(key);
+                    u = append(u, key);
                 }
-                append(")");
+                u = append(u, ")");
             }
         } else {
             if (keys.length > 0) {
                 for (String key : keys) {
                     Preconditions.checkNotNull(key);
-                    addSegmentDelimiter();
-                    append(key);
+                    u = addSegmentDelimiter(u);
+                    u = append(u, key);
                 }
             }
         }
+        return new Path(u, queries, style);
     }
 
-    public void addQuery(String query) {
-        queries.add(query);
+    public Path addQuery(String query) {
+        List<String> list = new ArrayList<>(queries);
+        list.add(query);
+        return new Path(url, list, style);
     }
 
     @Override
