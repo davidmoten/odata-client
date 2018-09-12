@@ -23,7 +23,8 @@ public class GeneratorTest {
                                 .getResourceAsStream("/msgraph-1.0-20180905-formatted.xml")),
                         TEdmx.class)
                 .getValue();
-        Generator g = new Generator(new Options(), t.getDataServices().getSchema().get(0));
+        Generator g = new Generator(Options.builder().pkg("microsoft.graph.generated").build(),
+                t.getDataServices().getSchema().get(0));
         g.generate();
     }
 
