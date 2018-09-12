@@ -3,7 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.util.Map;
 import java.util.Optional;
 
-public class SingleEntityRequestOptions<T extends ODataEntity> {
+public final class SingleEntityRequestOptions<T extends ODataEntity> {
 
     private final Map<String, String> requestHeaders;
     private final Optional<String> select;
@@ -29,7 +29,7 @@ public class SingleEntityRequestOptions<T extends ODataEntity> {
     public Optional<String> getExpand() {
         return expand;
     }
-    
+
     public boolean useCaches() {
         return useCaches;
     }
