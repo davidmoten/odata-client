@@ -60,6 +60,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
     }
 
     CollectionEntityRequestOptions build() {
-        return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top);
+        return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip,
+                top);
     }
 }
