@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.client;
+package com.github.davidmoten.odata.client.generator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -8,8 +8,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Test;
 import org.oasisopen.odata.csdl.v4.TDataServices;
 import org.oasisopen.odata.csdl.v4.TEdmx;
-
-import microsoft.graph.generated.container.GraphService;
 
 public class GeneratorTest {
 
@@ -28,10 +26,10 @@ public class GeneratorTest {
         g.generate();
     }
 
-    public void testApi() {
-        new GraphService().devices("1").registeredOwners().filter("blah").orderBy("field").top(1000)
-                .get();
-        new GraphService().devices().id("1").registeredOwners().id("2").expand("blah")
-                .select("clause").get();
-    }
+//    public void testApi() {
+//        new GraphService().devices("1").registeredOwners().filter("blah").orderBy("field").top(1000)
+//                .get();
+//        new GraphService().devices().id("1").registeredOwners().id("2").expand("blah")
+//                .select("clause").get();
+//    }
 }
