@@ -20,42 +20,42 @@ final class CollectionRequestOptionsBuilder<T extends ODataEntity, R extends Ent
         this.request = request;
     }
 
-    CollectionRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
+    public CollectionRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         requestHeaders.put(key, value);
         return this;
     }
 
-    CollectionRequestOptionsBuilder<T, R> search(String clause) {
+    public CollectionRequestOptionsBuilder<T, R> search(String clause) {
         Preconditions.checkNotNull(clause);
         this.search = Optional.of(clause);
         return this;
     }
 
-    CollectionRequestOptionsBuilder<T, R> filter(String clause) {
+    public CollectionRequestOptionsBuilder<T, R> filter(String clause) {
         Preconditions.checkNotNull(clause);
         this.filter = Optional.of(clause);
         return this;
     }
 
-    CollectionRequestOptionsBuilder<T, R> orderBy(String clause) {
+    public CollectionRequestOptionsBuilder<T, R> orderBy(String clause) {
         Preconditions.checkNotNull(clause);
         this.orderBy = Optional.of(clause);
         return this;
     }
 
-    CollectionRequestOptionsBuilder<T, R> skip(long n) {
+    public CollectionRequestOptionsBuilder<T, R> skip(long n) {
         Preconditions.checkArgument(n > 0);
         this.skip = Optional.of(n);
         return this;
     }
 
-    CollectionRequestOptionsBuilder<T, R> top(long n) {
+    public CollectionRequestOptionsBuilder<T, R> top(long n) {
         Preconditions.checkArgument(n > 0);
         this.top = Optional.of(n);
         return this;
     }
 
-    CollectionRequestOptions build() {
+    public CollectionRequestOptions build() {
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top);
     }
 }
