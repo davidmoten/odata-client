@@ -6,4 +6,16 @@ public interface EntityRequest<T extends ODataEntity> {
     // expand, useCaches
     T get(SingleEntityRequestOptions<T> options);
 
+    default SingleEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
+        return new SingleEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
+    }
+
+    default SingleEntityRequestOptionsBuilder<T> select(String clause) {
+        return new SingleEntityRequestOptionsBuilder<T>(this).select(clause);
+    }
+
+    default SingleEntityRequestOptionsBuilder<T> expand(String clause) {
+        return new SingleEntityRequestOptionsBuilder<T>(this).expand(clause);
+    }
+
 }

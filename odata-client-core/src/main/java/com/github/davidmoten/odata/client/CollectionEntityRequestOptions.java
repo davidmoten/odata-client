@@ -3,7 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.util.Map;
 import java.util.Optional;
 
-public final class CollectionRequestOptions {
+public final class CollectionEntityRequestOptions {
 
     private final Map<String, String> requestHeaders;
     private final Optional<String> search;
@@ -12,7 +12,7 @@ public final class CollectionRequestOptions {
     private final Optional<Long> skip;
     private final Optional<Long> top;
 
-    public CollectionRequestOptions(Map<String, String> requestHeaders, Optional<String> search,
+    public CollectionEntityRequestOptions(Map<String, String> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
             Optional<Long> top) {
         this.requestHeaders = requestHeaders;

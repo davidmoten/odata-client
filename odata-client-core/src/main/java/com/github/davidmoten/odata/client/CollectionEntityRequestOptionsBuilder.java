@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-final class CollectionRequestOptionsBuilder<T extends ODataEntity, R extends EntityRequest<T>> {
+final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, R extends EntityRequest<T>> {
 
     private final CollectionPageEntityRequest<T, R> request;
     private final Map<String, String> requestHeaders = new HashMap<>();
@@ -16,40 +16,40 @@ final class CollectionRequestOptionsBuilder<T extends ODataEntity, R extends Ent
     private Optional<Long> skip = Optional.empty();
     private Optional<Long> top = Optional.empty();
 
-    CollectionRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
+    CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
         this.request = request;
     }
 
-    public CollectionRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
+    public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         requestHeaders.put(key, value);
         return this;
     }
 
-    public CollectionRequestOptionsBuilder<T, R> search(String clause) {
+    public CollectionEntityRequestOptionsBuilder<T, R> search(String clause) {
         Preconditions.checkNotNull(clause);
         this.search = Optional.of(clause);
         return this;
     }
 
-    public CollectionRequestOptionsBuilder<T, R> filter(String clause) {
+    public CollectionEntityRequestOptionsBuilder<T, R> filter(String clause) {
         Preconditions.checkNotNull(clause);
         this.filter = Optional.of(clause);
         return this;
     }
 
-    public CollectionRequestOptionsBuilder<T, R> orderBy(String clause) {
+    public CollectionEntityRequestOptionsBuilder<T, R> orderBy(String clause) {
         Preconditions.checkNotNull(clause);
         this.orderBy = Optional.of(clause);
         return this;
     }
 
-    public CollectionRequestOptionsBuilder<T, R> skip(long n) {
+    public CollectionEntityRequestOptionsBuilder<T, R> skip(long n) {
         Preconditions.checkArgument(n > 0);
         this.skip = Optional.of(n);
         return this;
     }
 
-    public CollectionRequestOptionsBuilder<T, R> top(long n) {
+    public CollectionEntityRequestOptionsBuilder<T, R> top(long n) {
         Preconditions.checkArgument(n > 0);
         this.top = Optional.of(n);
         return this;
@@ -59,7 +59,7 @@ final class CollectionRequestOptionsBuilder<T extends ODataEntity, R extends Ent
         return request.get(build());
     }
 
-    CollectionRequestOptions build() {
-        return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top);
+    CollectionEntityRequestOptions build() {
+        return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top);
     }
 }

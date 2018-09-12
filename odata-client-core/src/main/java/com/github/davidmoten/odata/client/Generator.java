@@ -91,10 +91,11 @@ public final class Generator {
             // write get
             indent.right();
             p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s get(%s options) {\n", indent, //
+            p.format("%spublic %s get(%s<%s> options) {\n", indent, //
                     imports.add(
                             names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(SingleEntityRequestOptions.class));
+                    imports.add(SingleEntityRequestOptions.class),
+                    imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
             indent.left();
@@ -126,11 +127,13 @@ public final class Generator {
                         p.format("%sreturn null;\n", indent.right());
                         p.format("%s}\n", indent.left());
                         if (y.startsWith(COLLECTION_PREFIX)) {
-                            //TODO use actual key name from metadata
+                            // TODO use actual key name from metadata
                             String inner = names.getInnerType(y);
                             p.format("\n%spublic %s %s(%s id) {\n", indent, //
-                                    imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(inner)) ,//
-                                    Names.getGetterMethodWithoutGet(x.getName()), 
+                                    imports.add(names
+                                            .getFullClassNameEntityRequestFromTypeWithNamespace(
+                                                    inner)), //
+                                    Names.getGetterMethodWithoutGet(x.getName()),
                                     imports.add(String.class));
                             p.format("%sreturn null;\n", indent.right());
                             p.format("%s}\n", indent.left());
@@ -210,7 +213,7 @@ public final class Generator {
                     imports.add(CollectionPage.class), //
                     imports.add(
                             names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(CollectionRequestOptions.class));
+                    imports.add(CollectionEntityRequestOptions.class));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 

@@ -11,7 +11,7 @@ import org.oasisopen.odata.csdl.v4.TEdmx;
 
 import microsoft.graph.generated.container.GraphService;
 
-public class GenerateTest {
+public class GeneratorTest {
 
     @Test
     public void testGenerateMsgraph() throws JAXBException {
@@ -19,7 +19,7 @@ public class GenerateTest {
         Unmarshaller unmarshaller = c.createUnmarshaller();
         TEdmx t = unmarshaller
                 .unmarshal(
-                        new StreamSource(GenerateTest.class
+                        new StreamSource(GeneratorTest.class
                                 .getResourceAsStream("/msgraph-1.0-20180905-formatted.xml")),
                         TEdmx.class)
                 .getValue();
