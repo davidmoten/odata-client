@@ -55,7 +55,11 @@ final class CollectionRequestOptionsBuilder<T extends ODataEntity, R extends Ent
         return this;
     }
 
-    public CollectionRequestOptions build() {
+    public CollectionPage<T> get() {
+        return request.get(build());
+    }
+
+    CollectionRequestOptions build() {
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top);
     }
 }

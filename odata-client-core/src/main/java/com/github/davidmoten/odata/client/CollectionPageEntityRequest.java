@@ -6,6 +6,10 @@ public interface CollectionPageEntityRequest<T extends ODataEntity, R extends En
 
     R id(String id);
 
+    default CollectionPage<T> get() {
+        return new CollectionRequestOptionsBuilder<T, R>(this).get();
+    }
+    
     default CollectionRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         return new CollectionRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
     }
