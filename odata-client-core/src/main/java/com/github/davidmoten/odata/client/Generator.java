@@ -10,7 +10,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,7 @@ import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -92,6 +95,30 @@ public final class Generator {
             indent.right();
             p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
+                    imports.add(
+                            names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(SingleEntityRequestOptions.class),
+                    imports.add(names.getFullClassNameEntity(t.getName())));
+            p.format("%sreturn null;\n", indent.right());
+            p.format("%s}\n", indent.left());
+
+            p.format("\n%spublic %s delete(%s<%s> options) {\n", indent, //
+                    imports.add(
+                            names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(SingleEntityRequestOptions.class),
+                    imports.add(names.getFullClassNameEntity(t.getName())));
+            p.format("%sreturn null;\n", indent.right());
+            p.format("%s}\n", indent.left());
+
+            p.format("\n%spublic %s update(%s<%s> options) {\n", indent, //
+                    imports.add(
+                            names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(SingleEntityRequestOptions.class),
+                    imports.add(names.getFullClassNameEntity(t.getName())));
+            p.format("%sreturn null;\n", indent.right());
+            p.format("%s}\n", indent.left());
+
+            p.format("\n%spublic %s patch(%s<%s> options) {\n", indent, //
                     imports.add(
                             names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(SingleEntityRequestOptions.class),
@@ -180,8 +207,10 @@ public final class Generator {
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names
-                                    .getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType());
-                            p.format("\n%spublic %s %s(String id) {\n", indent, imports.add(entityRequestType),
+                                    .getFullClassNameEntityRequestFromTypeWithNamespace(
+                                            x.getEntityType());
+                            p.format("\n%spublic %s %s(String id) {\n", indent,
+                                    imports.add(entityRequestType),
                                     Names.getIdentifier(x.getName()));
                             p.format("%sreturn null;\n", indent.right());
                             p.format("%s}\n", indent.left());
@@ -295,8 +324,12 @@ public final class Generator {
             p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "",
                     simpleClassName, extension, imports.add(ODataEntity.class));
 
+            p.format("%sprivate %s<%s,%s> unmappedFields = new %s<%s, %s>();\n", indent.right(),
+                    imports.add(Map.class), imports.add(String.class), imports.add(String.class),
+                    imports.add(HashMap.class), imports.add(String.class),
+                    imports.add(String.class));
+
             // write fields from properties
-            indent.right();
             printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
             printNavigationPropertyFields(imports, indent, p, simpleClassName,
                     t.getKeyOrPropertyOrNavigationProperty());
@@ -304,6 +337,12 @@ public final class Generator {
                     t.getKeyOrPropertyOrNavigationProperty());
             printNavigationPropertyGetters(imports, indent, p,
                     t.getKeyOrPropertyOrNavigationProperty());
+
+            p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
+            // TODO protect "other" name against clashes
+            p.format("%spublic void setUnmappedField(String name, String value) {\n", indent);
+            p.format("%sunmappedFields.put(name, value);\n", indent.right());
+            p.format("%s}\n", indent.left());
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
