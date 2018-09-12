@@ -28,7 +28,7 @@ public class CollectionPageTest {
         Service service = new Service() {
 
             @Override
-            public ResponseGet getResponseGET(List<PathItem> path) {
+            public ResponseGet getResponseGET(String url) {
                 return new ResponseGet(200, json);
             }
         };

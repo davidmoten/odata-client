@@ -1,8 +1,10 @@
-package com.github.davidmoten.odata.client;
+package com.github.davidmoten.odata.client.generator;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import com.github.davidmoten.odata.client.generator.Imports;
 
 public class ImportsTest {
 

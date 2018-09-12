@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.client;
+package com.github.davidmoten.odata.client.generator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +32,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.odata.client.CollectionEntityRequestOptions;
+import com.github.davidmoten.odata.client.CollectionPage;
+import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
+import com.github.davidmoten.odata.client.EntityPreconditions;
+import com.github.davidmoten.odata.client.EntityRequest;
+import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.SingleEntityRequestOptions;
+import com.github.davidmoten.odata.client.UnsignedByte;
 
 public final class Generator {
 
@@ -581,7 +589,7 @@ public final class Generator {
                 p.format("package %s;\n\n", names.getPackageEnum());
                 p.format("IMPORTSHERE\n");
                 p.format("public enum %s implements %s {\n", simpleClassName,
-                        imports.add(Enum.class));
+                        imports.add(com.github.davidmoten.odata.client.Enum.class));
 
                 // add members
                 indent.right();
