@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -19,15 +20,15 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths
-                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths.get(CollectionPageTest.class
+                        .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = new Serializer() {
         };
         Service service = new Service() {
 
             @Override
-            public ResponseGet getResponseGET(String link) {
+            public ResponseGet getResponseGET(List<PathItem> path) {
                 return new ResponseGet(200, json);
             }
         };
