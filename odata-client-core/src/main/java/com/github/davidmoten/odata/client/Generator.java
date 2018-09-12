@@ -177,6 +177,15 @@ public final class Generator {
                                 Names.getIdentifier(x.getName()));
                         p.format("%sreturn null;\n", indent.right());
                         p.format("%s}\n", indent.left());
+
+                        if (names.isEntityWithNamespace(x.getEntityType())) {
+                            String entityRequestType = names
+                                    .getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType());
+                            p.format("\n%spublic %s %s(String id) {\n", indent, imports.add(entityRequestType),
+                                    Names.getIdentifier(x.getName()));
+                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%s}\n", indent.left());
+                        }
                     });
 
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TSingleton.class) //
