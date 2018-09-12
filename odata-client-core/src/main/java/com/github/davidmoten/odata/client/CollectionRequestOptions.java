@@ -22,4 +22,28 @@ public final class CollectionRequestOptions {
         this.skip = skip;
         this.top = top;
     }
+
+    public Map<String, String> getRequestHeaders() {
+        return requestHeaders;
+    }
+
+    public Optional<String> getSearch() {
+        return search;
+    }
+
+    public Optional<String> getFilter() {
+        return filter;
+    }
+
+    public Optional<String> getOrderBy() {
+        return orderBy;
+    }
+
+    public Optional<Long> getSkip() {
+        return skip;
+    }
+
+    public Optional<Long> getTop() {
+        return top;
+    }
 }
