@@ -30,10 +30,10 @@ public class CollectionPage<T> {
 
     public Optional<CollectionPage<T>> nextPage() {
         if (nextLink.isPresent()) {
+            // TODO add request headers used in initial call?
             ResponseGet response = context.service().getResponseGET(nextLink.get());
             // odata 4 says the "value" element of the returned json is an array of
-            // serialized T
-            // see example at
+            // serialized T see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
             return nextPage(response.getJson(), cls, context);
         } else {
@@ -42,8 +42,7 @@ public class CollectionPage<T> {
     }
 
     @VisibleForTesting
-    static <T> Optional<CollectionPage<T>> nextPage(String json, Class<T> cls,
-            Context context) {
+    static <T> Optional<CollectionPage<T>> nextPage(String json, Class<T> cls, Context context) {
         try {
             ObjectMapper m = Serialization.MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
