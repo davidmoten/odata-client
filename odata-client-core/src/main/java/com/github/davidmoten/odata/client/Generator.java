@@ -28,6 +28,8 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -321,6 +323,8 @@ public final class Generator {
             } else {
                 extension = "";
             }
+            p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
+                    imports.add(Include.class));
             p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "",
                     simpleClassName, extension, imports.add(ODataEntity.class));
 
