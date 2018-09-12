@@ -91,10 +91,10 @@ public final class Generator {
             // write get
             indent.right();
             p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s get(%s... options) {\n", indent, //
+            p.format("%spublic %s get(%s options) {\n", indent, //
                     imports.add(
                             names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(QueryOption.class));
+                    imports.add(SingleEntityRequestOptions.class));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
             indent.left();
@@ -206,11 +206,11 @@ public final class Generator {
 
             // write fields from properties
             indent.right();
-            p.format("%spublic %s<%s> get(%s... options) {\n", indent, //
+            p.format("%spublic %s<%s> get(%s options) {\n", indent, //
                     imports.add(CollectionPage.class), //
                     imports.add(
                             names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(QueryOption.class));
+                    imports.add(CollectionRequestOptions.class));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
