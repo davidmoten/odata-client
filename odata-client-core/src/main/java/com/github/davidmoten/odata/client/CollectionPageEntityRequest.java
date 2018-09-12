@@ -2,7 +2,7 @@ package com.github.davidmoten.odata.client;
 
 public interface CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
-    //TODO hide this method
+    // TODO hide this method
     CollectionPage<T> get(CollectionEntityRequestOptions options);
 
     R id(String id);
@@ -10,7 +10,7 @@ public interface CollectionPageEntityRequest<T extends ODataEntity, R extends En
     default CollectionPage<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
     }
-    
+
     default CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
     }
