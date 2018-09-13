@@ -197,7 +197,7 @@ public final class Generator {
             // write constructor
             p.format("%spublic %s(%s context) {\n", indent, simpleClassName, imports.add(Context.class));
             p.format("%sthis.context = context;\n", indent.right());
-            p.format("%s}\n\n", indent.left());
+            p.format("%s}\n", indent.left());
 
             // write get methods from properties
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
