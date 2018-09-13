@@ -11,7 +11,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 /**
  * Immutable!
  */
-public final class Path {
+public class Path {
 
     private final String url;
     private final List<String> queries; // unencoded
