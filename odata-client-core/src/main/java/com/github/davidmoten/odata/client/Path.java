@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -20,6 +21,10 @@ public final class Path {
         this.url = url;
         this.queries = queries;
         this.style = style;
+    }
+
+    public Path(String url, PathStyle style) {
+        this(url, Collections.emptyList(), style);
     }
 
     private String append(String url, String s) {
@@ -75,8 +80,7 @@ public final class Path {
         return new Path(url, list, style);
     }
 
-    @Override
-    public String toString() {
+    public String toUrl() {
         StringBuilder b = new StringBuilder();
         b.append(url);
         if (!queries.isEmpty()) {
@@ -91,6 +95,11 @@ public final class Path {
             }
         }
         return b.toString();
+    }
+
+    @Override
+    public String toString() {
+        return toUrl();
     }
 
     private Object encodeQuery(String query) {

@@ -5,7 +5,7 @@ public final class Context {
     private final Serializer serializer;
     private final Service service;
 
-    public Context(Serializer serializer, Service service, boolean ) {
+    public Context(Serializer serializer, Service service) {
         this.serializer = serializer;
         this.service = service;
     }
