@@ -335,8 +335,6 @@ public final class Generator {
 
             // add other fields
             printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
-            printNavigationPropertyFields(imports, indent, p, simpleClassName,
-                    t.getKeyOrPropertyOrNavigationProperty());
 
             p.format("%sprivate %s<%s,%s> unmappedFields = new %s<%s, %s>();\n", indent, imports.add(Map.class),
                     imports.add(String.class), imports.add(String.class), imports.add(HashMap.class),
@@ -354,7 +352,7 @@ public final class Generator {
                     t.getKeyOrPropertyOrNavigationProperty());
             printNavigationPropertyGetters(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
 
-            p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
+            p.format("\n\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
             // TODO protect "other" name against clashes
             p.format("%spublic void setUnmappedField(String name, String value) {\n", indent);
             p.format("%sunmappedFields.put(name, value);\n", indent.right());
@@ -378,7 +376,11 @@ public final class Generator {
                     String typeName = toType(x, imports);
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                     p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
-                    p.format("%sreturn %s;\n", indent.right(), fieldName);
+                    if (x.isNullable()) {
+                        p.format("%sreturn %s.of(%s);\n", indent.right(), imports.add(Optional.class), fieldName);
+                    } else {
+                        p.format("%sreturn %s;\n", indent.right(), fieldName);
+                    }
                     p.format("%s}\n", indent.left());
 
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
@@ -389,7 +391,11 @@ public final class Generator {
                                 fieldName, fieldName);
                         indent.left();
                     }
-                    p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
+                    if (x.isNullable()) {
+                        p.format("%sthis.%s = %s.orElse(null);\n", indent.right(), fieldName, fieldName);
+                    } else {
+                        p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
+                    }
                     p.format("%sreturn this;\n", indent);
                     p.format("%s}\n", indent.left());
                 });
@@ -398,18 +404,10 @@ public final class Generator {
     private void printPropertyFields(Imports imports, Indent indent, PrintWriter p, List<Object> properties) {
         Util.filter(properties, TProperty.class) //
                 .forEach(x -> {
-                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
+                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+                    p.format("%sprivate %s %s;\n", indent, toTypeSuppressUseOfOptional(x, imports),
+                            Names.getIdentifier(x.getName()));
                 });
-    }
-
-    private void printNavigationPropertyFields(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
-            List<Object> properties) {
-        Class<TNavigationProperty> cls = TNavigationProperty.class;
-        Util.filter(properties, cls) //
-                .forEach(x -> {
-                    p.format("%sprivate %s %s;\n", indent, toType(x, imports), Names.getIdentifier(x.getName()));
-                });
-
     }
 
     private void printNavigationPropertyGetters(Imports imports, Indent indent, PrintWriter p,
@@ -419,11 +417,9 @@ public final class Generator {
         // write getters and setters
         Util.filter(properties, cls) //
                 .forEach(x -> {
-                    String fieldName = Names.getIdentifier(x.getName());
                     String typeName = toType(x, imports);
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                     p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
-                    p.format("%sreturn %s;\n", indent.right(), fieldName);
+                    p.format("%sreturn null;\n", indent.right());
                     p.format("%s}\n", indent.left());
                 });
     }
@@ -465,6 +461,16 @@ public final class Generator {
         if (x.isNullable() && !isCollection(x)) {
             String r = toType(t, false, imports, List.class);
             return imports.add(Optional.class) + "<" + r + ">";
+        } else {
+            return toType(t, true, imports, List.class);
+        }
+    }
+
+    private String toTypeSuppressUseOfOptional(TProperty x, Imports imports) {
+        Preconditions.checkArgument(x.getType().size() == 1);
+        String t = x.getType().get(0);
+        if (x.isNullable() && !isCollection(x)) {
+            return toType(t, false, imports, List.class);
         } else {
             return toType(t, true, imports, List.class);
         }
