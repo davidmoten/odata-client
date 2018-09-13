@@ -36,6 +36,7 @@ import com.github.davidmoten.odata.client.CollectionEntityRequestOptions;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.Context;
+import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.ODataEntity;
@@ -101,8 +102,15 @@ public final class Generator {
             p.format("public final class %s implements %s {\n\n", simpleClassName, imports.add(EntityRequest.class)
                     + "<" + imports.add(names.getFullClassNameEntity(t.getName())) + ">");
 
+            // add field
+            p.format("%sprivate final %s contextPath;\n\n", indent.right(), imports.add(ContextPath.class));
+
+            // add constructor
+            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
+            p.format("%sthis.contextPath = contextPath;\n", indent.right());
+            p.format("%s}\n\n", indent.left());
+
             // write get
-            indent.right();
             p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
@@ -320,14 +328,28 @@ public final class Generator {
             p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "", simpleClassName,
                     extension, imports.add(ODataEntity.class));
 
-            p.format("%sprivate %s<%s,%s> unmappedFields = new %s<%s, %s>();\n", indent.right(), imports.add(Map.class),
-                    imports.add(String.class), imports.add(String.class), imports.add(HashMap.class),
-                    imports.add(String.class), imports.add(String.class));
-
             // write fields from properties
+
+            // add context path field
+            p.format("%sprivate final %s contextPath;\n\n", indent.right(), imports.add(ContextPath.class));
+
+            // add other fields
             printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
             printNavigationPropertyFields(imports, indent, p, simpleClassName,
                     t.getKeyOrPropertyOrNavigationProperty());
+
+            p.format("%sprivate %s<%s,%s> unmappedFields = new %s<%s, %s>();\n", indent, imports.add(Map.class),
+                    imports.add(String.class), imports.add(String.class), imports.add(HashMap.class),
+                    imports.add(String.class), imports.add(String.class));
+
+            // add constructor
+            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
+            if (t.getBaseType() != null) {
+                p.format("%ssuper(contextPath);\n", indent.right());
+            }
+            p.format("%sthis.contextPath = contextPath;\n", indent);
+            p.format("%s}\n", indent.left());
+
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getKeyOrPropertyOrNavigationProperty());
             printNavigationPropertyGetters(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
