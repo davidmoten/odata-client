@@ -116,25 +116,25 @@ public final class Generator {
             // write get
             p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
-                    imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%spublic %s delete(%s<%s> options) {\n", indent, //
-                    imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%spublic %s update(%s<%s> options) {\n", indent, //
-                    imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%spublic %s patch(%s<%s> options) {\n", indent, //
-                    imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
@@ -149,7 +149,7 @@ public final class Generator {
                         if (y.startsWith(COLLECTION_PREFIX)) {
                             String inner = names.getInnerType(y);
                             returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
-                                    + imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(inner)) + ", "
+                                    + imports.add(names.getFullClassNameFromTypeWithNamespace(inner)) + ", "
                                     + imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(inner))
                                     + ">";
                         } else {
@@ -191,8 +191,7 @@ public final class Generator {
 
             final String extension;
             if (t.getExtends() != null) {
-                extension = " extends "
-                        + imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(t.getExtends()));
+                extension = " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getExtends()));
             } else {
                 extension = "";
             }
@@ -212,11 +211,15 @@ public final class Generator {
                     .forEach(x -> {
                         p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.class);\n", indent.right(),
+                        p.format(
+                                "%sreturn new %s(\n%scontextPath.addSegment(\"%s\"),\n%s(contextPath, id) -> new %s(contextPath, id));\n",
+                                indent.right(), //
                                 toType(x, imports), //
+                                indent.right(), //
                                 x.getName(), //
-                                imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(x.getEntityType())));
-                        p.format("%s}\n", indent.left());
+                                indent, imports.add(
+                                        names.getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType())));
+                        p.format("%s}\n", indent.left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names
@@ -260,7 +263,7 @@ public final class Generator {
             indent.right();
             p.format("%spublic %s<%s> get(%s options) {\n", indent, //
                     imports.add(CollectionPage.class), //
-                    imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(CollectionEntityRequestOptions.class));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
@@ -323,8 +326,7 @@ public final class Generator {
             p.format("IMPORTSHERE");
             final String extension;
             if (t.getBaseType() != null) {
-                extension = " extends "
-                        + imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(t.getBaseType()));
+                extension = " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
             } else {
                 extension = "";
             }
@@ -496,7 +498,7 @@ public final class Generator {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, canUsePrimitive, imports);
         } else if (t.startsWith(schema.getNamespace())) {
-            return imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(t));
+            return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
             String inner = t.substring(COLLECTION_PREFIX.length(), t.length() - 1);
             return wrapCollection(imports, collectionClass, inner);

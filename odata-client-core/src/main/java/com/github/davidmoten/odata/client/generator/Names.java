@@ -251,12 +251,12 @@ final class Names {
                 getSimpleClassNameEntityRequest(name) + ".java");
     }
 
-    String getFullGeneratedClassNameFromTypeWithNamespace(String type) {
+    String getFullClassNameFromTypeWithNamespace(String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type),
                 "class name not found for " + type);
     }
 
-    String getFullGeneratedClassNameFromTypeWithoutNamespace(String type) {
+    String getFullClassNameFromTypeWithoutNamespace(String type) {
         return Preconditions.checkNotNull(
                 classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
