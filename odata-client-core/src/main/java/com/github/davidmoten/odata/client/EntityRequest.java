@@ -4,6 +4,8 @@ public interface EntityRequest<T extends ODataEntity> {
 
     // TODO customize HTTP headers, add delete, update, patch, select, search,
     // expand, useCaches
+    // TODO make extra methods invisible
+
     T get(SingleEntityRequestOptions<T> options);
 
     T delete(SingleEntityRequestOptions<T> options);
