@@ -211,15 +211,12 @@ public final class Generator {
                     .forEach(x -> {
                         p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
-                        p.format(
-                                "%sreturn new %s(\n%scontextPath.addSegment(\"%s\"),\n%s(contextPath, id) -> new %s(contextPath, id));\n",
-                                indent.right(), //
-                                toType(x, imports), //
-                                indent.right(), //
-                                x.getName(), //
-                                indent, imports.add(
-                                        names.getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType())));
-                        p.format("%s}\n", indent.left().left());
+                        p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
+                        p.format("%scontextPath.addSegment(\"%s\"),\n", indent.right().right().right().right(),
+                                x.getName());
+                        p.format("%s(contextPath, id) -> new %s(contextPath, id));\n", indent, imports
+                                .add(names.getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType())));
+                        p.format("%s}\n", indent.left().left().left().left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names
