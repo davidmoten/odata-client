@@ -1,12 +1,14 @@
 package com.github.davidmoten.odata.client;
 
-public class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
+public final class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
-    private final Class<T> cls;
+    private final ContextPath contextPath;
+    private final EntityRequestFactory<T, R> entityRequestFactory;
 
     // should not be public api
-    public CollectionPageEntityRequest(ContextPath contextPath, Class<T> cls) {
-        this.cls = cls;
+    public CollectionPageEntityRequest(ContextPath contextPath, EntityRequestFactory<T, R> entityRequestFactory) {
+        this.contextPath = contextPath;
+        this.entityRequestFactory = entityRequestFactory;
     }
 
     // not public api
@@ -15,7 +17,7 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     }
 
     public R id(String id) {
-        return null;
+        return entityRequestFactory.create(contextPath, id);
     }
 
     public CollectionPage<T> get() {
