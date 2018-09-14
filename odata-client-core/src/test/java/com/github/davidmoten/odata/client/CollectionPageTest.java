@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class CollectionPageTest {
         Service service = new Service() {
 
             @Override
-            public ResponseGet getResponseGET(String url) {
+            public ResponseGet getResponseGET(String url, Map<String, String> requestHeaders) {
                 return new ResponseGet(200, json);
             }
 
