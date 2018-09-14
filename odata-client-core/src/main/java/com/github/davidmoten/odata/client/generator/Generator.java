@@ -380,16 +380,14 @@ public final class Generator {
             // write fields from properties
 
             // add context path field
-            p.format("%sprivate final %s contextPath;\n\n", indent.right(),
+            p.format("%sprivate final %s contextPath;\n", indent.right(),
                     imports.add(ContextPath.class));
 
             // add other fields
             printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
 
-            p.format("%sprivate %s<%s,%s> unmappedFields = new %s<%s, %s>();\n", indent,
-                    imports.add(Map.class), imports.add(String.class), imports.add(String.class),
-                    imports.add(HashMap.class), imports.add(String.class),
-                    imports.add(String.class));
+            p.format("\n%sprivate %s<%s,%s> unmappedFields = null;\n", indent,
+                    imports.add(Map.class), imports.add(String.class), imports.add(String.class));
 
             // add constructor
             p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName,
@@ -405,10 +403,14 @@ public final class Generator {
             printNavigationPropertyGetters(imports, indent, p,
                     t.getKeyOrPropertyOrNavigationProperty());
 
-            p.format("\n\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
+            p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
             // TODO protect "other" name against clashes
             p.format("%spublic void setUnmappedField(String name, String value) {\n", indent);
-            p.format("%sunmappedFields.put(name, value);\n", indent.right());
+            p.format("%sif (unmappedFields == null) {\n", indent.right());
+            p.format("%sunmappedFields = new %s<>();\n", indent.right(),
+                    imports.add(HashMap.class));
+            p.format("%s}\n", indent.left());
+            p.format("%sunmappedFields.put(name, value);\n", indent);
             p.format("%s}\n", indent.left());
 
             p.format("\n}\n");
