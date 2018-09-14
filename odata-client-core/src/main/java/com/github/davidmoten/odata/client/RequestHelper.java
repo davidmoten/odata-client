@@ -2,9 +2,9 @@ package com.github.davidmoten.odata.client;
 
 import java.util.Map;
 
-public final class Requests {
+public final class RequestHelper {
 
-    private Requests() {
+    private RequestHelper() {
         // prevent instantiation
     }
 
