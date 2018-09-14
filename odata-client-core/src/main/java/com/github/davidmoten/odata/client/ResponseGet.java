@@ -5,16 +5,16 @@ import java.net.HttpURLConnection;
 public class ResponseGet {
 
     private final int responseCode;
-    private final String json;
+    private final String text;
 
-    public ResponseGet(int responseCode, String json) {
+    public ResponseGet(int responseCode, String text) {
         this.responseCode = responseCode;
-        this.json = json;
+        this.text = text;
     }
 
-    public String getJson() {
+    public String getText() {
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            return json;
+            return text;
         } else {
             throw new RuntimeException("responseCode=" + responseCode);
         }

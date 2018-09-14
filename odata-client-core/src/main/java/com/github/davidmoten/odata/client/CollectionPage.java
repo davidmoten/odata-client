@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +32,11 @@ public class CollectionPage<T> {
     public Optional<CollectionPage<T>> nextPage() {
         if (nextLink.isPresent()) {
             // TODO add request headers used in initial call?
-            ResponseGet response = context.service().getResponseGET(nextLink.get());
+            ResponseGet response = context.service().getResponseGET(nextLink.get(), Collections.emptyMap());
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
-            return nextPage(response.getJson(), cls, context);
+            return nextPage(response.getText(), cls, context);
         } else {
             return Optional.empty();
         }
