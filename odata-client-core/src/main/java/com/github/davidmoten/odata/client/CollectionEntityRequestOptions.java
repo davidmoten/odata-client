@@ -1,9 +1,11 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public final class CollectionEntityRequestOptions {
+public final class CollectionEntityRequestOptions implements RequestOptions {
 
     private final Map<String, String> requestHeaders;
     private final Optional<String> search;
@@ -13,8 +15,7 @@ public final class CollectionEntityRequestOptions {
     private final Optional<Long> top;
 
     public CollectionEntityRequestOptions(Map<String, String> requestHeaders, Optional<String> search,
-            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
-            Optional<Long> top) {
+            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top) {
         this.requestHeaders = requestHeaders;
         this.search = search;
         this.filter = filter;
@@ -23,8 +24,20 @@ public final class CollectionEntityRequestOptions {
         this.top = top;
     }
 
+    @Override
     public Map<String, String> getRequestHeaders() {
         return requestHeaders;
+    }
+
+    @Override
+    public List<String> getQueries() {
+        List<String> list = new ArrayList<>();
+        search.ifPresent(x -> list.add("$search=" + x));
+        filter.ifPresent(x -> list.add("$filter=" + x));
+        orderBy.ifPresent(x -> list.add("$orderBy=" + x));
+        skip.ifPresent(x -> list.add("$skip=" + x));
+        top.ifPresent(x -> list.add("$top=" + x));
+        return list;
     }
 
     public Optional<String> getSearch() {
