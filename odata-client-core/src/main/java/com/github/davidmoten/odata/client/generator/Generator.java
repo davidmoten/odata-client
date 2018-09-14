@@ -41,6 +41,7 @@ import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.RequestHelper;
 import com.github.davidmoten.odata.client.UnsignedByte;
 
 public final class Generator {
@@ -118,21 +119,26 @@ public final class Generator {
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn null;\n", indent.right());
+            p.format("%sreturn %s.get(contextPath, %s.class, id, options);\n", indent.right(),
+                    imports.add(RequestHelper.class),
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())));
             p.format("%s}\n", indent.left());
 
+            p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("\n%spublic %s delete(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
+            p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("\n%spublic %s update(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
+            p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("\n%spublic %s patch(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
