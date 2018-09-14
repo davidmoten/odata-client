@@ -6,24 +6,24 @@ public interface EntityRequest<T extends ODataEntity> {
     // expand, useCaches
     // TODO make extra methods invisible
 
-    T get(SingleEntityRequestOptions<T> options);
+    T get(EntityRequestOptions<T> options);
 
-    T delete(SingleEntityRequestOptions<T> options);
+    T delete(EntityRequestOptions<T> options);
 
-    T update(SingleEntityRequestOptions<T> options);
+    T update(EntityRequestOptions<T> options);
 
-    T patch(SingleEntityRequestOptions<T> options);
+    T patch(EntityRequestOptions<T> options);
 
-    default SingleEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
-        return new SingleEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
+    default EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
+        return new EntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
 
-    default SingleEntityRequestOptionsBuilder<T> select(String clause) {
-        return new SingleEntityRequestOptionsBuilder<T>(this).select(clause);
+    default EntityRequestOptionsBuilder<T> select(String clause) {
+        return new EntityRequestOptionsBuilder<T>(this).select(clause);
     }
 
-    default SingleEntityRequestOptionsBuilder<T> expand(String clause) {
-        return new SingleEntityRequestOptionsBuilder<T>(this).expand(clause);
+    default EntityRequestOptionsBuilder<T> expand(String clause) {
+        return new EntityRequestOptionsBuilder<T>(this).expand(clause);
     }
 
 }
