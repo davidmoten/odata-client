@@ -30,6 +30,7 @@
             <artifactId>odata-client-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
