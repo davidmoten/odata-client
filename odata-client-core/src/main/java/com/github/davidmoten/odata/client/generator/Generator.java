@@ -200,11 +200,12 @@ public final class Generator {
             p.format("public final class %s%s {\n\n", simpleClassName, extension);
 
             // write fields
-            p.format("%sprivate final %s context;\n\n", indent.right(), imports.add(Context.class));
+            p.format("%sprivate final %s contextPath;\n\n", indent.right(), imports.add(ContextPath.class));
 
             // write constructor
             p.format("%spublic %s(%s context) {\n", indent, simpleClassName, imports.add(Context.class));
-            p.format("%sthis.context = context;\n", indent.right());
+            p.format("%sthis.contextPath = new %s(context, context.service().getBasePath());\n", indent.right(),
+                    imports.add(ContextPath.class));
             p.format("%s}\n", indent.left());
 
             // write get methods from properties
@@ -212,12 +213,15 @@ public final class Generator {
                     .forEach(x -> {
                         p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
-                        p.format("%sreturn null;\n", indent.right());
+                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.class);\n", indent.right(),
+                                toType(x, imports), //
+                                x.getName(), //
+                                imports.add(names.getFullGeneratedClassNameFromTypeWithNamespace(x.getEntityType())));
                         p.format("%s}\n", indent.left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names
-                                    .getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType());
+                                    .getFullGeneratedClassNameFromTypeWithNamespace(x.getEntityType());
                             p.format("\n%spublic %s %s(String id) {\n", indent, imports.add(entityRequestType),
                                     Names.getIdentifier(x.getName()));
                             p.format("%sreturn null;\n", indent.right());

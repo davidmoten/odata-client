@@ -5,21 +5,21 @@ public final class ContextPath {
     private final Path path;
     private final Context context;
 
-    public ContextPath(Path path, Context context) {
+    public ContextPath(Context context, Path path) {
         this.path = path;
         this.context = context;
     }
 
     public ContextPath addSegment(String segment) {
-        return new ContextPath(path.addSegment(segment), context);
+        return new ContextPath(context, path.addSegment(segment));
     }
 
     public ContextPath addKeys(String... keys) {
-        return new ContextPath(path.addKeys(keys), context);
+        return new ContextPath(context, path.addKeys(keys));
     }
 
     public ContextPath addQuery(String query) {
-        return new ContextPath(path.addQuery(query), context);
+        return new ContextPath(context, path.addQuery(query));
     }
 
     public String toUrl() {
