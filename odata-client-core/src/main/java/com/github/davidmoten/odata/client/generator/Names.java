@@ -208,7 +208,11 @@ final class Names {
 
     public String getFullClassNameEntityRequestFromTypeWithNamespace(String name) {
         String simple = getLastItemInDotDelimitedString(name);
-        return getPackageEntityRequest() + "." + upperFirst(simple)
+        return getFullClassNameEntityRequestFromTypeWithoutNamespace(simple);
+    }
+    
+    public String getFullClassNameEntityRequestFromTypeWithoutNamespace(String name) {
+        return getPackageEntityRequest() + "." + upperFirst(name)
                 + options.entityRequestClassSuffix();
     }
 
