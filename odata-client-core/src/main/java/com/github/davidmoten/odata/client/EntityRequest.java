@@ -14,6 +14,10 @@ public interface EntityRequest<T extends ODataEntity> {
 
     T patch(EntityRequestOptions<T> options);
 
+    default T get() {
+        return new EntityRequestOptionsBuilder<T>(this).get();
+    }
+    
     default EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
         return new EntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
