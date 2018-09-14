@@ -8,7 +8,7 @@ public interface EntityRequest<T extends ODataEntity> {
 
     T get(EntityRequestOptions<T> options);
 
-    T delete(EntityRequestOptions<T> options);
+    void delete(EntityRequestOptions<T> options);
 
     T update(EntityRequestOptions<T> options);
 

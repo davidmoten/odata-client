@@ -124,22 +124,20 @@ public final class Generator {
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())));
             p.format("%s}\n", indent.left());
 
-            p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("\n%spublic %s delete(%s<%s> options) {\n", indent, //
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic void delete(%s<%s> options) {\n", indent, //
+                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
+            p.format("%s}\n", indent);
+
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic %s update(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
-            p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("\n%spublic %s update(%s<%s> options) {\n", indent, //
-                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn null;\n", indent.right());
-            p.format("%s}\n", indent.left());
-
-            p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("\n%spublic %s patch(%s<%s> options) {\n", indent, //
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic %s patch(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
