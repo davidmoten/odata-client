@@ -5,7 +5,7 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     private final Class<T> cls;
 
     // should not be public api
-    public CollectionPageEntityRequest(Class<T> cls) {
+    public CollectionPageEntityRequest(ContextPath contextPath, Class<T> cls) {
         this.cls = cls;
     }
 
