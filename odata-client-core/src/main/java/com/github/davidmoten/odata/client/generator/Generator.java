@@ -376,7 +376,7 @@ public final class Generator {
                     String typeName = toType(x, imports);
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                     p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
-                    if (x.isNullable()) {
+                    if (x.isNullable() && !isCollection(x)) {
                         p.format("%sreturn %s.of(%s);\n", indent.right(), imports.add(Optional.class), fieldName);
                     } else {
                         p.format("%sreturn %s;\n", indent.right(), fieldName);
@@ -391,7 +391,7 @@ public final class Generator {
                                 fieldName, fieldName);
                         indent.left();
                     }
-                    if (x.isNullable()) {
+                    if (x.isNullable() && !isCollection(x)) {
                         p.format("%sthis.%s = %s.orElse(null);\n", indent.right(), fieldName, fieldName);
                     } else {
                         p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
