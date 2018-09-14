@@ -39,8 +39,8 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
-import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
+import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.UnsignedByte;
 
 public final class Generator {
@@ -104,39 +104,38 @@ public final class Generator {
 
             // add field
             p.format("%sprivate final %s contextPath;\n\n", indent.right(), imports.add(ContextPath.class));
+            p.format("%sprivate final %s id;\n\n", indent, imports.add(String.class));
 
             // add constructor
-            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
+            p.format("%spublic %s(%s contextPath, %s id) {\n", indent, simpleClassName, imports.add(ContextPath.class),
+                    imports.add(String.class));
             p.format("%sthis.contextPath = contextPath;\n", indent.right());
+            p.format("%sthis.id = id;\n", indent);
             p.format("%s}\n\n", indent.left());
 
             // write get
             p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(EntityRequestOptions.class),
-                    imports.add(names.getFullClassNameEntity(t.getName())));
+                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%spublic %s delete(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(EntityRequestOptions.class),
-                    imports.add(names.getFullClassNameEntity(t.getName())));
+                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%spublic %s update(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(EntityRequestOptions.class),
-                    imports.add(names.getFullClassNameEntity(t.getName())));
+                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%spublic %s patch(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullGeneratedClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(EntityRequestOptions.class),
-                    imports.add(names.getFullClassNameEntity(t.getName())));
+                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sreturn null;\n", indent.right());
             p.format("%s}\n", indent.left());
             indent.left();
@@ -221,10 +220,11 @@ public final class Generator {
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names
-                                    .getFullGeneratedClassNameFromTypeWithNamespace(x.getEntityType());
+                                    .getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType());
                             p.format("\n%spublic %s %s(String id) {\n", indent, imports.add(entityRequestType),
                                     Names.getIdentifier(x.getName()));
-                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), id);\n", indent.right(),
+                                    imports.add(entityRequestType), x.getName());
                             p.format("%s}\n", indent.left());
                         }
                     });
