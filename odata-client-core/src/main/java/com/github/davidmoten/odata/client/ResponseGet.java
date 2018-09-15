@@ -13,7 +13,7 @@ public class ResponseGet {
     }
 
     public String getText() {
-        if (responseCode != HttpURLConnection.HTTP_OK) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
             return text;
         } else {
             throw new RuntimeException("responseCode=" + responseCode);
