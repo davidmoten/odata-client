@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client.generator;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,6 +10,8 @@ import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
+import org.oasisopen.odata.csdl.v4.TNavigationProperty;
+import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
@@ -210,7 +213,7 @@ final class Names {
         String simple = getLastItemInDotDelimitedString(name);
         return getFullClassNameEntityRequestFromTypeWithoutNamespace(simple);
     }
-    
+
     public String getFullClassNameEntityRequestFromTypeWithoutNamespace(String name) {
         return getPackageEntityRequest() + "." + upperFirst(name)
                 + options.entityRequestClassSuffix();
@@ -283,6 +286,24 @@ final class Names {
             name = "cls";
         }
         return lowerFirst(name);
+    }
+
+    public static String getType(TProperty x) {
+        List<String> list = x.getType();
+        if (list.size() != 1) {
+            throw new IllegalArgumentException("property " + x.getName()
+                    + "must have one and only one type but was: " + x.getType());
+        }
+        return list.get(0);
+    }
+    
+    public static String getType(TNavigationProperty x) {
+        List<String> list = x.getType();
+        if (list.size() != 1) {
+            throw new IllegalArgumentException("property " + x.getName()
+                    + "must have one and only one type but was: " + x.getType());
+        }
+        return list.get(0);
     }
 
 }
