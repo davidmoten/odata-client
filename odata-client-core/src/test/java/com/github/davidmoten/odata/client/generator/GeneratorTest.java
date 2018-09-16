@@ -23,10 +23,4 @@ public class GeneratorTest {
         g.generate();
     }
 
-    public void testApi() {
-        // new
-        // GraphService().devices("1").registeredOwners().filter("blah").orderBy("field").top(1000).get();
-        // new
-        // GraphService().devices().id("1").registeredOwners().id("2").expand("blah").select("clause").get();
-    }
 }

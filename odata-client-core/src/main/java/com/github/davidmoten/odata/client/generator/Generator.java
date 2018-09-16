@@ -433,36 +433,51 @@ public final class Generator {
         Util.filter(properties, TProperty.class) //
                 .forEach(x -> {
                     String fieldName = Names.getIdentifier(x.getName());
-                    String typeName = toType(x, imports);
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
-                            x.getName());
-                    p.format("%spublic %s %s() {\n", indent, typeName,
-                            Names.getGetterMethod(x.getName()));
-                    if (x.isNullable() && !isCollection(x)) {
-                        p.format("%sreturn %s.of(%s);\n", indent.right(),
-                                imports.add(Optional.class), fieldName);
+                    String t = Names.getType(x);
+                    boolean isCollection = isCollection(x);
+                    if (isCollection) {
+                        String inner = names.getInnerType(t);
+                        String importedInnerType = toTypeNonCollection(inner, false, imports);
+                        p.format("%spublic %s<%s> %s() {\n", indent,
+                                imports.add(CollectionPage.class), importedInnerType,
+                                Names.getGetterMethod(x.getName()));
+                        p.format("%sreturn %s.from(contextPath.context(), %s, %s.class);\n",
+                                indent.right(), imports.add(CollectionPage.class), fieldName,
+                                importedInnerType);
+                        p.format("%s}\n", indent.left());
                     } else {
-                        p.format("%sreturn %s;\n", indent.right(), fieldName);
-                    }
-                    p.format("%s}\n", indent.left());
+                        String importedType = toTypeNonCollection(t, true, imports);
+                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
+                                x.getName());
+                        p.format("%spublic %s %s() {\n", indent, importedType,
+                                Names.getGetterMethod(x.getName()));
+                        if (x.isNullable() && !isCollection(x)) {
+                            p.format("%sreturn %s.of(%s);\n", indent.right(),
+                                    imports.add(Optional.class), fieldName);
+                        } else {
+                            p.format("%sreturn %s;\n", indent.right(), fieldName);
+                        }
+                        p.format("%s}\n", indent.left());
+                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
+                                x.getName());
+                        p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
+                                Names.getSetterMethod(x.getName()), t, fieldName);
+                        if (x.isUnicode() != null && !x.isUnicode()) {
+                            p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
+                                    imports.add(EntityPreconditions.class), fieldName, fieldName);
+                            indent.left();
+                        }
+                        if (x.isNullable() && !isCollection(x)) {
+                            p.format("%sthis.%s = %s.orElse(null);\n", indent.right(), fieldName,
+                                    fieldName);
+                        } else {
+                            p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
+                        }
+                        p.format("%sreturn this;\n", indent);
+                        p.format("%s}\n", indent.left());
 
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
-                            x.getName());
-                    p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
-                            Names.getSetterMethod(x.getName()), typeName, fieldName);
-                    if (x.isUnicode() != null && !x.isUnicode()) {
-                        p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
-                                imports.add(EntityPreconditions.class), fieldName, fieldName);
-                        indent.left();
                     }
-                    if (x.isNullable() && !isCollection(x)) {
-                        p.format("%sthis.%s = %s.orElse(null);\n", indent.right(), fieldName,
-                                fieldName);
-                    } else {
-                        p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
-                    }
-                    p.format("%sreturn this;\n", indent);
-                    p.format("%s}\n", indent.left());
+
                 });
     }
 
@@ -547,11 +562,11 @@ public final class Generator {
     }
 
     private static boolean isCollection(TProperty x) {
-        return isCollection(x.getType().get(0));
+        return isCollection(Names.getType(x));
     }
 
     private static boolean isCollection(TNavigationProperty x) {
-        return isCollection(x.getType().get(0));
+        return isCollection(Names.getType(x));
     }
 
     private static boolean isCollection(String t) {
@@ -565,8 +580,18 @@ public final class Generator {
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
-            String inner = t.substring(COLLECTION_PREFIX.length(), t.length() - 1);
+            String inner = names.getInnerType(t);
             return wrapCollection(imports, collectionClass, inner);
+        } else {
+            throw new RuntimeException("unhandled type: " + t);
+        }
+    }
+
+    private String toTypeNonCollection(String t, boolean canUsePrimitive, Imports imports) {
+        if (t.startsWith("Edm.")) {
+            return toTypeFromEdm(t, canUsePrimitive, imports);
+        } else if (t.startsWith(schema.getNamespace())) {
+            return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
         } else {
             throw new RuntimeException("unhandled type: " + t);
         }

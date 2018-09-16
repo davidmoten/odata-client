@@ -57,5 +57,10 @@ public class CollectionPage<T> {
             throw new RuntimeException(e);
         }
     }
+    
+    public static <T> CollectionPage<T> from(Context context, CollectionPageJson c, Class<T> cls) {
+        //TODO
+        return null;
+    }
 
 }
