@@ -28,6 +28,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -104,8 +105,11 @@ public final class Generator {
                     imports.add(EntityRequest.class) + "<"
                             + imports.add(names.getFullClassNameEntity(t.getName())) + ">");
 
+//            p.format("%s@%s()\n",indent.right(), imports.add(JsonCreator.class));
+//            p.format("%public %s(()\n",indent.right(), imports.add(JsonCreator.class));
+            
             // add field
-            p.format("%sprivate final %s contextPath;\n\n", indent.right(),
+            p.format("%sprivate final %s contextPath;\n\n", indent,
                     imports.add(ContextPath.class));
             p.format("%sprivate final %s id;\n\n", indent, imports.add(String.class));
 
