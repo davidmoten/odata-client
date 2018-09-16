@@ -3,14 +3,19 @@ package com.github.davidmoten.odata.client.generator;
 class Indent {
 
     private String value = "";
+    private static final String INDENT = "    ";
 
     Indent left() {
-        value = value.substring(0, value.length() - 4);
+        if (value.length() < INDENT.length()) {
+            throw new RuntimeException("left called more than right");
+        }
+        value = value.substring(0, value.length() - INDENT.length());
         return this;
+
     }
 
     Indent right() {
-        value += "    ";
+        value += INDENT;
         return this;
     }
 

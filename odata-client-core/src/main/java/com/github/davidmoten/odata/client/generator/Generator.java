@@ -28,7 +28,6 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,6 +35,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.CollectionEntityRequestOptions;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
+import com.github.davidmoten.odata.client.CollectionPageJson;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
@@ -107,9 +107,9 @@ public final class Generator {
 
 //            p.format("%s@%s()\n",indent.right(), imports.add(JsonCreator.class));
 //            p.format("%public %s(()\n",indent.right(), imports.add(JsonCreator.class));
-            
+
             // add field
-            p.format("%sprivate final %s contextPath;\n\n", indent,
+            p.format("%sprivate final %s contextPath;\n\n", indent.right(),
                     imports.add(ContextPath.class));
             p.format("%sprivate final %s id;\n\n", indent, imports.add(String.class));
 
@@ -527,10 +527,10 @@ public final class Generator {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
         if (x.isNullable() && !isCollection(x)) {
-            String r = toType(t, false, imports, List.class);
+            String r = toType(t, false, imports, CollectionPage.class);
             return imports.add(Optional.class) + "<" + r + ">";
         } else {
-            return toType(t, true, imports, List.class);
+            return toType(t, true, imports, CollectionPage.class);
         }
     }
 
@@ -539,6 +539,8 @@ public final class Generator {
         String t = x.getType().get(0);
         if (x.isNullable() && !isCollection(x)) {
             return toType(t, false, imports, List.class);
+        } else if (isCollection(x)) {
+            return imports.add(CollectionPageJson.class);
         } else {
             return toType(t, true, imports, List.class);
         }
