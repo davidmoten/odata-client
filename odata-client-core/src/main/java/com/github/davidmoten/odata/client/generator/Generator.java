@@ -344,8 +344,13 @@ public final class Generator {
             p.format("IMPORTSHERE");
             p.format("public final class %s {\n\n", simpleClassName);
 
+            addContextPathField(imports, indent, p);
+            
+            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
+            p.format("%sthis.contextPath = contextPath;\n", indent.right());
+            p.format("%s}\n", indent.left());
+            
             // write fields from properties
-            indent.right();
             printPropertyFields(imports, indent, p,
                     t.getPropertyOrNavigationPropertyOrAnnotation());
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
@@ -381,11 +386,7 @@ public final class Generator {
             p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "",
                     simpleClassName, extension, imports.add(ODataEntity.class));
 
-            // write fields from properties
-
-            // add context path field
-            p.format("%sprivate final %s contextPath;\n", indent.right(),
-                    imports.add(ContextPath.class));
+            addContextPathField(imports, indent, p);
 
             // add other fields
             printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
@@ -426,6 +427,12 @@ public final class Generator {
         }
     }
 
+    private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
+        // add context path field
+        p.format("%sprivate final %s contextPath;\n", indent.right(),
+                imports.add(ContextPath.class));
+    }
+
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
             String simpleClassName, List<Object> properties) {
 
@@ -446,7 +453,10 @@ public final class Generator {
                                 importedInnerType);
                         p.format("%s}\n", indent.left());
                     } else {
-                        String importedType = toTypeNonCollection(t, true, imports);
+                        String importedType = toTypeNonCollection(t, !x.isNullable(), imports);
+                        if (x.isNullable()) {
+                            importedType = imports.add(Optional.class) + "<" + importedType + ">";
+                        }
                         p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
                                 x.getName());
                         p.format("%spublic %s %s() {\n", indent, importedType,
@@ -461,7 +471,7 @@ public final class Generator {
                         p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
                                 x.getName());
                         p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
-                                Names.getSetterMethod(x.getName()), t, fieldName);
+                                Names.getSetterMethod(x.getName()), importedType, fieldName);
                         if (x.isUnicode() != null && !x.isUnicode()) {
                             p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
                                     imports.add(EntityPreconditions.class), fieldName, fieldName);
