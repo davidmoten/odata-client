@@ -16,7 +16,7 @@ public final class RequestHelper {
         ResponseGet response = cp.context().service().getResponseGET(cp.toUrl(), options.getRequestHeaders());
 
         // deserialize
-        return cp.context().serializer().deserialize(response.getText(), cls);
+        return cp.context().serializer().deserialize(response.getText(), cls, contextPath);
     }
 
 }

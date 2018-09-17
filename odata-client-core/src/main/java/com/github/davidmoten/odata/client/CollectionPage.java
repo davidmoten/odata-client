@@ -49,7 +49,7 @@ public class CollectionPage<T> {
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list2 = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
-                list2.add(context.serializer().deserialize(m.writeValueAsString(item), cls));
+                list2.add(context.serializer().deserialize(m.writeValueAsString(item), cls, null));
             }
             Optional<String> nextLink2 = Optional.ofNullable(o.get("@odata.nextLink").asText());
             return Optional.ofNullable(new CollectionPage<T>(cls, list2, nextLink2, context));

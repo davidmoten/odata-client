@@ -28,6 +28,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -346,11 +347,12 @@ public final class Generator {
             p.format("public final class %s {\n\n", simpleClassName);
 
             addContextPathField(imports, indent, p);
-            
-            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
+
+            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName,
+                    imports.add(ContextPath.class));
             p.format("%sthis.contextPath = contextPath;\n", indent.right());
             p.format("%s}\n", indent.left());
-            
+
             // write fields from properties
             printPropertyFields(imports, indent, p,
                     t.getPropertyOrNavigationPropertyOrAnnotation());
@@ -397,14 +399,26 @@ public final class Generator {
                     imports.add(Map.class), imports.add(String.class), imports.add(String.class));
 
             // add constructor
-            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName,
-                    imports.add(ContextPath.class));
+            // build constructor parameters
+            String props = Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                    .map(x -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class),
+                            x.getName(), toTypeSuppressUseOfOptional(x, imports),
+                            Names.getIdentifier(x.getName()))) //
+                    .collect(Collectors.joining(", "));
+            if (props.length() > 0) {
+                props = ", " + props;
+            }
+            // write constructor
+            p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
+            p.format("\n%spublic %s(%s contextPath%s) {\n", indent, simpleClassName,
+                    imports.add(ContextPath.class), props);
             if (t.getBaseType() != null) {
                 p.format("%ssuper(contextPath);\n", indent.right());
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%s}\n", indent.left());
 
+            // write property getter and setters
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getKeyOrPropertyOrNavigationProperty());
             printNavigationPropertyGetters(imports, indent, p,
@@ -492,16 +506,14 @@ public final class Generator {
 
                 });
     }
-    
 
-    private void printPropertyOrder(Imports imports, PrintWriter p,
-            List<Object> properties) {
+    private void printPropertyOrder(Imports imports, PrintWriter p, List<Object> properties) {
         String props = Util.filter(properties, TProperty.class) //
                 .map(x -> "\"" + x.getName() + "\"") //
                 .collect(Collectors.joining(", "));
         p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
     }
-    
+
     private void printPropertyFields(Imports imports, Indent indent, PrintWriter p,
             List<Object> properties) {
         Util.filter(properties, TProperty.class) //
