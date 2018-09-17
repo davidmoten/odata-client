@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -378,12 +379,16 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageEntity());
             p.format("IMPORTSHERE");
             final String extension;
+
+            List<TEntityType> heirarchy = getHeirarchy(t);
+
             if (t.getBaseType() != null) {
                 extension = " extends "
                         + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
             } else {
                 extension = "";
             }
+
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
                     imports.add(Include.class));
             printPropertyOrder(imports, p, t.getKeyOrPropertyOrNavigationProperty());
@@ -400,20 +405,36 @@ public final class Generator {
 
             // add constructor
             // build constructor parameters
-            String props = Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
-                    .map(x -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class),
-                            x.getName(), toTypeSuppressUseOfOptional(x, imports),
-                            Names.getIdentifier(x.getName()))) //
+            String props = heirarchy //
+                    .stream() //
+                    .flatMap(z -> Util
+                            .filter(z.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                            .map(x -> String.format("@%s(\"%s\") %s %s",
+                                    imports.add(JsonProperty.class), //
+                                    x.getName(), //
+                                    toTypeSuppressUseOfOptional(x, imports), //
+                                    Names.getIdentifier(x.getName())))) //
                     .collect(Collectors.joining(", "));
-            if (props.length() > 0) {
+            if (!props.isEmpty()) {
                 props = ", " + props;
             }
+
             // write constructor
             p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
             p.format("\n%spublic %s(%s contextPath%s) {\n", indent, simpleClassName,
                     imports.add(ContextPath.class), props);
             if (t.getBaseType() != null) {
-                p.format("%ssuper(contextPath);\n", indent.right());
+                String superFields = heirarchy //
+                        .subList(0, heirarchy.size() - 1) //
+                        .stream() //
+                        .flatMap(z -> Util
+                                .filter(z.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                                .map(x -> Names.getIdentifier(x.getName()))) //
+                        .collect(Collectors.joining(", "));
+                if (!superFields.isEmpty()) {
+                    superFields = ", " + superFields;
+                }
+                p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%s}\n", indent.left());
@@ -440,6 +461,24 @@ public final class Generator {
             Files.write(names.getClassFileEntity(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private List<TEntityType> getHeirarchy(TEntityType t) {
+        List<TEntityType> a = new LinkedList<>();
+        a.add(t);
+        while (true) {
+            if (t.getBaseType() == null) {
+                return a;
+            } else {
+                TEntityType y = t;
+                t = Util.types(schema, TEntityType.class) //
+                        .filter(x -> x.getName().equals(
+                                names.getSimpleTypeNameFromTypeWithNamespace(y.getBaseType()))) //
+                        .findFirst() //
+                        .get();
+                a.add(0, t);
+            }
         }
     }
 
