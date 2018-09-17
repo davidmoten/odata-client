@@ -1,5 +1,7 @@
 package com.github.davidmoten.msgraph;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -48,5 +50,6 @@ public class GraphServiceTest {
         };
         Context c = new Context(serializer, service);
         User user = new GraphService(c).users("1").get();
+        assertEquals("Conf Room Adams", user.getDisplayName().get());
     }
 }

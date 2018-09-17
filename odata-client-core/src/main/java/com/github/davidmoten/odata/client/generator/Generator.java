@@ -441,6 +441,15 @@ public final class Generator {
                 p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
+
+            // print constructor field assignments
+            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                    .forEach(x -> {
+                        String fieldName = Names.getIdentifier(x.getName());
+                        p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
+                    });
+
+            // close constructor
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
@@ -488,8 +497,8 @@ public final class Generator {
 
     private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
         // add context path field
-        p.format("%s@%s\n", indent, imports.add(JacksonInject.class));
-        p.format("%sprivate final %s contextPath;\n", indent.right(),
+        p.format("%s@%s\n", indent.right(), imports.add(JacksonInject.class));
+        p.format("%sprivate final %s contextPath;\n", indent,
                 imports.add(ContextPath.class));
     }
 
@@ -522,7 +531,7 @@ public final class Generator {
                         p.format("%spublic %s %s() {\n", indent, importedType,
                                 Names.getGetterMethod(x.getName()));
                         if (x.isNullable() && !isCollection(x)) {
-                            p.format("%sreturn %s.of(%s);\n", indent.right(),
+                            p.format("%sreturn %s.ofNullable(%s);\n", indent.right(),
                                     imports.add(Optional.class), fieldName);
                         } else {
                             p.format("%sreturn %s;\n", indent.right(), fieldName);
