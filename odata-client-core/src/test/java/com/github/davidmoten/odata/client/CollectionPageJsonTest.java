@@ -18,7 +18,7 @@ public class CollectionPageJsonTest {
                 + "\"value\": [ {\"name\": \"fred\", \"surname\":\"dag\"}]}";
         ObjectMapper m = new ObjectMapper();
         CollectionPageJson c = m.readValue(json, CollectionPageJson.class);
-        assertEquals("abc123", c.nextLink());
+        assertEquals("abc123", c.nextLink().get());
         assertEquals("fred", c.values().get(0).get("name").asText());
     }
 }
