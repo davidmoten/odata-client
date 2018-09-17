@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.CollectionEntityRequestOptions;
 import com.github.davidmoten.odata.client.CollectionPage;
@@ -383,6 +384,7 @@ public final class Generator {
             }
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
                     imports.add(Include.class));
+            printPropertyOrder(imports, p, t.getKeyOrPropertyOrNavigationProperty());
             p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "",
                     simpleClassName, extension, imports.add(ODataEntity.class));
 
@@ -490,7 +492,16 @@ public final class Generator {
 
                 });
     }
+    
 
+    private void printPropertyOrder(Imports imports, PrintWriter p,
+            List<Object> properties) {
+        String props = Util.filter(properties, TProperty.class) //
+                .map(x -> "\"" + x.getName() + "\"") //
+                .collect(Collectors.joining(", "));
+        p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
+    }
+    
     private void printPropertyFields(Imports imports, Indent indent, PrintWriter p,
             List<Object> properties) {
         Util.filter(properties, TProperty.class) //
