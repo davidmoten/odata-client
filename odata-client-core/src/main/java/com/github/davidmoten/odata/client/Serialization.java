@@ -13,7 +13,7 @@ public final class Serialization {
 
     public static final ObjectMapper MAPPER = createObjectMapper();
 
-    private static ObjectMapper createObjectMapper() {
+    public static ObjectMapper createObjectMapper() {
         return new ObjectMapper() //
                 .registerModule(new Jdk8Module()) //
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) //
