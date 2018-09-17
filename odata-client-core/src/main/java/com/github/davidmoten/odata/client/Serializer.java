@@ -13,7 +13,8 @@ public interface Serializer {
             if (contextPath != null) {
                 ObjectMapper m = Serialization.createObjectMapper();
                 Std iv = new InjectableValues.Std().addValue(ContextPath.class, contextPath);
-                return m.reader(iv).forType(cls).readValue(text);
+                m.setInjectableValues(iv);
+                return m.readValue(text, cls);
             } else {
                 return Serialization.MAPPER.readValue(text, cls);
             }
