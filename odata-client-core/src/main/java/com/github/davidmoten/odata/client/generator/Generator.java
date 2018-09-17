@@ -28,6 +28,7 @@ import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -421,7 +422,10 @@ public final class Generator {
 
             // write constructor
             p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-            p.format("\n%spublic %s(%s contextPath%s) {\n", indent, simpleClassName,
+            p.format("\n%spublic %s(@%s %s contextPath%s) {\n", //
+                    indent, //
+                    simpleClassName, //
+                    imports.add(JacksonInject.class), //
                     imports.add(ContextPath.class), props);
             if (t.getBaseType() != null) {
                 String superFields = heirarchy //
@@ -484,6 +488,7 @@ public final class Generator {
 
     private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
         // add context path field
+        p.format("%s@%s\n", indent, imports.add(JacksonInject.class));
         p.format("%sprivate final %s contextPath;\n", indent.right(),
                 imports.add(ContextPath.class));
     }
