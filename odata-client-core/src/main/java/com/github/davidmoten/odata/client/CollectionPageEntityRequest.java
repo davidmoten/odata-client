@@ -21,7 +21,7 @@ public final class CollectionPageEntityRequest<T extends ODataEntity, R extends 
             cp = cp.addQuery(query);
         }
         ResponseGet r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
-        return CollectionPageEntity.create(r.getText(), cls, cp.context());
+        return CollectionPageEntity.create(r.getText(), cls, cp);
     }
 
     public R id(String id) {
