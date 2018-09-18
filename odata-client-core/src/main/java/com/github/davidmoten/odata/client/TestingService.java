@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class TestingService {
 
-    public static Builder replyWithResource(String url, String resourceName) {
-        return new Builder().replyWithResource(url, resourceName);
+    public static Builder replyWithResource(String path, String resourceName) {
+        return new Builder().replyWithResource(path, resourceName);
     }
 
     public static Builder baseUrl(String url) {
@@ -36,8 +36,8 @@ public class TestingService {
             return this;
         }
 
-        public Builder replyWithResource(String url, String resourceName) {
-            responses.put(url, resourceName);
+        public Builder replyWithResource(String path, String resourceName) {
+            responses.put(baseUrl + path, resourceName);
             return this;
         }
 
@@ -64,6 +64,7 @@ public class TestingService {
                     return new Path(baseUrl, pathStyle);
                 }
             };
+
         }
     }
 
