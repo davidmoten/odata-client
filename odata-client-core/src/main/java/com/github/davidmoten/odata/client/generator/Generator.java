@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
@@ -37,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.CollectionEntityRequestOptions;
-import com.github.davidmoten.odata.client.CollectionPage;
+import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageJson;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
@@ -282,7 +283,7 @@ public final class Generator {
             // write fields from properties
             indent.right();
             p.format("%spublic %s<%s> get(%s options) {\n", indent, //
-                    imports.add(CollectionPage.class), //
+                    imports.add(CollectionPageEntity.class), //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(CollectionEntityRequestOptions.class));
             p.format("%sreturn null;\n", indent.right());
@@ -377,10 +378,22 @@ public final class Generator {
             String props = heirarchy //
                     .stream() //
                     .flatMap(z -> Util.filter(z.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
-                            .map(x -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
-                                    x.getName(), //
-                                    toTypeSuppressUseOfOptional(x, imports), //
-                                    Names.getIdentifier(x.getName())))) //
+                            .flatMap(x -> {
+                                String a = String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
+                                        x.getName(), //
+                                        toTypeSuppressUseOfOptional(x, imports), //
+                                        Names.getIdentifier(x.getName()));
+                                if (isCollection(x) && !names.isEntityWithNamespace(Names.getType(x))) {
+                                    String b = String.format("@%s(\"%s@nextLink\") %s %sNextLink",
+                                            imports.add(JsonProperty.class), //
+                                            x.getName(), //
+                                            toTypeSuppressUseOfOptional(x, imports), //
+                                            Names.getIdentifier(x.getName()));
+                                    return Stream.of(a, b);
+                                } else {
+                                    return Stream.of(a);
+                                }
+                            })) //
                     .collect(Collectors.joining(", "));
             if (!props.isEmpty()) {
                 props = ", " + props;
@@ -477,7 +490,7 @@ public final class Generator {
                         boolean isEntity = names.isEntityWithNamespace(names.getType(x));
                         Class<?> collectionCls;
                         if (isEntity) {
-                            collectionCls = CollectionPage.class;
+                            collectionCls = CollectionPageEntity.class;
                         } else {
                             collectionCls = CollectionPageNonEntity.class;
                         }
@@ -485,7 +498,7 @@ public final class Generator {
                                 Names.getGetterMethod(x.getName()));
                         if (isEntity) {
                             p.format("%sreturn %s.from(contextPath.context(), %s, %s.class);\n", indent.right(),
-                                    imports.add(CollectionPage.class), fieldName, importedInnerType);
+                                    imports.add(CollectionPageEntity.class), fieldName, importedInnerType);
                         } else {
                             p.format("%sreturn null;\n", indent.right());
                         }
@@ -495,7 +508,6 @@ public final class Generator {
                         if (x.isNullable()) {
                             importedType = imports.add(Optional.class) + "<" + importedType + ">";
                         }
-                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                         p.format("%spublic %s %s() {\n", indent, importedType, Names.getGetterMethod(x.getName()));
                         if (x.isNullable() && !isCollection(x)) {
                             p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
@@ -504,7 +516,6 @@ public final class Generator {
                             p.format("%sreturn %s;\n", indent.right(), fieldName);
                         }
                         p.format("%s}\n", indent.left());
-                        p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                         p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
                                 Names.getSetterMethod(x.getName()), importedType, fieldName);
                         if (x.isUnicode() != null && !x.isUnicode()) {
@@ -596,10 +607,10 @@ public final class Generator {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
         if (x.isNullable() && !isCollection(x)) {
-            String r = toType(t, false, imports, CollectionPage.class);
+            String r = toType(t, false, imports, CollectionPageEntity.class);
             return imports.add(Optional.class) + "<" + r + ">";
         } else {
-            return toType(t, true, imports, CollectionPage.class);
+            return toType(t, true, imports, CollectionPageEntity.class);
         }
     }
 

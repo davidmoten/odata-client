@@ -12,7 +12,7 @@ public final class CollectionPageEntityRequest<T extends ODataEntity, R extends 
     }
 
     // not public api
-    CollectionPage<T> get(CollectionEntityRequestOptions options) {
+    CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         return null;
     }
 
@@ -20,7 +20,7 @@ public final class CollectionPageEntityRequest<T extends ODataEntity, R extends 
         return entityRequestFactory.create(contextPath, id);
     }
 
-    public CollectionPage<T> get() {
+    public CollectionPageEntity<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
     }
 

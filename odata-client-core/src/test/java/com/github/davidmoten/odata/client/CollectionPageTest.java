@@ -38,7 +38,7 @@ public class CollectionPageTest {
             }
         };
         Context context = new Context(serializer, service);
-        Optional<CollectionPage<Person>> c = CollectionPage.nextPage(json, Person.class, context);
+        Optional<CollectionPageEntity<Person>> c = CollectionPageEntity.nextPage(json, Person.class, context);
         assertTrue(c.isPresent());
         assertEquals(2, c.get().currentPage().size());
         assertEquals("Russell", c.get().currentPage().get(0).firstName);

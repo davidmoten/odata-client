@@ -55,7 +55,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
         return this;
     }
 
-    public CollectionPage<T> get() {
+    public CollectionPageEntity<T> get() {
         return request.get(build());
     }
 
