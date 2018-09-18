@@ -1,6 +1,7 @@
 package com.github.davidmoten.msgraph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class GraphServiceTest {
     @Test
     public void testGetEntityCollection() {
         GraphService client = createClient("/users", "/response-users.json");
+        assertNotNull(client.users().get());
         List<User> users = client.users().get().currentPage();
     }
 
