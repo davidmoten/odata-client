@@ -17,15 +17,19 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityWithComplexTypeCollection() {
-        Service service = TestingService //
-                .baseUrl("https://testing.com") //
-                .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
-                .replyWithResource("https://testing.com/users/1", "/response-user.json") //
-                .build();
+        Service service = createService("/users/1", "/response-user.json");
         Context c = new Context(Serializer.DEFAULT, service);
         User user = new GraphService(c).users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
         assertEquals(1, user.getBusinessPhones().values().size());
         assertEquals("+61 2 1234567", user.getBusinessPhones().values().get(0));
+    }
+
+    private static Service createService(String path, String resource) {
+        return TestingService //
+                .baseUrl("https://testing.com") //
+                .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
+                .replyWithResource("https://testing.com" + path, resource) //
+                .build();
     }
 }
