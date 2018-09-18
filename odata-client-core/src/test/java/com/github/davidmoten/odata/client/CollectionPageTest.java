@@ -28,7 +28,7 @@ public class CollectionPageTest {
         Service service = new Service() {
 
             @Override
-            public ResponseGet getResponseGET(String url, Map<String, String> requestHeaders) {
+            public ResponseGet GET(String url, Map<String, String> requestHeaders) {
                 return new ResponseGet(200, json);
             }
 
@@ -38,10 +38,9 @@ public class CollectionPageTest {
             }
         };
         Context context = new Context(serializer, service);
-        Optional<CollectionPageEntity<Person>> c = CollectionPageEntity.nextPage(json, Person.class, context);
-        assertTrue(c.isPresent());
-        assertEquals(2, c.get().currentPage().size());
-        assertEquals("Russell", c.get().currentPage().get(0).firstName);
+        CollectionPageEntity<Person> c = CollectionPageEntity.create(json, Person.class, context);
+        assertEquals(2, c.currentPage().size());
+        assertEquals("Russell", c.currentPage().get(0).firstName);
     }
 
     static final class Person implements ODataEntity {

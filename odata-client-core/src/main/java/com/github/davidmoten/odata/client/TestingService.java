@@ -45,7 +45,7 @@ public class TestingService {
             return new Service() {
 
                 @Override
-                public ResponseGet getResponseGET(String url, Map<String, String> requestHeaders) {
+                public ResponseGet GET(String url, Map<String, String> requestHeaders) {
                     String resourceName = responses.get(url);
                     if (resourceName == null) {
                         throw new RuntimeException("response not found for url=" + url);

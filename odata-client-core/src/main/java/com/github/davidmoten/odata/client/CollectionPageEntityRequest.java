@@ -3,17 +3,25 @@ package com.github.davidmoten.odata.client;
 public final class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
     private final ContextPath contextPath;
+    private final Class<T> cls;
     private final EntityRequestFactory<T, R> entityRequestFactory;
 
     // should not be public api
-    public CollectionPageEntityRequest(ContextPath contextPath, EntityRequestFactory<T, R> entityRequestFactory) {
+    public CollectionPageEntityRequest(ContextPath contextPath, Class<T> cls,
+            EntityRequestFactory<T, R> entityRequestFactory) {
         this.contextPath = contextPath;
         this.entityRequestFactory = entityRequestFactory;
+        this.cls = cls;
     }
 
     // not public api
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
-        return null;
+        ContextPath cp = contextPath;
+        for (String query : options.getQueries()) {
+            cp = cp.addQuery(query);
+        }
+        ResponseGet r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
+        return CollectionPageEntity.create(r.getText(), cls, cp.context());
     }
 
     public R id(String id) {

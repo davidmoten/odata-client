@@ -238,6 +238,7 @@ public final class Generator {
                         p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
                         p.format("%scontextPath.addSegment(\"%s\"),\n", indent.right().right().right().right(),
                                 x.getName());
+                        p.format("%s%s.class,\n", indent, imports.add(names.getFullClassNameFromTypeWithNamespace(x.getEntityType())));
                         p.format("%s(contextPath, id) -> new %s(contextPath, id));\n", indent, imports
                                 .add(names.getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType())));
                         p.format("%s}\n", indent.left().left().left().left().left());
