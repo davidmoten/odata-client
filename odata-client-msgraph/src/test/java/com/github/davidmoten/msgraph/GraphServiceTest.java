@@ -16,7 +16,7 @@ import odata.msgraph.client.entity.User;
 public class GraphServiceTest {
 
     @Test
-    public void testGetEntity() {
+    public void testGetEntityWithComplexTypeCollection() {
         Service service = TestingService //
                 .baseUrl("https://testing.com") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
