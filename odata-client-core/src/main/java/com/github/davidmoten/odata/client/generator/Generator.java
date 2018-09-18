@@ -498,7 +498,7 @@ public final class Generator {
                     if (isCollection) {
                         String inner = names.getInnerType(t);
                         String importedInnerType = toTypeNonCollection(inner, false, imports);
-                        boolean isEntity = names.isEntityWithNamespace(names.getType(x));
+                        boolean isEntity = names.isEntityWithNamespace(Names.getType(x));
                         Class<?> collectionCls;
                         if (isEntity) {
                             collectionCls = CollectionPageEntity.class;
@@ -612,17 +612,6 @@ public final class Generator {
         String t = x.getEntityType();
         // an entity set is always a collection
         return wrapCollection(imports, CollectionPageEntityRequest.class, t);
-    }
-
-    private String toType(TProperty x, Imports imports) {
-        Preconditions.checkArgument(x.getType().size() == 1);
-        String t = x.getType().get(0);
-        if (x.isNullable() && !isCollection(x)) {
-            String r = toType(t, false, imports, CollectionPageEntity.class);
-            return imports.add(Optional.class) + "<" + r + ">";
-        } else {
-            return toType(t, true, imports, CollectionPageEntity.class);
-        }
     }
 
     private String toTypeSuppressUseOfOptional(TProperty x, Imports imports) {
