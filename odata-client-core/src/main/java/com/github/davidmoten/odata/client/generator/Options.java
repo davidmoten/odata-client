@@ -1,5 +1,8 @@
 package com.github.davidmoten.odata.client.generator;
 
+import java.util.Optional;
+
+
 public final class Options {
 
     private final String outputDirectory;
@@ -12,10 +15,9 @@ public final class Options {
     private final String packageSuffixContainer;
     private final String collectionRequestClassSuffix;
     private final String entityRequestClassSuffix;
+    private final boolean pageComplexTypes;
 
-    private Options(String outputDirectory, String pkg, String packageSuffixEnum, String packageSuffixEntity,
-            String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
-            String packageSuffixContainer, String collectionRequestClassSuffix, String entityRequestClassSuffix) {
+    private Options(String outputDirectory, String pkg, String packageSuffixEnum, String packageSuffixEntity, String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest, String packageSuffixContainer, String collectionRequestClassSuffix, String entityRequestClassSuffix, boolean pageComplexTypes) {
         notNull(outputDirectory, "outputDirectory");
         notNull(pkg, "pkg");
         notNull(packageSuffixEnum, "packageSuffixEnum");
@@ -26,6 +28,7 @@ public final class Options {
         notNull(packageSuffixContainer, "packageSuffixContainer");
         notNull(collectionRequestClassSuffix, "collectionRequestClassSuffix");
         notNull(entityRequestClassSuffix, "entityRequestClassSuffix");
+        notNull(pageComplexTypes, "pageComplexTypes");
         this.outputDirectory = outputDirectory;
         this.pkg = pkg;
         this.packageSuffixEnum = packageSuffixEnum;
@@ -36,6 +39,7 @@ public final class Options {
         this.packageSuffixContainer = packageSuffixContainer;
         this.collectionRequestClassSuffix = collectionRequestClassSuffix;
         this.entityRequestClassSuffix = entityRequestClassSuffix;
+        this.pageComplexTypes = pageComplexTypes;
     }
 
     public static Builder1 builder() {
@@ -82,6 +86,10 @@ public final class Options {
         return entityRequestClassSuffix;
     }
 
+    public boolean pageComplexTypes() {
+        return pageComplexTypes;
+    }
+
     public static final class Builder1 {
 
         private String outputDirectory = "target/generated-sources/odata";
@@ -94,8 +102,9 @@ public final class Options {
         private String packageSuffixContainer = ".container";
         private String collectionRequestClassSuffix = "CollectionRequest";
         private String entityRequestClassSuffix = "Request";
+        private boolean pageComplexTypes = true;
 
-        Builder1() {
+        Builder1(){
         }
 
         public Builder2 pkg(String pkg) {
@@ -111,7 +120,7 @@ public final class Options {
         private final Builder1 b;
 
         Builder2(Builder1 b) {
-            this.b = b;
+             this.b = b;
         }
 
         public Builder2 outputDirectory(String outputDirectory) {
@@ -168,10 +177,14 @@ public final class Options {
             return this;
         }
 
+        public Builder2 pageComplexTypes(boolean pageComplexTypes) {
+            notNull(pageComplexTypes, "pageComplexTypes");
+            b.pageComplexTypes = pageComplexTypes;
+            return this;
+        }
+
         public Options build() {
-            return new Options(b.outputDirectory, b.pkg, b.packageSuffixEnum, b.packageSuffixEntity,
-                    b.packageSuffixComplexType, b.packageSuffixEntityRequest, b.packageSuffixCollectionRequest,
-                    b.packageSuffixContainer, b.collectionRequestClassSuffix, b.entityRequestClassSuffix);
+            return new Options(b.outputDirectory, b.pkg, b.packageSuffixEnum, b.packageSuffixEntity, b.packageSuffixComplexType, b.packageSuffixEntityRequest, b.packageSuffixCollectionRequest, b.packageSuffixContainer, b.collectionRequestClassSuffix, b.entityRequestClassSuffix, b.pageComplexTypes);
         }
     }
 

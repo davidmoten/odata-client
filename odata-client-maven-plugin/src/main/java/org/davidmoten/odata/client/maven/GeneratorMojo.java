@@ -32,13 +32,19 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter(name = "packageName", required = true)
     String packageName;
 
+    @Parameter(name = "pageComplexTypes", required = false, defaultValue = "true")
+    boolean pageComplexTypes;
+
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
 
     @Override
     public void execute() throws MojoExecutionException {
-        Options options = Options.builder().pkg(packageName)
-                .outputDirectory(outputDirectory.getAbsolutePath()).build();
+        Options options = Options.builder() //
+                .pkg(packageName) //
+                .outputDirectory(outputDirectory.getAbsolutePath()) //
+                .pageComplexTypes(false) //
+                .build();
         try (InputStream is = new FileInputStream(definition)) {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
