@@ -13,7 +13,7 @@ public final class RequestHelper {
             cp = cp.addQuery(query);
         }
         // get the response
-        ResponseGet response = cp.context().service().getResponseGET(cp.toUrl(), options.getRequestHeaders());
+        ResponseGet response = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
 
         // deserialize
         return cp.context().serializer().deserialize(response.getText(), cls, contextPath);
