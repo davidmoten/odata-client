@@ -1,6 +1,7 @@
 package com.github.davidmoten.msgraph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,5 +52,6 @@ public class GraphServiceTest {
         Context c = new Context(serializer, service);
         User user = new GraphService(c).users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
+        assertTrue(user.getBusinessPhones().values().isEmpty());
     }
 }
