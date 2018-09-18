@@ -433,6 +433,9 @@ public final class Generator {
                     .forEach(x -> {
                         String fieldName = Names.getIdentifier(x.getName());
                         p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
+                        if (isCollection(x) && !names.isEntityWithNamespace(Names.getType(x))) {
+                            p.format("%sthis.%sNextLink = %sNextLink;\n", indent, fieldName, fieldName);
+                        }
                     });
 
             // close constructor
