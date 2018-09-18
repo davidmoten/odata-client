@@ -3,7 +3,7 @@ package com.github.davidmoten.odata.client.generator;
 class Indent {
 
     private String value = "";
-    private static final String INDENT = "    ";
+    public static final String INDENT = "    ";
 
     Indent left() {
         if (value.length() < INDENT.length()) {
