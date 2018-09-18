@@ -1,8 +1,5 @@
 package com.github.davidmoten.odata.client.generator;
 
-import java.util.Optional;
-
-
 public final class Options {
 
     private final String outputDirectory;
@@ -17,7 +14,10 @@ public final class Options {
     private final String entityRequestClassSuffix;
     private final boolean pageComplexTypes;
 
-    private Options(String outputDirectory, String pkg, String packageSuffixEnum, String packageSuffixEntity, String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest, String packageSuffixContainer, String collectionRequestClassSuffix, String entityRequestClassSuffix, boolean pageComplexTypes) {
+    private Options(String outputDirectory, String pkg, String packageSuffixEnum, String packageSuffixEntity,
+            String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
+            String packageSuffixContainer, String collectionRequestClassSuffix, String entityRequestClassSuffix,
+            boolean pageComplexTypes) {
         notNull(outputDirectory, "outputDirectory");
         notNull(pkg, "pkg");
         notNull(packageSuffixEnum, "packageSuffixEnum");
@@ -104,7 +104,7 @@ public final class Options {
         private String entityRequestClassSuffix = "Request";
         private boolean pageComplexTypes = true;
 
-        Builder1(){
+        Builder1() {
         }
 
         public Builder2 pkg(String pkg) {
@@ -120,7 +120,7 @@ public final class Options {
         private final Builder1 b;
 
         Builder2(Builder1 b) {
-             this.b = b;
+            this.b = b;
         }
 
         public Builder2 outputDirectory(String outputDirectory) {
@@ -184,7 +184,10 @@ public final class Options {
         }
 
         public Options build() {
-            return new Options(b.outputDirectory, b.pkg, b.packageSuffixEnum, b.packageSuffixEntity, b.packageSuffixComplexType, b.packageSuffixEntityRequest, b.packageSuffixCollectionRequest, b.packageSuffixContainer, b.collectionRequestClassSuffix, b.entityRequestClassSuffix, b.pageComplexTypes);
+            return new Options(b.outputDirectory, b.pkg, b.packageSuffixEnum, b.packageSuffixEntity,
+                    b.packageSuffixComplexType, b.packageSuffixEntityRequest, b.packageSuffixCollectionRequest,
+                    b.packageSuffixContainer, b.collectionRequestClassSuffix, b.entityRequestClassSuffix,
+                    b.pageComplexTypes);
         }
     }
 
