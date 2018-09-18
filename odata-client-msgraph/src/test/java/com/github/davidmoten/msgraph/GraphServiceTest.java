@@ -2,6 +2,8 @@ package com.github.davidmoten.msgraph;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.Context;
@@ -17,19 +19,25 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityWithComplexTypeCollection() {
-        Service service = createService("/users/1", "/response-user.json");
-        Context c = new Context(Serializer.DEFAULT, service);
-        User user = new GraphService(c).users("1").get();
+        GraphService client = createClient("/users/1", "/response-user.json");
+        User user = client.users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
         assertEquals(1, user.getBusinessPhones().values().size());
         assertEquals("+61 2 1234567", user.getBusinessPhones().values().get(0));
     }
 
-    private static Service createService(String path, String resource) {
-        return TestingService //
-                .baseUrl("https://testing.com") //
+    @Test
+    public void testGetEntityCollection() {
+        GraphService client = createClient("/users", "/response-users.json");
+        List<User> users = client.users().get().currentPage();
+    }
+
+    private static GraphService createClient(String path, String resource) {
+        Service service = TestingService //
+                .baseUrl("https://graph.microsoft.com/v1.0") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
-                .replyWithResource("https://testing.com" + path, resource) //
+                .replyWithResource("https://graph.microsoft.com/v1.0" + path, resource) //
                 .build();
+        return new GraphService(new Context(Serializer.DEFAULT, service));
     }
 }
