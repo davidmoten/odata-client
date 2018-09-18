@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public interface Serializer {
 
+    public static final Serializer DEFAULT = new Serializer() {
+    };
+
     default <T> T deserialize(String text, Class<T> cls, ContextPath contextPath) {
         try {
             if (contextPath != null) {
