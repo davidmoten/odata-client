@@ -1,7 +1,6 @@
 package com.github.davidmoten.odata.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Test;
 
@@ -38,7 +36,8 @@ public class CollectionPageTest {
             }
         };
         Context context = new Context(serializer, service);
-        CollectionPageEntity<Person> c = CollectionPageEntity.create(json, Person.class, context);
+        CollectionPageEntity<Person> c = CollectionPageEntity.create(json, Person.class,
+                new ContextPath(context, service.getBasePath()));
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
     }
