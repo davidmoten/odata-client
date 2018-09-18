@@ -1,12 +1,12 @@
 package com.github.davidmoten.msgraph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
-import java.util.List;
 
 import org.junit.Test;
 
+import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.Serializer;
@@ -28,10 +28,13 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void testGetEntityCollection() {
+    public void testGetEntityCollectionWithoutNextPage() {
         GraphService client = createClient("/users", "/response-users.json");
         assertNotNull(client.users().get());
-        List<User> users = client.users().get().currentPage();
+        CollectionPageEntity<User> c = client.users().get();
+        assertNotNull(c);
+        assertEquals(31, c.currentPage().size());
+        assertFalse(c.nextPage().isPresent());
     }
 
     private static GraphService createClient(String path, String resource) {
