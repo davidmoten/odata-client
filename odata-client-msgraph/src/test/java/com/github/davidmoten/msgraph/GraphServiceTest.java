@@ -52,6 +52,7 @@ public class GraphServiceTest {
         Context c = new Context(serializer, service);
         User user = new GraphService(c).users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
-        assertTrue(user.getBusinessPhones().values().isEmpty());
+        assertEquals(1, user.getBusinessPhones().values().size());
+        assertEquals("+61 2 1234567", user.getBusinessPhones().values().get(0));
     }
 }
