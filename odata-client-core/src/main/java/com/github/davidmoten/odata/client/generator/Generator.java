@@ -511,7 +511,9 @@ public final class Generator {
                             p.format("%sreturn %s.from(contextPath.context(), %s, %s.class);\n", indent.right(),
                                     imports.add(CollectionPageEntity.class), fieldName, importedInnerType);
                         } else {
-                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%sreturn new %s<%s>(contextPath, %s.class, %s, %sNextLink);\n", indent.right(),
+                                    imports.add(CollectionPageNonEntity.class), importedInnerType, importedInnerType,
+                                    fieldName, fieldName);
                         }
                         p.format("%s}\n", indent.left());
                     } else {
