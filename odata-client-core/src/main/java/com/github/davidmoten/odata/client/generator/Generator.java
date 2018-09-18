@@ -387,13 +387,14 @@ public final class Generator {
                                     String b = String.format("@%s(\"%s@nextLink\") %s %sNextLink",
                                             imports.add(JsonProperty.class), //
                                             x.getName(), //
-                                            toTypeSuppressUseOfOptional(x, imports), //
+                                            imports.add(String.class), //
                                             Names.getIdentifier(x.getName()));
                                     return Stream.of(a, b);
                                 } else {
                                     return Stream.of(a);
                                 }
                             })) //
+                    .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining(", "));
             if (!props.isEmpty()) {
                 props = ", " + props;
@@ -411,7 +412,14 @@ public final class Generator {
                         .subList(0, heirarchy.size() - 1) //
                         .stream() //
                         .flatMap(z -> Util.filter(z.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
-                                .map(x -> Names.getIdentifier(x.getName()))) //
+                                .flatMap(x -> {
+                                    String a = Names.getIdentifier(x.getName());
+                                    if (isCollection(x) && !names.isEntityWithNamespace(Names.getType(x))) {
+                                        return Stream.of(a, Names.getIdentifier(x.getName() + "NextLink"));
+                                    } else {
+                                        return Stream.of(a);
+                                    }
+                                })) //
                         .collect(Collectors.joining(", "));
                 if (!superFields.isEmpty()) {
                     superFields = ", " + superFields;
