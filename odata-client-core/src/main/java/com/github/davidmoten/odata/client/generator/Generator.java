@@ -505,7 +505,7 @@ public final class Generator {
                         } else {
                             collectionCls = CollectionPageNonEntity.class;
                         }
-                        p.format("%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls), importedInnerType,
+                        p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls), importedInnerType,
                                 Names.getGetterMethod(x.getName()));
                         if (isEntity) {
                             p.format("%sreturn %s.from(contextPath.context(), %s, %s.class);\n", indent.right(),
@@ -519,7 +519,7 @@ public final class Generator {
                         if (x.isNullable()) {
                             importedType = imports.add(Optional.class) + "<" + importedType + ">";
                         }
-                        p.format("%spublic %s %s() {\n", indent, importedType, Names.getGetterMethod(x.getName()));
+                        p.format("\n%spublic %s %s() {\n", indent, importedType, Names.getGetterMethod(x.getName()));
                         if (x.isNullable() && !isCollection(x)) {
                             p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
                                     fieldName);
@@ -527,7 +527,7 @@ public final class Generator {
                             p.format("%sreturn %s;\n", indent.right(), fieldName);
                         }
                         p.format("%s}\n", indent.left());
-                        p.format("%spublic %s %s(%s %s) {\n", indent, simpleClassName,
+                        p.format("\n%spublic %s %s(%s %s) {\n", indent, simpleClassName,
                                 Names.getSetterMethod(x.getName()), importedType, fieldName);
                         if (x.isUnicode() != null && !x.isUnicode()) {
                             p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(EntityPreconditions.class),
@@ -577,7 +577,7 @@ public final class Generator {
         Util.filter(properties, cls) //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
-                    p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
+                    p.format("\n%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
                     p.format("%sreturn null;\n", indent.right());
                     p.format("%s}\n", indent.left());
                 });
