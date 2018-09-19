@@ -477,7 +477,7 @@ public final class Generator {
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class),
                     imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn null;\n", indent.right());
+            p.format("%sreturn null; // TODO\n", indent.right());
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
@@ -485,7 +485,7 @@ public final class Generator {
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class),
                     imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn null;\n", indent.right());
+            p.format("%sreturn null; // TODO\n", indent.right());
             p.format("%s}\n", indent.left());
             indent.left();
 
@@ -526,7 +526,7 @@ public final class Generator {
                                                     names.getInnerType(names.getType(x)))));
                             indent.left().left().left().left();
                         } else {
-                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%sreturn null; // TODO\n", indent.right());
                         }
                         p.format("%s}\n", indent.left());
 
@@ -673,7 +673,7 @@ public final class Generator {
                     imports.add(CollectionPageEntity.class), //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(CollectionEntityRequestOptions.class));
-            p.format("%sreturn null;\n", indent.right());
+            p.format("%sreturn null; // TODO\n", indent.right());
             p.format("%s}\n", indent.left());
 
             Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
@@ -684,7 +684,7 @@ public final class Generator {
                                     names.getFullClassNameCollectionRequestFromTypeWithNamespace(
                                             names.getInnerType(n.getType().get(0))), //
                                     names.getSimpleTypeNameFromTypeWithNamespace(n.getName()));
-                            p.format("%sreturn null;\n", indent.right());
+                            p.format("%sreturn null; // TODO\n", indent.right());
                             p.format("%s}\n", indent.left());
                         }
                     });
@@ -856,7 +856,7 @@ public final class Generator {
                                                 names.getInnerType(names.getType(x)))));
                         indent.left().left().left().left();
                     } else {
-                        p.format("%sreturn null;\n", indent.right());
+                        p.format("%sreturn null; // TODO\n", indent.right());
                     }
                     p.format("%s}\n", indent.left());
                 });
