@@ -88,11 +88,11 @@ public final class Generator {
         Util.types(schema, TEntityType.class) //
                 .forEach(x -> writeEntityRequest(x));
 
-        // write actions
+        // TODO write actions
+        
+        // TODO write functions
 
-        // write functions
-
-        // consume annotations
+        // TODO consume annotations for documentation
 
     }
 
@@ -470,6 +470,7 @@ public final class Generator {
             p.format("%spublic void delete(%s<%s> options) {\n", indent, //
                     imports.add(EntityRequestOptions.class),
                     imports.add(names.getFullClassNameEntity(t.getName())));
+            p.format("%sthrow new %s(); \n", indent.right(), imports.add(UnsupportedOperationException.class));
             p.format("%s}\n", indent);
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
@@ -477,7 +478,7 @@ public final class Generator {
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class),
                     imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn null; // TODO\n", indent.right());
+            p.format("%sthrow new %s(); \n", indent.right(), imports.add(UnsupportedOperationException.class));
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
@@ -485,7 +486,7 @@ public final class Generator {
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class),
                     imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn null; // TODO\n", indent.right());
+            p.format("%sthrow new %s(); \n", indent.right(), imports.add(UnsupportedOperationException.class));
             p.format("%s}\n", indent.left());
             indent.left();
 
