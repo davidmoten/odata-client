@@ -16,6 +16,7 @@ import com.github.davidmoten.odata.client.TestingService;
 import com.github.davidmoten.odata.client.TestingService.Builder;
 
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.User;
 
 public class GraphServiceTest {
@@ -41,9 +42,12 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityCollectionWithNextPage() {
-        GraphService client = client(serviceBuilder().replyWithResource("/me/contacts", "/response-contacts.json"));
+        GraphService client = client(serviceBuilder() //
+                .replyWithResource("/me/contacts", "/response-contacts.json") //
+                .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json")
+                );
         assertNotNull(client.me().contacts().get());
-        CollectionPageEntity<User> c = client.users().get();
+        CollectionPageEntity<Contact> c = client.me().contacts().get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
         assertTrue(c.nextPage().isPresent());

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class PathTest {
 
-    private final static Path a = new Path("http://base", Collections.emptyList(),
+    private final static Path a = new Path("http://base", Collections.emptyMap(),
             PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
 
     @Test
@@ -28,12 +28,12 @@ public class PathTest {
 
     @Test
     public void testBasePathWithQuery() {
-        assertEquals("http://base?x=true", a.addQuery("x=true").toString());
+        assertEquals("http://base?x=true", a.addQuery("x", "true").toString());
     }
 
     @Test
     public void testBasePathWithQueryIsEncoded() {
-        assertEquals("http://base?x=ab%20cd", a.addQuery("x=ab cd").toString());
+        assertEquals("http://base?x=ab%20cd", a.addQuery("x", "ab cd").toString());
     }
 
 }
