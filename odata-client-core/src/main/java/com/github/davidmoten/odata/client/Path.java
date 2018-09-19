@@ -2,9 +2,10 @@ package com.github.davidmoten.odata.client;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -14,17 +15,17 @@ import com.github.davidmoten.guavamini.Preconditions;
 public class Path {
 
     private final String url;
-    private final List<String> queries; // unencoded
+    private final Map<String, String> queries; // unencoded
     private final PathStyle style;
 
-    public Path(String url, List<String> queries, PathStyle style) {
+    public Path(String url, Map<String, String> queries, PathStyle style) {
         this.url = url;
         this.queries = queries;
         this.style = style;
     }
 
     public Path(String url, PathStyle style) {
-        this(url, Collections.emptyList(), style);
+        this(url, Collections.emptyMap(), style);
     }
 
     private String append(String url, String s) {
@@ -74,10 +75,10 @@ public class Path {
         return new Path(u, queries, style);
     }
 
-    public Path addQuery(String query) {
-        List<String> list = new ArrayList<>(queries);
-        list.add(query);
-        return new Path(url, list, style);
+    public Path addQuery(String key, String value) {
+        Map<String, String> map = new HashMap<String, String>(queries);
+        map.put(key, value);
+        return new Path(url, map, style);
     }
 
     public String toUrl() {
@@ -86,12 +87,14 @@ public class Path {
         if (!queries.isEmpty()) {
             b.append("?");
             boolean first = true;
-            for (String query : queries) {
+            for (Entry<String, String> entry : queries.entrySet()) {
                 if (!first) {
                     b.append("&");
                     first = false;
                 }
-                b.append(encodeQuery(query));
+                b.append(encodeQuery(entry.getKey()));
+                b.append("=");
+                b.append(encodeQuery(entry.getValue()));
             }
         }
         return b.toString();

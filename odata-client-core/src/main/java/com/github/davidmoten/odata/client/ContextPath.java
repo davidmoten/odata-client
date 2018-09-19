@@ -18,8 +18,8 @@ public final class ContextPath {
         return new ContextPath(context, path.addKeys(keys));
     }
 
-    public ContextPath addQuery(String query) {
-        return new ContextPath(context, path.addQuery(query));
+    public ContextPath addQuery(String key, String value) {
+        return new ContextPath(context, path.addQuery(key, value));
     }
 
     public String toUrl() {

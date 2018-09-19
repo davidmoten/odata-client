@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.Map.Entry;
+
 public final class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
     private final ContextPath contextPath;
@@ -17,8 +19,8 @@ public final class CollectionPageEntityRequest<T extends ODataEntity, R extends 
     // not public api
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath;
-        for (String query : options.getQueries()) {
-            cp = cp.addQuery(query);
+        for (Entry<String, String> query : options.getQueries().entrySet()) {
+            cp = cp.addQuery(query.getKey(), query.getValue());
         }
         ResponseGet r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
         return CollectionPageEntity.create(r.getText(), cls, cp);

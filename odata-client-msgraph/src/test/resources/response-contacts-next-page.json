@@ -1,6 +1,6 @@
 {
     "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/contacts",
-    "@odata.nextLink": "https://graph.microsoft.com/v1.0/me/contacts?skip=10&$skip=20",
+    "@odata.nextLink": "https://graph.microsoft.com/v1.0/me/contacts?$skip=20",
     "value": [
         {
             "@odata.etag": "W/\"EQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAAYc8BV\"",

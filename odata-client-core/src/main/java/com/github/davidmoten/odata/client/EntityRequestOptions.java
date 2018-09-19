@@ -1,7 +1,6 @@
 package com.github.davidmoten.odata.client;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,11 +38,11 @@ public final class EntityRequestOptions<T extends ODataEntity> implements Reques
     }
 
     @Override
-    public List<String> getQueries() {
-        List<String> list = new ArrayList<>();
-        select.ifPresent(x -> list.add("$select=" + x));
-        expand.ifPresent(x -> list.add("$expand=" + x));
-        return list;
+    public Map<String, String> getQueries() {
+        Map<String, String> map = new HashMap<>();
+        select.ifPresent(x -> map.put("$select", x));
+        expand.ifPresent(x -> map.put("$expand", x));
+        return map;
     }
 
 }

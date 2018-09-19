@@ -1,7 +1,6 @@
 package com.github.davidmoten.odata.client;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,14 +29,14 @@ public final class CollectionEntityRequestOptions implements RequestOptions {
     }
 
     @Override
-    public List<String> getQueries() {
-        List<String> list = new ArrayList<>();
-        search.ifPresent(x -> list.add("$search=" + x));
-        filter.ifPresent(x -> list.add("$filter=" + x));
-        orderBy.ifPresent(x -> list.add("$orderBy=" + x));
-        skip.ifPresent(x -> list.add("$skip=" + x));
-        top.ifPresent(x -> list.add("$top=" + x));
-        return list;
+    public Map<String, String> getQueries() {
+        Map<String, String> map = new HashMap<>();
+        search.ifPresent(x -> map.put("$search", x));
+        filter.ifPresent(x -> map.put("$filter", x));
+        orderBy.ifPresent(x -> map.put("$orderBy", x));
+        skip.ifPresent(x -> map.put("$skip", String.valueOf(x)));
+        top.ifPresent(x -> map.put("$top", String.valueOf(x)));
+        return map;
     }
 
     public Optional<String> getSearch() {
