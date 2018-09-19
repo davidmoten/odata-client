@@ -188,8 +188,7 @@ public final class Generator {
             // add other fields
             printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
 
-            p.format("\n%sprivate %s<%s,%s> unmappedFields = null;\n", indent,
-                    imports.add(Map.class), imports.add(String.class), imports.add(String.class));
+            addUnmappedFieldsField(imports, indent, p);
 
             // add constructor
             // build constructor parameters
@@ -272,19 +271,7 @@ public final class Generator {
             printNavigationPropertyGetters(imports, indent, p,
                     t.getKeyOrPropertyOrNavigationProperty());
 
-            p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
-            // TODO protect "other" name against clashes
-            p.format("%spublic void setUnmappedField(String name, String value) {\n", indent);
-            p.format("%sif (unmappedFields == null) {\n", indent.right());
-            p.format("%sunmappedFields = new %s<>();\n", indent.right(),
-                    imports.add(HashMap.class));
-            p.format("%s}\n", indent.left());
-            p.format("%sunmappedFields.put(name, value);\n", indent);
-            p.format("%s}\n", indent.left());
-
-            p.format("\n%spublic Map<String,String> getUnmappedFields() {\n", indent);
-            p.format("%sreturn unmappedFields;\n", indent.right());
-            p.format("%s}\n", indent.left());
+            addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
@@ -293,6 +280,27 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
+        p.format("\n%sprivate %s<%s,%s> unmappedFields = null;\n", indent, imports.add(Map.class),
+                imports.add(String.class), imports.add(String.class));
+    }
+
+    private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent,
+            PrintWriter p) {
+        p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
+        // TODO protect "other" name against clashes
+        p.format("%spublic void setUnmappedField(String name, String value) {\n", indent);
+        p.format("%sif (unmappedFields == null) {\n", indent.right());
+        p.format("%sunmappedFields = new %s<>();\n", indent.right(), imports.add(HashMap.class));
+        p.format("%s}\n", indent.left());
+        p.format("%sunmappedFields.put(name, value);\n", indent);
+        p.format("%s}\n", indent.left());
+
+        p.format("\n%spublic Map<String,String> getUnmappedFields() {\n", indent);
+        p.format("%sreturn unmappedFields;\n", indent.right());
+        p.format("%s}\n", indent.left());
     }
 
     private void writeComplexType(TComplexType t) {
@@ -318,6 +326,8 @@ public final class Generator {
             p.format("public class %s%s {\n\n", simpleClassName, extension);
 
             addContextPathField(imports, indent, p);
+            
+            addUnmappedFieldsField(imports, indent, p);
 
             // write fields from properties
             printPropertyFields(imports, indent, p,
@@ -404,6 +414,8 @@ public final class Generator {
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getPropertyOrNavigationPropertyOrAnnotation());
 
+            addUnmappedFieldsSetterAndGetter(imports, indent, p);
+            
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
                     .getBytes(StandardCharsets.UTF_8);
