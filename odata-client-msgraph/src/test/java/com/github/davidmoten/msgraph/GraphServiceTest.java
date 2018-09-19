@@ -63,6 +63,7 @@ public class GraphServiceTest {
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
+        m.getUnmappedFields().entrySet().stream().forEach(System.out::println);
     }
 
     private GraphService client(Builder b) {
