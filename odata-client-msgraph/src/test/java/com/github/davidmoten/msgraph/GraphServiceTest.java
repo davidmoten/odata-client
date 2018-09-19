@@ -17,7 +17,9 @@ import com.github.davidmoten.odata.client.TestingService.Builder;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Contact;
+import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
+import odata.msgraph.client.enums.Importance;
 
 public class GraphServiceTest {
 
@@ -44,15 +46,23 @@ public class GraphServiceTest {
     public void testGetEntityCollectionWithNextPage() {
         GraphService client = client(serviceBuilder() //
                 .replyWithResource("/me/contacts", "/response-contacts.json") //
-                .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json")
-                );
-        assertNotNull(client.me().contacts().get());
+                .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json"));
         CollectionPageEntity<Contact> c = client.me().contacts().get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
         assertTrue(c.nextPage().isPresent());
         c = c.nextPage().get();
         assertEquals(10, c.currentPage().size());
+        assertEquals("Justin", c.currentPage().get(9).getGivenName().get());
+    }
+
+    @Test
+    public void testGetEntityWithNestedComplexTypesAndEnumDeserialisation() {
+        GraphService client = createClient("/me/messages/1", "/response-message.json");
+        Message m = client.me().messages("1").get();
+        assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
+        assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
+        assertEquals(Importance.NORMAL, m.getImportance().get());
     }
 
     private GraphService client(Builder b) {

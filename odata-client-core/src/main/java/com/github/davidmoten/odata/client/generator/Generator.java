@@ -111,9 +111,15 @@ public final class Generator {
                 // add members
                 indent.right();
                 String s = Util.filter(t.getMemberOrAnnotation(), TEnumTypeMember.class) //
-                        .map(x -> String.format("%s%s(\"%s\", \"%s\")", indent, Names.toConstant(x.getName()),
-                                x.getName(), x.getValue()))
-                        .collect(Collectors.joining(",\n"));
+                        .map(x -> String.format("%s@%s(\"%s\")\n%s%s(\"%s\", \"%s\")", //
+                                indent, //
+                                imports.add(JsonProperty.class), //
+                                x.getName(), //
+                                indent, //
+                                Names.toConstant(x.getName()), //
+                                x.getName(), //
+                                x.getValue()))
+                        .collect(Collectors.joining(",\n\n"));
                 indent.left();
                 p.format("\n%s;\n\n", s);
 
