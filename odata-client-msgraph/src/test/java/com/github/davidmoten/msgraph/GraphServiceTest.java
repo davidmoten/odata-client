@@ -51,6 +51,8 @@ public class GraphServiceTest {
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
         assertTrue(c.nextPage().isPresent());
+        c = c.nextPage().get();
+        assertEquals(10, c.currentPage().size());
     }
 
     private GraphService client(Builder b) {
