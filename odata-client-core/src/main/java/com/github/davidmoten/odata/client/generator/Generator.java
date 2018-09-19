@@ -283,7 +283,7 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("\n%sprivate %s<%s,%s> unmappedFields = null;\n", indent, imports.add(Map.class),
+        p.format("\n%sprivate %s<%s,%s> unmappedFields;\n", indent, imports.add(Map.class),
                 imports.add(String.class), imports.add(String.class));
     }
 
@@ -326,7 +326,7 @@ public final class Generator {
             p.format("public class %s%s {\n\n", simpleClassName, extension);
 
             addContextPathField(imports, indent, p);
-            
+
             addUnmappedFieldsField(imports, indent, p);
 
             // write fields from properties
@@ -415,7 +415,7 @@ public final class Generator {
                     t.getPropertyOrNavigationPropertyOrAnnotation());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
-            
+
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
                     .getBytes(StandardCharsets.UTF_8);
