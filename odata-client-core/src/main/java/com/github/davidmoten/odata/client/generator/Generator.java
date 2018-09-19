@@ -281,16 +281,92 @@ public final class Generator {
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageComplexType());
             p.format("IMPORTSHERE");
-            p.format("public final class %s {\n\n", simpleClassName);
+
+            List<TComplexType> heirarchy = getHeirarchy(t);
+            final String extension;
+            if (t.getBaseType() != null) {
+                extension = " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
+            } else {
+                extension = "";
+            }
+
+            // TODO handle ComplexType inheritance
+            p.format("public class %s%s {\n\n", simpleClassName, extension);
 
             addContextPathField(imports, indent, p);
 
-            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
-            p.format("%sthis.contextPath = contextPath;\n", indent.right());
-            p.format("%s}\n", indent.left());
-
             // write fields from properties
             printPropertyFields(imports, indent, p, t.getPropertyOrNavigationPropertyOrAnnotation());
+
+            // write constructor
+            // add constructor
+            // build constructor parameters
+            String props = heirarchy //
+                    .stream() //
+                    .flatMap(z -> Util.filter(z.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
+                            .flatMap(x -> {
+                                // TODO make resuable method because in entity as well
+                                String a = String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
+                                        x.getName(), //
+                                        toTypeSuppressUseOfOptional(x, imports), //
+                                        Names.getIdentifier(x.getName()));
+                                if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                                    String b = String.format("@%s(\"%s@nextLink\") %s %sNextLink",
+                                            imports.add(JsonProperty.class), //
+                                            x.getName(), //
+                                            imports.add(String.class), //
+                                            Names.getIdentifier(x.getName()));
+                                    return Stream.of(a, b);
+                                } else {
+                                    return Stream.of(a);
+                                }
+                            })) //
+                    .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
+                    .collect(Collectors.joining(", "));
+            if (!props.isEmpty()) {
+                props = ", " + props;
+            }
+
+            // write constructor
+            p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
+            p.format("\n%spublic %s(@%s %s contextPath%s) {\n", //
+                    indent, //
+                    simpleClassName, //
+                    imports.add(JacksonInject.class), //
+                    imports.add(ContextPath.class), //
+                    props);
+            if (t.getBaseType() != null) {
+                String superFields = heirarchy //
+                        .subList(0, heirarchy.size() - 1) //
+                        .stream() //
+                        .flatMap(z -> Util.filter(z.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
+                                .flatMap(x -> {
+                                    String a = Names.getIdentifier(x.getName());
+                                    if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                                        return Stream.of(a, Names.getIdentifier(x.getName() + "NextLink"));
+                                    } else {
+                                        return Stream.of(a);
+                                    }
+                                })) //
+                        .collect(Collectors.joining(", "));
+                if (!superFields.isEmpty()) {
+                    superFields = ", " + superFields;
+                }
+                p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
+                indent.left();
+            }
+            p.format("%sthis.contextPath = contextPath;\n", indent.right());
+            // print constructor field assignments
+            Util.filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
+                    .forEach(x -> {
+                        String fieldName = Names.getIdentifier(x.getName());
+                        p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
+                        if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                            p.format("%sthis.%sNextLink = %sNextLink;\n", indent, fieldName, fieldName);
+                        }
+                    });
+            p.format("%s}\n", indent.left());
+
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
                     t.getPropertyOrNavigationPropertyOrAnnotation());
 
@@ -552,6 +628,23 @@ public final class Generator {
             } else {
                 TEntityType y = t;
                 t = Util.types(schema, TEntityType.class) //
+                        .filter(x -> x.getName().equals(names.getSimpleTypeNameFromTypeWithNamespace(y.getBaseType()))) //
+                        .findFirst() //
+                        .get();
+                a.add(0, t);
+            }
+        }
+    }
+
+    private List<TComplexType> getHeirarchy(TComplexType t) {
+        List<TComplexType> a = new LinkedList<>();
+        a.add(t);
+        while (true) {
+            if (t.getBaseType() == null) {
+                return a;
+            } else {
+                TComplexType y = t;
+                t = Util.types(schema, TComplexType.class) //
                         .filter(x -> x.getName().equals(names.getSimpleTypeNameFromTypeWithNamespace(y.getBaseType()))) //
                         .findFirst() //
                         .get();
