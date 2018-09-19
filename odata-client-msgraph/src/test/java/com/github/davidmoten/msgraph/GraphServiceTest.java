@@ -70,6 +70,9 @@ public class GraphServiceTest {
                 "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages/$entity",
                 m.getUnmappedFields().get("@odata.context"));
     }
+    
+    // test paged complex type
+    // 
 
     private GraphService client(Builder b) {
         return new GraphService(new Context(Serializer.DEFAULT, b.build()));
