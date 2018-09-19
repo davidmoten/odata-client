@@ -57,13 +57,18 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void testGetEntityWithNestedComplexTypesAndEnumDeserialisation() {
+    public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
         GraphService client = createClient("/me/messages/1", "/response-message.json");
         Message m = client.me().messages("1").get();
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
-        m.getUnmappedFields().entrySet().stream().forEach(System.out::println);
+        assertEquals(2, m.getUnmappedFields().size());
+        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
+                m.getUnmappedFields().get("@odata.etag"));
+        assertEquals(
+                "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages/$entity",
+                m.getUnmappedFields().get("@odata.context"));
     }
 
     private GraphService client(Builder b) {
