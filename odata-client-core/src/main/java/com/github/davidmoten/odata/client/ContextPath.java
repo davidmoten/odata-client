@@ -1,5 +1,8 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 public final class ContextPath {
 
     private final Path path;
@@ -28,6 +31,14 @@ public final class ContextPath {
 
     public Context context() {
         return context;
+    }
+
+    public ContextPath addQueries(Map<String, String> queries) {
+        Path p = path;
+        for (Entry<String, String> entry : queries.entrySet()) {
+            p = p.addQuery(entry.getKey(), entry.getValue());
+        }
+        return new ContextPath(context, p);
     }
 
 }
