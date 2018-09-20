@@ -756,15 +756,6 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             // write fields from properties
-            // p.format("%spublic %s<%s> get(%s options) {\n", indent, //
-            // imports.add(CollectionPageEntity.class), //
-            // imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
-            // imports.add(CollectionEntityRequestOptions.class));
-            // p.format("%sreturn %s.get(contextPath, %s.class, options);\n",
-            // indent.right(),
-            // imports.add(RequestHelper.class),
-            // imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())));
-            // p.format("%s}\n", indent.left());
 
             Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
                     .forEach(x -> {
