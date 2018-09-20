@@ -928,7 +928,7 @@ public final class Generator {
 
     private void printPropertyOrder(Imports imports, PrintWriter p, List<Object> properties) {
         String props = Util.filter(properties, TProperty.class) //
-                .map(x -> "\"" + x.getName() + "\"") //
+                .map(x -> "\n    \"" + x.getName() + "\"") //
                 .collect(Collectors.joining(", "));
         p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
     }
