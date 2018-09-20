@@ -13,11 +13,13 @@ public final class Options {
     private final String packageSuffixEntityRequest;
     private final String packageSuffixCollectionRequest;
     private final String packageSuffixContainer;
+    private final String packageSuffixSchema;
+    private final String simpleClassNameSchema;
     private final String collectionRequestClassSuffix;
     private final String entityRequestClassSuffix;
     private final boolean pageComplexTypes;
 
-    private Options(String outputDirectory, String pkg, String packageSuffixEnum, String packageSuffixEntity, String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest, String packageSuffixContainer, String collectionRequestClassSuffix, String entityRequestClassSuffix, boolean pageComplexTypes) {
+    private Options(String outputDirectory, String pkg, String packageSuffixEnum, String packageSuffixEntity, String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest, String packageSuffixContainer, String packageSuffixSchema, String simpleClassNameSchema, String collectionRequestClassSuffix, String entityRequestClassSuffix, boolean pageComplexTypes) {
         notNull(outputDirectory, "outputDirectory");
         notNull(pkg, "pkg");
         notNull(packageSuffixEnum, "packageSuffixEnum");
@@ -26,6 +28,8 @@ public final class Options {
         notNull(packageSuffixEntityRequest, "packageSuffixEntityRequest");
         notNull(packageSuffixCollectionRequest, "packageSuffixCollectionRequest");
         notNull(packageSuffixContainer, "packageSuffixContainer");
+        notNull(packageSuffixSchema, "packageSuffixSchema");
+        notNull(simpleClassNameSchema, "simpleClassNameSchema");
         notNull(collectionRequestClassSuffix, "collectionRequestClassSuffix");
         notNull(entityRequestClassSuffix, "entityRequestClassSuffix");
         notNull(pageComplexTypes, "pageComplexTypes");
@@ -37,6 +41,8 @@ public final class Options {
         this.packageSuffixEntityRequest = packageSuffixEntityRequest;
         this.packageSuffixCollectionRequest = packageSuffixCollectionRequest;
         this.packageSuffixContainer = packageSuffixContainer;
+        this.packageSuffixSchema = packageSuffixSchema;
+        this.simpleClassNameSchema = simpleClassNameSchema;
         this.collectionRequestClassSuffix = collectionRequestClassSuffix;
         this.entityRequestClassSuffix = entityRequestClassSuffix;
         this.pageComplexTypes = pageComplexTypes;
@@ -78,6 +84,14 @@ public final class Options {
         return packageSuffixContainer;
     }
 
+    public String packageSuffixSchema() {
+        return packageSuffixSchema;
+    }
+
+    public String simpleClassNameSchema() {
+        return simpleClassNameSchema;
+    }
+
     public String collectionRequestClassSuffix() {
         return collectionRequestClassSuffix;
     }
@@ -100,6 +114,8 @@ public final class Options {
         private String packageSuffixEntityRequest = ".entity.request";
         private String packageSuffixCollectionRequest = ".collection.request";
         private String packageSuffixContainer = ".container";
+        private String packageSuffixSchema = ".schema";
+        private String simpleClassNameSchema = "Schema";
         private String collectionRequestClassSuffix = "CollectionRequest";
         private String entityRequestClassSuffix = "Request";
         private boolean pageComplexTypes = true;
@@ -165,6 +181,18 @@ public final class Options {
             return this;
         }
 
+        public Builder2 packageSuffixSchema(String packageSuffixSchema) {
+            notNull(packageSuffixSchema, "packageSuffixSchema");
+            b.packageSuffixSchema = packageSuffixSchema;
+            return this;
+        }
+
+        public Builder2 simpleClassNameSchema(String simpleClassNameSchema) {
+            notNull(simpleClassNameSchema, "simpleClassNameSchema");
+            b.simpleClassNameSchema = simpleClassNameSchema;
+            return this;
+        }
+
         public Builder2 collectionRequestClassSuffix(String collectionRequestClassSuffix) {
             notNull(collectionRequestClassSuffix, "collectionRequestClassSuffix");
             b.collectionRequestClassSuffix = collectionRequestClassSuffix;
@@ -184,7 +212,7 @@ public final class Options {
         }
 
         public Options build() {
-            return new Options(b.outputDirectory, b.pkg, b.packageSuffixEnum, b.packageSuffixEntity, b.packageSuffixComplexType, b.packageSuffixEntityRequest, b.packageSuffixCollectionRequest, b.packageSuffixContainer, b.collectionRequestClassSuffix, b.entityRequestClassSuffix, b.pageComplexTypes);
+            return new Options(b.outputDirectory, b.pkg, b.packageSuffixEnum, b.packageSuffixEntity, b.packageSuffixComplexType, b.packageSuffixEntityRequest, b.packageSuffixCollectionRequest, b.packageSuffixContainer, b.packageSuffixSchema, b.simpleClassNameSchema, b.collectionRequestClassSuffix, b.entityRequestClassSuffix, b.pageComplexTypes);
         }
     }
 

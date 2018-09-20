@@ -49,6 +49,7 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestHelper;
+import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.UnsignedByte;
 
 public final class Generator {
@@ -63,6 +64,8 @@ public final class Generator {
     }
 
     public void generate() {
+
+        writeSchemaInfo();
 
         // write enums
         Util.types(schema, TEnumType.class) //
@@ -93,6 +96,39 @@ public final class Generator {
         // TODO write functions
 
         // TODO consume annotations for documentation
+
+    }
+
+    private void writeSchemaInfo() {
+        String simpleClassName = names.getSimpleClassNameSchema();
+        Imports imports = new Imports(simpleClassName);
+        Indent indent = new Indent();
+        try {
+            StringWriter w = new StringWriter();
+            try (PrintWriter p = new PrintWriter(w)) {
+                p.format("package %s;\n\n", names.getPackageEnum());
+                p.format("IMPORTSHERE\n");
+                p.format("public final enum %s implements %s {\n", simpleClassName, imports.add(SchemaInfo.class));
+
+                // add enum
+                // TODO
+
+                // add fields for entities map
+                p.format("%sprivate final %s entities;\n", indent.right(), imports.add(String.class));
+
+                // add private constructor
+                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName, imports.add(String.class),
+                        imports.add(String.class));
+                p.format("%s}\n\n", indent.left());
+
+                // close class
+                p.format("}\n");
+            }
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+            Files.write(names.getClassFileSchema().toPath(), bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -153,7 +189,6 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private void writeEntity(TEntityType t) {
