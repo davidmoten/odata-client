@@ -9,8 +9,8 @@ public final class RequestHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
-            SchemaInfo schemaInfo) {
+    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls,
+            RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
         // get the response
@@ -19,18 +19,20 @@ public final class RequestHelper {
 
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        Optional<String> namespacedType = cp.context().serializer().getODataType(response.getText());
+        Optional<String> namespacedType = cp.context().serializer()
+                .getODataType(response.getText());
         final Class<? extends T> c;
         if (namespacedType.isPresent()) {
-            c = (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get().substring(1));
+            c = (Class<? extends T>) schemaInfo
+                    .getEntityClassFromTypeWithNamespace(namespacedType.get().substring(1));
         } else {
             c = cls;
         }
         return cp.context().serializer().deserialize(response.getText(), c, contextPath);
     }
 
-    public static <T extends ODataEntity> CollectionPageEntity<T> getCollection(ContextPath contextPath, Class<T> cls,
-            RequestOptions options) {
+    public static <T extends ODataEntity> CollectionPageEntity<T> getCollection(
+            ContextPath contextPath, Class<T> cls, RequestOptions options) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
         // get the response

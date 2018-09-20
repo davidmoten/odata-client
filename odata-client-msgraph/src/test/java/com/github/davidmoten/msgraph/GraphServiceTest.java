@@ -79,10 +79,13 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void testDeserializationOfAttachmentEntityWhichIsEffectivelyAbstract() {
+    public void testDeserializationOfAttachmentEntityReturnsFileAttachment() {
         GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json");
         Attachment m = client.me().messages("1").attachments("2").get();
         assertTrue(m instanceof FileAttachment);
+        FileAttachment f = (FileAttachment) m;
+        assertEquals(6762, f.getContentBytes().get().length);
+        assertEquals("lamp_thin.png", f.getContentId().get());
     }
 
     // test paged complex type
