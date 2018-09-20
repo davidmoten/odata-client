@@ -15,12 +15,9 @@ public class GeneratorTest {
     public void testGenerateMsgraph() throws JAXBException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
-        TEdmx t = unmarshaller
-                .unmarshal(
-                        new StreamSource(GeneratorTest.class
-                                .getResourceAsStream("/msgraph-1.0-20180905-formatted.xml")),
-                        TEdmx.class)
-                .getValue();
+        TEdmx t = unmarshaller.unmarshal(
+                new StreamSource(GeneratorTest.class.getResourceAsStream("/msgraph-1.0-20180905-formatted.xml")),
+                TEdmx.class).getValue();
         Generator g = new Generator(Options.builder().pkg("microsoft.graph.generated").build(),
                 t.getDataServices().getSchema().get(0));
         g.generate();
@@ -31,8 +28,7 @@ public class GeneratorTest {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
         TEdmx t = unmarshaller.unmarshal(
-                new StreamSource(GeneratorTest.class
-                        .getResourceAsStream("/services.odata.org.v3.svc.metadata.xml")),
+                new StreamSource(GeneratorTest.class.getResourceAsStream("/odata-test-service-metadata.xml")),
                 TEdmx.class).getValue();
         Generator g = new Generator(Options.builder().pkg("odata.test.generated").build(),
                 t.getDataServices().getSchema().get(0));
