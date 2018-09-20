@@ -507,6 +507,7 @@ public final class Generator {
             // p.format("%public %s(()\n",indent.right(), imports.add(JsonCreator.class));
 
             // add field
+            indent.right();
             addContextPathField(imports, indent, p);
             p.format("%sprivate final %s id;\n\n", indent, imports.add(String.class));
 
@@ -535,7 +536,7 @@ public final class Generator {
                     imports.add(names.getFullClassNameEntity(t.getName())));
             p.format("%sthrow new %s(); \n", indent.right(),
                     imports.add(UnsupportedOperationException.class));
-            p.format("%s}\n", indent);
+            p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s update(%s<%s> options) {\n", indent, //
@@ -775,10 +776,6 @@ public final class Generator {
                                             .getFullClassNameCollectionRequestFromTypeWithNamespace(
                                                     y)), //
                                     x.getName());
-
-                            // p.format("%sthrow new %s();\n", indent.right(),
-                            // imports.add(UnsupportedOperationException.class));
-                            // p.format("%s}\n", indent.left());
 
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
                                     indent.right(), //
