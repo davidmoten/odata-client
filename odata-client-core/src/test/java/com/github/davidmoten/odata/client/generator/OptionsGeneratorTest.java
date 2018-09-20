@@ -6,6 +6,7 @@ public class OptionsGeneratorTest {
 
     @Test
     public void overwriteOptions() {
+        // when this test is run the Options class in src/main/java will be overwritten!
         com.github.davidmoten.javabuilder.Generator //
                 .pkg("com.github.davidmoten.odata.client.generator") //
                 .className("Options") //
