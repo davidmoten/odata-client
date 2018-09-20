@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -176,8 +177,8 @@ public final class Generator {
 
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
             printPropertyOrder(imports, p, t.getKeyOrPropertyOrNavigationProperty());
-            p.format("public %sclass %s%s implements %s {\n\n", t.isAbstract() ? "abstract " : "", simpleClassName,
-                    extension, imports.add(ODataEntity.class));
+            p.format("public class %s%s implements %s {\n\n", simpleClassName, extension,
+                    imports.add(ODataEntity.class));
 
             addContextPathInjectableField(imports, indent, p);
 
@@ -285,7 +286,8 @@ public final class Generator {
         p.format("%s}\n", indent.left());
 
         p.format("\n%spublic Map<String,String> getUnmappedFields() {\n", indent);
-        p.format("%sreturn unmappedFields;\n", indent.right());
+        p.format("%sreturn unmappedFields == null? %s.emptyMap(): unmappedFields;\n", indent.right(),
+                imports.add(Collections.class));
         p.format("%s}\n", indent.left());
     }
 
@@ -310,7 +312,7 @@ public final class Generator {
             // TODO handle ComplexType inheritance
             p.format("public class %s%s {\n\n", simpleClassName, extension);
 
-            addContextPathInjectableField(imports, indent, p);
+            addContextPathField(imports, indent, p);
 
             addUnmappedFieldsField(imports, indent, p);
 
@@ -432,7 +434,7 @@ public final class Generator {
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn %s.get(contextPath, %s.class, id, options);\n", indent.right(),
+            p.format("%sreturn %s.get(contextPath, %s.class, options);\n", indent.right(),
                     imports.add(RequestHelper.class),
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())));
             p.format("%s}\n", indent.left());
@@ -501,16 +503,16 @@ public final class Generator {
                                         .getFullClassNameEntityRequestFromTypeWithNamespace(inner);
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), id);\n", indent.right(),
-                                        imports.add(entityRequestType), x.getName());
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id), id);\n",
+                                        indent.right(), imports.add(entityRequestType), x.getName());
                                 p.format("%s}\n", indent.left());
                             } else {
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, //
                                         imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(inner)), //
                                         Names.getGetterMethodWithoutGet(x.getName()), imports.add(String.class));
                                 p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                                p.format("%scontextPath.addSegment(\"%s\"),\n", indent.right().right().right().right(),
-                                        x.getName());
+                                p.format("%scontextPath.addSegment(\"%s\").addKeys(id),\n",
+                                        indent.right().right().right().right(), x.getName());
                                 p.format("%s%s.class,\n", indent, imports.add(names
                                         .getFullClassNameFromTypeWithNamespace(names.getInnerType(names.getType(x)))));
                                 p.format("%s(contextPath, id) -> new %s(contextPath, id));\n", indent,
@@ -576,8 +578,8 @@ public final class Generator {
                                     .getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType());
                             p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                     Names.getIdentifier(x.getName()), imports.add(String.class));
-                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), id);\n", indent.right(),
-                                    imports.add(entityRequestType), x.getName());
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id), id);\n",
+                                    indent.right(), imports.add(entityRequestType), x.getName());
                             p.format("%s}\n", indent.left());
                         }
                     });
@@ -660,8 +662,8 @@ public final class Generator {
                                 String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(y);
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), id);\n", indent.right(),
-                                        imports.add(entityRequestType), x.getName());
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id), id);\n",
+                                        indent.right(), imports.add(entityRequestType), x.getName());
                                 p.format("%s}\n", indent.left());
                             }
                         }

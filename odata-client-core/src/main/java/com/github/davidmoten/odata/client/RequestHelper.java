@@ -6,17 +6,16 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, String id,
-            RequestOptions options) {
+    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, RequestOptions options) {
         // build the url
-        ContextPath cp = contextPath.addKeys(id).addQueries(options.getQueries());
+        ContextPath cp = contextPath.addQueries(options.getQueries());
         // get the response
         ResponseGet response = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
         // deserialize
         return cp.context().serializer().deserialize(response.getText(), cls, contextPath);
     }
 
-    public static <T extends ODataEntity> CollectionPageEntity<T> get(ContextPath contextPath, Class<T> cls,
+    public static <T extends ODataEntity> CollectionPageEntity<T> getCollection(ContextPath contextPath, Class<T> cls,
             RequestOptions options) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
