@@ -1,6 +1,6 @@
 package com.github.davidmoten.odata.client;
 
-public final class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
+public class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
