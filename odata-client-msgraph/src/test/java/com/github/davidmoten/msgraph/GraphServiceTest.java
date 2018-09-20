@@ -16,6 +16,7 @@ import com.github.davidmoten.odata.client.TestingService;
 import com.github.davidmoten.odata.client.TestingService.Builder;
 
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
@@ -64,15 +65,26 @@ public class GraphServiceTest {
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
         assertEquals(2, m.getUnmappedFields().size());
-        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
-                m.getUnmappedFields().get("@odata.etag"));
+        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"", m.getUnmappedFields().get("@odata.etag"));
         assertEquals(
                 "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages/$entity",
                 m.getUnmappedFields().get("@odata.context"));
     }
+
+    @Test
+    public void testEntityCollectionNotFromEntityContainer() {
+        GraphService client = createClient("/me/messages/1/attachments", "/response-me-messages-1-attachments.json");
+        CollectionPageEntity<Attachment> m = client.me().messages("1").attachments().get();
+    }
     
+    @Test
+    public void testDeserializationOfAttachmentEntity() {
+        GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json");
+        Attachment m = client.me().messages("1").attachments("2").get();
+    }
+
     // test paged complex type
-    // 
+    //
 
     private GraphService client(Builder b) {
         return new GraphService(new Context(Serializer.DEFAULT, b.build()));
