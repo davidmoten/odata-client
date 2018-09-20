@@ -18,6 +18,7 @@ import com.github.davidmoten.odata.client.TestingService.Builder;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Contact;
+import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
@@ -81,6 +82,7 @@ public class GraphServiceTest {
     public void testDeserializationOfAttachmentEntityWhichIsEffectivelyAbstract() {
         GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json");
         Attachment m = client.me().messages("1").attachments("2").get();
+        assertTrue(m instanceof FileAttachment);
     }
 
     // test paged complex type
