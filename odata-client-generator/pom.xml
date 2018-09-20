@@ -11,7 +11,7 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>odata-client-core</artifactId>
+    <artifactId>odata-client-generator</artifactId>
 
     <name>${project.artifactId}</name>
     <description>OData client generator</description>

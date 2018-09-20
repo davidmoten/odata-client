@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>com.github.davidmoten</groupId>
-            <artifactId>odata-client-core</artifactId>
+            <artifactId>odata-client-generator</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         
