@@ -36,10 +36,10 @@ final class Names {
     private Names(Schema schema, Options options) {
         this.schema = schema;
         this.options = options;
-        File output = toDirectory(new File(options.outputDirectory()), options.pkg());
-        Util.deleteDirectory(output);
-        output.mkdirs();
-        this.output = output;
+        File pkgDirectory = toDirectory(new File(options.outputDirectory()), options.pkg());
+        Util.deleteDirectory(pkgDirectory);
+        pkgDirectory.mkdirs();
+        this.output = new File(options.outputDirectory());
         this.classNamesFromNamespacedType = createMap(schema, options);
         this.entityClassNamesFromNamespacedType = createEntityMap(schema, options);
     }

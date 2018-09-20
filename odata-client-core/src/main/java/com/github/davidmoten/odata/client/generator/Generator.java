@@ -109,7 +109,7 @@ public final class Generator {
             StringWriter w = new StringWriter();
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", names.getPackageSchema());
-                p.format("IMPORTSHERE\n");
+                p.format("IMPORTSHERE");
                 p.format("public enum %s implements %s {\n\n", simpleClassName, imports.add(SchemaInfo.class));
 
                 // add enum
@@ -166,7 +166,7 @@ public final class Generator {
             StringWriter w = new StringWriter();
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", names.getPackageEnum());
-                p.format("IMPORTSHERE\n");
+                p.format("IMPORTSHERE");
                 p.format("public enum %s implements %s {\n", simpleClassName,
                         imports.add(com.github.davidmoten.odata.client.Enum.class));
 
