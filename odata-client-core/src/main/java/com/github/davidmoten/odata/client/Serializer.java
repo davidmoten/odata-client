@@ -1,17 +1,20 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface Serializer {
 
     public static final Serializer DEFAULT = new Serializer() {
     };
 
-    default <T> T deserialize(String text, Class<T> cls, ContextPath contextPath) {
+    default <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath) {
         try {
             if (contextPath != null) {
                 ObjectMapper m = Serialization.createObjectMapper();
@@ -28,6 +31,15 @@ public interface Serializer {
 
     default <T> T deserialize(String text, Class<T> cls) {
         return deserialize(text, cls, null);
+    }
+
+    default Optional<String> getODataType(String text) {
+        try {
+            ObjectNode node = new ObjectMapper().readValue(text, ObjectNode.class);
+            return Optional.ofNullable(node.get("@odata.type")).map(JsonNode::asText);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
