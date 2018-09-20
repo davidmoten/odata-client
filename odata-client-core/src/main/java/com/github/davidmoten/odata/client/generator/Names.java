@@ -121,6 +121,10 @@ final class Names {
         return new File(path);
     }
 
+    File getDirectorySchema() {
+        return toDirectory(output, options.pkg() + options.packageSuffixSchema());
+    }
+
     File getDirectoryEntity() {
         return toDirectory(output, options.pkg() + options.packageSuffixEntity());
     }
@@ -193,6 +197,10 @@ final class Names {
         return Names.toSimpleClassName(name);
     }
 
+    String getSimpleClassNameSchema() {
+        return options.simpleClassNameSchema();
+    }
+
     String getFullClassNameEnum(String name) {
         return getPackageEnum() + "." + getSimpleClassNameEnum(name);
     }
@@ -234,6 +242,10 @@ final class Names {
         } else {
             return name.substring(i + 1, name.length());
         }
+    }
+
+    public File getClassFileSchema() {
+        return new File(getDirectorySchema(), getSimpleClassNameSchema() + ".java");
     }
 
     File getClassFileEnum(String name) {

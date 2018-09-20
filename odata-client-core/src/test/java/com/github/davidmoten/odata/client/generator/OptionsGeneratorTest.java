@@ -17,6 +17,8 @@ public class OptionsGeneratorTest {
                 .type("String").name("packageSuffixEntityRequest").defaultValue("\".entity.request\"").build() //
                 .type("String").name("packageSuffixCollectionRequest").defaultValue("\".collection.request\"").build() //
                 .type("String").name("packageSuffixContainer").defaultValue("\".container\"").build() //
+                .type("String").name("packageSuffixSchema").defaultValue("\".schema\"").build() //
+                .type("String").name("simpleClassNameSchema").defaultValue("\"Schema\"").build() //
                 .type("String").name("collectionRequestClassSuffix").defaultValue("\"CollectionRequest\"").build() //
                 .type("String").name("entityRequestClassSuffix").defaultValue("\"Request\"").build() //
                 .type("boolean").name("pageComplexTypes").defaultValue("true").build() //
