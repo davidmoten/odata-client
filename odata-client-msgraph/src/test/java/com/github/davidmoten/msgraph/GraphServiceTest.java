@@ -78,7 +78,7 @@ public class GraphServiceTest {
     }
     
     @Test
-    public void testDeserializationOfAttachmentEntity() {
+    public void testDeserializationOfAttachmentEntityWhichIsEffectivelyAbstract() {
         GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json");
         Attachment m = client.me().messages("1").attachments("2").get();
     }
