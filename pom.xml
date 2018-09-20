@@ -82,6 +82,7 @@
 
 
     <modules>
+        <module>odata-client-runtime</module>
         <module>odata-client-core</module>
         <module>odata-client-maven-plugin</module>
         <module>odata-client-msgraph</module>
