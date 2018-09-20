@@ -22,12 +22,12 @@
     </properties>
 
     <dependencies>
-    
-    <dependency>
-    <groupId>com.github.davidmoten</groupId>
-    <artifactId>odata-client-core</artifactId>
-    <version>${project.parent.version}</version>
-    </dependency>
+
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>odata-client-runtime</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>
