@@ -59,8 +59,7 @@ public class CollectionPageEntity<T extends ODataEntity> {
 
     public static <T extends ODataEntity> CollectionPageEntity<T> from(Context context, CollectionPageJson c,
             Class<T> cls) {
-        // TODO
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }
