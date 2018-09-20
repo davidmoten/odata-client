@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.client;
+package com.github.davidmoten.odata.client.edm;
 
 public final class UnsignedByte {
     private int value;
