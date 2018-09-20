@@ -952,18 +952,22 @@ public final class Generator {
                     String typeName = toType(x, imports);
                     p.format("\n%spublic %s %s() {\n", indent, typeName,
                             Names.getGetterMethod(x.getName()));
-                    if (isCollection(x) && names.isEntityWithNamespace(names.getType(x))) {
-                        p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                        p.format("%scontextPath.addSegment(\"%s\"),\n",
-                                indent.right().right().right().right(), x.getName());
-                        p.format("%s%s.class,\n", indent,
-                                imports.add(names.getFullClassNameFromTypeWithNamespace(
-                                        names.getInnerType(names.getType(x)))));
-                        p.format("%s(contextPath, id) -> new %s(contextPath, id));\n", indent,
-                                imports.add(
-                                        names.getFullClassNameEntityRequestFromTypeWithNamespace(
-                                                names.getInnerType(names.getType(x)))));
-                        indent.left().left().left().left();
+                    if (isCollection(x)) {
+                        if (names.isEntityWithNamespace(names.getType(x))) {
+                            p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
+                            p.format("%scontextPath.addSegment(\"%s\"),\n",
+                                    indent.right().right().right().right(), x.getName());
+                            p.format("%s%s.class,\n", indent,
+                                    imports.add(names.getFullClassNameFromTypeWithNamespace(
+                                            names.getInnerType(names.getType(x)))));
+                            p.format("%s(contextPath, id) -> new %s(contextPath, id));\n", indent,
+                                    imports.add(names
+                                            .getFullClassNameEntityRequestFromTypeWithNamespace(
+                                                    names.getInnerType(names.getType(x)))));
+                            indent.left().left().left().left();
+                        } else {
+                            throw new RuntimeException("unexpected");
+                        }
                     } else {
                         p.format("%sreturn null; // TODO\n", indent.right());
                     }
