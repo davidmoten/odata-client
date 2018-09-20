@@ -38,6 +38,8 @@
         <taglist.version>2.4</taglist.version>
         <m3.site.version>3.4</m3.site.version>
         <changelog.version>2.2</changelog.version>
+
+        <jackson.version>2.9.7</jackson.version>
     </properties>
 
     <licenses>
@@ -83,7 +85,7 @@
 
     <modules>
         <module>odata-client-runtime</module>
-        <module>odata-client-core</module>
+        <module>odata-client-generator</module>
         <module>odata-client-maven-plugin</module>
         <module>odata-client-msgraph</module>
     </modules>
