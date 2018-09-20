@@ -594,7 +594,8 @@ public final class Generator {
                                                     names.getInnerType(names.getType(x)))));
                             indent.left().left().left().left();
                         } else {
-                            p.format("%sreturn null; // TODO\n", indent.right());
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), \"%s\");\n",
+                                    indent.right(), returnClass, x.getName(), x.getName());
                         }
                         p.format("%s}\n", indent.left());
 
