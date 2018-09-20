@@ -419,7 +419,7 @@ public final class Generator {
             // p.format("%public %s(()\n",indent.right(), imports.add(JsonCreator.class));
 
             // add field
-            addContextPathInjectableField(imports, indent, p);
+            addContextPathField(imports, indent, p);
             p.format("%sprivate final %s id;\n\n", indent, imports.add(String.class));
 
             // add constructor

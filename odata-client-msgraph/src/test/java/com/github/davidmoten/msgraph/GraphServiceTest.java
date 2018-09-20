@@ -76,7 +76,7 @@ public class GraphServiceTest {
         GraphService client = createClient("/me/messages/1/attachments", "/response-me-messages-1-attachments.json");
         CollectionPageEntity<Attachment> m = client.me().messages("1").attachments().get();
     }
-    
+
     @Test
     public void testDeserializationOfAttachmentEntityWhichIsEffectivelyAbstract() {
         GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json");
