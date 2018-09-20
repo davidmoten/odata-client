@@ -22,7 +22,7 @@ public final class RequestHelper {
         Optional<String> namespacedType = cp.context().serializer().getODataType(response.getText());
         final Class<? extends T> c;
         if (namespacedType.isPresent()) {
-            c = (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get());
+            c = (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get().substring(1));
         } else {
             c = cls;
         }
