@@ -32,6 +32,12 @@ public class PathTest {
     }
 
     @Test
+    public void testBasePathWithTwoQueries() {
+        assertEquals("http://base?x=true&y=3",
+                a.addQuery("x", "true").addQuery("y", "3").toString());
+    }
+
+    @Test
     public void testBasePathWithQueryIsEncoded() {
         assertEquals("http://base?x=ab%20cd", a.addQuery("x", "ab cd").toString());
     }
