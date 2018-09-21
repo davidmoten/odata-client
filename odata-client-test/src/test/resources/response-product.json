@@ -1,1 +1,10 @@
-{"@odata.context":"https://services.odata.org/Experimental/OData/OData.svc/$metadata#Products/$entity","ID":1,"Name":"Milk","Description":"Low fat milk","ReleaseDate":"1995-10-01T00:00:00Z","DiscontinuedDate":null,"Rating":3,"Price":3.5}
+{
+	"@odata.context": "https://services.odata.org/Experimental/OData/OData.svc/$metadata#Products/$entity",
+	"ID": 1,
+	"Name": "Milk",
+	"Description": "Low fat milk",
+	"ReleaseDate": "1995-10-01T00:00:00Z",
+	"DiscontinuedDate": null,
+	"Rating": 3,
+	"Price": 3.5
+}

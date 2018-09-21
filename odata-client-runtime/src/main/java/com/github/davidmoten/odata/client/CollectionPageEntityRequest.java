@@ -5,20 +5,22 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     private final ContextPath contextPath;
     private final Class<T> cls;
     private final EntityRequestFactory<T, R> entityRequestFactory;
+    private final SchemaInfo schemaInfo;
 
     // should not be public api
     public CollectionPageEntityRequest(ContextPath contextPath, Class<T> cls,
-            EntityRequestFactory<T, R> entityRequestFactory) {
+            EntityRequestFactory<T, R> entityRequestFactory, SchemaInfo schemaInfo) {
         this.contextPath = contextPath;
         this.entityRequestFactory = entityRequestFactory;
         this.cls = cls;
+        this.schemaInfo = schemaInfo;
     }
 
     // not public api
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         ResponseGet r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
-        return CollectionPageEntity.create(r.getText(), cls, cp);
+        return CollectionPageEntity.create(r.getText(), cls, cp, schemaInfo);
     }
 
     public R id(String id) {

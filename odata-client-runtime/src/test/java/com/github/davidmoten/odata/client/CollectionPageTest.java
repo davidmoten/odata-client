@@ -18,8 +18,8 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths
-                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths.get(CollectionPageTest.class
+                        .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = new Serializer() {
         };
@@ -35,9 +35,18 @@ public class CollectionPageTest {
                 return new Path("https://base", PathStyle.IDENTIFIERS_AS_SEGMENTS);
             }
         };
+        SchemaInfo schemaInfo = new SchemaInfo() {
+
+            @Override
+            public Class<? extends ODataEntity> getEntityClassFromTypeWithNamespace(String name) {
+                return Person.class;
+            }
+
+        };
+
         Context context = new Context(serializer, service);
         CollectionPageEntity<Person> c = CollectionPageEntity.create(json, Person.class,
-                new ContextPath(context, service.getBasePath()));
+                new ContextPath(context, service.getBasePath()), schemaInfo);
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
     }
