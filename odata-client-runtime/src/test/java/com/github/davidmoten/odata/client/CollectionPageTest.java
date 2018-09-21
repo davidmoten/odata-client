@@ -47,8 +47,8 @@ public class CollectionPageTest {
         Context context = new Context(serializer, service);
         CollectionPageEntity<Person> c = CollectionPageEntity.create(json, Person.class,
                 new ContextPath(context, service.getBasePath()), schemaInfo);
-        assertEquals(2, c.currentPage().size());
-        assertEquals("Russell", c.currentPage().get(0).firstName);
+        assertEquals(2, c.values().size());
+        assertEquals("Russell", c.values().get(0).firstName);
     }
 
     static final class Person implements ODataEntity {

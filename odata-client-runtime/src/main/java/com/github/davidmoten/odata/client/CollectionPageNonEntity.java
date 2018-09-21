@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public final class CollectionPageNonEntity<T> implements Iterable<T> {
+public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPageNonEntity<T>> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
     private final List<T> list;
     private final String nextLink;
 
-    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, String nextLink) {
+    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list,
+            String nextLink) {
         this.contextPath = contextPath;
         this.cls = cls;
         this.list = list;
@@ -26,7 +27,7 @@ public final class CollectionPageNonEntity<T> implements Iterable<T> {
     public Optional<CollectionPageNonEntity<T>> nextPage() {
         if (nextLink != null) {
             // TODO
-            return null;
+            throw new UnsupportedOperationException();
         } else {
             return Optional.empty();
         }
