@@ -90,6 +90,7 @@
         <module>odata-client-generator</module>
         <module>odata-client-maven-plugin</module>
         <module>odata-client-test</module>
+        <module>odata-client-test-northwind</module>
         <module>odata-client-msgraph</module>
     </modules>
 
