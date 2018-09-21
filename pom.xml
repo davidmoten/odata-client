@@ -22,6 +22,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <scm.url>scm:git:https://github.com/davidmoten/odata-client.git</scm.url>
         <m3.site.version>3.4</m3.site.version>
@@ -40,6 +41,7 @@
         <changelog.version>2.2</changelog.version>
 
         <jackson.version>2.9.7</jackson.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <licenses>

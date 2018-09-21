@@ -10,18 +10,9 @@
         <artifactId>odata-client-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>odata-client-generator</artifactId>
-
     <name>${project.artifactId}</name>
     <description>OData client generator</description>
-    <packaging>jar</packaging>
-
-    <url>http://github.com/davidmoten/odata-client</url>
-
-    <properties>
-        <jackson.version>2.9.7</jackson.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -34,7 +25,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -56,14 +47,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>${maven.compiler.target}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
