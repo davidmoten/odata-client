@@ -49,7 +49,7 @@ import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
-import com.github.davidmoten.odata.client.RequestHelper;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
 import com.github.davidmoten.odata.client.edm.UnsignedByte;
