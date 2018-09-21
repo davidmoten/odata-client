@@ -10,7 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class CollectionPageEntity<T extends ODataEntity> {
+public class CollectionPageEntity<T extends ODataEntity>
+        implements Paged<T, CollectionPageEntity<T>> {
 
     private final Class<T> cls;
     private final List<T> list;
@@ -27,7 +28,7 @@ public class CollectionPageEntity<T extends ODataEntity> {
         this.schemaInfo = schemaInfo;
     }
 
-    public List<T> currentPage() {
+    public List<T> values() {
         return list;
     }
 

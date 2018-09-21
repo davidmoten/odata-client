@@ -40,7 +40,7 @@ public class GraphServiceTest {
         assertNotNull(client.users().get());
         CollectionPageEntity<User> c = client.users().get();
         assertNotNull(c);
-        assertEquals(31, c.currentPage().size());
+        assertEquals(31, c.values().size());
         assertFalse(c.nextPage().isPresent());
     }
 
@@ -51,11 +51,11 @@ public class GraphServiceTest {
                 .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json"));
         CollectionPageEntity<Contact> c = client.me().contacts().get();
         assertNotNull(c);
-        assertEquals(10, c.currentPage().size());
+        assertEquals(10, c.values().size());
         assertTrue(c.nextPage().isPresent());
         c = c.nextPage().get();
-        assertEquals(10, c.currentPage().size());
-        assertEquals("Justin", c.currentPage().get(9).getGivenName().get());
+        assertEquals(10, c.values().size());
+        assertEquals("Justin", c.values().get(9).getGivenName().get());
     }
 
     @Test

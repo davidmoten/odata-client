@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.Serializer;
@@ -26,14 +27,14 @@ public class DemoServiceTest {
     @Test
     public void testTopLevelCollection() {
         DemoService client = createClient("/Products", "/response-products.json");
-        List<Product> page = client.products().get().currentPage();
+        List<Product> page = client.products().get().values();
         assertEquals(11, page.size());
     }
 
     @Test
     public void testTopLevelCollectionReturnsSubClasses() {
         DemoService client = createClient("/Persons", "/response-persons.json");
-        List<Person> page = client.persons().get().currentPage();
+        List<Person> page = client.persons().get().values();
         assertEquals(7, page.size());
         assertTrue(page.get(0) instanceof Person);
         System.out.println(page.get(3));
@@ -44,7 +45,7 @@ public class DemoServiceTest {
     @Test
     public void testTopLevelPersonDetails() {
         DemoService client = createClient("/PersonDetails", "/response-person-details.json");
-        List<PersonDetail> page = client.personDetails().get().currentPage();
+        List<PersonDetail> page = client.personDetails().get().values();
         assertEquals(7, page.size());
     }
 
@@ -52,7 +53,7 @@ public class DemoServiceTest {
     public void testCollectionSelect() {
         DemoService client = createClient("/Products?$select=Name",
                 "/response-products-select-name.json");
-        List<Product> page = client.products().select("Name").get().currentPage();
+        List<Product> page = client.products().select("Name").get().values();
         assertEquals(11, page.size());
     }
 
@@ -60,7 +61,7 @@ public class DemoServiceTest {
     public void testCollectionFilter() {
         DemoService client = createClient("/Products?$filter=Name%20eq%20'Bread'",
                 "/response-products-filter-bread.json");
-        List<Product> page = client.products().filter("Name eq 'Bread'").get().currentPage();
+        List<Product> page = client.products().filter("Name eq 'Bread'").get().values();
         assertEquals(1, page.size());
     }
 
@@ -68,7 +69,7 @@ public class DemoServiceTest {
     public void testCollectionFilterAndTop() {
         DemoService client = createClient("/Products?$top=3&$filter=Rating%20eq%203",
                 "/response-products-filter-rating-3-top-3.json");
-        List<Product> page = client.products().filter("Rating eq 3").top(3).get().currentPage();
+        List<Product> page = client.products().filter("Rating eq 3").top(3).get().values();
         assertEquals(3, page.size());
     }
 
@@ -77,6 +78,16 @@ public class DemoServiceTest {
         DemoService client = createClient("/Products(1)", "/response-product.json");
         Product p = client.products("1").get();
         assertEquals("Milk", p.getName().get());
+    }
+
+    @Test
+    public void testEntityCollectionIsIterable() {
+        DemoService client = createClient("/Products", "/response-products.json");
+        int count = 0;
+        for (Product p : client.products().get()) {
+            count++;
+        }
+        assertEquals(11, count);
     }
 
     private DemoService client(Builder b) {
