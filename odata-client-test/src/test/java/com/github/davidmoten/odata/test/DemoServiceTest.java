@@ -65,6 +65,14 @@ public class DemoServiceTest {
     }
 
     @Test
+    public void testCollectionFilterAndTop() {
+        DemoService client = createClient("/Products?$top=3&$filter=Rating%20eq%203",
+                "/response-products-filter-rating-3-top-3.json");
+        List<Product> page = client.products().filter("Rating eq 3").top(3).get().currentPage();
+        assertEquals(3, page.size());
+    }
+
+    @Test
     public void testOneItemFromTopLevelCollection() {
         DemoService client = createClient("/Products(1)", "/response-product.json");
         Product p = client.products("1").get();
