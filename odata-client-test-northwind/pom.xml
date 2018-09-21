@@ -55,6 +55,7 @@
                         <configuration>
                             <definition>src/test/resources/odata-test-service-northwind-metadata.xml</definition>
                             <packageName>odata.test.northwind</packageName>
+                            <schemaNamespace>NorthwindModel</schemaNamespace>
                         </configuration>
                     </execution>
                 </executions>

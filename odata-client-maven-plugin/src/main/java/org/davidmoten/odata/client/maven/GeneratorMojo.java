@@ -38,6 +38,9 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
 
+    @Parameter(name = "schemaNamespace")
+    String schemaNamespace;
+
     @Override
     public void execute() throws MojoExecutionException {
         Options options = Options.builder() //
@@ -50,13 +53,34 @@ public class GeneratorMojo extends AbstractMojo {
             Unmarshaller unmarshaller = c.createUnmarshaller();
             TEdmx t = unmarshaller.unmarshal(new StreamSource(is), TEdmx.class).getValue();
             List<Schema> schemas = t.getDataServices().getSchema();
-            if (schemas.size() != 1) {
-                throw new MojoExecutionException("one and only one Schema element must be present");
+
+            final Schema schema;
+            if (schemas.isEmpty()) {
+                throw new MojoExecutionException("no schema found!");
+            } else if (schemas.size() > 1) {
+                if (schemaNamespace == null) {
+                    throw new MojoExecutionException(
+                            "as more than one Schema is present you need to specify the schemaNamespace property in the maven plugin");
+                } else {
+                    schema = schemas.stream() //
+                            .filter(x -> schemaNamespace.equals(x.getNamespace())) //
+                            .findFirst() //
+                            .orElseThrow(() -> {
+                                throw new IllegalArgumentException(
+                                        "schema with namespace " + schemaNamespace + " not found");
+                            });
+                }
+            } else {
+                schema = schemas.get(0);
             }
-            Generator g = new Generator(options, schemas.get(0));
+            Generator g = new Generator(options, schema);
             g.generate();
-        } catch (JAXBException | IOException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+        } catch (Throwable e) {
+            if (e instanceof MojoExecutionException) {
+                throw (MojoExecutionException) e;
+            } else {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
         }
     }
 }
