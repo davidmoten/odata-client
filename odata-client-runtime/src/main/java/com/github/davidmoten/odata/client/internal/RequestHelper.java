@@ -1,6 +1,13 @@
-package com.github.davidmoten.odata.client;
+package com.github.davidmoten.odata.client.internal;
 
 import java.util.Optional;
+
+import com.github.davidmoten.odata.client.CollectionPageEntity;
+import com.github.davidmoten.odata.client.ContextPath;
+import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.RequestOptions;
+import com.github.davidmoten.odata.client.ResponseGet;
+import com.github.davidmoten.odata.client.SchemaInfo;
 
 public final class RequestHelper {
 

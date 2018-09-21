@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public class CollectionPageEntity<T extends ODataEntity>
         implements Paged<T, CollectionPageEntity<T>> {
@@ -49,7 +50,7 @@ public class CollectionPageEntity<T extends ODataEntity>
     public static <T extends ODataEntity> CollectionPageEntity<T> create(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
-            ObjectMapper m = Serialization.MAPPER;
+            ObjectMapper m = Serializer.MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list2 = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
