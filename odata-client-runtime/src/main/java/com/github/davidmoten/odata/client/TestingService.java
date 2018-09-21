@@ -14,6 +14,9 @@ public class TestingService {
     }
 
     public static Builder baseUrl(String url) {
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
         return new Builder().baseUrl(url);
     }
 
