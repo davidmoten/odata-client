@@ -1,1 +1,45 @@
-{"@odata.context":"https://services.odata.org/Experimental/OData/OData.svc/$metadata#Persons","value":[{"ID":0,"Name":"Paula Wilson"},{"ID":1,"Name":"Jose Pavarotti"},{"ID":2,"Name":"Art Braunschweiger"},{"@odata.type":"#ODataDemo.Customer","ID":3,"Name":"Liz Nixon","TotalExpense":99.99},{"@odata.type":"#ODataDemo.Customer","ID":4,"Name":"Liu Wong","TotalExpense":199.99},{"@odata.type":"#ODataDemo.Employee","ID":5,"Name":"Jaime Yorres","EmployeeID":10001,"HireDate":"2000-05-30T00:00:00Z","Salary":15000},{"@odata.type":"#ODataDemo.Employee","ID":6,"Name":"Fran Wilson","EmployeeID":10002,"HireDate":"2001-01-02T00:00:00Z","Salary":12000}]}
+{
+	"@odata.context": "https://services.odata.org/Experimental/OData/OData.svc/$metadata#Persons",
+	"value": [
+		{
+			"ID": 0,
+			"Name": "Paula Wilson"
+		},
+		{
+			"ID": 1,
+			"Name": "Jose Pavarotti"
+		},
+		{
+			"ID": 2,
+			"Name": "Art Braunschweiger"
+		},
+		{
+			"@odata.type": "#ODataDemo.Customer",
+			"ID": 3,
+			"Name": "Liz Nixon",
+			"TotalExpense": 99.99
+		},
+		{
+			"@odata.type": "#ODataDemo.Customer",
+			"ID": 4,
+			"Name": "Liu Wong",
+			"TotalExpense": 199.99
+		},
+		{
+			"@odata.type": "#ODataDemo.Employee",
+			"ID": 5,
+			"Name": "Jaime Yorres",
+			"EmployeeID": 10001,
+			"HireDate": "2000-05-30T00:00:00Z",
+			"Salary": 15000
+		},
+		{
+			"@odata.type": "#ODataDemo.Employee",
+			"ID": 6,
+			"Name": "Fran Wilson",
+			"EmployeeID": 10002,
+			"HireDate": "2001-01-02T00:00:00Z",
+			"Salary": 12000
+		}
+	]
+}
