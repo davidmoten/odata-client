@@ -57,6 +57,14 @@ public class DemoServiceTest {
     }
 
     @Test
+    public void testCollectionFilter() {
+        DemoService client = createClient("/Products?$filter=Name%20eq%20'Bread'",
+                "/response-products-filter-bread.json");
+        List<Product> page = client.products().filter("Name eq 'Bread'").get().currentPage();
+        assertEquals(1, page.size());
+    }
+
+    @Test
     public void testOneItemFromTopLevelCollection() {
         DemoService client = createClient("/Products(1)", "/response-product.json");
         Product p = client.products("1").get();
