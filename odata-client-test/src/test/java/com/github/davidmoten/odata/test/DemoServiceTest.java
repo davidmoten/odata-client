@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -14,15 +15,29 @@ import com.github.davidmoten.odata.client.TestingService;
 import com.github.davidmoten.odata.client.TestingService.Builder;
 
 import odata.test.container.DemoService;
+import odata.test.entity.Customer;
+import odata.test.entity.Employee;
+import odata.test.entity.Person;
 import odata.test.entity.Product;
 
-public class SystemTest {
+public class DemoServiceTest {
 
     @Test
     public void testTopLevelCollection() {
         DemoService client = createClient("/Products", "/response-products.json");
         List<Product> page = client.products().get().currentPage();
         assertEquals(11, page.size());
+    }
+    
+    @Test
+    public void testTopLevelCollectionReturnsSubClasses() {
+        DemoService client = createClient("/Persons", "/response-persons.json");
+        List<Person> page = client.persons().get().currentPage();
+        assertEquals(7, page.size());
+        assertTrue(page.get(0) instanceof Person);
+        System.out.println(page.get(3));
+        assertTrue(page.get(3) instanceof Customer);
+        assertTrue(page.get(5) instanceof Employee);
     }
 
     @Test
