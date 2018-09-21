@@ -2,7 +2,6 @@ package com.github.davidmoten.odata.client.internal;
 
 import java.util.Optional;
 
-import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestOptions;
@@ -35,25 +34,12 @@ public final class RequestHelper {
         Optional<String> namespacedType = cp.context().serializer().getODataType(json)
                 .map(x -> x.substring(1));
 
-        final Class<? extends T> c;
         if (namespacedType.isPresent()) {
             return (Class<? extends T>) schemaInfo
                     .getEntityClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }
-    }
-
-    public static <T extends ODataEntity> CollectionPageEntity<T> getCollection(
-            ContextPath contextPath, Class<T> cls, RequestOptions options) {
-        // build the url
-        ContextPath cp = contextPath.addQueries(options.getQueries());
-        // get the response
-        ResponseGet response = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
-        // deserialize
-        // return cp.context().serializer().deserialize(response.getText(), cls,
-        // contextPath);
-        return null;
     }
 
 }
