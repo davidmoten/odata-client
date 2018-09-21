@@ -15,6 +15,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
     private Optional<String> orderBy = Optional.empty();
     private Optional<Long> skip = Optional.empty();
     private Optional<Long> top = Optional.empty();
+    private Optional<String> select = Optional.empty();
 
     CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
         this.request = request;
@@ -55,12 +56,19 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
         return this;
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
+        Preconditions.checkNotNull(clause);
+        this.select = Optional.of(clause);
+        return this;
+    }
+
     public CollectionPageEntity<T> get() {
         return request.get(build());
     }
 
     CollectionEntityRequestOptions build() {
         return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip,
-                top);
+                top, select);
     }
+
 }

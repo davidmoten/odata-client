@@ -107,7 +107,7 @@ public class Path {
 
     private Object encodeQuery(String query) {
         // can include = legally in query parameters
-        return encode(query).replaceAll("\\%3D", "=");
+        return encode(query).replaceAll("\\%3D", "=").replaceAll("\\%24", "\\$");
     }
 
     private static String encode(String s) {

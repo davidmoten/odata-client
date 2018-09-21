@@ -18,6 +18,7 @@ import odata.test.container.DemoService;
 import odata.test.entity.Customer;
 import odata.test.entity.Employee;
 import odata.test.entity.Person;
+import odata.test.entity.PersonDetail;
 import odata.test.entity.Product;
 
 public class DemoServiceTest {
@@ -28,7 +29,7 @@ public class DemoServiceTest {
         List<Product> page = client.products().get().currentPage();
         assertEquals(11, page.size());
     }
-    
+
     @Test
     public void testTopLevelCollectionReturnsSubClasses() {
         DemoService client = createClient("/Persons", "/response-persons.json");
@@ -38,6 +39,21 @@ public class DemoServiceTest {
         System.out.println(page.get(3));
         assertTrue(page.get(3) instanceof Customer);
         assertTrue(page.get(5) instanceof Employee);
+    }
+
+    @Test
+    public void testTopLevelPersonDetails() {
+        DemoService client = createClient("/PersonDetails", "/response-person-details.json");
+        List<PersonDetail> page = client.personDetails().get().currentPage();
+        assertEquals(7, page.size());
+    }
+
+    @Test
+    public void testCollectionSelect() {
+        DemoService client = createClient("/Products?$select=Name",
+                "/response-products-select-name.json");
+        List<Product> page = client.products().select("Name").get().currentPage();
+        assertEquals(11, page.size());
     }
 
     @Test

@@ -55,4 +55,8 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).top(n);
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(clause);
+    }
+
 }
