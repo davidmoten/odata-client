@@ -3,7 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -76,7 +76,7 @@ public class Path {
     }
 
     public Path addQuery(String key, String value) {
-        Map<String, String> map = new HashMap<String, String>(queries);
+        Map<String, String> map = new LinkedHashMap<String, String>(queries);
         map.put(key, value);
         return new Path(url, map, style);
     }
@@ -90,8 +90,8 @@ public class Path {
             for (Entry<String, String> entry : queries.entrySet()) {
                 if (!first) {
                     b.append("&");
-                    first = false;
                 }
+                first = false;
                 b.append(encodeQuery(entry.getKey()));
                 b.append("=");
                 b.append(encodeQuery(entry.getValue()));
