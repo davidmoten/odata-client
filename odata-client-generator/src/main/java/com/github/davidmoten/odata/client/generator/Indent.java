@@ -1,6 +1,6 @@
 package com.github.davidmoten.odata.client.generator;
 
-class Indent {
+final class Indent {
 
     private String value = "";
     public static final String INDENT = "    ";
