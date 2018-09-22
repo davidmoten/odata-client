@@ -856,12 +856,12 @@ public final class Generator {
         addContextPathField(imports, indent, p);
     }
 
-    private static void suppressWarnings(Imports imports, Indent indent, PrintWriter p) {
-        p.format("%s@%s(\"unused\")\n", indent, imports.add(SuppressWarnings.class));
-    }
+//    private static void suppressWarnings(Imports imports, Indent indent, PrintWriter p) {
+//        p.format("%s@%s(\"unused\")\n", indent, imports.add(SuppressWarnings.class));
+//    }
 
     private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
-        suppressWarnings(imports, indent, p);
+//        suppressWarnings(imports, indent, p);
         p.format("%sprivate final %s contextPath;\n", indent, imports.add(ContextPath.class));
     }
 
@@ -924,6 +924,7 @@ public final class Generator {
                             indent.right();
 //                            p.format("%sthis.%s = %s.orElse(null);\n", indent), fieldName,
 //                                    fieldName);
+                            
                         } else {
                             indent.right();
 //                            p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
