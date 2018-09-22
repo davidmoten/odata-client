@@ -920,21 +920,28 @@ public final class Generator {
                                     imports.add(EntityPreconditions.class), fieldName, fieldName);
                             indent.left();
                         }
-                        if (x.isNullable() && !isCollection(x)) {
-                            indent.right();
-//                            p.format("%sthis.%s = %s.orElse(null);\n", indent), fieldName,
-//                                    fieldName);
-                            
-                        } else {
-                            indent.right();
-//                            p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
-                        }
-                        p.format("%sreturn this;\n", indent);
-                        p.format("%s}\n", indent.left());
 
+                        // prepare parameters to constructor to return immutable copy
+                        String params = Util.filter(properties, TProperty.class) //
+                                .map(y -> {
+                                    String param = Names.getIdentifier(y.getName());
+                                    if (y.getName().equals(x.getName()) && x.isNullable()
+                                            && !isCollection(x)) {
+                                        param += ".orElse(null)";
+                                    }
+                                    return param;
+                                }).collect(Collectors.joining(", "));
+                        if (params.isEmpty()) {
+                            params = "contextPath";
+                        } else {
+                            params = "contextPath, " + params;
+                        }
+                        p.format("%sreturn new %s(%s);\n", indent.right(), simpleClassName, params);
+                        p.format("%s}\n", indent.left());
                     }
 
                 });
+
     }
 
     private void printPropertyOrder(Imports imports, PrintWriter p, List<Object> properties) {
@@ -950,7 +957,8 @@ public final class Generator {
                 .forEach(x -> {
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
                             x.getName());
-                    p.format("%sprivate final %s %s;\n", indent, toTypeSuppressUseOfOptional(x, imports),
+                    p.format("%sprivate final %s %s;\n", indent,
+                            toTypeSuppressUseOfOptional(x, imports),
                             Names.getIdentifier(x.getName()));
                     String t = names.getInnerType(names.getType(x));
                     if (isCollection(x) && !names.isEntityWithNamespace(t)) {
@@ -966,7 +974,7 @@ public final class Generator {
             List<Object> properties) {
         Class<TNavigationProperty> cls = TNavigationProperty.class;
 
-        // write getters 
+        // write getters
         Util.filter(properties, cls) //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
