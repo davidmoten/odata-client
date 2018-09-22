@@ -47,6 +47,18 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
+                        <id>generate-northwind-model</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <definition>src/test/resources/odata-test-service-northwind-metadata.xml</definition>
+                            <packageName>odata.test.northwind.model</packageName>
+                            <schemaNamespace>NorthwindModel</schemaNamespace>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>generate-msgraph-client</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -54,8 +66,8 @@
                         </goals>
                         <configuration>
                             <definition>src/test/resources/odata-test-service-northwind-metadata.xml</definition>
-                            <packageName>odata.test.northwind</packageName>
-                            <schemaNamespace>NorthwindModel</schemaNamespace>
+                            <packageName>odata.test.northwind.experimental.model</packageName>
+                            <schemaNamespace>ODataWebExperimental.Northwind.Model</schemaNamespace>
                         </configuration>
                     </execution>
                 </executions>

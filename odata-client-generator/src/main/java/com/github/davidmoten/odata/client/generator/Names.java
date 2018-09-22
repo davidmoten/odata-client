@@ -114,7 +114,7 @@ final class Names {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
         }
-        return "set" + upperFirst(name);
+        return "with" + upperFirst(name);
     }
 
     private static File toDirectory(File base, String pkg) {

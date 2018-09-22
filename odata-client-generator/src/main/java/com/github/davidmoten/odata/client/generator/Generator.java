@@ -921,10 +921,12 @@ public final class Generator {
                             indent.left();
                         }
                         if (x.isNullable() && !isCollection(x)) {
-                            p.format("%sthis.%s = %s.orElse(null);\n", indent.right(), fieldName,
-                                    fieldName);
+                            indent.right();
+//                            p.format("%sthis.%s = %s.orElse(null);\n", indent), fieldName,
+//                                    fieldName);
                         } else {
-                            p.format("%sthis.%s = %s;\n", indent.right(), fieldName, fieldName);
+                            indent.right();
+//                            p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
                         }
                         p.format("%sreturn this;\n", indent);
                         p.format("%s}\n", indent.left());
@@ -947,7 +949,7 @@ public final class Generator {
                 .forEach(x -> {
                     p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
                             x.getName());
-                    p.format("%sprivate %s %s;\n", indent, toTypeSuppressUseOfOptional(x, imports),
+                    p.format("%sprivate final %s %s;\n", indent, toTypeSuppressUseOfOptional(x, imports),
                             Names.getIdentifier(x.getName()));
                     String t = names.getInnerType(names.getType(x));
                     if (isCollection(x) && !names.isEntityWithNamespace(t)) {
@@ -963,7 +965,7 @@ public final class Generator {
             List<Object> properties) {
         Class<TNavigationProperty> cls = TNavigationProperty.class;
 
-        // write getters and setters
+        // write getters 
         Util.filter(properties, cls) //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
