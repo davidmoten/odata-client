@@ -247,29 +247,11 @@ public final class Generator {
 
             // add constructor
             // build constructor parameters
-            String props = heirarchy //
-                    .stream() //
-                    .map(z -> new StructureEntityType(z, names)) //
-                    .flatMap(z -> z.getProperties() //
-                            .stream() //
-                            .flatMap(x -> {
-                                Field a = new Field(Names.getIdentifier(x.getName()), x.getName(),
-                                        names.toImportedTypel(x, imports));
-                                if (isCollection(x)
-                                        && !names.isEntityWithNamespace(names.getType(x))) {
-                                    Field b = new Field(
-                                            Names.getIdentifier(x.getName()) + "NextLink",
-                                            x.getName() + "@nextLink", imports.add(String.class));
-                                    return Stream.of(a, b);
-                                } else {
-                                    return Stream.of(a);
-                                }
-                            })
-                            .map(f -> String.format("@%s(\"%s\") %s %s",
-                                    imports.add(JsonProperty.class), //
-                                    f.propertyName, //
-                                    f.importedType, //
-                                    f.name))) //
+            String props = t.getFields(imports).stream() //
+                    .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
+                            f.propertyName, //
+                            f.importedType, //
+                            f.name)) //
                     .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining(", "));
 
@@ -393,30 +375,11 @@ public final class Generator {
 
             // add constructor
             // build constructor parameters
-            String props = heirarchy //
-                    .stream() //
-                    .flatMap(z -> Util
-                            .filter(z.getPropertyOrNavigationPropertyOrAnnotation(),
-                                    TProperty.class) //
-                            .flatMap(x -> {
-                                // TODO make resuable method because in entity as well
-                                String a = String.format("@%s(\"%s\") %s %s",
-                                        imports.add(JsonProperty.class), //
-                                        x.getName(), //
-                                        names.toImportedTypel(x, imports), //
-                                        Names.getIdentifier(x.getName()));
-                                if (isCollection(x)
-                                        && !names.isEntityWithNamespace(names.getType(x))) {
-                                    String b = String.format("@%s(\"%s@nextLink\") %s %sNextLink",
-                                            imports.add(JsonProperty.class), //
-                                            x.getName(), //
-                                            imports.add(String.class), //
-                                            Names.getIdentifier(x.getName()));
-                                    return Stream.of(a, b);
-                                } else {
-                                    return Stream.of(a);
-                                }
-                            })) //
+            String props = t.getFields(imports).stream() //
+                    .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
+                            f.propertyName, //
+                            f.importedType, //
+                            f.name)) //
                     .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining(", "));
             if (!props.isEmpty()) {
