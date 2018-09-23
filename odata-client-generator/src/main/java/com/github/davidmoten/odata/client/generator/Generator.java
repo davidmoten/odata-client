@@ -253,25 +253,26 @@ public final class Generator {
                     .flatMap(z -> Util
                             .filter(z.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
                             .flatMap(x -> {
-                                String a = String.format("@%s(\"%s\") %s %s",
-                                        imports.add(JsonProperty.class), //
-                                        x.getName(), //
-                                        toImportedTypel(x, imports), //
-                                        Names.getIdentifier(x.getName()));
+                                Field a = new Field(Names.getIdentifier(x.getName()), x.getName(),
+                                        toImportedTypel(x, imports));
                                 if (isCollection(x)
                                         && !names.isEntityWithNamespace(names.getType(x))) {
-                                    String b = String.format("@%s(\"%s@nextLink\") %s %sNextLink",
-                                            imports.add(JsonProperty.class), //
-                                            x.getName(), //
-                                            imports.add(String.class), //
-                                            Names.getIdentifier(x.getName()));
+                                    Field b = new Field(
+                                            Names.getIdentifier(x.getName()) + "NextLink",
+                                            x.getName() + "@nextLink", imports.add(String.class));
                                     return Stream.of(a, b);
                                 } else {
                                     return Stream.of(a);
                                 }
-                            })) //
+                            })
+                            .map(f -> String.format("@%s(\"%s\") %s %s",
+                                    imports.add(JsonProperty.class), //
+                                    f.propertyName, //
+                                    f.importedType, //
+                                    f.name))) //
                     .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining(", "));
+
             if (!props.isEmpty()) {
                 props = ", " + props;
             }
@@ -333,6 +334,18 @@ public final class Generator {
             Files.write(names.getClassFileEntity(t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static final class Field {
+        final String name;
+        final String propertyName;
+        final String importedType;
+
+        Field(String name, String propertyName, String importedType) {
+            this.name = name;
+            this.propertyName = propertyName;
+            this.importedType = importedType;
         }
     }
 
