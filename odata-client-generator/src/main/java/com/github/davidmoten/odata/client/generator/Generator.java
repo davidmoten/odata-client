@@ -837,7 +837,7 @@ public final class Generator {
                     boolean isCollection = isCollection(x);
                     if (isCollection) {
                         String inner = names.getInnerType(t);
-                        String importedInnerType = toTypeNonCollection(inner, false, imports);
+                        String importedInnerType = toTypeNonCollection(inner, imports);
                         boolean isEntity = names.isEntityWithNamespace(inner);
                         Class<?> collectionCls;
                         if (isEntity) {
@@ -861,7 +861,7 @@ public final class Generator {
                         }
                         p.format("%s}\n", indent.left());
                     } else {
-                        String importedType = toTypeNonCollection(t, !x.isNullable(), imports);
+                        String importedType = toTypeNonCollection(t, imports);
                         if (x.isNullable()) {
                             importedType = imports.add(Optional.class) + "<" + importedType + ">";
                         }
@@ -968,14 +968,14 @@ public final class Generator {
         String t = x.getType().get(0);
         if (!isCollection(x)) {
             if (x.isNullable() != null && x.isNullable()) {
-                String r = toType(t, false, imports, List.class);
+                String r = toType(t, imports, List.class);
                 return imports.add(Optional.class) + "<" + r + ">";
             } else {
                 // is navigation property so must be an entity and is a single request
                 return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
             }
         } else {
-            return toType(t, true, imports, CollectionPageEntityRequest.class);
+            return toType(t, imports, CollectionPageEntityRequest.class);
         }
     }
 
@@ -984,7 +984,7 @@ public final class Generator {
         if (!isCollection(x.getType())) {
             return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
         } else {
-            return toType(t, true, imports, CollectionPageEntityRequest.class);
+            return toType(t, imports, CollectionPageEntityRequest.class);
         }
     }
 
@@ -998,11 +998,11 @@ public final class Generator {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
         if (x.isNullable() && !isCollection(x)) {
-            return toType(t, false, imports, List.class);
+            return toType(t, imports, List.class);
         } else if (isCollection(x) && names.isEntityWithNamespace(names.getType(x))) {
             return imports.add(CollectionPageJson.class);
         } else {
-            return toType(t, true, imports, List.class);
+            return toType(t, imports, List.class);
         }
     }
 
@@ -1018,10 +1018,9 @@ public final class Generator {
         return t.startsWith(COLLECTION_PREFIX) && t.endsWith(")");
     }
 
-    private String toType(String t, boolean canUsePrimitive, Imports imports,
-            Class<?> collectionClass) {
+    private String toType(String t, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
-            return toTypeFromEdm(t, canUsePrimitive, imports);
+            return toTypeFromEdm(t, imports);
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
@@ -1032,9 +1031,9 @@ public final class Generator {
         }
     }
 
-    private String toTypeNonCollection(String t, boolean canUsePrimitive, Imports imports) {
+    private String toTypeNonCollection(String t, Imports imports) {
         if (t.startsWith("Edm.")) {
-            return toTypeFromEdm(t, canUsePrimitive, imports);
+            return toTypeFromEdm(t, imports);
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
         } else {
@@ -1047,24 +1046,20 @@ public final class Generator {
             // get the type without namespace
             String entityRequestClass = names
                     .getFullClassNameEntityRequestFromTypeWithNamespace(inner);
-            String a = toType(inner, false, imports, collectionClass);
+            String a = toType(inner, imports, collectionClass);
             return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass)
                     + ">";
         } else {
             return imports.add(collectionClass) + "<"
-                    + toType(inner, false, imports, collectionClass) + ">";
+                    + toType(inner, imports, collectionClass) + ">";
         }
     }
 
-    private String toTypeFromEdm(String t, boolean canUsePrimitive, Imports imports) {
+    private String toTypeFromEdm(String t, Imports imports) {
         if (t.equals("Edm.String")) {
             return imports.add(String.class);
         } else if (t.equals("Edm.Boolean")) {
-            if (canUsePrimitive) {
-                return boolean.class.getCanonicalName();
-            } else {
-                return imports.add(Boolean.class);
-            }
+            return imports.add(Boolean.class);
         } else if (t.equals("Edm.DateTimeOffset")) {
             return imports.add(OffsetDateTime.class);
         } else if (t.equals("Edm.Duration")) {
@@ -1074,41 +1069,21 @@ public final class Generator {
         } else if (t.equals("Edm.Date")) {
             return imports.add(LocalDate.class);
         } else if (t.equals("Edm.Int32")) {
-            if (canUsePrimitive) {
-                return int.class.getCanonicalName();
-            } else {
-                return imports.add(Integer.class);
-            }
+            return imports.add(Integer.class);
         } else if (t.equals("Edm.Int16")) {
-            if (canUsePrimitive) {
-                return short.class.getCanonicalName();
-            } else {
-                return imports.add(Short.class);
-            }
+            return imports.add(Short.class);
         } else if (t.equals("Edm.Byte")) {
             return imports.add(UnsignedByte.class);
         } else if (t.equals("Edm.SByte")) {
-            if (canUsePrimitive) {
-                return byte.class.getCanonicalName();
-            } else {
-                return imports.add(byte.class);
-            }
+            return byte.class.getCanonicalName();
         } else if (t.equals("Edm.Single")) {
-            if (canUsePrimitive) {
-                return float.class.getCanonicalName();
-            } else {
-                return imports.add(Float.class);
-            }
+            return imports.add(Float.class);
         } else if (t.equals("Edm.Double")) {
-            if (canUsePrimitive) {
-                return double.class.getCanonicalName();
-            } else {
-                return imports.add(Double.class);
-            }
+            return imports.add(Double.class);
         } else if (t.equals("Edm.Guid")) {
             return imports.add(String.class);
         } else if (t.equals("Edm.Int64")) {
-            return canUsePrimitive ? long.class.getCanonicalName() : imports.add(Long.class);
+            return imports.add(Long.class);
         } else if (t.equals("Edm.Binary")) {
             return "byte[]";
         } else if (t.equals("Edm.Stream")) {
