@@ -10,7 +10,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 public final class StructureEntityType extends Structure<TEntityType> {
 
     public StructureEntityType(TEntityType c, Names names) {
-        super(c, TEntityType.class, names, t -> new StructureEntityType(t, names));
+        super(c, TEntityType.class, names);
     }
 
     @Override
@@ -31,7 +31,12 @@ public final class StructureEntityType extends Structure<TEntityType> {
 
     @Override
     public List<TNavigationProperty> getNavigationProperties() {
-        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(),
-                TNavigationProperty.class).collect(Collectors.toList());
+        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    Structure<TEntityType> create(TEntityType t) {
+        return new StructureEntityType(t, names);
     }
 }
