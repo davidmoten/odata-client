@@ -930,8 +930,6 @@ public final class Generator {
 
     private void printNavigationPropertyGetters(Imports imports, Indent indent, PrintWriter p,
             List<TNavigationProperty> properties) {
-        Class<TNavigationProperty> cls = TNavigationProperty.class;
-
         // write getters
         properties //
                 .stream() //
