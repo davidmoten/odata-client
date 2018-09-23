@@ -230,22 +230,14 @@ public final class Generator {
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageEntity());
             p.format("IMPORTSHERE");
-            final String extension;
 
             List<TEntityType> heirarchy = t.getHeirarchy();
-
-            if (t.getBaseType() != null) {
-                extension = " extends "
-                        + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
-            } else {
-                extension = "";
-            }
 
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
                     imports.add(Include.class));
             printPropertyOrder(imports, p, t.getProperties());
-            p.format("public class %s%s implements %s {\n\n", simpleClassName, extension,
-                    imports.add(ODataEntity.class));
+            p.format("public class %s%s implements %s {\n\n", simpleClassName,
+                    getExtendsClause(t, imports), imports.add(ODataEntity.class));
 
             addContextPathInjectableField(imports, indent, p);
 
@@ -344,6 +336,15 @@ public final class Generator {
         }
     }
 
+    private String getExtendsClause(Structure<?> t, Imports imports) {
+        if (t.getBaseType() != null) {
+            return " extends "
+                    + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
+        } else {
+            return "";
+        }
+    }
+
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
         p.format("\n%sprivate %s<%s,%s> unmappedFields;\n", indent, imports.add(Map.class),
                 imports.add(String.class), imports.add(String.class));
@@ -378,16 +379,9 @@ public final class Generator {
             p.format("IMPORTSHERE");
 
             List<TComplexType> heirarchy = t.getHeirarchy();
-            final String extension;
-            if (t.getBaseType() != null) {
-                extension = " extends "
-                        + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
-            } else {
-                extension = "";
-            }
 
             // TODO handle ComplexType inheritance
-            p.format("public class %s%s {\n\n", simpleClassName, extension);
+            p.format("public class %s%s {\n\n", simpleClassName, getExtendsClause(t, imports));
 
             addContextPathField(imports, indent, p);
 
@@ -1050,8 +1044,8 @@ public final class Generator {
             return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass)
                     + ">";
         } else {
-            return imports.add(collectionClass) + "<"
-                    + toType(inner, imports, collectionClass) + ">";
+            return imports.add(collectionClass) + "<" + toType(inner, imports, collectionClass)
+                    + ">";
         }
     }
 
