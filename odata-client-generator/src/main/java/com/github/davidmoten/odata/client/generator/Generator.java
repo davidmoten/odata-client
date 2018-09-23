@@ -764,7 +764,7 @@ public final class Generator {
                         if (x.getType().get(0).startsWith(COLLECTION_PREFIX)) {
                             String y = names.getInnerType(names.getType(x));
                             p.format("%spublic %s %s() {\n", //
-                                    indent, //
+                                    indent, // tional`
                                     imports.add(names
                                             .getFullClassNameCollectionRequestFromTypeWithNamespace(
                                                     y)), //
@@ -811,12 +811,7 @@ public final class Generator {
         addContextPathField(imports, indent, p);
     }
 
-//    private static void suppressWarnings(Imports imports, Indent indent, PrintWriter p) {
-//        p.format("%s@%s(\"unused\")\n", indent, imports.add(SuppressWarnings.class));
-//    }
-
     private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
-//        suppressWarnings(imports, indent, p);
         p.format("%sprivate final %s contextPath;\n", indent, imports.add(ContextPath.class));
     }
 
@@ -856,17 +851,11 @@ public final class Generator {
                         p.format("%s}\n", indent.left());
                     } else {
                         String importedType = toTypeNonCollection(t, imports);
-                        if (x.isNullable()) {
-                            importedType = imports.add(Optional.class) + "<" + importedType + ">";
-                        }
+                        importedType = imports.add(Optional.class) + "<" + importedType + ">";
                         p.format("\n%spublic %s %s() {\n", indent, importedType,
                                 Names.getGetterMethod(x.getName()));
-                        if (x.isNullable() && !isCollection(x)) {
-                            p.format("%sreturn %s.ofNullable(%s);\n", indent.right(),
-                                    imports.add(Optional.class), fieldName);
-                        } else {
-                            p.format("%sreturn %s;\n", indent.right(), fieldName);
-                        }
+                        p.format("%sreturn %s.ofNullable(%s);\n", indent.right(),
+                                imports.add(Optional.class), fieldName);
                         p.format("%s}\n", indent.left());
                         p.format("\n%spublic %s %s(%s %s) {\n", indent, simpleClassName,
                                 Names.getSetterMethod(x.getName()), importedType, fieldName);
