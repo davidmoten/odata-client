@@ -10,7 +10,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 public final class StructureComplexType extends Structure<TComplexType> {
 
     public StructureComplexType(TComplexType c, Names names) {
-        super(c, TComplexType.class, names, t -> new StructureComplexType(t, names));
+        super(c, TComplexType.class, names);
     }
 
     @Override
@@ -33,5 +33,10 @@ public final class StructureComplexType extends Structure<TComplexType> {
     public List<TNavigationProperty> getNavigationProperties() {
         return Util.filter(value.getPropertyOrNavigationPropertyOrAnnotation(),
                 TNavigationProperty.class).collect(Collectors.toList());
+    }
+
+    @Override
+    Structure<TComplexType> create(TComplexType t) {
+        return new StructureComplexType(t, names);
     }
 }
