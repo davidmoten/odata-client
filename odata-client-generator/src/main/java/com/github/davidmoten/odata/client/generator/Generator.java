@@ -896,7 +896,9 @@ public final class Generator {
                         } else {
                             params = "contextPath, " + params;
                         }
-                        p.format("%sreturn new %s(%s);\n", indent.right(), simpleClassName, params);
+                        indent.right();
+//                        p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
+                        p.format("%sreturn null;\n", indent);
                         p.format("%s}\n", indent.left());
                     }
 
