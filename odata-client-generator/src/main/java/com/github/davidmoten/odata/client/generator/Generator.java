@@ -980,13 +980,7 @@ public final class Generator {
     private String toImportedTypel(TProperty x, Imports imports) {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
-        if (x.isNullable() && !isCollection(x)) {
-            return toType(t, imports, List.class);
-        } else if (isCollection(x) && names.isEntityWithNamespace(names.getType(x))) {
-            return imports.add(CollectionPageJson.class);
-        } else {
-            return toType(t, imports, List.class);
-        }
+        return toType(t, imports, List.class);
     }
 
     private boolean isCollection(TProperty x) {
