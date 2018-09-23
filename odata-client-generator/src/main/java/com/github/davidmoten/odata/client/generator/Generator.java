@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,10 +48,10 @@ import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
-import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
 import com.github.davidmoten.odata.client.edm.UnsignedByte;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public final class Generator {
 
@@ -221,7 +220,8 @@ public final class Generator {
         }
     }
 
-    private void writeEntity(TEntityType t) {
+    private void writeEntity(TEntityType entityType) {
+        StructureEntityType t = new StructureEntityType(entityType, names);
         String simpleClassName = names.getSimpleClassNameEntity(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -232,7 +232,7 @@ public final class Generator {
             p.format("IMPORTSHERE");
             final String extension;
 
-            List<TEntityType> heirarchy = getHeirarchy(t);
+            List<TEntityType> heirarchy = t.getHeirarchy();
 
             if (t.getBaseType() != null) {
                 extension = " extends "
@@ -243,14 +243,14 @@ public final class Generator {
 
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
                     imports.add(Include.class));
-            printPropertyOrder(imports, p, t.getKeyOrPropertyOrNavigationProperty());
+            printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName, extension,
                     imports.add(ODataEntity.class));
 
             addContextPathInjectableField(imports, indent, p);
 
             // add other fields
-            printPropertyFields(imports, indent, p, t.getKeyOrPropertyOrNavigationProperty());
+            printPropertyFields(imports, indent, p, t.getProperties());
 
             addUnmappedFieldsField(imports, indent, p);
 
@@ -316,7 +316,7 @@ public final class Generator {
             p.format("%sthis.contextPath = contextPath;\n", indent);
 
             // print constructor field assignments
-            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+            t.getProperties() //
                     .forEach(x -> {
                         String fieldName = Names.getIdentifier(x.getName());
                         p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
@@ -330,10 +330,8 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
-                    t.getKeyOrPropertyOrNavigationProperty());
-            printNavigationPropertyGetters(imports, indent, p,
-                    t.getKeyOrPropertyOrNavigationProperty());
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties());
+            printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -368,7 +366,8 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private void writeComplexType(TComplexType t) {
+    private void writeComplexType(TComplexType complexType) {
+        StructureComplexType t = new StructureComplexType(complexType, names);
         String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -378,7 +377,7 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageComplexType());
             p.format("IMPORTSHERE");
 
-            List<TComplexType> heirarchy = getHeirarchy(t);
+            List<TComplexType> heirarchy = t.getHeirarchy();
             final String extension;
             if (t.getBaseType() != null) {
                 extension = " extends "
@@ -395,8 +394,7 @@ public final class Generator {
             addUnmappedFieldsField(imports, indent, p);
 
             // write fields from properties
-            printPropertyFields(imports, indent, p,
-                    t.getPropertyOrNavigationPropertyOrAnnotation());
+            printPropertyFields(imports, indent, p, t.getProperties());
 
             // write constructor
             // add constructor
@@ -465,7 +463,7 @@ public final class Generator {
             }
             p.format("%sthis.contextPath = contextPath;\n", indent.right());
             // print constructor field assignments
-            Util.filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
+            t.getProperties() //
                     .forEach(x -> {
                         String fieldName = Names.getIdentifier(x.getName());
                         p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
@@ -476,8 +474,7 @@ public final class Generator {
                     });
             p.format("%s}\n", indent.left());
 
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName,
-                    t.getPropertyOrNavigationPropertyOrAnnotation());
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -813,42 +810,6 @@ public final class Generator {
 
     }
 
-    private List<TEntityType> getHeirarchy(TEntityType t) {
-        List<TEntityType> a = new LinkedList<>();
-        a.add(t);
-        while (true) {
-            if (t.getBaseType() == null) {
-                return a;
-            } else {
-                TEntityType y = t;
-                t = Util.types(schema, TEntityType.class) //
-                        .filter(x -> x.getName().equals(
-                                names.getSimpleTypeNameFromTypeWithNamespace(y.getBaseType()))) //
-                        .findFirst() //
-                        .get();
-                a.add(0, t);
-            }
-        }
-    }
-
-    private List<TComplexType> getHeirarchy(TComplexType t) {
-        List<TComplexType> a = new LinkedList<>();
-        a.add(t);
-        while (true) {
-            if (t.getBaseType() == null) {
-                return a;
-            } else {
-                TComplexType y = t;
-                t = Util.types(schema, TComplexType.class) //
-                        .filter(x -> x.getName().equals(
-                                names.getSimpleTypeNameFromTypeWithNamespace(y.getBaseType()))) //
-                        .findFirst() //
-                        .get();
-                a.add(0, t);
-            }
-        }
-    }
-
     private static void addContextPathInjectableField(Imports imports, Indent indent,
             PrintWriter p) {
         // add context path field
@@ -866,10 +827,10 @@ public final class Generator {
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
-            String simpleClassName, List<Object> properties) {
+            String simpleClassName, List<TProperty> properties) {
 
         // write getters and setters
-        Util.filter(properties, TProperty.class) //
+        properties //
                 .forEach(x -> {
                     String fieldName = Names.getIdentifier(x.getName());
                     String t = names.getType(x);
@@ -922,15 +883,14 @@ public final class Generator {
                         }
 
                         // prepare parameters to constructor to return immutable copy
-                        String params = Util.filter(properties, TProperty.class) //
-                                .map(y -> {
-                                    String param = Names.getIdentifier(y.getName());
-                                    if (y.getName().equals(x.getName()) && x.isNullable()
-                                            && !isCollection(x)) {
-                                        param += ".orElse(null)";
-                                    }
-                                    return param;
-                                }).collect(Collectors.joining(", "));
+                        String params = properties.stream().map(y -> {
+                            String param = Names.getIdentifier(y.getName());
+                            if (y.getName().equals(x.getName()) && x.isNullable()
+                                    && !isCollection(x)) {
+                                param += ".orElse(null)";
+                            }
+                            return param;
+                        }).collect(Collectors.joining(", "));
                         if (params.isEmpty()) {
                             params = "contextPath";
                         } else {
@@ -944,38 +904,35 @@ public final class Generator {
 
     }
 
-    private void printPropertyOrder(Imports imports, PrintWriter p, List<Object> properties) {
-        String props = Util.filter(properties, TProperty.class) //
-                .map(x -> "\n    \"" + x.getName() + "\"") //
+    private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties) {
+        String props = properties.stream().map(x -> "\n    \"" + x.getName() + "\"") //
                 .collect(Collectors.joining(", "));
         p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
     }
 
     private void printPropertyFields(Imports imports, Indent indent, PrintWriter p,
-            List<Object> properties) {
-        Util.filter(properties, TProperty.class) //
-                .forEach(x -> {
-                    p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class),
-                            x.getName());
-                    p.format("%sprivate final %s %s;\n", indent,
-                            toTypeSuppressUseOfOptional(x, imports),
-                            Names.getIdentifier(x.getName()));
-                    String t = names.getInnerType(names.getType(x));
-                    if (isCollection(x) && !names.isEntityWithNamespace(t)) {
-                        p.format("\n%s@%s(\"%s@nextLink\")\n", indent,
-                                imports.add(JsonProperty.class), x.getName());
-                        p.format("%sprivate %s %sNextLink;\n", indent, imports.add(String.class),
-                                Names.getIdentifier(x.getName()));
-                    }
-                });
+            List<TProperty> properties) {
+        properties.stream().forEach(x -> {
+            p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+            p.format("%sprivate final %s %s;\n", indent, toTypeSuppressUseOfOptional(x, imports),
+                    Names.getIdentifier(x.getName()));
+            String t = names.getInnerType(names.getType(x));
+            if (isCollection(x) && !names.isEntityWithNamespace(t)) {
+                p.format("\n%s@%s(\"%s@nextLink\")\n", indent, imports.add(JsonProperty.class),
+                        x.getName());
+                p.format("%sprivate %s %sNextLink;\n", indent, imports.add(String.class),
+                        Names.getIdentifier(x.getName()));
+            }
+        });
     }
 
     private void printNavigationPropertyGetters(Imports imports, Indent indent, PrintWriter p,
-            List<Object> properties) {
+            List<TNavigationProperty> properties) {
         Class<TNavigationProperty> cls = TNavigationProperty.class;
 
         // write getters
-        Util.filter(properties, cls) //
+        properties //
+                .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
                     p.format("\n%spublic %s %s() {\n", indent, typeName,

@@ -1,7 +1,8 @@
 package com.github.davidmoten.odata.client.generator;
 
-import java.util.stream.Stream;
+import java.util.List;
 
+import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
 public interface Structure<T> {
@@ -12,6 +13,10 @@ public interface Structure<T> {
 
     T value();
 
-    Stream<TProperty> getProperties();
-    
+    List<TProperty> getProperties();
+
+    List<TNavigationProperty> getNavigationProperties();
+
+    List<T> getHeirarchy();
+
 }
