@@ -2,6 +2,8 @@ package com.github.davidmoten.odata.client.generator;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
@@ -28,6 +30,8 @@ public abstract class Structure<T> {
 
     abstract List<TNavigationProperty> getNavigationProperties();
 
+    abstract boolean isEntityType();
+
     public final List<T> getHeirarchy() {
         List<T> a = new LinkedList<>();
         a.add(value);
@@ -48,4 +52,23 @@ public abstract class Structure<T> {
         }
     }
 
+    public final List<Field> getFields(Imports imports, boolean includeNextLinks) {
+        return getHeirarchy() //
+                .stream() //
+                .map(this::create) //
+                .flatMap(z -> z.getProperties() //
+                        .stream() //
+                        .flatMap(x -> {
+                            Field a = new Field(Names.getIdentifier(x.getName()), x.getName(),
+                                    names.toImportedTypel(x, imports));
+                            if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                                Field b = new Field(Names.getIdentifier(x.getName()) + "NextLink",
+                                        x.getName() + "@nextLink", imports.add(String.class));
+                                return Stream.of(a, b);
+                            } else {
+                                return Stream.of(a);
+                            }
+                        }))
+                .collect(Collectors.toList());
+    }
 }

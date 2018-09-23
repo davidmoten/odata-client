@@ -39,4 +39,9 @@ public final class StructureEntityType extends Structure<TEntityType> {
     Structure<TEntityType> create(TEntityType t) {
         return new StructureEntityType(t, names);
     }
+
+    @Override
+    boolean isEntityType() {
+        return true;
+    }
 }

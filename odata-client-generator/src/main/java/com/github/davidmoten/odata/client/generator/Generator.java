@@ -40,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
-import com.github.davidmoten.odata.client.CollectionPageJson;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
@@ -250,11 +249,12 @@ public final class Generator {
             // build constructor parameters
             String props = heirarchy //
                     .stream() //
-                    .flatMap(z -> Util
-                            .filter(z.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                    .map(z -> new StructureEntityType(z, names)) //
+                    .flatMap(z -> z.getProperties() //
+                            .stream() //
                             .flatMap(x -> {
                                 Field a = new Field(Names.getIdentifier(x.getName()), x.getName(),
-                                        toImportedTypel(x, imports));
+                                        names.toImportedTypel(x, imports));
                                 if (isCollection(x)
                                         && !names.isEntityWithNamespace(names.getType(x))) {
                                     Field b = new Field(
@@ -337,18 +337,6 @@ public final class Generator {
         }
     }
 
-    private static final class Field {
-        final String name;
-        final String propertyName;
-        final String importedType;
-
-        Field(String name, String propertyName, String importedType) {
-            this.name = name;
-            this.propertyName = propertyName;
-            this.importedType = importedType;
-        }
-    }
-
     private String getExtendsClause(Structure<?> t, Imports imports) {
         if (t.getBaseType() != null) {
             return " extends "
@@ -403,7 +391,6 @@ public final class Generator {
             // write fields from properties
             printPropertyFields(imports, indent, p, t.getProperties());
 
-            // write constructor
             // add constructor
             // build constructor parameters
             String props = heirarchy //
@@ -416,7 +403,7 @@ public final class Generator {
                                 String a = String.format("@%s(\"%s\") %s %s",
                                         imports.add(JsonProperty.class), //
                                         x.getName(), //
-                                        toImportedTypel(x, imports), //
+                                        names.toImportedTypel(x, imports), //
                                         Names.getIdentifier(x.getName()));
                                 if (isCollection(x)
                                         && !names.isEntityWithNamespace(names.getType(x))) {
@@ -912,7 +899,7 @@ public final class Generator {
             List<TProperty> properties) {
         properties.stream().forEach(x -> {
             p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-            p.format("%sprivate final %s %s;\n", indent, toImportedTypel(x, imports),
+            p.format("%sprivate final %s %s;\n", indent, names.toImportedTypel(x, imports),
                     Names.getIdentifier(x.getName()));
             String t = names.getInnerType(names.getType(x));
             if (isCollection(x) && !names.isEntityWithNamespace(t)) {
@@ -964,14 +951,14 @@ public final class Generator {
         String t = x.getType().get(0);
         if (!isCollection(x)) {
             if (x.isNullable() != null && x.isNullable()) {
-                String r = toType(t, imports, List.class);
+                String r = names.toType(t, imports, List.class);
                 return imports.add(Optional.class) + "<" + r + ">";
             } else {
                 // is navigation property so must be an entity and is a single request
                 return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
             }
         } else {
-            return toType(t, imports, CollectionPageEntityRequest.class);
+            return names.toType(t, imports, CollectionPageEntityRequest.class);
         }
     }
 
@@ -980,20 +967,14 @@ public final class Generator {
         if (!isCollection(x.getType())) {
             return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(t));
         } else {
-            return toType(t, imports, CollectionPageEntityRequest.class);
+            return names.toType(t, imports, CollectionPageEntityRequest.class);
         }
     }
 
     private String toType(TEntitySet x, Imports imports) {
         String t = x.getEntityType();
         // an entity set is always a collection
-        return wrapCollection(imports, CollectionPageEntityRequest.class, t);
-    }
-
-    private String toImportedTypel(TProperty x, Imports imports) {
-        Preconditions.checkArgument(x.getType().size() == 1);
-        String t = x.getType().get(0);
-        return toType(t, imports, List.class);
+        return names.wrapCollection(imports, CollectionPageEntityRequest.class, t);
     }
 
     private boolean isCollection(TProperty x) {
@@ -1008,80 +989,11 @@ public final class Generator {
         return t.startsWith(COLLECTION_PREFIX) && t.endsWith(")");
     }
 
-    private String toType(String t, Imports imports, Class<?> collectionClass) {
-        if (t.startsWith("Edm.")) {
-            return toTypeFromEdm(t, imports);
-        } else if (t.startsWith(schema.getNamespace())) {
-            return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
-        } else if (isCollection(t)) {
-            String inner = names.getInnerType(t);
-            return wrapCollection(imports, collectionClass, inner);
-        } else {
-            throw new RuntimeException("unhandled type: " + t);
-        }
-    }
-
     private String toTypeNonCollection(String t, Imports imports) {
         if (t.startsWith("Edm.")) {
-            return toTypeFromEdm(t, imports);
+            return names.toTypeFromEdm(t, imports);
         } else if (t.startsWith(schema.getNamespace())) {
             return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
-        } else {
-            throw new RuntimeException("unhandled type: " + t);
-        }
-    }
-
-    private String wrapCollection(Imports imports, Class<?> collectionClass, String inner) {
-        if (collectionClass.equals(CollectionPageEntityRequest.class)) {
-            // get the type without namespace
-            String entityRequestClass = names
-                    .getFullClassNameEntityRequestFromTypeWithNamespace(inner);
-            String a = toType(inner, imports, collectionClass);
-            return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass)
-                    + ">";
-        } else {
-            return imports.add(collectionClass) + "<" + toType(inner, imports, collectionClass)
-                    + ">";
-        }
-    }
-
-    private String toTypeFromEdm(String t, Imports imports) {
-        if (t.equals("Edm.String")) {
-            return imports.add(String.class);
-        } else if (t.equals("Edm.Boolean")) {
-            return imports.add(Boolean.class);
-        } else if (t.equals("Edm.DateTimeOffset")) {
-            return imports.add(OffsetDateTime.class);
-        } else if (t.equals("Edm.Duration")) {
-            return imports.add(Duration.class);
-        } else if (t.equals("Edm.TimeOfDay")) {
-            return imports.add(LocalTime.class);
-        } else if (t.equals("Edm.Date")) {
-            return imports.add(LocalDate.class);
-        } else if (t.equals("Edm.Int32")) {
-            return imports.add(Integer.class);
-        } else if (t.equals("Edm.Int16")) {
-            return imports.add(Short.class);
-        } else if (t.equals("Edm.Byte")) {
-            return imports.add(UnsignedByte.class);
-        } else if (t.equals("Edm.SByte")) {
-            return byte.class.getCanonicalName();
-        } else if (t.equals("Edm.Single")) {
-            return imports.add(Float.class);
-        } else if (t.equals("Edm.Double")) {
-            return imports.add(Double.class);
-        } else if (t.equals("Edm.Guid")) {
-            return imports.add(String.class);
-        } else if (t.equals("Edm.Int64")) {
-            return imports.add(Long.class);
-        } else if (t.equals("Edm.Binary")) {
-            return "byte[]";
-        } else if (t.equals("Edm.Stream")) {
-            return imports.add(InputStream.class);
-        } else if (t.equals("Edm.GeographyPoint")) {
-            return imports.add(GeographyPoint.class);
-        } else if (t.equals("Edm.Decimal")) {
-            return imports.add(BigDecimal.class);
         } else {
             throw new RuntimeException("unhandled type: " + t);
         }
