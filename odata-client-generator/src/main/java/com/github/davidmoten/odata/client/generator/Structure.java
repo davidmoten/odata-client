@@ -52,7 +52,7 @@ public abstract class Structure<T> {
         }
     }
 
-    public final List<Field> getFields(Imports imports, boolean includeNextLinks) {
+    public final List<Field> getFields(Imports imports) {
         return getHeirarchy() //
                 .stream() //
                 .map(this::create) //
@@ -61,7 +61,8 @@ public abstract class Structure<T> {
                         .flatMap(x -> {
                             Field a = new Field(Names.getIdentifier(x.getName()), x.getName(),
                                     names.toImportedTypel(x, imports));
-                            if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                            if (names.isCollection(x)
+                                    && !names.isEntityWithNamespace(names.getType(x))) {
                                 Field b = new Field(Names.getIdentifier(x.getName()) + "NextLink",
                                         x.getName() + "@nextLink", imports.add(String.class));
                                 return Stream.of(a, b);
