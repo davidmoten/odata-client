@@ -256,7 +256,7 @@ public final class Generator {
                                 String a = String.format("@%s(\"%s\") %s %s",
                                         imports.add(JsonProperty.class), //
                                         x.getName(), //
-                                        toTypeSuppressUseOfOptional(x, imports), //
+                                        toImportedTypel(x, imports), //
                                         Names.getIdentifier(x.getName()));
                                 if (isCollection(x)
                                         && !names.isEntityWithNamespace(names.getType(x))) {
@@ -403,7 +403,7 @@ public final class Generator {
                                 String a = String.format("@%s(\"%s\") %s %s",
                                         imports.add(JsonProperty.class), //
                                         x.getName(), //
-                                        toTypeSuppressUseOfOptional(x, imports), //
+                                        toImportedTypel(x, imports), //
                                         Names.getIdentifier(x.getName()));
                                 if (isCollection(x)
                                         && !names.isEntityWithNamespace(names.getType(x))) {
@@ -899,7 +899,7 @@ public final class Generator {
             List<TProperty> properties) {
         properties.stream().forEach(x -> {
             p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-            p.format("%sprivate final %s %s;\n", indent, toTypeSuppressUseOfOptional(x, imports),
+            p.format("%sprivate final %s %s;\n", indent, toImportedTypel(x, imports),
                     Names.getIdentifier(x.getName()));
             String t = names.getInnerType(names.getType(x));
             if (isCollection(x) && !names.isEntityWithNamespace(t)) {
@@ -977,7 +977,7 @@ public final class Generator {
         return wrapCollection(imports, CollectionPageEntityRequest.class, t);
     }
 
-    private String toTypeSuppressUseOfOptional(TProperty x, Imports imports) {
+    private String toImportedTypel(TProperty x, Imports imports) {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
         if (x.isNullable() && !isCollection(x)) {
