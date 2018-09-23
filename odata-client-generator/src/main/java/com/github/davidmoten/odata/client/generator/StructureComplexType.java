@@ -39,4 +39,9 @@ public final class StructureComplexType extends Structure<TComplexType> {
     Structure<TComplexType> create(TComplexType t) {
         return new StructureComplexType(t, names);
     }
+
+    @Override
+    boolean isEntityType() {
+        return false;
+    }
 }
