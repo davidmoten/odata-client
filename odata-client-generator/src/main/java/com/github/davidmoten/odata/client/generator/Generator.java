@@ -250,12 +250,13 @@ public final class Generator {
                     simpleClassName, //
                     imports.add(JacksonInject.class), //
                     imports.add(ContextPath.class), props);
+            indent.right();
             if (t.getBaseType() != null) {
                 String superFields = t.getSuperFields(imports) //
                         .stream() //
                         .map(f -> ", " + f.fieldName) //
                         .collect(Collectors.joining());
-                p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
+                p.format("%ssuper(contextPath%s);\n", indent, superFields);
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
 
@@ -272,8 +273,14 @@ public final class Generator {
             // close constructor
             p.format("%s}\n", indent.left());
 
+            String builderSuffix = t.getBaseType() == null ? "" : simpleClassName;
+
+            p.format("\n%spublic static Builder builder%s() {\n", indent, builderSuffix);
+            p.format("%sreturn new Builder();\n", indent.right());
+            p.format("%s}\n", indent.left());
+
             // write builder
-            p.format("%spublic static final class Builder {\n", indent.right());
+            p.format("\n%spublic static final class Builder {\n", indent);
             indent.right();
             List<Field> fields = t.getFields(imports);
 
@@ -284,18 +291,18 @@ public final class Generator {
                     });
 
             // write builder setters
+
             fields.forEach(f -> {
                 p.format("%spublic Builder %s(%s %s) { this.%s = %s; return this; }\n", indent, f.fieldName,
                         f.importedType, f.fieldName, f.fieldName, f.fieldName);
             });
 
-            p.format("%s%s build() {\n", indent, simpleClassName);
-            String builderProps = fields.stream().map(f -> "," + f.fieldName).collect(Collectors.joining());
+            p.format("%spublic %s build() {\n", indent, simpleClassName);
+            String builderProps = fields.stream().map(f -> ", " + f.fieldName).collect(Collectors.joining());
             p.format("%sreturn new %s(null%s);\n", indent.right(), simpleClassName, builderProps);
             p.format("%s}\n", indent.left());
 
             p.format("%s}\n", indent.left());
-            indent.left();
 
             p.format("\n%sprivate %s<%s> changedFields() {\n", indent, imports.add(Set.class),
                     imports.add(String.class));
