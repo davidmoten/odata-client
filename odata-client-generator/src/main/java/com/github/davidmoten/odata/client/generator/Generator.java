@@ -301,6 +301,15 @@ public final class Generator {
             // close constructor
             p.format("%s}\n", indent.left());
 
+            p.format("\n%sprivate %s<%s> changedFields() {\n", indent, imports.add(Set.class),
+                    imports.add(String.class));
+            p.format("%sif (changedFields == null) {\n", indent.right());
+            p.format("%schangedFields = new %s<>();\n", indent.right(), imports.add(HashSet.class));
+            p.format("%s}\n", indent.left());
+            p.format("%sreturn changedFields;\n", indent);
+            p.format("%s}\n", indent.left());
+
+            
             // write property getter and setters
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
                     t.getFields(imports), true);
@@ -428,14 +437,6 @@ public final class Generator {
                                     fieldName);
                         }
                     });
-            p.format("%s}\n", indent.left());
-
-            p.format("\n%sprivate %s<%s> changedFields() {\n", indent, imports.add(Set.class),
-                    imports.add(String.class));
-            p.format("%sif (changedFields == null) {\n", indent.right());
-            p.format("%schangedFields = new %s<>();\n", indent.right(), imports.add(HashSet.class));
-            p.format("%s}\n", indent.left());
-            p.format("%sreturn changedFields;\n", indent);
             p.format("%s}\n", indent.left());
 
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
