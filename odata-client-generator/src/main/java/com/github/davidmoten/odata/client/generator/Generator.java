@@ -1,16 +1,10 @@
 package com.github.davidmoten.odata.client.generator;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +42,6 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.SchemaInfo;
-import com.github.davidmoten.odata.client.edm.GeographyPoint;
-import com.github.davidmoten.odata.client.edm.UnsignedByte;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public final class Generator {
@@ -305,7 +297,8 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties());
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
+                    t.getFields(imports));
             printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
@@ -375,7 +368,8 @@ public final class Generator {
 
             // add constructor
             // build constructor parameters
-            String props = t.getFields(imports).stream() //
+            String props = t.getFields(imports) //
+                    .stream() //
                     .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
                             f.propertyName, //
                             f.importedType, //
@@ -431,7 +425,8 @@ public final class Generator {
                     });
             p.format("%s}\n", indent.left());
 
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties());
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
+                    t.getFields(imports));
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -779,7 +774,7 @@ public final class Generator {
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
-            String simpleClassName, List<TProperty> properties) {
+            String simpleClassName, List<TProperty> properties, List<Field> fields) {
 
         // write getters and setters
         properties //
@@ -829,22 +824,23 @@ public final class Generator {
                         }
 
                         // prepare parameters to constructor to return immutable copy
-                        String params = properties.stream().map(y -> {
-                            String param = Names.getIdentifier(y.getName());
-                            if (y.getName().equals(x.getName()) && x.isNullable()
-                                    && !isCollection(x)) {
-                                param += ".orElse(null)";
-                            }
-                            return param;
-                        }).collect(Collectors.joining(", "));
+                        String params = fields.stream() //
+                                .map(field -> {
+                                    if (field.name.equals(x.getName())) {
+                                        return field.fieldName + ".orElse(null)";
+                                    } else {
+                                        return field.fieldName;
+                                    }
+                                }).collect(Collectors.joining(", "));
                         if (params.isEmpty()) {
                             params = "contextPath";
                         } else {
                             params = "contextPath, " + params;
                         }
+
                         indent.right();
-//                        p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
-                        p.format("%sreturn null;\n", indent);
+                        p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
+//                        p.format("%sreturn null;\n", indent);
                         p.format("%s}\n", indent.left());
                     }
 
@@ -862,13 +858,13 @@ public final class Generator {
             List<TProperty> properties) {
         properties.stream().forEach(x -> {
             p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-            p.format("%sprivate final %s %s;\n", indent, names.toImportedTypel(x, imports),
+            p.format("%sprotected final %s %s;\n", indent, names.toImportedTypel(x, imports),
                     Names.getIdentifier(x.getName()));
             String t = names.getInnerType(names.getType(x));
             if (isCollection(x) && !names.isEntityWithNamespace(t)) {
                 p.format("\n%s@%s(\"%s@nextLink\")\n", indent, imports.add(JsonProperty.class),
                         x.getName());
-                p.format("%sprivate %s %sNextLink;\n", indent, imports.add(String.class),
+                p.format("%sprotected %s %sNextLink;\n", indent, imports.add(String.class),
                         Names.getIdentifier(x.getName()));
             }
         });
