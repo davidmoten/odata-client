@@ -343,7 +343,7 @@ public final class Generator {
             PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
         // TODO protect "other" name against clashes
-        p.format("%spublic void setUnmappedField(String name, String value) {\n", indent);
+        p.format("%sprivate void setUnmappedField(String name, String value) {\n", indent);
         p.format("%sif (unmappedFields == null) {\n", indent.right());
         p.format("%sunmappedFields = new %s<>();\n", indent.right(), imports.add(HashMap.class));
         p.format("%s}\n", indent.left());
@@ -849,7 +849,7 @@ public final class Generator {
                         p.format("%s%s.checkNotNull(%s);\n", indent,
                                 imports.add(Preconditions.class), fieldName);
                         if (ofEntity) {
-                            p.format("changedFields().add(\"%s\");\n", indent, x.getName());
+                            p.format("%schangedFields().add(\"%s\");\n", indent, x.getName());
                         }
                         p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
 //                        p.format("%sreturn null;\n", indent);
