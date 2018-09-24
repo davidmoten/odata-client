@@ -7,9 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -237,6 +239,9 @@ public final class Generator {
 
             addUnmappedFieldsField(imports, indent, p);
 
+            p.format("\n%sprivate %s<%s> changedFields;\n", indent, imports.add(Set.class),
+                    imports.add(String.class));
+
             // add constructor
             // build constructor parameters
             String props = t.getFields(imports).stream() //
@@ -298,7 +303,7 @@ public final class Generator {
 
             // write property getter and setters
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
-                    t.getFields(imports));
+                    t.getFields(imports), true);
             printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
@@ -425,8 +430,16 @@ public final class Generator {
                     });
             p.format("%s}\n", indent.left());
 
+            p.format("\n%sprivate %s<%s> changedFields() {\n", indent, imports.add(Set.class),
+                    imports.add(String.class));
+            p.format("%sif (changedFields == null) {\n", indent.right());
+            p.format("%schangedFields = new %s<>();\n", indent.right(), imports.add(HashSet.class));
+            p.format("%s}\n", indent.left());
+            p.format("%sreturn changedFields;\n", indent);
+            p.format("%s}\n", indent.left());
+
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
-                    t.getFields(imports));
+                    t.getFields(imports), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -774,7 +787,8 @@ public final class Generator {
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
-            String simpleClassName, List<TProperty> properties, List<Field> fields) {
+            String simpleClassName, List<TProperty> properties, List<Field> fields,
+            boolean ofEntity) {
 
         // write getters and setters
         properties //
@@ -839,7 +853,11 @@ public final class Generator {
                         }
 
                         indent.right();
-                        p.format("%s%s.checkNotNull(%s);\n", indent, imports.add(Preconditions.class), fieldName);
+                        p.format("%s%s.checkNotNull(%s);\n", indent,
+                                imports.add(Preconditions.class), fieldName);
+                        if (ofEntity) {
+                            p.format("changedFields().add(\"%s\");\n", indent, x.getName());
+                        }
                         p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
 //                        p.format("%sreturn null;\n", indent);
                         p.format("%s}\n", indent.left());
