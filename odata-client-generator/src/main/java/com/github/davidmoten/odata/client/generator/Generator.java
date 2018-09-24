@@ -249,12 +249,8 @@ public final class Generator {
                             f.propertyName, //
                             f.importedType, //
                             f.fieldName)) //
-                    .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
-                    .collect(Collectors.joining(", "));
-
-            if (!props.isEmpty()) {
-                props = ", " + props;
-            }
+                    .map(x -> ",\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
+                    .collect(Collectors.joining());
 
             // write constructor
             p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
@@ -279,10 +275,8 @@ public final class Generator {
                                         return Stream.of(a);
                                     }
                                 })) //
-                        .collect(Collectors.joining(", "));
-                if (!superFields.isEmpty()) {
-                    superFields = ", " + superFields;
-                }
+                        .map(a -> ", " + a) //
+                        .collect(Collectors.joining());
                 p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
@@ -309,7 +303,6 @@ public final class Generator {
             p.format("%sreturn changedFields;\n", indent);
             p.format("%s}\n", indent.left());
 
-            
             // write property getter and setters
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
                     t.getFields(imports), true);
@@ -388,11 +381,8 @@ public final class Generator {
                             f.propertyName, //
                             f.importedType, //
                             f.fieldName)) //
-                    .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
-                    .collect(Collectors.joining(", "));
-            if (!props.isEmpty()) {
-                props = ", " + props;
-            }
+                    .map(x -> ",\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
+                    .collect(Collectors.joining());
 
             // write constructor
             p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
@@ -419,10 +409,8 @@ public final class Generator {
                                         return Stream.of(a);
                                     }
                                 })) //
-                        .collect(Collectors.joining(", "));
-                if (!superFields.isEmpty()) {
-                    superFields = ", " + superFields;
-                }
+                        .map(x -> ", " + x) //
+                        .collect(Collectors.joining());
                 p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
                 indent.left();
             }
@@ -846,12 +834,10 @@ public final class Generator {
                                     } else {
                                         return field.fieldName;
                                     }
-                                }).collect(Collectors.joining(", "));
-                        if (params.isEmpty()) {
-                            params = "contextPath";
-                        } else {
-                            params = "contextPath, " + params;
-                        }
+                                }) //
+                                .map(a -> ", " + a) //
+                                .collect(Collectors.joining());
+                        params = "contextPath" + params;
 
                         indent.right();
                         p.format("%s%s.checkNotNull(%s);\n", indent,
