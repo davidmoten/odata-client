@@ -292,7 +292,8 @@ public final class Generator {
             });
 
             p.format("%s%s build() {\n", indent, simpleClassName);
-            p.format("%sreturn null;\n", indent.right());
+            String builderProps = fields.stream().map(f -> "," + f.fieldName).collect(Collectors.joining());
+            p.format("%sreturn new %s(null, %s);\n", indent.right(), simpleClassName, builderProps);
             p.format("%s}\n", indent.left());
 
             p.format("%s}\n", indent.left());
