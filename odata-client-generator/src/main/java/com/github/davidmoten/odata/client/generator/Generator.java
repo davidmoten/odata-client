@@ -251,7 +251,7 @@ public final class Generator {
                     .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
                             f.propertyName, //
                             f.importedType, //
-                            f.name)) //
+                            f.fieldName)) //
                     .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining(", "));
 
@@ -379,7 +379,7 @@ public final class Generator {
                     .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
                             f.propertyName, //
                             f.importedType, //
-                            f.name)) //
+                            f.fieldName)) //
                     .map(x -> "\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining(", "));
             if (!props.isEmpty()) {

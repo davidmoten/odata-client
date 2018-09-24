@@ -112,10 +112,13 @@ final class Names {
     }
 
     static String getIdentifier(String s) {
-        if (javaReservedWords.contains(s)) {
-            s = s + "_";
+        if (javaReservedWords.contains(s.toLowerCase())) {
+            return s.toLowerCase() + "_";
+        } else if (s.toUpperCase().equals(s)) {
+            return s;
+        } else {
+            return lowerFirst(s);
         }
-        return lowerFirst(s);
     }
 
     static String getGetterMethod(String name) {
