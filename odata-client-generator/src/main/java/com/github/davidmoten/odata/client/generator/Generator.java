@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
@@ -254,22 +253,6 @@ public final class Generator {
                     imports.add(JacksonInject.class), //
                     imports.add(ContextPath.class), props);
             if (t.getBaseType() != null) {
-                // String superFields = heirarchy //
-                // .subList(0, heirarchy.size() - 1) //
-                // .stream() //
-                // .flatMap(z -> Util.filter(z.getKeyOrPropertyOrNavigationProperty(),
-                // TProperty.class) //
-                // .flatMap(x -> {
-                // String a = Names.getIdentifier(x.getName());
-                // if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-                // return Stream.of(a, Names.getIdentifier(x.getName() + "NextLink"));
-                // } else {
-                // return Stream.of(a);
-                // }
-                // })) //
-                // .map(a -> ", " + a) //
-                // .collect(Collectors.joining());
-
                 String superFields = t.getSuperFields(imports) //
                         .stream() //
                         .map(f -> ", " + f.fieldName) //
@@ -392,19 +375,9 @@ public final class Generator {
                     imports.add(ContextPath.class), //
                     props);
             if (t.getBaseType() != null) {
-                String superFields = heirarchy //
-                        .subList(0, heirarchy.size() - 1) //
+                String superFields = t.getSuperFields(imports) //
                         .stream() //
-                        .flatMap(z -> Util.filter(z.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class) //
-                                .flatMap(x -> {
-                                    String a = Names.getIdentifier(x.getName());
-                                    if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-                                        return Stream.of(a, Names.getIdentifier(x.getName() + "NextLink"));
-                                    } else {
-                                        return Stream.of(a);
-                                    }
-                                })) //
-                        .map(x -> ", " + x) //
+                        .map(f -> ", " + f.fieldName) //
                         .collect(Collectors.joining());
                 p.format("%ssuper(contextPath%s);\n", indent.right(), superFields);
                 indent.left();
