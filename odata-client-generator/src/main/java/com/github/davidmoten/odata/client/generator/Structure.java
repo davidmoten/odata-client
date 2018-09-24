@@ -40,8 +40,7 @@ public abstract class Structure<T> {
             if (st.getBaseType() == null) {
                 return a;
             } else {
-                String baseTypeSimpleName = names
-                        .getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
+                String baseTypeSimpleName = names.getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
                 st = Util.types(names.getSchema(), cls) //
                         .map(this::create) //
                         .filter(x -> x.getName().equals(baseTypeSimpleName)) //
@@ -58,19 +57,30 @@ public abstract class Structure<T> {
                 .map(this::create) //
                 .flatMap(z -> z.getProperties() //
                         .stream() //
-                        .flatMap(x -> {
-                            Field a = new Field(x.getName(), Names.getIdentifier(x.getName()),
-                                    x.getName(), names.toImportedTypel(x, imports));
-                            if (names.isCollection(x)
-                                    && !names.isEntityWithNamespace(names.getType(x))) {
-                                Field b = new Field(x.getName(),
-                                        Names.getIdentifier(x.getName()) + "NextLink",
-                                        x.getName() + "@nextLink", imports.add(String.class));
-                                return Stream.of(a, b);
-                            } else {
-                                return Stream.of(a);
-                            }
-                        }))
+                        .flatMap(x -> toFields(x, imports)))
+                .collect(Collectors.toList());
+    }
+
+    private Stream<Field> toFields(TProperty x, Imports imports) {
+        Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
+                names.toImportedTypel(x, imports));
+        if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
+                    imports.add(String.class));
+            return Stream.of(a, b);
+        } else {
+            return Stream.of(a);
+        }
+    }
+
+    public final List<Field> getSuperFields(Imports imports) {
+        List<T> h = getHeirarchy();
+        return h.subList(0, h.size() - 1) //
+                .stream() //
+                .map(this::create) //
+                .flatMap(z -> z.getProperties() //
+                        .stream() //
+                        .flatMap(x -> toFields(x, imports))) //
                 .collect(Collectors.toList());
     }
 }
