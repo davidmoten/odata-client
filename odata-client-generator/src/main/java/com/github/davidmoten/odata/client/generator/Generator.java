@@ -285,15 +285,13 @@ public final class Generator {
 
             // write builder setters
             fields.forEach(f -> {
-                p.format("%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType, f.fieldName);
-                p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
-                p.format("%sreturn this;", indent);
-                p.format("%s}\n", indent.left());
+                p.format("%spublic Builder %s(%s %s) { this.%s = %s; return this; }\n", indent, f.fieldName,
+                        f.importedType, f.fieldName, f.fieldName, f.fieldName);
             });
 
             p.format("%s%s build() {\n", indent, simpleClassName);
             String builderProps = fields.stream().map(f -> "," + f.fieldName).collect(Collectors.joining());
-            p.format("%sreturn new %s(null, %s);\n", indent.right(), simpleClassName, builderProps);
+            p.format("%sreturn new %s(null%s);\n", indent.right(), simpleClassName, builderProps);
             p.format("%s}\n", indent.left());
 
             p.format("%s}\n", indent.left());
