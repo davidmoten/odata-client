@@ -59,11 +59,12 @@ public abstract class Structure<T> {
                 .flatMap(z -> z.getProperties() //
                         .stream() //
                         .flatMap(x -> {
-                            Field a = new Field(Names.getIdentifier(x.getName()), x.getName(),
-                                    names.toImportedTypel(x, imports));
+                            Field a = new Field(x.getName(), Names.getIdentifier(x.getName()),
+                                    x.getName(), names.toImportedTypel(x, imports));
                             if (names.isCollection(x)
                                     && !names.isEntityWithNamespace(names.getType(x))) {
-                                Field b = new Field(Names.getIdentifier(x.getName()) + "NextLink",
+                                Field b = new Field(x.getName(),
+                                        Names.getIdentifier(x.getName()) + "NextLink",
                                         x.getName() + "@nextLink", imports.add(String.class));
                                 return Stream.of(a, b);
                             } else {
