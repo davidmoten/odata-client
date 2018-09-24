@@ -219,8 +219,6 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageEntity());
             p.format("IMPORTSHERE");
 
-            List<TEntityType> heirarchy = t.getHeirarchy();
-
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName, getExtendsClause(t, imports),
@@ -342,8 +340,6 @@ public final class Generator {
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", names.getPackageComplexType());
             p.format("IMPORTSHERE");
-
-            List<TComplexType> heirarchy = t.getHeirarchy();
 
             // TODO handle ComplexType inheritance
             p.format("public class %s%s {\n\n", simpleClassName, getExtendsClause(t, imports));
