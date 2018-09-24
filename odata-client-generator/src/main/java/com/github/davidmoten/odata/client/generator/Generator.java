@@ -303,6 +303,12 @@ public final class Generator {
             p.format("%sreturn changedFields;\n", indent);
             p.format("%s}\n", indent.left());
 
+            p.format("\n%spublic %s<%s> internal_getChangedFields() {\n", indent,
+                    imports.add(Set.class), imports.add(String.class));
+            p.format("%sreturn %s.unmodifiableSet(changedFields);\n", indent.right(),
+                    imports.add(Collections.class), imports.add(HashSet.class));
+            p.format("%s}\n", indent.left());
+
             // write property getter and setters
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
                     t.getFields(imports), true);
