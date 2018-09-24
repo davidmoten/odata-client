@@ -839,6 +839,7 @@ public final class Generator {
                         }
 
                         indent.right();
+                        p.format("%s%s.checkNotNull(%s);\n", indent, imports.add(Preconditions.class), fieldName);
                         p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
 //                        p.format("%sreturn null;\n", indent);
                         p.format("%s}\n", indent.left());
