@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
@@ -57,6 +58,14 @@ public interface Serializer {
             ObjectNode node = new ObjectMapper().readValue(text, ObjectNode.class);
             return Optional.ofNullable(node.get("@odata.type")).map(JsonNode::asText);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    default <T extends ODataEntity> String serialize(T entity) {
+        try {
+            return createObjectMapper().writeValueAsString(entity);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }

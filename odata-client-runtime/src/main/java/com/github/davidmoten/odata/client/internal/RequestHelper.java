@@ -10,6 +10,7 @@ import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
+import com.github.davidmoten.odata.client.Serializer;
 
 public final class RequestHelper {
 
@@ -33,6 +34,8 @@ public final class RequestHelper {
 
     public static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, Class<T> cls,
             RequestOptions options, SchemaInfo schemaInfo) {
+
+        String json = Serializer.DEFAULT.serialize(entity);
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
         Map<String, String> requestHeaders = new HashMap<>();
@@ -40,8 +43,9 @@ public final class RequestHelper {
         requestHeaders.put("Content-Type", "application/json;odata.metadata=minimal");
         requestHeaders.put("Accept", "application/json");
         requestHeaders.putAll(options.getRequestHeaders());
+
         // get the response
-        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), requestHeaders);
+        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), requestHeaders, json);
         // deserialize
         if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
             throw new RuntimeException("Returned response code " + response.getResponseCode()
