@@ -342,6 +342,7 @@ public final class Generator {
 
             p.format("public class %s%s {\n\n", simpleClassName, getExtendsClause(t, imports));
 
+            indent.right();
             addContextPathField(imports, indent, p);
 
             addUnmappedFieldsField(imports, indent, p);
