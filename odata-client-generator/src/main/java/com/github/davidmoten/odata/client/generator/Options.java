@@ -1,7 +1,5 @@
 package com.github.davidmoten.odata.client.generator;
 
-import java.util.Optional;
-
 
 public final class Options {
 
