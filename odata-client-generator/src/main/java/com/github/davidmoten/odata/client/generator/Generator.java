@@ -26,6 +26,7 @@ import org.oasisopen.odata.csdl.v4.TSingleton;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -284,6 +285,10 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             String builderSuffix = t.getBaseType() == null ? "" : simpleClassName;
+
+            p.format("\n%spublic static %s create%s() {\n", indent, simpleClassName, builderSuffix);
+            p.format("%sreturn builder%s().build();\n", indent.right(), builderSuffix);
+            p.format("%s}\n", indent.left());
 
             p.format("\n%spublic static Builder builder%s() {\n", indent, builderSuffix);
             p.format("%sreturn new Builder();\n", indent.right());
@@ -893,7 +898,8 @@ public final class Generator {
                 .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
-                    p.format("\n%spublic %s %s() {\n", indent, typeName,
+                    p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+                    p.format("%spublic %s %s() {\n", indent, typeName,
                             Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
