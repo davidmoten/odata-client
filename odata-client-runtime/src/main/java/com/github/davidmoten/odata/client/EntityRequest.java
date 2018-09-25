@@ -12,12 +12,12 @@ public interface EntityRequest<T extends ODataEntity> {
 
     T update(EntityRequestOptions<T> options);
 
-    T patch(EntityRequestOptions<T> options);
+    T patch(EntityRequestOptions<T> options, T entity);
 
     default T get() {
         return new EntityRequestOptionsBuilder<T>(this).get();
     }
-    
+
     default EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
         return new EntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }

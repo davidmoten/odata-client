@@ -456,10 +456,15 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s patch(%s<%s> options) {\n", indent, //
+            p.format("%spublic %s patch(%s<%s> options, %s entity) {\n", indent, //
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
-                    imports.add(EntityRequestOptions.class), imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sthrow new %s(); \n", indent.right(), imports.add(UnsupportedOperationException.class));
+                    imports.add(EntityRequestOptions.class), //
+                    imports.add(names.getFullClassNameEntity(t.getName())), //
+                    imports.add(names.getFullClassNameEntity(t.getName())));
+            p.format("%sreturn %s.patch(null, contextPath, %s.class, options, %s.INSTANCE);\n", indent.right(),
+                    imports.add(RequestHelper.class),
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
+                    imports.add(names.getFullClassNameSchema()));
             p.format("%s}\n", indent.left());
             indent.left();
 

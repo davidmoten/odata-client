@@ -14,8 +14,8 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls,
-            RequestOptions options, SchemaInfo schemaInfo) {
+    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
+            SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
         // get the response
@@ -28,15 +28,18 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath);
     }
 
+    public static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, Class<T> cls,
+            RequestOptions options, SchemaInfo schemaInfo) {
+        return entity;
+    }
+
     @SuppressWarnings("unchecked")
-    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp,
-            SchemaInfo schemaInfo, Class<T> cls, String json) {
-        Optional<String> namespacedType = cp.context().serializer().getODataType(json)
-                .map(x -> x.substring(1));
+    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
+            Class<T> cls, String json) {
+        Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
 
         if (namespacedType.isPresent()) {
-            return (Class<? extends T>) schemaInfo
-                    .getEntityClassFromTypeWithNamespace(namespacedType.get());
+            return (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }
