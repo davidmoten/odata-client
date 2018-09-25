@@ -1,11 +1,14 @@
 package com.github.davidmoten.odata.client.internal;
 
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.davidmoten.odata.client.ContextPath;
+import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestOptions;
-import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.SchemaInfo;
 
 public final class RequestHelper {
@@ -14,8 +17,8 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
-            SchemaInfo schemaInfo) {
+    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls,
+            RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
         // get the response
@@ -32,20 +35,30 @@ public final class RequestHelper {
             RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("OData-Version", "4.0");
+        requestHeaders.put("Content-Type", "application/json;odata.metadata=minimal");
+        requestHeaders.put("Accept", "application/json");
+        requestHeaders.putAll(options.getRequestHeaders());
         // get the response
-        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), options.getRequestHeaders());
+        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), requestHeaders);
         // deserialize
-
+        if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
+            throw new RuntimeException("Returned response code " + response.getResponseCode()
+                    + " from url=" + cp.toUrl() + ", expected 204 (NO_CONTENT)");
+        }
         return entity;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
-            Class<T> cls, String json) {
-        Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
+    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp,
+            SchemaInfo schemaInfo, Class<T> cls, String json) {
+        Optional<String> namespacedType = cp.context().serializer().getODataType(json)
+                .map(x -> x.substring(1));
 
         if (namespacedType.isPresent()) {
-            return (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get());
+            return (Class<? extends T>) schemaInfo
+                    .getEntityClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }

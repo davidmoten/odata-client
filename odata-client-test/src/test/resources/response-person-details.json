@@ -1,1 +1,100 @@
-{"@odata.context":"https://services.odata.org/Experimental/OData/OData.svc/$metadata#PersonDetails","value":[{"PersonID":0,"Age":21,"Gender":false,"Phone":"(505) 555-5939","Address":{"Street":"2817 Milton Dr.","City":"Albuquerque","State":"NM","ZipCode":"87110","Country":"USA"},"Photo@odata.mediaEtag":"\"nCP1Tf4Uax96eYIWjvoC/6ZflG8=\""},{"PersonID":1,"Age":24,"Gender":true,"Phone":"(208) 555-8097","Address":{"Street":"187 Suffolk Ln.","City":"Boise","State":"ID","ZipCode":"83720","Country":"USA"}},{"PersonID":2,"Age":23,"Gender":true,"Phone":"(307) 555-4680","Address":{"Street":"P.O. Box 555","City":"Lander","State":"WY","ZipCode":"82520","Country":"USA"},"Photo@odata.mediaEtag":"\"98Cx1cCHP48mKHVeCPOsOMD+VxM=\""},{"PersonID":3,"Age":30,"Gender":true,"Phone":"(503) 555-3612","Address":{"Street":"89 Jefferson Way Suite 2","City":"Portland","State":"OR","ZipCode":"97201","Country":"USA"}},{"PersonID":4,"Age":40,"Gender":true,"Phone":"(406) 555-5834","Address":{"Street":"55 Grizzly Peak Rd.","City":"Butte","State":"MT","ZipCode":"59801","Country":"USA"},"Photo@odata.mediaEtag":"\"2kep1GGuKVXHNOwmDCBPt+KfMfQ=\""},{"PersonID":5,"Age":30,"Gender":true,"Phone":"(415) 555-5938","Address":{"Street":"87 Polk St. Suite 5","City":"San Francisco","State":"CA","ZipCode":"94117","Country":"USA"}},{"PersonID":6,"Age":28,"Gender":false,"Phone":"(503) 555-9573","Address":{"Street":"89 Chiaroscuro Rd.","City":"Portland","State":"OR","ZipCode":"97219","Country":"USA"},"Photo@odata.mediaEtag":"\"i35xP3MMTMT8X3COzBD8FWIECnQ=\""}]}
+{
+	"@odata.context": "https://services.odata.org/Experimental/OData/OData.svc/$metadata#PersonDetails",
+	"value": [
+		{
+			"PersonID": 0,
+			"Age": 21,
+			"Gender": false,
+			"Phone": "(505) 555-5939",
+			"Address": {
+				"Street": "2817 Milton Dr.",
+				"City": "Albuquerque",
+				"State": "NM",
+				"ZipCode": "87110",
+				"Country": "USA"
+			},
+			"Photo@odata.mediaEtag": "\"nCP1Tf4Uax96eYIWjvoC/6ZflG8=\""
+		},
+		{
+			"PersonID": 1,
+			"Age": 24,
+			"Gender": true,
+			"Phone": "(208) 555-8097",
+			"Address": {
+				"Street": "187 Suffolk Ln.",
+				"City": "Boise",
+				"State": "ID",
+				"ZipCode": "83720",
+				"Country": "USA"
+			}
+		},
+		{
+			"PersonID": 2,
+			"Age": 23,
+			"Gender": true,
+			"Phone": "(307) 555-4680",
+			"Address": {
+				"Street": "P.O. Box 555",
+				"City": "Lander",
+				"State": "WY",
+				"ZipCode": "82520",
+				"Country": "USA"
+			},
+			"Photo@odata.mediaEtag": "\"98Cx1cCHP48mKHVeCPOsOMD+VxM=\""
+		},
+		{
+			"PersonID": 3,
+			"Age": 30,
+			"Gender": true,
+			"Phone": "(503) 555-3612",
+			"Address": {
+				"Street": "89 Jefferson Way Suite 2",
+				"City": "Portland",
+				"State": "OR",
+				"ZipCode": "97201",
+				"Country": "USA"
+			}
+		},
+		{
+			"PersonID": 4,
+			"Age": 40,
+			"Gender": true,
+			"Phone": "(406) 555-5834",
+			"Address": {
+				"Street": "55 Grizzly Peak Rd.",
+				"City": "Butte",
+				"State": "MT",
+				"ZipCode": "59801",
+				"Country": "USA"
+			},
+			"Photo@odata.mediaEtag": "\"2kep1GGuKVXHNOwmDCBPt+KfMfQ=\""
+		},
+		{
+			"PersonID": 5,
+			"Age": 30,
+			"Gender": true,
+			"Phone": "(415) 555-5938",
+			"Address": {
+				"Street": "87 Polk St. Suite 5",
+				"City": "San Francisco",
+				"State": "CA",
+				"ZipCode": "94117",
+				"Country": "USA"
+			}
+		},
+		{
+			"PersonID": 6,
+			"Age": 28,
+			"Gender": false,
+			"Phone": "(503) 555-9573",
+			"Address": {
+				"Street": "89 Chiaroscuro Rd.",
+				"City": "Portland",
+				"State": "OR",
+				"ZipCode": "97219",
+				"Country": "USA"
+			},
+			"Photo@odata.mediaEtag": "\"i35xP3MMTMT8X3COzBD8FWIECnQ=\""
+		}
+	]
+}

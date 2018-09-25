@@ -1,5 +1,11 @@
 package com.github.davidmoten.odata.client;
 
-public interface ODataEntity {
+import java.util.Map;
 
+import com.github.davidmoten.odata.client.internal.ChangedFields;
+
+public interface ODataEntity {
+     Map<String,String> getUnmappedFields();
+     
+     ChangedFields getChangedFields();
 }

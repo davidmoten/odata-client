@@ -7,19 +7,21 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.davidmoten.odata.client.internal.ChangedFields;
 
 public class CollectionPageTest {
 
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths
-                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths.get(CollectionPageTest.class
+                        .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = new Serializer() {
         };
@@ -66,6 +68,16 @@ public class CollectionPageTest {
 
         @JsonProperty("LastName")
         String lastName;
+
+        @Override
+        public Map<String, String> getUnmappedFields() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public ChangedFields getChangedFields() {
+            return ChangedFields.EMPTY;
+        }
     }
 
 }
