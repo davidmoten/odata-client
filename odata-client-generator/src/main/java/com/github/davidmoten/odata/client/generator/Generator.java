@@ -480,7 +480,7 @@ public final class Generator {
                     imports.add(EntityRequestOptions.class), //
                     imports.add(names.getFullClassNameEntity(t.getName())), //
                     imports.add(names.getFullClassNameEntity(t.getName())));
-            p.format("%sreturn %s.patch(null, contextPath, %s.class, options, %s.INSTANCE);\n",
+            p.format("%sreturn %s.patch(entity, contextPath, %s.class, options, %s.INSTANCE);\n",
                     indent.right(), imports.add(RequestHelper.class),
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(t.getName())), //
                     imports.add(names.getFullClassNameSchema()));
