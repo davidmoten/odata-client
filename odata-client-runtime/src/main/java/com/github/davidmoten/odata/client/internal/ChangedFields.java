@@ -37,6 +37,10 @@ public final class ChangedFields implements Iterable<String> {
             }
         };
     }
+    
+    public boolean contains(String name) {
+        return set.contains(name);
+    }
 
     public ChangedFields add(String name) {
         Set<String> set2 = new HashSet<String>(set);

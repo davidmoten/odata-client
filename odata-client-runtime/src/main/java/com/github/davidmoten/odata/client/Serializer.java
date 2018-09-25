@@ -1,10 +1,12 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
@@ -64,8 +66,22 @@ public interface Serializer {
 
     default <T extends ODataEntity> String serialize(T entity) {
         try {
-            return createObjectMapper().writeValueAsString(entity);
-        } catch (JsonProcessingException e) {
+            ObjectMapper m = createObjectMapper();
+            String s = m.writeValueAsString(entity);
+            JsonNode tree = m.readTree(s);
+            ObjectNode o = (ObjectNode) tree;
+            ChangedFields cf = entity.getChangedFields();
+            List<String> list = new ArrayList<>();
+            Iterator<String> it = o.fieldNames();
+            while (it.hasNext()) {
+                String name = it.next();
+                if (!cf.contains(name)) {
+                    list.add(name);
+                }
+            }
+            o.remove(list);
+            return o.toString();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
