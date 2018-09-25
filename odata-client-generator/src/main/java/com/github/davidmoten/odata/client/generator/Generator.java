@@ -7,11 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
@@ -43,6 +41,7 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.SchemaInfo;
+import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public final class Generator {
@@ -231,9 +230,10 @@ public final class Generator {
 
             addUnmappedFieldsField(imports, indent, p);
 
-            p.format("\n%sprivate %s<%s> changedFields;\n", indent, imports.add(Set.class), imports.add(String.class));
+            p.format("\n%s@%s\n", indent.right(), imports.add(JacksonInject.class));
+            p.format("%sprivate final %s changedFields;\n", indent, imports.add(ChangedFields.class));
 
-            // add constructor
+            // write constructor
             // build constructor parameters
             String props = t.getFields(imports).stream() //
                     .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
@@ -243,22 +243,25 @@ public final class Generator {
                     .map(x -> ",\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
                     .collect(Collectors.joining());
 
-            // write constructor
             p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-            p.format("\n%spublic %s(@%s %s contextPath%s) {\n", //
+            p.format("\n%spublic %s(@%s %s contextPath, @%s %s changedFields%s) {\n", //
                     indent, //
                     simpleClassName, //
                     imports.add(JacksonInject.class), //
-                    imports.add(ContextPath.class), props);
+                    imports.add(ContextPath.class), //
+                    imports.add(JacksonInject.class), //
+                    imports.add(ChangedFields.class), //
+                    props);
             indent.right();
             if (t.getBaseType() != null) {
                 String superFields = t.getSuperFields(imports) //
                         .stream() //
                         .map(f -> ", " + f.fieldName) //
                         .collect(Collectors.joining());
-                p.format("%ssuper(contextPath%s);\n", indent, superFields);
+                p.format("%ssuper(contextPath, changedFields%s);\n", indent, superFields);
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
+            p.format("%sthis.changedFields = changedFields;\n", indent);
 
             // print constructor field assignments
             t.getProperties() //
@@ -301,23 +304,14 @@ public final class Generator {
 
             p.format("\n%spublic %s build() {\n", indent, simpleClassName);
             String builderProps = fields.stream().map(f -> ", " + f.fieldName).collect(Collectors.joining());
-            p.format("%sreturn new %s(null%s);\n", indent.right(), simpleClassName, builderProps);
+            p.format("%sreturn new %s(null, %s.EMPTY%s);\n", indent.right(), simpleClassName,
+                    imports.add(ChangedFields.class), builderProps);
             p.format("%s}\n", indent.left());
 
             p.format("%s}\n", indent.left());
 
-            p.format("\n%sprivate %s<%s> changedFields() {\n", indent, imports.add(Set.class),
-                    imports.add(String.class));
-            p.format("%sif (changedFields == null) {\n", indent.right());
-            p.format("%schangedFields = new %s<>();\n", indent.right(), imports.add(HashSet.class));
-            p.format("%s}\n", indent.left());
-            p.format("%sreturn changedFields;\n", indent);
-            p.format("%s}\n", indent.left());
-
-            p.format("\n%spublic %s<%s> internal_getChangedFields() {\n", indent, imports.add(Set.class),
-                    imports.add(String.class));
-            p.format("%sreturn %s.unmodifiableSet(changedFields);\n", indent.right(), imports.add(Collections.class),
-                    imports.add(HashSet.class));
+            p.format("\n%spublic %s internal_getChangedFields() {\n", indent, imports.add(ChangedFields.class));
+            p.format("%sreturn changedFields;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
@@ -775,13 +769,14 @@ public final class Generator {
                                 }) //
                                 .map(a -> ", " + a) //
                                 .collect(Collectors.joining());
-                        params = "contextPath" + params;
+                        if (ofEntity) {
+                            params = "contextPath, changedFields.add(\"" + x.getName() + "\")" + params;
+                        } else {
+                            params = "contextPath" + params;
+                        }
 
                         indent.right();
                         p.format("%s%s.checkNotNull(%s);\n", indent, imports.add(Preconditions.class), fieldName);
-                        if (ofEntity) {
-                            p.format("%schangedFields().add(\"%s\");\n", indent, x.getName());
-                        }
                         p.format("%sreturn new %s(%s);\n", indent, simpleClassName, params);
                         // p.format("%sreturn null;\n", indent);
                         p.format("%s}\n", indent.left());
