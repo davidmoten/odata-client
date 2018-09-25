@@ -19,7 +19,7 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     // not public api
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
-        ResponseGet r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
+        HttpResponse r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
         return CollectionPageEntity.create(r.getText(), cls, cp, schemaInfo);
     }
 

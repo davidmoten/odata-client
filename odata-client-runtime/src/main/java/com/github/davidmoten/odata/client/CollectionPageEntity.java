@@ -36,7 +36,7 @@ public class CollectionPageEntity<T extends ODataEntity>
     public Optional<CollectionPageEntity<T>> nextPage() {
         if (nextLink.isPresent()) {
             // TODO add request headers used in initial call?
-            ResponseGet response = contextPath.context().service().GET(nextLink.get(),
+            HttpResponse response = contextPath.context().service().GET(nextLink.get(),
                     Collections.emptyMap());
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at

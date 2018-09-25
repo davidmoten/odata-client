@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -40,23 +41,51 @@ public class TestingService {
         }
 
         public Builder replyWithResource(String path, String resourceName) {
-            responses.put(baseUrl + path, resourceName);
+            responses.put(toKey(HttpMethod.GET, baseUrl + path), resourceName);
             return this;
+        }
+
+        public Builder replyWithResource(String path, String resourceName, HttpMethod method) {
+            responses.put(toKey(method, baseUrl + path), resourceName);
+            return this;
+        }
+
+        private static String toKey(HttpMethod method, String url) {
+            return method + "_" + url;
         }
 
         public Service build() {
             return new Service() {
 
                 @Override
-                public ResponseGet GET(String url, Map<String, String> requestHeaders) {
-                    String resourceName = responses.get(url);
+                public HttpResponse GET(String url, Map<String, String> requestHeaders) {
+                    String resourceName = responses.get(toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
-                        throw new RuntimeException("response not found for url=" + url);
+                        throw new RuntimeException("GET response not found for url=" + url);
+                    }
+                    try {
+                        URL resource = TestingService.class.getResource(resourceName);
+                        if (resource == null) {
+                            throw new RuntimeException("resource not found on classpath: " + resourceName);
+                        }
+                        String text = new String(
+                                Files.readAllBytes(Paths.get(resource.toURI())));
+                        return new HttpResponse(200, text);
+                    } catch (IOException | URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                @Override
+                public HttpResponse PATCH(String url, Map<String, String> requestHeaders) {
+                    String resourceName = responses.get(toKey(HttpMethod.PATCH, url));
+                    if (resourceName == null) {
+                        throw new RuntimeException("PATCH response not found for url=" + url);
                     }
                     try {
                         String text = new String(
                                 Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
-                        return new ResponseGet(200, text);
+                        return new HttpResponse(200, text);
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
