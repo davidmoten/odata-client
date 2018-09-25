@@ -12,12 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.davidmoten.odata.client.internal.ChangedFields;
 
 public interface Serializer {
 
     public static final Serializer DEFAULT = new Serializer() {
     };
-    
+
     public static final ObjectMapper MAPPER = createObjectMapper();
 
     public static ObjectMapper createObjectMapper() {
@@ -25,15 +26,19 @@ public interface Serializer {
                 .registerModule(new Jdk8Module()) //
                 .registerModule(new JavaTimeModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) //
-                .setSerializationInclusion(Include.NON_NULL);
+                .setSerializationInclusion(Include.NON_NULL) //
+        ;
     }
 
     default <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath) {
         try {
             if (contextPath != null) {
                 ObjectMapper m = createObjectMapper();
-                Std iv = new InjectableValues.Std().addValue(ContextPath.class, contextPath);
+                Std iv = new InjectableValues.Std() //
+                        .addValue(ContextPath.class, contextPath) //
+                        .addValue(ChangedFields.class, ChangedFields.EMPTY);
                 m.setInjectableValues(iv);
+
                 return m.readValue(text, cls);
             } else {
                 return MAPPER.readValue(text, cls);
