@@ -4,8 +4,10 @@ import java.util.Map;
 
 public interface Service {
 
-    public ResponseGet GET(String url, Map<String, String> requestHeaders);
+    HttpResponse GET(String url, Map<String, String> requestHeaders);
 
-    public Path getBasePath();
+    HttpResponse PATCH(String url, Map<String, String> requestHeaders);
+
+    Path getBasePath();
 
 }

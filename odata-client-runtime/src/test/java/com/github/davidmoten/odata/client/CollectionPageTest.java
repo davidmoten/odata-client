@@ -18,21 +18,26 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths.get(CollectionPageTest.class
-                        .getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths
+                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = new Serializer() {
         };
         Service service = new Service() {
 
             @Override
-            public ResponseGet GET(String url, Map<String, String> requestHeaders) {
-                return new ResponseGet(200, json);
+            public HttpResponse GET(String url, Map<String, String> requestHeaders) {
+                return new HttpResponse(200, json);
             }
 
             @Override
             public Path getBasePath() {
                 return new Path("https://base", PathStyle.IDENTIFIERS_AS_SEGMENTS);
+            }
+
+            @Override
+            public HttpResponse PATCH(String url, Map<String, String> requestHeaders) {
+                return new HttpResponse(204, "");
             }
         };
         SchemaInfo schemaInfo = new SchemaInfo() {

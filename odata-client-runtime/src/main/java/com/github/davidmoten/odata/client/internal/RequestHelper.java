@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestOptions;
-import com.github.davidmoten.odata.client.ResponseGet;
+import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.SchemaInfo;
 
 public final class RequestHelper {
@@ -19,7 +19,7 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
         // get the response
-        ResponseGet response = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
+        HttpResponse response = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
         // deserialize
 
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
@@ -30,6 +30,12 @@ public final class RequestHelper {
 
     public static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, Class<T> cls,
             RequestOptions options, SchemaInfo schemaInfo) {
+        // build the url
+        ContextPath cp = contextPath.addQueries(options.getQueries());
+        // get the response
+        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), options.getRequestHeaders());
+        // deserialize
+
         return entity;
     }
 
