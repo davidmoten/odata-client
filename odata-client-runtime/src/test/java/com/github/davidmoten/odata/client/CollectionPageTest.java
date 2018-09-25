@@ -38,7 +38,7 @@ public class CollectionPageTest {
             }
 
             @Override
-            public HttpResponse PATCH(String url, Map<String, String> requestHeaders) {
+            public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
                 return new HttpResponse(204, "");
             }
         };

@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -8,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestingService {
+public final class TestingService {
 
     public static Builder replyWithResource(String path, String resourceName) {
         return new Builder().replyWithResource(path, resourceName);
@@ -26,7 +27,7 @@ public class TestingService {
     }
 
     public static final class Builder {
-        Map<String, String> responses = new HashMap<>();
+        Map<String, String> content = new HashMap<>();
         String baseUrl = "https://testing.com";
         private PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
 
@@ -41,12 +42,12 @@ public class TestingService {
         }
 
         public Builder replyWithResource(String path, String resourceName) {
-            responses.put(toKey(HttpMethod.GET, baseUrl + path), resourceName);
+            content.put(toKey(HttpMethod.GET, baseUrl + path), resourceName);
             return this;
         }
 
-        public Builder replyWithResource(String path, String resourceName, HttpMethod method) {
-            responses.put(toKey(method, baseUrl + path), resourceName);
+        public Builder expectRequest(String path, String resourceName, HttpMethod method) {
+            content.put(toKey(method, baseUrl + path), resourceName);
             return this;
         }
 
@@ -59,17 +60,17 @@ public class TestingService {
 
                 @Override
                 public HttpResponse GET(String url, Map<String, String> requestHeaders) {
-                    String resourceName = responses.get(toKey(HttpMethod.GET, url));
+                    String resourceName = content.get(toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url);
                     }
                     try {
                         URL resource = TestingService.class.getResource(resourceName);
                         if (resource == null) {
-                            throw new RuntimeException("resource not found on classpath: " + resourceName);
+                            throw new RuntimeException(
+                                    "resource not found on classpath: " + resourceName);
                         }
-                        String text = new String(
-                                Files.readAllBytes(Paths.get(resource.toURI())));
+                        String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
                         return new HttpResponse(200, text);
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -77,15 +78,22 @@ public class TestingService {
                 }
 
                 @Override
-                public HttpResponse PATCH(String url, Map<String, String> requestHeaders) {
-                    String resourceName = responses.get(toKey(HttpMethod.PATCH, url));
+                public HttpResponse PATCH(String url, Map<String, String> requestHeaders,
+                        String text) {
+                    String resourceName = content.get(toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);
                     }
                     try {
-                        String text = new String(
-                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
-                        return new HttpResponse(200, text);
+                        String expected = new String(Files.readAllBytes(
+                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                        if (expected.equals(text)) {
+                            return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
+                        } else {
+                            throw new RuntimeException(
+                                    "request does not match expected.\n==== Recieved ====\n" + text
+                                            + "\n==== Expected =====\n" + expected);
+                        }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }

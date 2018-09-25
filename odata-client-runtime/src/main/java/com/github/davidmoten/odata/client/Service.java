@@ -6,7 +6,7 @@ public interface Service {
 
     HttpResponse GET(String url, Map<String, String> requestHeaders);
 
-    HttpResponse PATCH(String url, Map<String, String> requestHeaders);
+    HttpResponse PATCH(String url, Map<String, String> requestHeaders, String content);
 
     Path getBasePath();
 
