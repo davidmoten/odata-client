@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
-import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.Context;
+import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.Service;
@@ -88,6 +89,20 @@ public class DemoServiceTest {
             count++;
         }
         assertEquals(11, count);
+    }
+
+    @Test
+    public void testEntityPatch() {
+        DemoService client = client(serviceBuilder().expectRequest("/Products(1)",
+                "/request-product-patch.json", HttpMethod.PATCH));
+        Product p = Product //
+                .builder() //
+                .build() //
+                .withDescription(Optional.of("Lower fat milk"));
+        assertEquals("Lower fat milk", p.getDescription().get());
+        Product product = client.products("1") //
+                .patch(p);
+        assertEquals("Lower fat milk", product.getDescription().get());
     }
 
     private DemoService client(Builder b) {
