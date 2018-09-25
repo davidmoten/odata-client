@@ -36,16 +36,18 @@ public final class RequestHelper {
             RequestOptions options, SchemaInfo schemaInfo) {
 
         String json = Serializer.DEFAULT.serialize(entity);
+
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("OData-Version", "4.0");
-        requestHeaders.put("Content-Type", "application/json;odata.metadata=minimal");
-        requestHeaders.put("Accept", "application/json");
-        requestHeaders.putAll(options.getRequestHeaders());
+        
+        Map<String, String> h = new HashMap<>();
+        h.put("OData-Version", "4.0");
+        h.put("Content-Type", "application/json;odata.metadata=minimal");
+        h.put("Accept", "application/json");
+        h.putAll(options.getRequestHeaders());
 
         // get the response
-        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), requestHeaders, json);
+        HttpResponse response = cp.context().service().PATCH(cp.toUrl(), h, json);
         // deserialize
         if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
             throw new RuntimeException("Returned response code " + response.getResponseCode()
