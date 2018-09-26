@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public final class TestingService {
 
     public static Builder replyWithResource(String path, String resourceName) {
@@ -67,8 +69,7 @@ public final class TestingService {
                     try {
                         URL resource = TestingService.class.getResource(resourceName);
                         if (resource == null) {
-                            throw new RuntimeException(
-                                    "resource not found on classpath: " + resourceName);
+                            throw new RuntimeException("resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
                         return new HttpResponse(200, text);
@@ -78,21 +79,22 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse PATCH(String url, Map<String, String> requestHeaders,
-                        String text) {
+                public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
                     String resourceName = content.get(toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);
                     }
                     try {
-                        String expected = new String(Files.readAllBytes(
-                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
-                        if (expected.equals(text)) {
+                        String expected = new String(
+                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+
+                        JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
+                        JsonNode textTree = Serializer.MAPPER.readTree(text);
+                        if (expectedTree.equals(textTree)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
-                            throw new RuntimeException(
-                                    "request does not match expected.\n==== Recieved ====\n" + text
-                                            + "\n==== Expected =====\n" + expected);
+                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
+                                    + "\n==== Expected =====\n" + expected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);

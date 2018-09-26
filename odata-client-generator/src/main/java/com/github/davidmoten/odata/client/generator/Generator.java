@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
@@ -810,7 +811,9 @@ public final class Generator {
     }
 
     private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties) {
-        String props = properties.stream().map(x -> "\n    \"" + x.getName() + "\"") //
+        String props = Stream.concat( //
+                Stream.of("@odata.type"), properties.stream().map(x -> x.getName())) //
+                .map(x -> "\n    \"" + x + "\"") //
                 .collect(Collectors.joining(", "));
         p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
     }
