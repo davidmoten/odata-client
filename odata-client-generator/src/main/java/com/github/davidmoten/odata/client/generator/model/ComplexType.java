@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.client.generator;
+package com.github.davidmoten.odata.client.generator.model;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,9 +7,12 @@ import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
-public final class StructureComplexType extends Structure<TComplexType> {
+import com.github.davidmoten.odata.client.generator.Names;
+import com.github.davidmoten.odata.client.generator.Util;
 
-    public StructureComplexType(TComplexType c, Names names) {
+public final class ComplexType extends Structure<TComplexType> {
+
+    public ComplexType(TComplexType c, Names names) {
         super(c, TComplexType.class, names);
     }
 
@@ -31,17 +34,17 @@ public final class StructureComplexType extends Structure<TComplexType> {
 
     @Override
     public List<TNavigationProperty> getNavigationProperties() {
-        return Util.filter(value.getPropertyOrNavigationPropertyOrAnnotation(),
-                TNavigationProperty.class).collect(Collectors.toList());
+        return Util.filter(value.getPropertyOrNavigationPropertyOrAnnotation(), TNavigationProperty.class)
+                .collect(Collectors.toList());
     }
 
     @Override
-    Structure<TComplexType> create(TComplexType t) {
-        return new StructureComplexType(t, names);
+    public Structure<TComplexType> create(TComplexType t) {
+        return new ComplexType(t, names);
     }
 
     @Override
-    boolean isEntityType() {
+    public boolean isEntityType() {
         return false;
     }
 }

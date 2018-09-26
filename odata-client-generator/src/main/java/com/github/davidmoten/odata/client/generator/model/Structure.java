@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.client.generator;
+package com.github.davidmoten.odata.client.generator.model;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +7,10 @@ import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
+
+import com.github.davidmoten.odata.client.generator.Imports;
+import com.github.davidmoten.odata.client.generator.Names;
+import com.github.davidmoten.odata.client.generator.Util;
 
 public abstract class Structure<T> {
 
@@ -20,21 +24,21 @@ public abstract class Structure<T> {
         this.names = names;
     }
 
-    abstract Structure<T> create(T t);
+    public abstract Structure<T> create(T t);
 
-    abstract String getName();
+    public abstract String getName();
 
-    abstract String getBaseType();
+    public abstract String getBaseType();
 
     public final boolean hasBaseType() {
         return getBaseType() != null;
     }
 
-    abstract List<TProperty> getProperties();
+    public abstract List<TProperty> getProperties();
 
-    abstract List<TNavigationProperty> getNavigationProperties();
+    public abstract List<TNavigationProperty> getNavigationProperties();
 
-    abstract boolean isEntityType();
+    public abstract boolean isEntityType();
 
     public final List<T> getHeirarchy() {
         List<T> a = new LinkedList<>();

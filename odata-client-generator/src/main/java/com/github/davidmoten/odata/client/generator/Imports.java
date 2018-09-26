@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-final class Imports {
+public final class Imports {
 
     private final String simpleClassName;
 
