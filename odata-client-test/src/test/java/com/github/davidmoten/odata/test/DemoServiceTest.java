@@ -52,8 +52,7 @@ public class DemoServiceTest {
 
     @Test
     public void testCollectionSelect() {
-        DemoService client = createClient("/Products?$select=Name",
-                "/response-products-select-name.json");
+        DemoService client = createClient("/Products?$select=Name", "/response-products-select-name.json");
         List<Product> page = client.products().select("Name").get().values();
         assertEquals(11, page.size());
     }
@@ -103,8 +102,8 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatch() {
-        DemoService client = client(serviceBuilder().expectRequest("/Products(1)",
-                "/request-product-patch.json", HttpMethod.PATCH));
+        DemoService client = client(
+                serviceBuilder().expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH));
         Product p = Product //
                 .create() //
                 .withDescription(Optional.of("Lowest fat milk"));
