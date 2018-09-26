@@ -26,6 +26,10 @@ public abstract class Structure<T> {
 
     abstract String getBaseType();
 
+    public final boolean hasBaseType() {
+        return getBaseType() != null;
+    }
+
     abstract List<TProperty> getProperties();
 
     abstract List<TNavigationProperty> getNavigationProperties();
@@ -52,18 +56,26 @@ public abstract class Structure<T> {
     }
 
     public final List<Field> getFields(Imports imports) {
-        return getHeirarchy() //
+        List<Field> list = getHeirarchy() //
                 .stream() //
                 .map(this::create) //
                 .flatMap(z -> z.getProperties() //
                         .stream() //
                         .flatMap(x -> toFields(x, imports)))
                 .collect(Collectors.toList());
+        return list;
     }
 
-    private Stream<Field> toFields(TProperty x, Imports imports) {
+    public final List<Field> getFieldsLocal(Imports imports) {
+        return getProperties() //
+                .stream() //
+                .flatMap(x -> toFields(x, imports)) //
+                .collect(Collectors.toList());
+    }
+
+    private final Stream<Field> toFields(TProperty x, Imports imports) {
         Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
-                names.toImportedTypel(x, imports));
+                names.toImportedType(x, imports));
         if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
             Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
                     imports.add(String.class));
@@ -75,12 +87,13 @@ public abstract class Structure<T> {
 
     public final List<Field> getSuperFields(Imports imports) {
         List<T> h = getHeirarchy();
-        return h.subList(0, h.size() - 1) //
+        List<Field> list = h.subList(0, h.size() - 1) //
                 .stream() //
                 .map(this::create) //
                 .flatMap(z -> z.getProperties() //
                         .stream() //
                         .flatMap(x -> toFields(x, imports))) //
                 .collect(Collectors.toList());
+        return list;
     }
 }
