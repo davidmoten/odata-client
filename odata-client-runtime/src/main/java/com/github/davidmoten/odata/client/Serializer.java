@@ -75,7 +75,7 @@ public interface Serializer {
             Iterator<String> it = o.fieldNames();
             while (it.hasNext()) {
                 String name = it.next();
-                if (!cf.contains(name)) {
+                if (!cf.contains(name) && !name.equals("@odata.type")) {
                     list.add(name);
                 }
             }

@@ -108,10 +108,10 @@ public class DemoServiceTest {
         Product p = Product //
                 .builder() //
                 .build() //
-                .withDescription(Optional.of("Lower fat milk"));
+                .withDescription(Optional.of("Lowest fat milk"));
         Product product = client.products("1") //
                 .patch(p);
-        assertEquals("Lower fat milk", product.getDescription().get());
+        assertEquals("Lowest fat milk", product.getDescription().get());
     }
 
     private DemoService client(Builder b) {
