@@ -25,7 +25,7 @@ import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
 import com.github.davidmoten.odata.client.edm.UnsignedByte;
 
-final class Names {
+public final class Names {
 
     private static final Set<String> javaReservedWords = Sets.newHashSet("abstract", "assert", "boolean", "break",
             "byte", "case", "catch", "char", "class", "const", "continue", "default", "do", "double", "else", "extends",
@@ -56,7 +56,7 @@ final class Names {
     }
 
     // factory method
-    static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
+    public static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
         Names names = new Names(schema, options);
         names.getDirectoryEntity().mkdirs();
         names.getDirectoryEnum().mkdirs();
@@ -89,7 +89,7 @@ final class Names {
         return map;
     }
 
-    static String toSimpleClassName(String name) {
+    public static String toSimpleClassName(String name) {
         return upperFirst(name);
     }
 
@@ -101,13 +101,13 @@ final class Names {
         return name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
     }
 
-    static String toConstant(String name) {
+    public static String toConstant(String name) {
         String regex = "([a-z])([A-Z]+)";
         String replacement = "$1_$2";
         return name.replaceAll(regex, replacement).toUpperCase();
     }
 
-    static String getIdentifier(String s) {
+    public static String getIdentifier(String s) {
         if (javaReservedWords.contains(s.toLowerCase())) {
             return s.toLowerCase() + "_";
         } else if (s.toUpperCase().equals(s)) {
@@ -117,14 +117,14 @@ final class Names {
         }
     }
 
-    static String getGetterMethod(String name) {
+    public static String getGetterMethod(String name) {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
         }
         return "get" + upperFirst(name);
     }
 
-    static String getSetterMethod(String name) {
+    public static String getSetterMethod(String name) {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
         }
@@ -136,35 +136,35 @@ final class Names {
         return new File(path);
     }
 
-    Schema getSchema() {
+    public Schema getSchema() {
         return schema;
     }
 
-    File getDirectorySchema() {
+    public File getDirectorySchema() {
         return toDirectory(output, options.pkg() + options.packageSuffixSchema());
     }
 
-    File getDirectoryEntity() {
+    public File getDirectoryEntity() {
         return toDirectory(output, options.pkg() + options.packageSuffixEntity());
     }
 
-    File getDirectoryContainer() {
+    public File getDirectoryContainer() {
         return toDirectory(output, options.pkg() + options.packageSuffixContainer());
     }
 
-    File getDirectoryEnum() {
+    public File getDirectoryEnum() {
         return toDirectory(output, options.pkg() + options.packageSuffixEnum());
     }
 
-    File getDirectoryComplexType() {
+    public File getDirectoryComplexType() {
         return toDirectory(output, options.pkg() + options.packageSuffixComplexType());
     }
 
-    File getDirectoryCollectionRequest() {
+    public File getDirectoryCollectionRequest() {
         return toDirectory(output, options.pkg() + options.packageSuffixCollectionRequest());
     }
 
-    File getDirectoryEntityRequest() {
+    public File getDirectoryEntityRequest() {
         return toDirectory(output, options.pkg() + options.packageSuffixEntityRequest());
     }
 
@@ -172,71 +172,71 @@ final class Names {
         return options.pkg() + options.packageSuffixSchema();
     }
 
-    String getPackageEnum() {
+    public String getPackageEnum() {
         return options.pkg() + options.packageSuffixEnum();
     }
 
-    String getPackageEntity() {
+    public String getPackageEntity() {
         return options.pkg() + options.packageSuffixEntity();
     }
 
-    String getPackageCollectionRequest() {
+    public String getPackageCollectionRequest() {
         return options.pkg() + options.packageSuffixCollectionRequest();
     }
 
-    String getPackageEntityRequest() {
+    public String getPackageEntityRequest() {
         return options.pkg() + options.packageSuffixEntityRequest();
     }
 
-    String getPackageComplexType() {
+    public String getPackageComplexType() {
         return options.pkg() + options.packageSuffixComplexType();
     }
 
-    String getPackageContainer() {
+    public String getPackageContainer() {
         return options.pkg() + options.packageSuffixContainer();
     }
 
-    String getSimpleClassNameEnum(String name) {
+    public String getSimpleClassNameEnum(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    String getSimpleClassNameEntity(String name) {
+    public String getSimpleClassNameEntity(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    String getSimpleClassNameContainer(String name) {
+    public String getSimpleClassNameContainer(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    String getSimpleClassNameCollectionRequest(String name) {
+    public String getSimpleClassNameCollectionRequest(String name) {
         return Names.toSimpleClassName(name + options.collectionRequestClassSuffix());
     }
 
-    String getSimpleClassNameEntityRequest(String name) {
+    public String getSimpleClassNameEntityRequest(String name) {
         return Names.toSimpleClassName(name + options.entityRequestClassSuffix());
     }
 
-    String getSimpleClassNameComplexType(String name) {
+    public String getSimpleClassNameComplexType(String name) {
         return Names.toSimpleClassName(name);
     }
 
-    String getSimpleClassNameSchema() {
+    public String getSimpleClassNameSchema() {
         return options.simpleClassNameSchema();
     }
 
-    String getFullClassNameSchema() {
+    public String getFullClassNameSchema() {
         return getPackageSchema() + "." + getSimpleClassNameSchema();
     }
 
-    String getFullClassNameEnum(String name) {
+    public String getFullClassNameEnum(String name) {
         return getPackageEnum() + "." + getSimpleClassNameEnum(name);
     }
 
-    String getFullClassNameEntity(String name) {
+    public String getFullClassNameEntity(String name) {
         return getPackageEntity() + "." + getSimpleClassNameEntity(name);
     }
 
-    String getFullClassNameEntityRequest(String name) {
+    public String getFullClassNameEntityRequest(String name) {
         return getPackageEntityRequest() + "." + getSimpleClassNameEntityRequest(name);
     }
 
@@ -275,35 +275,35 @@ final class Names {
         return new File(getDirectorySchema(), getSimpleClassNameSchema() + ".java");
     }
 
-    File getClassFileEnum(String name) {
+    public File getClassFileEnum(String name) {
         return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
     }
 
-    File getClassFileComplexType(String name) {
+    public File getClassFileComplexType(String name) {
         return new File(getDirectoryComplexType(), getSimpleClassNameComplexType(name) + ".java");
     }
 
-    File getClassFileEntity(String name) {
+    public File getClassFileEntity(String name) {
         return new File(getDirectoryEntity(), getSimpleClassNameEntity(name) + ".java");
     }
 
-    File getClassFileContainer(String name) {
+    public File getClassFileContainer(String name) {
         return new File(getDirectoryContainer(), getSimpleClassNameContainer(name) + ".java");
     }
 
-    File getClassFileCollectionRequest(String name) {
+    public File getClassFileCollectionRequest(String name) {
         return new File(getDirectoryCollectionRequest(), getSimpleClassNameCollectionRequest(name) + ".java");
     }
 
-    File getClassFileEntityRequest(String name) {
+    public File getClassFileEntityRequest(String name) {
         return new File(getDirectoryEntityRequest(), getSimpleClassNameEntityRequest(name) + ".java");
     }
 
-    String getFullClassNameFromTypeWithNamespace(String type) {
+    public String getFullClassNameFromTypeWithNamespace(String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
     }
 
-    String getFullClassNameFromTypeWithoutNamespace(String type) {
+    public String getFullClassNameFromTypeWithoutNamespace(String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
@@ -361,7 +361,7 @@ final class Names {
         return toType(getType(x), imports, List.class);
     }
 
-    String toType(String t, Imports imports, Class<?> collectionClass) {
+    public String toType(String t, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, imports);
         } else if (t.startsWith(schema.getNamespace())) {
@@ -374,7 +374,7 @@ final class Names {
         }
     }
 
-    String toTypeFromEdm(String t, Imports imports) {
+    public String toTypeFromEdm(String t, Imports imports) {
         if (t.equals("Edm.String")) {
             return imports.add(String.class);
         } else if (t.equals("Edm.Boolean")) {

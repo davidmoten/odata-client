@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.client.generator;
+package com.github.davidmoten.odata.client.generator.model;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,9 +7,12 @@ import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
-public final class StructureEntityType extends Structure<TEntityType> {
+import com.github.davidmoten.odata.client.generator.Names;
+import com.github.davidmoten.odata.client.generator.Util;
 
-    public StructureEntityType(TEntityType c, Names names) {
+public final class EntityType extends Structure<TEntityType> {
+
+    public EntityType(TEntityType c, Names names) {
         super(c, TEntityType.class, names);
     }
 
@@ -25,8 +28,7 @@ public final class StructureEntityType extends Structure<TEntityType> {
 
     @Override
     public List<TProperty> getProperties() {
-        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class)
-                .collect(Collectors.toList());
+        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class).collect(Collectors.toList());
     }
 
     @Override
@@ -36,12 +38,12 @@ public final class StructureEntityType extends Structure<TEntityType> {
     }
 
     @Override
-    Structure<TEntityType> create(TEntityType t) {
-        return new StructureEntityType(t, names);
+    public Structure<TEntityType> create(TEntityType t) {
+        return new EntityType(t, names);
     }
 
     @Override
-    boolean isEntityType() {
+    public boolean isEntityType() {
         return true;
     }
 }

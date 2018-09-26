@@ -43,6 +43,10 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.SchemaInfo;
+import com.github.davidmoten.odata.client.generator.model.Field;
+import com.github.davidmoten.odata.client.generator.model.Structure;
+import com.github.davidmoten.odata.client.generator.model.ComplexType;
+import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
@@ -210,7 +214,7 @@ public final class Generator {
     }
 
     private void writeEntity(TEntityType entityType) {
-        StructureEntityType t = new StructureEntityType(entityType, names);
+        EntityType t = new EntityType(entityType, names);
         String simpleClassName = names.getSimpleClassNameEntity(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -342,7 +346,7 @@ public final class Generator {
     }
 
     private void writeComplexType(TComplexType complexType) {
-        StructureComplexType t = new StructureComplexType(complexType, names);
+        ComplexType t = new ComplexType(complexType, names);
         String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
