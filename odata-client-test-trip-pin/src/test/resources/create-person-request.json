@@ -1,0 +1,23 @@
+POST serviceRoot/People
+OData-Version: 4.0
+Content-Type: application/json;odata.metadata=minimal
+Accept: application/json
+
+{
+"@odata.type" : "Microsoft.OData.SampleService.Models.TripPin.Person",
+"UserName": "teresa",
+"FirstName" : "Teresa",
+"LastName" : "Gilbert",
+"Gender" : "Female",
+"Emails" : ["teresa@example.com", "teresa@contoso.com"],
+"AddressInfo" : [
+{
+"Address" : "1 Suffolk Ln.",
+"City" :
+{
+"CountryRegion" : "United States",
+"Name" : "Boise",
+"Region" : "ID"
+}
+}]
+}

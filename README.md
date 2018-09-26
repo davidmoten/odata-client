@@ -12,3 +12,9 @@ Constraints
 
 
 Status: *pre-alpha* (in development)
+
+TODO
+* use editLink if there in patch (but what about request headers and query options like $filter which may be supported for patch)
+* create (POST)
+* delete (DELETE)
+
