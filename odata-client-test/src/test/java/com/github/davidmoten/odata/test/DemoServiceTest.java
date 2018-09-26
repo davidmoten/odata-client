@@ -85,7 +85,8 @@ public class DemoServiceTest {
     public void testEntityCollectionIsIterable() {
         DemoService client = createClient("/Products", "/response-products.json");
         int count = 0;
-        for (Product p : client.products().get()) {
+        for (@SuppressWarnings("unused")
+        Product p : client.products().get()) {
             count++;
         }
         assertEquals(11, count);
@@ -94,8 +95,7 @@ public class DemoServiceTest {
     @Test
     public void serializeProduct() {
         Product p = Product //
-                .builder() //
-                .build() //
+                .create() //
                 .withDescription(Optional.of("Lower fat milk"));
         Serializer.DEFAULT.serialize(p);
         assertEquals("Lower fat milk", p.getDescription().get());
@@ -106,8 +106,7 @@ public class DemoServiceTest {
         DemoService client = client(serviceBuilder().expectRequest("/Products(1)",
                 "/request-product-patch.json", HttpMethod.PATCH));
         Product p = Product //
-                .builder() //
-                .build() //
+                .create() //
                 .withDescription(Optional.of("Lowest fat milk"));
         Product product = client.products("1") //
                 .patch(p);
