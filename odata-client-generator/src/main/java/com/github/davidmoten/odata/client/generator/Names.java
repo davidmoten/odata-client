@@ -45,8 +45,11 @@ public final class Names {
     private final Map<String, String> entityClassNamesFromNamespacedType;
     private final Map<String, String> classNamesFromNamespacedType;
 
+    private final Options opts;
+
     private Names(List<Schema> schemas, Options opts) {
         this.schemas = schemas;
+        this.opts = opts;
         this.schema = schemas.get(0);
         this.options = opts.getSchemaOptions(schema.getNamespace());
 
@@ -61,6 +64,10 @@ public final class Names {
     // factory method
     public static Names create(List<Schema> schemas, Options options) {
         return new Names(schemas, options);
+    }
+    
+    private SchemaOptions getOptions(Schema schema) {
+        return opts.getSchemaOptions(schema.getNamespace());
     }
 
     private Map<String, String> createMap(List<Schema> schemas, Options options) {
@@ -427,5 +434,14 @@ public final class Names {
         } else {
             return imports.add(collectionClass) + "<" + toType(inner, imports, collectionClass) + ">";
         }
+    }
+
+    public String getSimpleClassNameSchema(Schema schema) {
+        return getOptions(schema).simpleClassNameSchema;
+    }
+
+    public String getPackageSchema(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return o.pkg + o.packageSuffixSchema;
     }
 }

@@ -8,7 +8,7 @@ import org.oasisopen.odata.csdl.v4.Schema;
 
 public final class Util {
 
-    public static void deleteDirectory(File directoryToBeDeleted) {
+    static void deleteDirectory(File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {
