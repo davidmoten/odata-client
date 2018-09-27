@@ -59,16 +59,8 @@ public final class Names {
     }
 
     // factory method
-    public static Names clearOutputDirectoryAndCreate(List<Schema> schemas, Options options) {
-        Names names = new Names(schemas, options);
-        names.getDirectoryEntity().mkdirs();
-        names.getDirectoryEnum().mkdirs();
-        names.getDirectoryComplexType().mkdirs();
-        names.getDirectoryCollectionRequest().mkdirs();
-        names.getDirectoryContainer().mkdirs();
-        names.getDirectoryEntityRequest().mkdirs();
-        names.getDirectorySchema().mkdirs();
-        return names;
+    public static Names create(List<Schema> schemas, Options options) {
+        return new Names(schemas, options);
     }
 
     private Map<String, String> createMap(List<Schema> schemas, Options options) {

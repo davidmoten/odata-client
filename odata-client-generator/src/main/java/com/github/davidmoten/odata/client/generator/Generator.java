@@ -58,7 +58,7 @@ public final class Generator {
 
     public Generator(Options options, List<Schema> schemas) {
         this.schema = schemas.get(0);
-        this.names = Names.clearOutputDirectoryAndCreate(schemas, options);
+        this.names = Names.create(schemas, options);
     }
 
     public void generate() {
@@ -98,6 +98,7 @@ public final class Generator {
     }
 
     private void writeSchemaInfo() {
+        names.getDirectorySchema().mkdirs();
         String simpleClassName = names.getSimpleClassNameSchema();
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -155,6 +156,7 @@ public final class Generator {
     }
 
     private void writeEnum(TEnumType t) {
+        names.getDirectoryEnum().mkdirs();
         String simpleClassName = names.getSimpleClassNameEnum(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -214,6 +216,7 @@ public final class Generator {
     }
 
     private void writeEntity(TEntityType entityType) {
+        names.getDirectoryEntity().mkdirs();
         EntityType t = new EntityType(entityType, names);
         String simpleClassName = names.getSimpleClassNameEntity(t.getName());
         Imports imports = new Imports(simpleClassName);
@@ -346,6 +349,7 @@ public final class Generator {
     }
 
     private void writeComplexType(TComplexType complexType) {
+        names.getDirectoryComplexType().mkdirs();
         ComplexType t = new ComplexType(complexType, names);
         String simpleClassName = names.getSimpleClassNameComplexType(t.getName());
         Imports imports = new Imports(simpleClassName);
@@ -425,6 +429,7 @@ public final class Generator {
     }
 
     private void writeEntityRequest(TEntityType t) {
+        names.getDirectoryEntityRequest().mkdirs();
         // TODO only write out those requests needed
         String simpleClassName = names.getSimpleClassNameEntityRequest(t.getName());
         Imports imports = new Imports(simpleClassName);
@@ -566,6 +571,7 @@ public final class Generator {
     }
 
     private void writeContainer(TEntityContainer t) {
+        names.getDirectoryContainer().mkdirs();
         String simpleClassName = names.getSimpleClassNameContainer(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -637,6 +643,7 @@ public final class Generator {
     }
 
     private void writeCollectionRequest(TEntityType t) {
+        names.getDirectoryCollectionRequest().mkdirs();
         String simpleClassName = names.getSimpleClassNameCollectionRequest(t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
