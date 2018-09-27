@@ -33,7 +33,7 @@ public class GeneratorTest {
         TEdmx t = unmarshaller.unmarshal(
                 new StreamSource(GeneratorTest.class.getResourceAsStream("/odata-test-service-metadata.xml")),
                 TEdmx.class).getValue();
-        SchemaOptions schemaOptions = new SchemaOptions("ODataDemo", "microsoft.graph.generated");
+        SchemaOptions schemaOptions = new SchemaOptions("ODataDemo", "odata.test.generated");
         Options options = new Options("target/generated-sources/odata", Collections.singletonList(schemaOptions));
         Generator g = new Generator(options, Collections.singletonList(t.getDataServices().getSchema().get(0)));
         g.generate();
