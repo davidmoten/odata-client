@@ -53,8 +53,13 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <definition>src/test/resources/odata-test-service-metadata.xml</definition>
-                            <packageName>odata.test</packageName>
+                            <metadata>src/test/resources/odata-test-service-metadata.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>ODataDemo</namespace>
+                                    <packageName>odata.test</packageName>
+                                </schema>
+                            </schemas>
                         </configuration>
                     </execution>
                 </executions>

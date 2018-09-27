@@ -2,12 +2,10 @@ package org.davidmoten.odata.client.maven;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
@@ -26,29 +24,28 @@ import com.github.davidmoten.odata.client.generator.Options;
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GeneratorMojo extends AbstractMojo {
 
-    @Parameter(name = "definition", required = true)
-    File definition;
+    @Parameter(name = "metadata", required = true)
+    File metadata;
 
-    @Parameter(name = "packageName", required = true)
-    String packageName;
-
+    @Parameter(name="schemas")
+    List<org.davidmoten.odata.client.maven.Schema> schemas;
+    
     @Parameter(name = "pageComplexTypes", required = false, defaultValue = "true")
     boolean pageComplexTypes;
 
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
 
-    @Parameter(name = "schemaNamespace")
-    String schemaNamespace;
-
     @Override
     public void execute() throws MojoExecutionException {
+        String packageName = schemas.get(0).getPackageName();
+        String schemaNamespace = schemas.get(0).getNamespace();
         Options options = Options.builder() //
                 .pkg(packageName) //
                 .outputDirectory(outputDirectory.getAbsolutePath()) //
                 .pageComplexTypes(false) //
                 .build();
-        try (InputStream is = new FileInputStream(definition)) {
+        try (InputStream is = new FileInputStream(metadata)) {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
             TEdmx t = unmarshaller.unmarshal(new StreamSource(is), TEdmx.class).getValue();
