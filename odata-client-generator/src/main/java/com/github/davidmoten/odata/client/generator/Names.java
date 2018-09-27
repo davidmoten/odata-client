@@ -36,7 +36,7 @@ public final class Names {
 
     private static final String COLLECTION_PREFIX = "Collection(";
 
-    private final Options options;
+    private final SchemaOptions options;
     private final File output;
 
     private final Map<String, String> classNamesFromNamespacedType;
@@ -44,15 +44,16 @@ public final class Names {
 
     private final Map<String, String> entityClassNamesFromNamespacedType;
 
-    private Names(Schema schema, Options options) {
+    private Names(Schema schema, Options opts) {
         this.schema = schema;
-        this.options = options;
-        File pkgDirectory = toDirectory(new File(options.outputDirectory()), options.pkg());
+        this.options = opts.getSchemaOptions(schema.getNamespace());
+
+        File pkgDirectory = toDirectory(new File(opts.getOutputDirectory()), opts.getOutputDirectory());
         Util.deleteDirectory(pkgDirectory);
         pkgDirectory.mkdirs();
-        this.output = new File(options.outputDirectory());
-        this.classNamesFromNamespacedType = createMap(schema, options);
-        this.entityClassNamesFromNamespacedType = createEntityMap(schema, options);
+        this.output = new File(opts.getOutputDirectory());
+        this.classNamesFromNamespacedType = createMap(schema, opts);
+        this.entityClassNamesFromNamespacedType = createEntityMap(schema, opts);
     }
 
     // factory method

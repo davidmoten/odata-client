@@ -1,10 +1,12 @@
 package com.github.davidmoten.odata.client.generator;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class OptionsGeneratorTest {
 
     @Test
+    @Ignore
     public void overwriteOptions() {
         // when this test is run the Options class in src/main/java will be overwritten!
         com.github.davidmoten.javabuilder.Generator //
@@ -23,6 +25,7 @@ public class OptionsGeneratorTest {
                 .type("String").name("collectionRequestClassSuffix").defaultValue("\"CollectionRequest\"").build() //
                 .type("String").name("entityRequestClassSuffix").defaultValue("\"Request\"").build() //
                 .type("boolean").name("pageComplexTypes").defaultValue("true").build() //
+                .type("Map<String, String>").name("packageNamesByNamespace").defaultValue("new HashMap<>()").build() //
                 .generate("src/main/java/com/github/davidmoten/odata/client/generator");
 
     }

@@ -3,7 +3,10 @@ package org.davidmoten.odata.client.maven;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -20,6 +23,7 @@ import org.oasisopen.odata.csdl.v4.TEdmx;
 
 import com.github.davidmoten.odata.client.generator.Generator;
 import com.github.davidmoten.odata.client.generator.Options;
+import com.github.davidmoten.odata.client.generator.SchemaOptions;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GeneratorMojo extends AbstractMojo {
@@ -27,9 +31,9 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter(name = "metadata", required = true)
     File metadata;
 
-    @Parameter(name="schemas")
+    @Parameter(name = "schemas")
     List<org.davidmoten.odata.client.maven.Schema> schemas;
-    
+
     @Parameter(name = "pageComplexTypes", required = false, defaultValue = "true")
     boolean pageComplexTypes;
 
@@ -38,39 +42,21 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        String packageName = schemas.get(0).getPackageName();
-        String schemaNamespace = schemas.get(0).getNamespace();
-        Options options = Options.builder() //
-                .pkg(packageName) //
-                .outputDirectory(outputDirectory.getAbsolutePath()) //
-                .pageComplexTypes(false) //
-                .build();
+        org.davidmoten.odata.client.maven.Schema s = schemas.get(0);
+        SchemaOptions so = new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum, s.packageSuffixEntity,
+                s.packageSuffixComplexType, s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
+                s.packageSuffixContainer, s.packageSuffixSchema, s.simpleClassNameSchema,
+                s.collectionRequestClassSuffix, s.entityRequestClassSuffix, s.pageComplexTypes);
+        Options options = new Options(outputDirectory.getAbsolutePath(), Collections.singletonList(so));
         try (InputStream is = new FileInputStream(metadata)) {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
             TEdmx t = unmarshaller.unmarshal(new StreamSource(is), TEdmx.class).getValue();
-            List<Schema> schemas = t.getDataServices().getSchema();
-
-            final Schema schema;
             if (schemas.isEmpty()) {
                 throw new MojoExecutionException("no schema found!");
-            } else if (schemas.size() > 1) {
-                if (schemaNamespace == null) {
-                    throw new MojoExecutionException(
-                            "as more than one Schema is present you need to specify the schemaNamespace property in the maven plugin");
-                } else {
-                    schema = schemas.stream() //
-                            .filter(x -> schemaNamespace.equals(x.getNamespace())) //
-                            .findFirst() //
-                            .orElseThrow(() -> {
-                                throw new IllegalArgumentException(
-                                        "schema with namespace " + schemaNamespace + " not found");
-                            });
-                }
-            } else {
-                schema = schemas.get(0);
             }
-            Generator g = new Generator(options, schema);
+            List<Schema> list = t.getDataServices().getSchema();
+            Generator g = new Generator(options, list);
             g.generate();
         } catch (Throwable e) {
             if (e instanceof MojoExecutionException) {
