@@ -69,7 +69,7 @@ public final class Generator {
 
         // write enums
         Util.types(schema, TEnumType.class) //
-                .forEach(x -> writeEnum(x));
+                .forEach(x -> writeEnum(schema, x));
 
         // write entityTypes
         Util.types(schema, TEntityType.class) //
@@ -100,7 +100,7 @@ public final class Generator {
     }
 
     private void writeSchemaInfo(Schema schema) {
-        names.getDirectorySchema().mkdirs();
+        names.getDirectorySchema(schema).mkdirs();
         String simpleClassName = names.getSimpleClassNameSchema(schema);
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -160,15 +160,15 @@ public final class Generator {
 
     }
 
-    private void writeEnum(TEnumType t) {
-        names.getDirectoryEnum().mkdirs();
-        String simpleClassName = names.getSimpleClassNameEnum(t.getName());
+    private void writeEnum(Schema schema, TEnumType t) {
+        names.getDirectoryEnum(schema).mkdirs();
+        String simpleClassName = names.getSimpleClassNameEnum(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
         try {
             StringWriter w = new StringWriter();
             try (PrintWriter p = new PrintWriter(w)) {
-                p.format("package %s;\n\n", names.getPackageEnum());
+                p.format("package %s;\n\n", names.getPackageEnum(schema));
                 p.format("IMPORTSHERE");
                 p.format("public enum %s implements %s {\n", simpleClassName,
                         imports.add(com.github.davidmoten.odata.client.Enum.class));

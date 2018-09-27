@@ -477,8 +477,22 @@ public final class Names {
         return new File(getDirectorySchema(schema), getSimpleClassNameSchema(schema) + ".java");
     }
 
-    private File getDirectorySchema(Schema schema) {
+    public File getDirectorySchema(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return toDirectory(output, o.pkg() + o.packageSuffixSchema());
+    }
+
+    public File getDirectoryEnum(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, o.pkg() + o.packageSuffixEnum());
+    }
+
+    public String getSimpleClassNameEnum(Schema schema, String name) {
+        return Names.toSimpleClassName(name);
+    }
+
+    public String  getPackageEnum(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return o.pkg() + o.packageSuffixEnum();
     }
 }
