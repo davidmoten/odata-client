@@ -495,4 +495,8 @@ public final class Names {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEnum();
     }
+
+    public File getClassFileEnum(Schema schema, String name) {
+        return new File(getDirectoryEnum(schema), getSimpleClassNameEnum(schema, name) + ".java");
+    }
 }
