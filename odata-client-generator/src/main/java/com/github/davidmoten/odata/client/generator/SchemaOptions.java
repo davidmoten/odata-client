@@ -45,8 +45,8 @@ public class SchemaOptions {
         this.packageSuffixContainer = ".container";
         this.packageSuffixSchema = ".schema";
         this.simpleClassNameSchema = "SchemaInfo";
-        this.collectionRequestClassSuffix = ".collection.request";
-        this.entityRequestClassSuffix = ".entity.request";
+        this.collectionRequestClassSuffix = "CollectionRequest";
+        this.entityRequestClassSuffix = "EntityRequest";
         this.pageComplexTypes = true;
     }
 
