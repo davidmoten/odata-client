@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client.generator;
 
+import java.util.Collections;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -18,8 +20,9 @@ public class GeneratorTest {
         TEdmx t = unmarshaller.unmarshal(
                 new StreamSource(GeneratorTest.class.getResourceAsStream("/msgraph-1.0-20180905-formatted.xml")),
                 TEdmx.class).getValue();
-        Generator g = new Generator(Options.builder().pkg("microsoft.graph.generated").build(),
-                t.getDataServices().getSchema().get(0));
+        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph", "microsoft.graph.generated");
+        Options options = new Options("target/generated-sources/odata", Collections.singletonList(schemaOptions));
+        Generator g = new Generator(options, Collections.singletonList(t.getDataServices().getSchema().get(0)));
         g.generate();
     }
 
@@ -30,8 +33,9 @@ public class GeneratorTest {
         TEdmx t = unmarshaller.unmarshal(
                 new StreamSource(GeneratorTest.class.getResourceAsStream("/odata-test-service-metadata.xml")),
                 TEdmx.class).getValue();
-        Generator g = new Generator(Options.builder().pkg("odata.test.generated").build(),
-                t.getDataServices().getSchema().get(0));
+        SchemaOptions schemaOptions = new SchemaOptions("ODataDemo", "microsoft.graph.generated");
+        Options options = new Options("target/generated-sources/odata", Collections.singletonList(schemaOptions));
+        Generator g = new Generator(options, Collections.singletonList(t.getDataServices().getSchema().get(0)));
         g.generate();
     }
 

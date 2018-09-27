@@ -43,10 +43,10 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.SchemaInfo;
-import com.github.davidmoten.odata.client.generator.model.Field;
-import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
+import com.github.davidmoten.odata.client.generator.model.Field;
+import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
@@ -56,9 +56,9 @@ public final class Generator {
     private final Schema schema;
     private final Names names;
 
-    public Generator(Options options, Schema schema) {
-        this.schema = schema;
-        this.names = Names.clearOutputDirectoryAndCreate(schema, options);
+    public Generator(Options options, List<Schema> schemas) {
+        this.schema = schemas.get(0);
+        this.names = Names.clearOutputDirectoryAndCreate(schemas.get(0), options);
     }
 
     public void generate() {

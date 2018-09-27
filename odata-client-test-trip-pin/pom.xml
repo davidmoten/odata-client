@@ -56,7 +56,7 @@
                             <metadata>src/test/resources/odata-test-service-trip-pin-metadata.xml</metadata>
                             <schemas>
                                 <schema>
-                                    <namespace>ODataDemo</namespace>
+                                    <namespace>Microsoft.OData.SampleService.Models.TripPin</namespace>
                                     <packageName>odata.test.trip.pin</packageName>
                                 </schema>
                             </schemas>
