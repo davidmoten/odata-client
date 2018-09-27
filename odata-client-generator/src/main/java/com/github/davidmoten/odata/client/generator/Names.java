@@ -464,7 +464,7 @@ public final class Names {
         return getPackageEntity(schema) + "." + getSimpleClassNameEntity(schema, name);
     }
 
-    private String getSimpleClassNameEntity(Schema schema, String name) {
+    String getSimpleClassNameEntity(Schema schema, String name) {
         return Names.toSimpleClassName(name);
     }
 
@@ -491,12 +491,38 @@ public final class Names {
         return Names.toSimpleClassName(name);
     }
 
-    public String  getPackageEnum(Schema schema) {
+    public String getPackageEnum(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEnum();
     }
 
     public File getClassFileEnum(Schema schema, String name) {
         return new File(getDirectoryEnum(schema), getSimpleClassNameEnum(schema, name) + ".java");
+    }
+
+    public File getDirectoryEntity(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, o.pkg() + o.packageSuffixEntity());
+    }
+
+    private static final class SchemaAndType {
+        final Schema schema;
+        final TEntityType type;
+
+        SchemaAndType(Schema schema, TEntityType type) {
+            this.schema = schema;
+            this.type = type;
+        }
+    }
+
+    public Schema getSchema(TEntityType entityType) {
+        return schemas.stream()
+                .flatMap(s -> Util
+                        .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
+                        .map(t -> new SchemaAndType(s, t))) //
+                .filter(x -> x.type == entityType) //
+                .map(x -> x.schema) //
+                .findFirst() //
+                .get();
     }
 }
