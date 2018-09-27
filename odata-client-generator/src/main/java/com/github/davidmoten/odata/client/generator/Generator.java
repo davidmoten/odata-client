@@ -58,7 +58,7 @@ public final class Generator {
 
     public Generator(Options options, List<Schema> schemas) {
         this.schema = schemas.get(0);
-        this.names = Names.clearOutputDirectoryAndCreate(schemas.get(0), options);
+        this.names = Names.clearOutputDirectoryAndCreate(schemas, options);
     }
 
     public void generate() {
