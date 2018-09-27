@@ -53,8 +53,13 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <definition>src/test/resources/msgraph-1.0-20180905-formatted.xml</definition>
-                            <packageName>odata.msgraph.client</packageName>
+                            <metadata>src/test/resources/msgraph-1.0-20180905-formatted.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>microsoft.graph</namespace>
+                                    <packageName>odata.msgraph.client</packageName>
+                                </schema>
+                            </schemas>
                         </configuration>
                     </execution>
                 </executions>

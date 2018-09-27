@@ -53,8 +53,13 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <definition>src/test/resources/odata-test-service-trip-pin-metadata.xml</definition>
-                            <packageName>odata.test.trip.pin</packageName>
+                            <metadata>src/test/resources/odata-test-service-trip-pin-metadata.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>ODataDemo</namespace>
+                                    <packageName>odata.test.trip.pin</packageName>
+                                </schema>
+                            </schemas>
                         </configuration>
                     </execution>
                 </executions>

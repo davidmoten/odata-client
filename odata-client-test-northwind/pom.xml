@@ -53,23 +53,27 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <definition>src/test/resources/odata-test-service-northwind-metadata.xml</definition>
-                            <packageName>odata.test.northwind.model</packageName>
-                            <schemaNamespace>NorthwindModel</schemaNamespace>
+                            <metadata>src/test/resources/odata-test-service-northwind-metadata.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>NorthwindModel</namespace>
+                                    <packageName>odata.test.northwind.model</packageName>
+                                </schema>
+                            </schemas>
                         </configuration>
                     </execution>
-<!--                     <execution> -->
-<!--                         <id>generate-msgraph-client</id> -->
-<!--                         <phase>generate-sources</phase> -->
-<!--                         <goals> -->
-<!--                             <goal>generate</goal> -->
-<!--                         </goals> -->
-<!--                         <configuration> -->
-<!--                             <definition>src/test/resources/odata-test-service-northwind-metadata.xml</definition> -->
-<!--                             <packageName>odata.test.northwind.experimental.model</packageName> -->
-<!--                             <schemaNamespace>ODataWebExperimental.Northwind.Model</schemaNamespace> -->
-<!--                         </configuration> -->
-<!--                     </execution> -->
+                    <!-- <execution> -->
+                    <!-- <id>generate-msgraph-client</id> -->
+                    <!-- <phase>generate-sources</phase> -->
+                    <!-- <goals> -->
+                    <!-- <goal>generate</goal> -->
+                    <!-- </goals> -->
+                    <!-- <configuration> -->
+                    <!-- <definition>src/test/resources/odata-test-service-northwind-metadata.xml</definition> -->
+                    <!-- <packageName>odata.test.northwind.experimental.model</packageName> -->
+                    <!-- <schemaNamespace>ODataWebExperimental.Northwind.Model</schemaNamespace> -->
+                    <!-- </configuration> -->
+                    <!-- </execution> -->
                 </executions>
             </plugin>
             <plugin>
