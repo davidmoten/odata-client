@@ -130,8 +130,8 @@ public final class Generator {
                 Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class) //
                         .forEach(x -> {
                             p.format("%sentities.put(\"%s\", %s.class);\n", indent,
-                                    names.getFullTypeFromSimpleType(x.getName()),
-                                    imports.add(names.getFullClassNameEntity(x.getName())));
+                                    names.getFullTypeFromSimpleType(schema, x.getName()),
+                                    imports.add(names.getFullClassNameEntity(schema, x.getName())));
                         });
                 indent.left();
 
@@ -153,7 +153,7 @@ public final class Generator {
             }
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
                     .getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileSchema().toPath(), bytes);
+            Files.write(names.getClassFileSchema(schema).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
