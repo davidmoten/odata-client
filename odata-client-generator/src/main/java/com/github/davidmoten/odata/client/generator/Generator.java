@@ -73,7 +73,7 @@ public final class Generator {
 
         // write entityTypes
         Util.types(schema, TEntityType.class) //
-                .forEach(x -> writeEntity(x));
+                .forEach(x -> writeEntity(schema, x));
 
         // write complexTypes
         Util.types(schema, TComplexType.class) //
@@ -221,10 +221,10 @@ public final class Generator {
         }
     }
 
-    private void writeEntity(TEntityType entityType) {
-        names.getDirectoryEntity().mkdirs();
+    private void writeEntity(Schema schema, TEntityType entityType) {
+        names.getDirectoryEntity(schema).mkdirs();
         EntityType t = new EntityType(entityType, names);
-        String simpleClassName = names.getSimpleClassNameEntity(t.getName());
+        String simpleClassName = names.getSimpleClassNameEntity(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
