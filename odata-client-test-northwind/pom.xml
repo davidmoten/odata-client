@@ -57,7 +57,11 @@
                             <schemas>
                                 <schema>
                                     <namespace>NorthwindModel</namespace>
-                                    <packageName>odata.test.northwind.model</packageName>
+                                    <packageName>odata.northwind.model</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>ODataWebExperimental.Northwind.Model</namespace>
+                                    <packageName>odata.northwind.experimental.model</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
