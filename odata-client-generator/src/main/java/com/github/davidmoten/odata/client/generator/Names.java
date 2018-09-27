@@ -39,26 +39,28 @@ public final class Names {
     private final SchemaOptions options;
     private final File output;
 
-    private final Map<String, String> classNamesFromNamespacedType;
+    private final List<Schema> schemas;
     private final Schema schema;
 
     private final Map<String, String> entityClassNamesFromNamespacedType;
+    private final Map<String, String> classNamesFromNamespacedType;
 
-    private Names(Schema schema, Options opts) {
-        this.schema = schema;
+    private Names(List<Schema> schemas, Options opts) {
+        this.schemas = schemas;
+        this.schema = schemas.get(0);
         this.options = opts.getSchemaOptions(schema.getNamespace());
 
         File pkgDirectory = toDirectory(new File(opts.getOutputDirectory()), opts.getOutputDirectory());
         Util.deleteDirectory(pkgDirectory);
         pkgDirectory.mkdirs();
         this.output = new File(opts.getOutputDirectory());
-        this.classNamesFromNamespacedType = createMap(schema, opts);
-        this.entityClassNamesFromNamespacedType = createEntityMap(schema, opts);
+        this.classNamesFromNamespacedType = createMap(schemas, opts);
+        this.entityClassNamesFromNamespacedType = createEntityMap(schemas, opts);
     }
 
     // factory method
-    public static Names clearOutputDirectoryAndCreate(Schema schema, Options options) {
-        Names names = new Names(schema, options);
+    public static Names clearOutputDirectoryAndCreate(List<Schema> schemas, Options options) {
+        Names names = new Names(schemas, options);
         names.getDirectoryEntity().mkdirs();
         names.getDirectoryEnum().mkdirs();
         names.getDirectoryComplexType().mkdirs();
@@ -69,24 +71,31 @@ public final class Names {
         return names;
     }
 
-    private Map<String, String> createMap(Schema schema, Options options) {
+    private Map<String, String> createMap(List<Schema> schemas, Options options) {
         Map<String, String> map = new HashMap<>();
-        Util.types(schema, TEnumType.class) //
-                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEnum(x.getName())));
+        for (Schema schema : schemas) {
+            Util.types(schema, TEnumType.class) //
+                    .forEach(
+                            x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEnum(x.getName())));
 
-        Util.types(schema, TEntityType.class) //
-                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEntity(x.getName())));
+            Util.types(schema, TEntityType.class) //
+                    .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                            getFullClassNameEntity(x.getName())));
 
-        Util.types(schema, TComplexType.class) //
-                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
-                        getFullClassNameComplexType(x.getName())));
+            Util.types(schema, TComplexType.class) //
+                    .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                            getFullClassNameComplexType(x.getName())));
+        }
         return map;
     }
 
-    private Map<String, String> createEntityMap(Schema schema, Options options) {
+    private Map<String, String> createEntityMap(List<Schema> schemas, Options options) {
         Map<String, String> map = new HashMap<>();
-        Util.types(schema, TEntityType.class) //
-                .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEntity(x.getName())));
+        for (Schema schema : schemas) {
+            Util.types(schema, TEntityType.class) //
+                    .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                            getFullClassNameEntity(x.getName())));
+        }
         return map;
     }
 
