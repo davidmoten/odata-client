@@ -28,41 +28,49 @@ public final class TestingService {
         return new Builder().pathStyle(pathStyle);
     }
 
-    public static final class Builder {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static abstract class BuilderBase<T extends BuilderBase<?, R>, R> {
         Map<String, String> content = new HashMap<>();
         String baseUrl = "https://testing.com";
-        private PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
+        PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
 
-        public Builder baseUrl(String baseUrl) {
+        @SuppressWarnings("unchecked")
+        public T baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
-            return this;
+            return (T) this;
         }
 
-        public Builder pathStyle(PathStyle pathStyle) {
+        @SuppressWarnings("unchecked")
+        public T pathStyle(PathStyle pathStyle) {
             this.pathStyle = pathStyle;
-            return this;
+            return (T) this;
         }
 
-        public Builder replyWithResource(String path, String resourceName) {
+        @SuppressWarnings("unchecked")
+        public T replyWithResource(String path, String resourceName) {
             content.put(toKey(HttpMethod.GET, baseUrl + path), resourceName);
-            return this;
+            return (T) this;
         }
 
-        public Builder expectRequest(String path, String resourceName, HttpMethod method) {
+        @SuppressWarnings("unchecked")
+        public T expectRequest(String path, String resourceName, HttpMethod method) {
             content.put(toKey(method, baseUrl + path), resourceName);
-            return this;
+            return (T) this;
         }
 
         private static String toKey(HttpMethod method, String url) {
             return method + "_" + url;
         }
 
-        public Service build() {
+        protected Service createService() {
             return new Service() {
 
                 @Override
                 public HttpResponse GET(String url, Map<String, String> requestHeaders) {
-                    String resourceName = content.get(toKey(HttpMethod.GET, url));
+                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url);
                     }
@@ -80,7 +88,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
-                    String resourceName = content.get(toKey(HttpMethod.PATCH, url));
+                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);
                     }
@@ -106,7 +114,27 @@ public final class TestingService {
                     return new Path(baseUrl, pathStyle);
                 }
             };
+        }
 
+        abstract R build();
+    }
+
+    public static abstract class ContainerBuilder<T> extends BuilderBase<ContainerBuilder<T>, T> {
+
+        public abstract T _create(Context context);
+
+        @Override
+        public T build() {
+            return _create(new Context(Serializer.DEFAULT, createService()));
+        }
+
+    }
+
+    public static final class Builder extends BuilderBase<Builder, Service> {
+
+        @Override
+        public Service build() {
+            return createService();
         }
     }
 
