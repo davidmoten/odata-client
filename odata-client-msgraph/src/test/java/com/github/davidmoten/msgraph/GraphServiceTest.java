@@ -8,12 +8,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.CollectionPageEntity;
-import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.PathStyle;
-import com.github.davidmoten.odata.client.Serializer;
-import com.github.davidmoten.odata.client.Service;
-import com.github.davidmoten.odata.client.TestingService;
-import com.github.davidmoten.odata.client.TestingService.Builder;
+import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Attachment;
@@ -46,9 +42,10 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityCollectionWithNextPage() {
-        GraphService client = client(serviceBuilder() //
+        GraphService client = serviceBuilder() //
                 .replyWithResource("/me/contacts", "/response-contacts.json") //
-                .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json"));
+                .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
+                .build();
         CollectionPageEntity<Contact> c = client.me().contacts().get();
         assertNotNull(c);
         assertEquals(10, c.values().size());
@@ -91,20 +88,16 @@ public class GraphServiceTest {
     // test paged complex type
     //
 
-    private GraphService client(Builder b) {
-        return new GraphService(new Context(Serializer.DEFAULT, b.build()));
-    }
-
-    private static TestingService.Builder serviceBuilder() {
-        return TestingService //
+    private static ContainerBuilder<GraphService> serviceBuilder() {
+        return GraphService //
+                .test() //
                 .baseUrl("https://graph.microsoft.com/v1.0") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS);
     }
 
     private static GraphService createClient(String path, String resource) {
-        Service service = serviceBuilder() //
+        return serviceBuilder() //
                 .replyWithResource(path, resource) //
                 .build();
-        return new GraphService(new Context(Serializer.DEFAULT, service));
     }
 }
