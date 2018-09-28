@@ -49,7 +49,9 @@ public abstract class Structure<T> {
                 return a;
             } else {
                 String baseTypeSimpleName = names.getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
-                st = Util.types(names.getSchema(), cls) //
+                st = names.getSchemas() //
+                        .stream() //
+                        .flatMap(schema -> Util.types(schema, cls)) //
                         .map(this::create) //
                         .filter(x -> x.getName().equals(baseTypeSimpleName)) //
                         .findFirst() //
