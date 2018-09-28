@@ -95,8 +95,6 @@ public final class Generator {
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityRequest(schema, x));
 
-            System.out.println("generated for namespace=" + schema.getNamespace());
-
             // TODO write actions
 
             // TODO write functions
@@ -366,7 +364,6 @@ public final class Generator {
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             File classFile = names.getClassFileEntity(schema, t.getName());
             Files.write(classFile.toPath(), bytes);
-            System.out.println("entity written to " + classFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
