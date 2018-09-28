@@ -85,7 +85,7 @@ public final class Generator {
 
         // write containers
         Util.types(schema, TEntityContainer.class) //
-                .forEach(x -> writeContainer(x));
+                .forEach(x -> writeContainer(schema, x));
 
         // write single requests
         Util.types(schema, TEntityType.class) //
@@ -589,15 +589,15 @@ public final class Generator {
         }
     }
 
-    private void writeContainer(TEntityContainer t) {
-        names.getDirectoryContainer().mkdirs();
-        String simpleClassName = names.getSimpleClassNameContainer(t.getName());
+    private void writeContainer(Schema schema, TEntityContainer t) {
+        names.getDirectoryContainer(schema).mkdirs();
+        String simpleClassName = names.getSimpleClassNameContainer(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
-            p.format("package %s;\n\n", names.getPackageContainer());
+            p.format("package %s;\n\n", names.getPackageContainer(schema));
             p.format("IMPORTSHERE");
 
             final String extension;
@@ -620,6 +620,7 @@ public final class Generator {
             // write get methods from properties
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
                     .forEach(x -> {
+                        Schema sch = names.getSchema(x.getEntityType());
                         p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
                         p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
@@ -628,9 +629,9 @@ public final class Generator {
                         p.format("%s%s.class,\n", indent,
                                 imports.add(names.getFullClassNameFromTypeWithNamespace(x.getEntityType())));
                         p.format("%s(contextPath, id) -> new %s(contextPath, id), %s.INSTANCE);\n", indent,
-                                imports.add(
-                                        names.getFullClassNameEntityRequestFromTypeWithNamespace(x.getEntityType())), //
-                                imports.add(names.getFullClassNameSchema()));
+                                imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                        x.getEntityType())), //
+                                imports.add(names.getFullClassNameSchema(sch)));
                         p.format("%s}\n", indent.left().left().left().left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
@@ -655,7 +656,7 @@ public final class Generator {
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileContainer(t.getName()).toPath(), bytes);
+            Files.write(names.getClassFileContainer(schema, t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

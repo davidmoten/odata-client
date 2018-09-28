@@ -588,4 +588,22 @@ public final class Names {
         return new File(getDirectoryEntityRequest(schema), getSimpleClassNameEntityRequest(schema, name) + ".java");
     }
 
+    public File getDirectoryContainer(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, options.pkg() + o.packageSuffixContainer());
+    }
+
+    public String getSimpleClassNameContainer(Schema schema, String name) {
+        return Names.toSimpleClassName(name);
+    }
+
+    public String getPackageContainer(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return options.pkg() + o.packageSuffixContainer();
+    }
+
+    public File getClassFileContainer(Schema schema, String name) {
+        return new File(getDirectoryContainer(schema), getSimpleClassNameContainer(schema, name) + ".java");
+    }
+
 }
