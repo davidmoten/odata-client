@@ -8,13 +8,10 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.Serializer;
-import com.github.davidmoten.odata.client.Service;
-import com.github.davidmoten.odata.client.TestingService;
-import com.github.davidmoten.odata.client.TestingService.Builder;
+import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
 import odata.test.container.DemoService;
 import odata.test.entity.Customer;
@@ -102,8 +99,7 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatch() {
-        DemoService client = client(
-                serviceBuilder().expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH));
+        DemoService client = serviceBuilder().expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH).build();
         Product p = Product //
                 .create() //
                 .withDescription(Optional.of("Lowest fat milk"));
@@ -111,21 +107,16 @@ public class DemoServiceTest {
         assertEquals("Lowest fat milk", product.getDescription().get());
     }
 
-    private DemoService client(Builder b) {
-        return new DemoService(new Context(Serializer.DEFAULT, b.build()));
-    }
-
-    private static TestingService.Builder serviceBuilder() {
-        return TestingService //
-                .baseUrl("https://services.odata.org/Experimental/OData/OData.svc") //
-                .pathStyle(PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
+    private static ContainerBuilder<DemoService> serviceBuilder() {
+        return DemoService.test() //
+        .baseUrl("https://services.odata.org/Experimental/OData/OData.svc") //
+        .pathStyle(PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS) ;
     }
 
     private static DemoService createClient(String path, String resource) {
-        Service service = serviceBuilder() //
+        return serviceBuilder()
                 .replyWithResource(path, resource) //
                 .build();
-        return new DemoService(new Context(Serializer.DEFAULT, service));
     }
 
 }
