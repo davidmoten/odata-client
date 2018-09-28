@@ -541,7 +541,7 @@ public final class Names {
         return new File(getDirectoryComplexType(schema), getSimpleClassNameComplexType(schema, name) + ".java");
     }
 
-    private String getSimpleClassNameComplexType(Schema schema, String name) {
+    public String getSimpleClassNameComplexType(Schema schema, String name) {
         return Names.toSimpleClassName(name);
     }
 
@@ -552,6 +552,11 @@ public final class Names {
 
     public File getClassFileEntity(Schema schema, String name) {
         return new File(getDirectoryEntity(schema), getSimpleClassNameEntity(schema, name) + ".java");
+    }
+
+    public String getPackageComplexType(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return options.pkg() + o.packageSuffixComplexType();
     }
 
 }
