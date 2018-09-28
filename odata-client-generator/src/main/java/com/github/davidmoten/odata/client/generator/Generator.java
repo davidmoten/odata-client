@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client.generator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -66,6 +67,8 @@ public final class Generator {
 
         for (Schema schema : schemas) {
 
+            System.out.println("generating for namespace=" + schema.getNamespace());
+
             writeSchemaInfo(schema);
 
             // write enums
@@ -91,6 +94,8 @@ public final class Generator {
             // write single requests
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityRequest(schema, x));
+
+            System.out.println("generated for namespace=" + schema.getNamespace());
 
             // TODO write actions
 
@@ -137,9 +142,10 @@ public final class Generator {
                         .flatMap(
                                 sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)) //
                         .forEach(x -> {
+                            Schema sch = names.getSchema(x);
                             p.format("%sentities.put(\"%s\", %s.class);\n", indent,
                                     names.getFullTypeFromSimpleType(schema, x.getName()),
-                                    imports.add(names.getFullClassNameEntity(schema, x.getName())));
+                                    imports.add(names.getFullClassNameEntity(sch, x.getName())));
                         });
                 indent.left();
 
@@ -358,7 +364,9 @@ public final class Generator {
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileEntity(schema, t.getName()).toPath(), bytes);
+            File classFile = names.getClassFileEntity(schema, t.getName());
+            Files.write(classFile.toPath(), bytes);
+            System.out.println("entity written to " + classFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
