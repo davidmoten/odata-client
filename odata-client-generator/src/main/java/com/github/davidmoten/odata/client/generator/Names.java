@@ -559,4 +559,33 @@ public final class Names {
         return options.pkg() + o.packageSuffixComplexType();
     }
 
+    public File getDirectoryEntityRequest(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, options.pkg() + o.packageSuffixEntityRequest());
+    }
+
+    public String getSimpleClassNameEntityRequest(Schema schema, String name) {
+        SchemaOptions o = getOptions(schema);
+        return Names.toSimpleClassName(name + o.entityRequestClassSuffix());
+    }
+
+    private String toTypeWithNamespace(Schema schema, String simpleType) {
+        return schema.getNamespace() + "." + simpleType;
+    }
+
+    public Schema getSchema(String typeWithNamespace) {
+        return schemas //
+                .stream() //
+                .flatMap(s -> Util.filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
+                        .map(t -> new SchemaAndType(s, t))) //
+                .filter(x -> toTypeWithNamespace(x.schema, x.type.getName()).equals(typeWithNamespace)) //
+                .map(x -> x.schema) //
+                .findFirst() //
+                .get();
+    }
+
+    public File getClassFileEntityRequest(Schema schema, String name) {
+        return new File(getDirectoryEntityRequest(schema), getSimpleClassNameEntityRequest(schema, name) + ".java");
+    }
+
 }
