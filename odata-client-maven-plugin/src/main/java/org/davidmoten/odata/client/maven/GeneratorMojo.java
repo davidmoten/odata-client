@@ -42,12 +42,13 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        org.davidmoten.odata.client.maven.Schema s = schemas.get(0);
-        SchemaOptions so = new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum, s.packageSuffixEntity,
-                s.packageSuffixComplexType, s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
-                s.packageSuffixContainer, s.packageSuffixSchema, s.simpleClassNameSchema,
-                s.collectionRequestClassSuffix, s.entityRequestClassSuffix, s.pageComplexTypes);
-        Options options = new Options(outputDirectory.getAbsolutePath(), Collections.singletonList(so));
+        List<SchemaOptions> schemaOptionsList = schemas.stream()
+                .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum, s.packageSuffixEntity,
+                        s.packageSuffixComplexType, s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
+                        s.packageSuffixContainer, s.packageSuffixSchema, s.simpleClassNameSchema,
+                        s.collectionRequestClassSuffix, s.entityRequestClassSuffix, s.pageComplexTypes))
+                .collect(Collectors.toList());
+        Options options = new Options(outputDirectory.getAbsolutePath(), schemaOptionsList);
         try (InputStream is = new FileInputStream(metadata)) {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
@@ -56,6 +57,7 @@ public class GeneratorMojo extends AbstractMojo {
                 throw new MojoExecutionException("no schema found!");
             }
             List<Schema> list = t.getDataServices().getSchema();
+            list.forEach(sch -> getLog().info(sch.getNamespace()));
             Generator g = new Generator(options, list);
             g.generate();
         } catch (Throwable e) {

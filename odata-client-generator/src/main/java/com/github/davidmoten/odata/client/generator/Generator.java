@@ -53,49 +53,51 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 public final class Generator {
 
     private static final String COLLECTION_PREFIX = "Collection(";
-    private final Schema schema;
+    // private final Schema schema;
     private final Names names;
     private final List<Schema> schemas;
 
     public Generator(Options options, List<Schema> schemas) {
         this.schemas = schemas;
-        this.schema = schemas.get(0);
         this.names = Names.create(schemas, options);
     }
 
     public void generate() {
 
-        writeSchemaInfo(schema);
+        for (Schema schema : schemas) {
 
-        // write enums
-        Util.types(schema, TEnumType.class) //
-                .forEach(x -> writeEnum(schema, x));
+            writeSchemaInfo(schema);
 
-        // write entityTypes
-        Util.types(schema, TEntityType.class) //
-                .forEach(x -> writeEntity(schema, x));
+            // write enums
+            Util.types(schema, TEnumType.class) //
+                    .forEach(x -> writeEnum(schema, x));
 
-        // write complexTypes
-        Util.types(schema, TComplexType.class) //
-                .forEach(x -> writeComplexType(schema, x));
+            // write entityTypes
+            Util.types(schema, TEntityType.class) //
+                    .forEach(x -> writeEntity(schema, x));
 
-        // write collection requests
-        Util.types(schema, TEntityType.class) //
-                .forEach(x -> writeCollectionRequest(schema, x));
+            // write complexTypes
+            Util.types(schema, TComplexType.class) //
+                    .forEach(x -> writeComplexType(schema, x));
 
-        // write containers
-        Util.types(schema, TEntityContainer.class) //
-                .forEach(x -> writeContainer(schema, x));
+            // write collection requests
+            Util.types(schema, TEntityType.class) //
+                    .forEach(x -> writeCollectionRequest(schema, x));
 
-        // write single requests
-        Util.types(schema, TEntityType.class) //
-                .forEach(x -> writeEntityRequest(schema, x));
+            // write containers
+            Util.types(schema, TEntityContainer.class) //
+                    .forEach(x -> writeContainer(schema, x));
 
-        // TODO write actions
+            // write single requests
+            Util.types(schema, TEntityType.class) //
+                    .forEach(x -> writeEntityRequest(schema, x));
 
-        // TODO write functions
+            // TODO write actions
 
-        // TODO consume annotations for documentation
+            // TODO write functions
+
+            // TODO consume annotations for documentation
+        }
 
     }
 

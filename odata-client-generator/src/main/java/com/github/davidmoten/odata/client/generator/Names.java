@@ -52,7 +52,6 @@ public final class Names {
         this.opts = opts;
         this.schema = schemas.get(0);
         this.options = opts.getSchemaOptions(schema.getNamespace());
-
         File pkgDirectory = toDirectory(new File(opts.getOutputDirectory()), opts.getOutputDirectory());
         Util.deleteDirectory(pkgDirectory);
         pkgDirectory.mkdirs();
