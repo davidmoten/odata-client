@@ -550,4 +550,8 @@ public final class Names {
         return toDirectory(output, o.pkg() + o.packageSuffixComplexType());
     }
 
+    public File getClassFileEntity(Schema schema, String name) {
+        return new File(getDirectoryEntity(schema), getSimpleClassNameEntity(schema, name) + ".java");
+    }
+
 }
