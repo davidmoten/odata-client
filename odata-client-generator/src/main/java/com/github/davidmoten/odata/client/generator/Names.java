@@ -36,11 +36,9 @@ public final class Names {
 
     private static final String COLLECTION_PREFIX = "Collection(";
 
-    private final SchemaOptions options;
     private final File output;
 
     private final List<Schema> schemas;
-    private final Schema schema;
 
     private final Map<String, String> entityClassNamesFromNamespacedType;
     private final Map<String, String> classNamesFromNamespacedType;
@@ -50,8 +48,6 @@ public final class Names {
     private Names(List<Schema> schemas, Options opts) {
         this.schemas = schemas;
         this.opts = opts;
-        this.schema = schemas.get(0);
-        this.options = opts.getSchemaOptions(schema.getNamespace());
         File pkgDirectory = toDirectory(new File(opts.getOutputDirectory()), opts.getOutputDirectory());
         Util.deleteDirectory(pkgDirectory);
         pkgDirectory.mkdirs();
@@ -73,16 +69,16 @@ public final class Names {
         Map<String, String> map = new HashMap<>();
         for (Schema schema : schemas) {
             Util.types(schema, TEnumType.class) //
-                    .forEach(
-                            x -> map.put(schema.getNamespace() + "." + x.getName(), getFullClassNameEnum(x.getName())));
+                    .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
+                            getFullClassNameEnum(schema, x.getName())));
 
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
-                            getFullClassNameEntity(x.getName())));
+                            getFullClassNameEntity(schema, x.getName())));
 
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
-                            getFullClassNameComplexType(x.getName())));
+                            getFullClassNameComplexType(schema, x.getName())));
         }
         return map;
     }
@@ -92,7 +88,7 @@ public final class Names {
         for (Schema schema : schemas) {
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(),
-                            getFullClassNameEntity(x.getName())));
+                            getFullClassNameEntity(schema, x.getName())));
         }
         return map;
     }
@@ -144,66 +140,6 @@ public final class Names {
         return new File(path);
     }
 
-    public Schema getSchema() {
-        return schema;
-    }
-
-    public File getDirectorySchema() {
-        return toDirectory(output, options.pkg() + options.packageSuffixSchema());
-    }
-
-    public File getDirectoryEntity() {
-        return toDirectory(output, options.pkg() + options.packageSuffixEntity());
-    }
-
-    public File getDirectoryContainer() {
-        return toDirectory(output, options.pkg() + options.packageSuffixContainer());
-    }
-
-    public File getDirectoryEnum() {
-        return toDirectory(output, options.pkg() + options.packageSuffixEnum());
-    }
-
-    public File getDirectoryComplexType() {
-        return toDirectory(output, options.pkg() + options.packageSuffixComplexType());
-    }
-
-    public File getDirectoryCollectionRequest() {
-        return toDirectory(output, options.pkg() + options.packageSuffixCollectionRequest());
-    }
-
-    public File getDirectoryEntityRequest() {
-        return toDirectory(output, options.pkg() + options.packageSuffixEntityRequest());
-    }
-
-    public String getPackageSchema() {
-        return options.pkg() + options.packageSuffixSchema();
-    }
-
-    public String getPackageEnum() {
-        return options.pkg() + options.packageSuffixEnum();
-    }
-
-    public String getPackageEntity() {
-        return options.pkg() + options.packageSuffixEntity();
-    }
-
-    public String getPackageCollectionRequest() {
-        return options.pkg() + options.packageSuffixCollectionRequest();
-    }
-
-    public String getPackageEntityRequest() {
-        return options.pkg() + options.packageSuffixEntityRequest();
-    }
-
-    public String getPackageComplexType() {
-        return options.pkg() + options.packageSuffixComplexType();
-    }
-
-    public String getPackageContainer() {
-        return options.pkg() + options.packageSuffixContainer();
-    }
-
     public String getSimpleClassNameEnum(String name) {
         return Names.toSimpleClassName(name);
     }
@@ -216,54 +152,8 @@ public final class Names {
         return Names.toSimpleClassName(name);
     }
 
-    public String getSimpleClassNameCollectionRequest(String name) {
-        return Names.toSimpleClassName(name + options.collectionRequestClassSuffix());
-    }
-
-    public String getSimpleClassNameEntityRequest(String name) {
-        return Names.toSimpleClassName(name + options.entityRequestClassSuffix());
-    }
-
     public String getSimpleClassNameComplexType(String name) {
         return Names.toSimpleClassName(name);
-    }
-
-    public String getSimpleClassNameSchema() {
-        return options.simpleClassNameSchema();
-    }
-
-    public String getFullClassNameSchema() {
-        return getPackageSchema() + "." + getSimpleClassNameSchema();
-    }
-
-    public String getFullClassNameEnum(String name) {
-        return getPackageEnum() + "." + getSimpleClassNameEnum(name);
-    }
-
-    public String getFullClassNameEntity(String name) {
-        return getPackageEntity() + "." + getSimpleClassNameEntity(name);
-    }
-
-    public String getFullClassNameEntityRequest(String name) {
-        return getPackageEntityRequest() + "." + getSimpleClassNameEntityRequest(name);
-    }
-
-    private String getFullClassNameComplexType(String name) {
-        return getPackageComplexType() + "." + getSimpleClassNameComplexType(name);
-    }
-
-    public String getFullClassNameCollectionRequestFromTypeWithNamespace(String name) {
-        String simple = getLastItemInDotDelimitedString(name);
-        return getPackageCollectionRequest() + "." + upperFirst(simple) + options.collectionRequestClassSuffix();
-    }
-
-    public String getFullClassNameEntityRequestFromTypeWithNamespace(String name) {
-        String simple = getLastItemInDotDelimitedString(name);
-        return getFullClassNameEntityRequestFromTypeWithoutNamespace(simple);
-    }
-
-    public String getFullClassNameEntityRequestFromTypeWithoutNamespace(String name) {
-        return getPackageEntityRequest() + "." + upperFirst(name) + options.entityRequestClassSuffix();
     }
 
     public String getSimpleTypeNameFromTypeWithNamespace(String name) {
@@ -279,39 +169,11 @@ public final class Names {
         }
     }
 
-    public File getClassFileSchema() {
-        return new File(getDirectorySchema(), getSimpleClassNameSchema() + ".java");
-    }
-
-    public File getClassFileEnum(String name) {
-        return new File(getDirectoryEnum(), getSimpleClassNameEnum(name) + ".java");
-    }
-
-    public File getClassFileComplexType(String name) {
-        return new File(getDirectoryComplexType(), getSimpleClassNameComplexType(name) + ".java");
-    }
-
-    public File getClassFileEntity(String name) {
-        return new File(getDirectoryEntity(), getSimpleClassNameEntity(name) + ".java");
-    }
-
-    public File getClassFileContainer(String name) {
-        return new File(getDirectoryContainer(), getSimpleClassNameContainer(name) + ".java");
-    }
-
-    public File getClassFileCollectionRequest(String name) {
-        return new File(getDirectoryCollectionRequest(), getSimpleClassNameCollectionRequest(name) + ".java");
-    }
-
-    public File getClassFileEntityRequest(String name) {
-        return new File(getDirectoryEntityRequest(), getSimpleClassNameEntityRequest(name) + ".java");
-    }
-
     public String getFullClassNameFromTypeWithNamespace(String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
     }
 
-    public String getFullClassNameFromTypeWithoutNamespace(String type) {
+    public String getFullClassNameFromTypeWithoutNamespace(Schema schema, String type) {
         return Preconditions.checkNotNull(classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
@@ -353,10 +215,6 @@ public final class Names {
         return list.get(0);
     }
 
-    public String getFullTypeFromSimpleType(String name) {
-        return schema.getNamespace() + "." + name;
-    }
-
     public boolean isCollection(TProperty x) {
         return isCollection(getType(x));
     }
@@ -372,13 +230,11 @@ public final class Names {
     public String toType(String t, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, imports);
-        } else if (t.startsWith(schema.getNamespace())) {
-            return imports.add(getFullClassNameFromTypeWithNamespace(t));
         } else if (isCollection(t)) {
             String inner = getInnerType(t);
             return wrapCollection(imports, collectionClass, inner);
         } else {
-            throw new RuntimeException("unhandled type: " + t);
+            return imports.add(getFullClassNameFromTypeWithNamespace(t));
         }
     }
 
@@ -426,8 +282,9 @@ public final class Names {
 
     String wrapCollection(Imports imports, Class<?> collectionClass, String inner) {
         if (collectionClass.equals(CollectionPageEntityRequest.class)) {
+            Schema sch = getSchema(inner);
             // get the type without namespace
-            String entityRequestClass = getFullClassNameEntityRequestFromTypeWithNamespace(inner);
+            String entityRequestClass = getFullClassNameEntityRequestFromTypeWithNamespace(sch, inner);
             String a = toType(inner, imports, collectionClass);
             return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass) + ">";
         } else {
@@ -448,8 +305,16 @@ public final class Names {
         return schema.getNamespace() + "." + name;
     }
 
+    public String getFullClassNameEnum(Schema schema, String name) {
+        return getPackageEnum(schema) + "." + getSimpleClassNameEnum(schema, name);
+    }
+
     public String getFullClassNameEntity(Schema schema, String name) {
         return getPackageEntity(schema) + "." + getSimpleClassNameEntity(schema, name);
+    }
+
+    public String getFullClassNameComplexType(Schema schema, String name) {
+        return getPackageComplexType(schema) + "." + getSimpleClassNameComplexType(schema, name);
     }
 
     public String getSimpleClassNameEntity(Schema schema, String name) {
@@ -567,12 +432,12 @@ public final class Names {
 
     public String getPackageComplexType(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return options.pkg() + o.packageSuffixComplexType();
+        return o.pkg() + o.packageSuffixComplexType();
     }
 
     public File getDirectoryEntityRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return toDirectory(output, options.pkg() + o.packageSuffixEntityRequest());
+        return toDirectory(output, o.pkg() + o.packageSuffixEntityRequest());
     }
 
     public String getSimpleClassNameEntityRequest(Schema schema, String name) {
@@ -609,7 +474,7 @@ public final class Names {
 
     public File getDirectoryContainer(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return toDirectory(output, options.pkg() + o.packageSuffixContainer());
+        return toDirectory(output, o.pkg() + o.packageSuffixContainer());
     }
 
     public String getSimpleClassNameContainer(Schema schema, String name) {
@@ -618,7 +483,7 @@ public final class Names {
 
     public String getPackageContainer(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return options.pkg() + o.packageSuffixContainer();
+        return o.pkg() + o.packageSuffixContainer();
     }
 
     public File getClassFileContainer(Schema schema, String name) {
@@ -627,7 +492,7 @@ public final class Names {
 
     public File getDirectoryCollectionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return toDirectory(output, options.pkg() + o.packageSuffixCollectionRequest());
+        return toDirectory(output, o.pkg() + o.packageSuffixCollectionRequest());
     }
 
     public String getSimpleClassNameCollectionRequest(Schema schema, String name) {
@@ -637,7 +502,7 @@ public final class Names {
 
     public String getPackageCollectionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return options.pkg() + o.packageSuffixCollectionRequest();
+        return o.pkg() + o.packageSuffixCollectionRequest();
     }
 
     public String getFullClassNameEntityRequest(Schema schema, String name) {
