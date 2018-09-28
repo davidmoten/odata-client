@@ -356,7 +356,7 @@ public final class Generator {
 
             p.format("\n}\n");
             byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileEntity(t.getName()).toPath(), bytes);
+            Files.write(names.getClassFileEntity(schema, t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
