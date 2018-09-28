@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityContainer;
+import org.oasisopen.odata.csdl.v4.TEntityKeyElement;
 import org.oasisopen.odata.csdl.v4.TEntitySet;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
@@ -44,6 +45,8 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.SchemaInfo;
+import com.github.davidmoten.odata.client.TestingService.BuilderBase;
+import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.generator.model.Field;
@@ -236,6 +239,11 @@ public final class Generator {
         String simpleClassName = names.getSimpleClassNameEntity(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
+
+        // log keys
+        Util.filter(entityType.getKeyOrPropertyOrNavigationProperty(), TEntityKeyElement.class) //
+                .forEach(k -> k.getPropertyRef()
+                        .forEach(r -> System.out.println(entityType.getName() + " key: " + r.getName())));
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
@@ -615,6 +623,8 @@ public final class Generator {
             }
             p.format("public final class %s%s {\n\n", simpleClassName, extension);
 
+            // TODO handle container extension
+
             // write fields
             p.format("%sprivate final %s contextPath;\n\n", indent.right(), imports.add(ContextPath.class));
 
@@ -622,6 +632,20 @@ public final class Generator {
             p.format("%spublic %s(%s context) {\n", indent, simpleClassName, imports.add(Context.class));
             p.format("%sthis.contextPath = new %s(context, context.service().getBasePath());\n", indent.right(),
                     imports.add(ContextPath.class));
+            p.format("%s}\n", indent.left());
+
+            // write static testing method
+            p.format("\n%sstatic final class ContainerBuilderImpl extends %s<%s> {\n", indent,
+                    imports.add(ContainerBuilder.class), simpleClassName);
+            p.format("\n%s@%s\n", indent.right(), imports.add(Override.class));
+            p.format("%spublic %s _create(%s context) {\n", indent, simpleClassName, imports.add(Context.class));
+            p.format("%sreturn new %s(context);\n", indent.right(), simpleClassName);
+            p.format("%s}\n", indent.left());
+            p.format("%s}\n", indent.left());
+
+            p.format("\n%spublic static %s<%s<%s>, %s> test() {\n", indent, imports.add(BuilderBase.class),
+                    imports.add(ContainerBuilder.class), simpleClassName, simpleClassName);
+            p.format("%sreturn new ContainerBuilderImpl();\n", indent.right());
             p.format("%s}\n", indent.left());
 
             // write get methods from properties
