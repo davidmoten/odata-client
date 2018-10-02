@@ -17,4 +17,10 @@ TODO
 * use editLink if there in patch (but what about request headers and query options like $filter which may be supported for patch)
 * create (POST)
 * delete (DELETE)
+* support OpenType (arbitrary extra fields get written)
+* support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
+* support precision, scale (maybe)
+* support NavigationPropertyBindings
+* support multiple keys and honour types (just single key String supported at the moment)
+* more decoupling of model from presentation in generation
 
