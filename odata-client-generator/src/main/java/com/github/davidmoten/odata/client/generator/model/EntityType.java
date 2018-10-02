@@ -50,30 +50,35 @@ public final class EntityType extends Structure<TEntityType> {
         return true;
     }
 
+    @Override
     public String getSimpleClassName() {
-        Schema schema = names.getSchema(value);
-        return names.getSimpleClassNameEntity(schema, value.getName());
+        return names.getSimpleClassNameEntity(schema(), value.getName());
     }
 
     public String getFullType() {
-        Schema schema = names.getSchema(value);
-        return names.getFullTypeFromSimpleType(schema, getName());
+        return names.getFullTypeFromSimpleType(schema(), getName());
     }
 
     @Override
     public File getClassFile() {
-        Schema schema = names.getSchema(value);
-        return names.getClassFileEntity(schema, getName());
+        return names.getClassFileEntity(schema(), getName());
     }
 
     public File getClassFileEntityRequest() {
-        Schema schema = names.getSchema(value);
-        return names.getClassFileEntityRequest(schema, getName());
+        return names.getClassFileEntityRequest(schema(), getName());
     }
 
     public File getClassFileCollectionRequest() {
-        Schema schema = names.getSchema(value);
-        return names.getClassFileCollectionRequest(schema, getName());
+        return names.getClassFileCollectionRequest(schema(), getName());
+    }
+
+    @Override
+    public String getPackage() {
+        return names.getPackageEntity(schema());
+    }
+
+    private Schema schema() {
+        return names.getSchema(value);
     }
 
 }

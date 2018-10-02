@@ -52,7 +52,20 @@ public final class ComplexType extends Structure<TComplexType> {
 
     @Override
     public File getClassFile() {
-        Schema schema = names.getSchema(value);
-        return names.getClassFileComplexType(schema, getName());
+        return names.getClassFileComplexType(schema(), getName());
+    }
+
+    @Override
+    public String getSimpleClassName() {
+        return names.getSimpleClassNameComplexType(schema(), getName());
+    }
+
+    private Schema schema() {
+        return names.getSchema(value);
+    }
+
+    @Override
+    public String getPackage() {
+        return names.getPackageComplexType(schema());
     }
 }
