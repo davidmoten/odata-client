@@ -56,8 +56,12 @@
                             <metadata>src/test/resources/metadata1.xml</metadata>
                             <schemas>
                                 <schema>
-                                    <namespace>Test1</namespace>
-                                    <packageName>test1</packageName>
+                                    <namespace>Test1.A</namespace>
+                                    <packageName>test1a</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Test1.B</namespace>
+                                    <packageName>test1b</packageName>
                                 </schema>
                             </schemas>
                         </configuration>

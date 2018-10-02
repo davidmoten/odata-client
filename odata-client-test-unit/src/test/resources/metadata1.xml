@@ -2,7 +2,7 @@
 <edmx:Edmx Version="4.0"
     xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
-        <Schema Namespace="Test1"
+        <Schema Namespace="Test1.A"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">
             <EntityType Name="Product">
                 <Key>
@@ -20,9 +20,12 @@
                 <Property Name="Price" Type="Edm.Double"
                     Nullable="false" />
             </EntityType>
+        </Schema>
+        <Schema Namespace="Test1.B"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
             <EntityContainer Name="Test1Service">
                 <EntitySet Name="Products"
-                    EntityType="Test1.Product">
+                    EntityType="Test1.A.Product">
                 </EntitySet>
             </EntityContainer>
         </Schema>
