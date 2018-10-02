@@ -71,4 +71,9 @@ public final class EntityType extends Structure<TEntityType> {
         return names.getClassFileEntityRequest(schema, getName());
     }
 
+    public File getClassFileCollectionRequest() {
+        Schema schema = names.getSchema(value);
+        return names.getClassFileCollectionRequest(schema, getName());
+    }
+
 }
