@@ -30,8 +30,7 @@ public final class EntityType extends Structure<TEntityType> {
 
     @Override
     public List<TProperty> getProperties() {
-        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class)
-                .collect(Collectors.toList());
+        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class).collect(Collectors.toList());
     }
 
     @Override
@@ -83,6 +82,18 @@ public final class EntityType extends Structure<TEntityType> {
 
     public String getFullClassNameEntity() {
         return names.getFullClassNameFromTypeWithoutNamespace(schema(), getName());
+    }
+
+    public String getSimpleClassNameEntityRequest() {
+        return names.getSimpleClassNameEntityRequest(schema(), getName());
+    }
+
+    public String getPackageEntityRequest() {
+        return names.getPackageEntityRequest(schema());
+    }
+
+    public File getDirectoryEntity() {
+        return names.getDirectoryEntity(schema());
     }
 
 }
