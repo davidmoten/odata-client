@@ -373,12 +373,19 @@ public final class Generator {
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             p.format("\n}\n");
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
-            File classFile = names.getClassFileEntity(schema, t.getName());
-            Files.write(classFile.toPath(), bytes);
+            File classFile = t.getClassFile();
+            writeToFile(imports, w, classFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writeToFile(Imports imports, StringWriter w, File classFile) throws IOException {
+        byte[] bytes = w //
+                .toString() //
+                .replace("IMPORTSHERE", imports.toString()) //
+                .getBytes(StandardCharsets.UTF_8);
+        Files.write(classFile.toPath(), bytes);
     }
 
     private void writeComplexType(Schema schema, TComplexType complexType) {

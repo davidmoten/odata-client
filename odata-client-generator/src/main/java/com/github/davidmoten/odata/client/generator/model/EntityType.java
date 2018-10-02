@@ -60,6 +60,7 @@ public final class EntityType extends Structure<TEntityType> {
         return names.getFullTypeFromSimpleType(schema, getName());
     }
 
+    @Override
     public File getClassFile() {
         Schema schema = names.getSchema(value);
         return names.getClassFileEntity(schema, getName());
