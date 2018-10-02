@@ -2,7 +2,14 @@
 <edmx:Edmx Version="4.0"
     xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
-        <Schema Namespace="Test1.A"
+        <Schema Namespace="Test2.A"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <ComplexType Name="Address">
+                <Property Name="Line1" Type="Edm.String" />
+                <Property Name="Line2" Type="Edm.String" />
+            </ComplexType>
+        </Schema>
+        <Schema Namespace="Test2.B"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">
             <EntityType Name="Product">
                 <Key>
@@ -11,13 +18,11 @@
                 <Property Name="ID" Type="Edm.Int32"
                     Nullable="false" />
                 <Property Name="Name" Type="Edm.String" />
+                <Property Name="Address" Type="Test2.A.Address" />
             </EntityType>
-        </Schema>
-        <Schema Namespace="Test1.B"
-            xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityContainer Name="Test1Service">
+            <EntityContainer Name="Test2Service">
                 <EntitySet Name="Products"
-                    EntityType="Test1.A.Product">
+                    EntityType="Test2.B.Product">
                 </EntitySet>
             </EntityContainer>
         </Schema>

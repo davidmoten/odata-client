@@ -47,7 +47,7 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-msgraph-client</id>
+                        <id>test1</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
@@ -62,6 +62,26 @@
                                 <schema>
                                     <namespace>Test1.B</namespace>
                                     <packageName>test1b</packageName>
+                                </schema>
+                            </schemas>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test2</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/test/resources/metadata2.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>Test2.A</namespace>
+                                    <packageName>test2a</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Test2.B</namespace>
+                                    <packageName>test2b</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
