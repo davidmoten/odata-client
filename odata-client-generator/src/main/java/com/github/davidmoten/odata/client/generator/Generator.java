@@ -251,7 +251,7 @@ public final class Generator {
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
-            p.format("package %s;\n\n", names.getPackageEntity(schema));
+            p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
@@ -401,13 +401,13 @@ public final class Generator {
     private void writeComplexType(Schema schema, TComplexType complexType) {
         names.getDirectoryComplexType(schema).mkdirs();
         ComplexType t = new ComplexType(complexType, names);
-        String simpleClassName = names.getSimpleClassNameComplexType(schema, t.getName());
+        String simpleClassName = t.getSimpleClassName();
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
-            p.format("package %s;\n\n", names.getPackageComplexType(schema));
+            p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
             p.format("public class %s%s {\n\n", simpleClassName, t.getExtendsClause(imports));

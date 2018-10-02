@@ -120,4 +120,8 @@ public abstract class Structure<T> {
     }
 
     public abstract File getClassFile();
+
+    public abstract String getSimpleClassName();
+
+    public abstract String getPackage();
 }
