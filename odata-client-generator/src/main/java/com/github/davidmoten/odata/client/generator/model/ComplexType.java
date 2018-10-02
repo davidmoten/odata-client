@@ -1,8 +1,10 @@
 package com.github.davidmoten.odata.client.generator.model;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
@@ -48,4 +50,9 @@ public final class ComplexType extends Structure<TComplexType> {
         return false;
     }
 
+    @Override
+    public File getClassFile() {
+        Schema schema = names.getSchema(value);
+        return names.getClassFileEntity(schema, getName());
+    }
 }

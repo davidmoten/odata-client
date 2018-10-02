@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client.generator.model;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public abstract class Structure<T> {
         return getProperties().stream().map(x -> new Property(x, names))
                 .collect(Collectors.toList());
     }
-    
+
     public abstract List<TNavigationProperty> getNavigationProperties();
 
     public abstract boolean isEntityType();
@@ -108,12 +109,15 @@ public abstract class Structure<T> {
                 .collect(Collectors.toList());
         return list;
     }
-    
+
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {
-            return " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
+            return " extends "
+                    + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
         } else {
             return "";
         }
     }
+
+    public abstract File getClassFile();
 }
