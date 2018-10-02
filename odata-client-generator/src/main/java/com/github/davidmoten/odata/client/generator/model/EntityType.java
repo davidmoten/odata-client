@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client.generator.model;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,6 @@ import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
-import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
 
@@ -30,7 +30,8 @@ public final class EntityType extends Structure<TEntityType> {
 
     @Override
     public List<TProperty> getProperties() {
-        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class).collect(Collectors.toList());
+        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -58,5 +59,10 @@ public final class EntityType extends Structure<TEntityType> {
         Schema schema = names.getSchema(value);
         return names.getFullTypeFromSimpleType(schema, getName());
     }
-    
+
+    public File getClassFile() {
+        Schema schema = names.getSchema(value);
+        return names.getClassFileEntity(schema, getName());
+    }
+
 }
