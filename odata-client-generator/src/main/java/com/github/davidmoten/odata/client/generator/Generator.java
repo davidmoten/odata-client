@@ -513,8 +513,7 @@ public final class Generator {
             // write get
             p.format("%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s get(%s<%s> options) {\n", indent, //
-                    imports.add(
-                            names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
+                    imports.add(t.getFullClassNameEntity()), //
                     imports.add(EntityRequestOptions.class),
                     imports.add(names.getFullClassNameEntity(schema, t.getName())));
             p.format("%sreturn %s.get(contextPath, %s.class, options, %s.INSTANCE);\n",
