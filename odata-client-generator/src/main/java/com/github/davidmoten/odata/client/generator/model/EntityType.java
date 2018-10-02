@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client.generator.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
@@ -45,5 +46,10 @@ public final class EntityType extends Structure<TEntityType> {
     @Override
     public boolean isEntityType() {
         return true;
+    }
+
+    public String getSimpleClassName() {
+        Schema schema = names.getSchema(value);
+        return names.getSimpleClassNameEntity(schema, value.getName());
     }
 }

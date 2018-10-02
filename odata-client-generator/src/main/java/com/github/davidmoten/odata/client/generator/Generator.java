@@ -236,7 +236,7 @@ public final class Generator {
     private void writeEntity(Schema schema, TEntityType entityType) {
         names.getDirectoryEntity(schema).mkdirs();
         EntityType t = new EntityType(entityType, names);
-        String simpleClassName = names.getSimpleClassNameEntity(schema, t.getName());
+        String simpleClassName = t.getSimpleClassName();
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
