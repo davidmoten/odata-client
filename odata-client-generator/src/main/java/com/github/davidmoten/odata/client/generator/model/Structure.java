@@ -109,4 +109,11 @@ public abstract class Structure<T> {
         return list;
     }
     
+    public String getExtendsClause(Imports imports) {
+        if (getBaseType() != null) {
+            return " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
+        } else {
+            return "";
+        }
+    }
 }
