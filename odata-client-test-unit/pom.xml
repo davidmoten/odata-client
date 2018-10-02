@@ -86,6 +86,26 @@
                             </schemas>
                         </configuration>
                     </execution>
+                     <execution>
+                        <id>test3</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/test/resources/metadata3.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>Test3.A</namespace>
+                                    <packageName>test3a</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Test3.B</namespace>
+                                    <packageName>test3b</packageName>
+                                </schema>
+                            </schemas>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
