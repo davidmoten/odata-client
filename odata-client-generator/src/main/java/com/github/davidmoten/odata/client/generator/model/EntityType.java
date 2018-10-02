@@ -81,4 +81,8 @@ public final class EntityType extends Structure<TEntityType> {
         return names.getSchema(value);
     }
 
+    public String getFullClassNameEntity() {
+        return names.getFullClassNameFromTypeWithoutNamespace(schema(), getName());
+    }
+
 }
