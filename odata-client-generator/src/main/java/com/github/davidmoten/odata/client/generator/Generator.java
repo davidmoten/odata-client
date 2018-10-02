@@ -50,7 +50,6 @@ import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.generator.model.Field;
-import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
@@ -748,15 +747,15 @@ public final class Generator {
                     });
 
             p.format("\n}\n");
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
-                    .getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileContainer(schema, t.getName()).toPath(), bytes);
+            File classFile = names.getClassFileContainer(schema, t.getName());
+            writeToFile(imports, w, classFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeCollectionRequest(Schema schema, TEntityType t) {
+    private void writeCollectionRequest(Schema schema, TEntityType entityType) {
+        EntityType t = new EntityType(entityType, names);
         names.getDirectoryCollectionRequest(schema).mkdirs();
         String simpleClassName = names.getSimpleClassNameCollectionRequest(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
@@ -790,7 +789,8 @@ public final class Generator {
 
             // write fields from properties
 
-            Util.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class) //
+            t.getNavigationProperties() //
+                    .stream() //
                     .forEach(x -> {
                         Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
                         p.println();
@@ -828,9 +828,7 @@ public final class Generator {
                     });
             indent.left();
             p.format("\n}\n");
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
-                    .getBytes(StandardCharsets.UTF_8);
-            Files.write(names.getClassFileCollectionRequest(schema, t.getName()).toPath(), bytes);
+            writeToFile(imports, w, t.getClassFileCollectionRequest());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
