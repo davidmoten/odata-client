@@ -252,7 +252,7 @@ public final class Generator {
 
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
             printPropertyOrder(imports, p, t.getProperties());
-            p.format("public class %s%s implements %s {\n\n", simpleClassName, getExtendsClause(t, imports),
+            p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
                     imports.add(ODataEntity.class));
 
             addContextPathInjectableField(imports, indent, p);
@@ -269,7 +269,8 @@ public final class Generator {
             // build constructor parameters
             String props = t.getFields(imports) //
                     .stream() //
-                    .map(f -> String.format("@%s(\"%s\") %s %s", imports.add(JsonProperty.class), //
+                    .map(f -> String.format("@%s(\"%s\") %s %s", //
+                            imports.add(JsonProperty.class), //
                             f.propertyName, //
                             f.importedType, //
                             f.fieldName)) //
@@ -350,8 +351,11 @@ public final class Generator {
                     .stream() //
                     .map(f -> ", " + f.fieldName) //
                     .collect(Collectors.joining());
-            p.format("%sreturn new %s(null, %s.EMPTY,\"%s\"%s);\n", indent.right(), simpleClassName,
-                    imports.add(ChangedFields.class), names.getFullTypeFromSimpleType(schema, t.getName()),
+            p.format("%sreturn new %s(null, %s.EMPTY,\"%s\"%s);\n", // 
+                    indent.right(), //
+                    simpleClassName, //
+                    imports.add(ChangedFields.class), //
+                    t.getFullType(), //
                     builderProps);
             p.format("%s}\n", indent.left());
 
@@ -389,7 +393,7 @@ public final class Generator {
             p.format("package %s;\n\n", names.getPackageComplexType(schema));
             p.format("IMPORTSHERE");
 
-            p.format("public class %s%s {\n\n", simpleClassName, getExtendsClause(t, imports));
+            p.format("public class %s%s {\n\n", simpleClassName, t.getExtendsClause(imports));
 
             indent.right();
             addContextPathField(imports, indent, p);
@@ -759,14 +763,6 @@ public final class Generator {
             throw new RuntimeException(e);
         }
 
-    }
-
-    private String getExtendsClause(Structure<?> t, Imports imports) {
-        if (t.getBaseType() != null) {
-            return " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getBaseType()));
-        } else {
-            return "";
-        }
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {

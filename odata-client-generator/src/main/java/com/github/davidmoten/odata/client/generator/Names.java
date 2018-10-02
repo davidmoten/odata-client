@@ -301,7 +301,7 @@ public final class Names {
         return o.pkg + o.packageSuffixSchema;
     }
 
-    public Object getFullTypeFromSimpleType(Schema schema, String name) {
+    public String getFullTypeFromSimpleType(Schema schema, String name) {
         return schema.getNamespace() + "." + name;
     }
 

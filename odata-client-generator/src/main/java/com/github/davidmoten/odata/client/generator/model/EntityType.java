@@ -8,6 +8,7 @@ import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
+import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
 
@@ -52,4 +53,10 @@ public final class EntityType extends Structure<TEntityType> {
         Schema schema = names.getSchema(value);
         return names.getSimpleClassNameEntity(schema, value.getName());
     }
+
+    public String getFullType() {
+        Schema schema = names.getSchema(value);
+        return names.getFullTypeFromSimpleType(schema, getName());
+    }
+    
 }
