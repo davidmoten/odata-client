@@ -79,7 +79,7 @@ public final class Generator {
 
             // write entityTypes
             Util.types(schema, TEntityType.class) //
-                    .forEach(x -> writeEntity(schema, x));
+                    .forEach(x -> writeEntity(x));
 
             // write complexTypes
             Util.types(schema, TComplexType.class) //
@@ -232,9 +232,9 @@ public final class Generator {
         }
     }
 
-    private void writeEntity(Schema schema, TEntityType entityType) {
-        names.getDirectoryEntity(schema).mkdirs();
+    private void writeEntity(TEntityType entityType) {
         EntityType t = new EntityType(entityType, names);
+        t.getDirectoryEntity().mkdirs();
         String simpleClassName = t.getSimpleClassName();
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
@@ -469,13 +469,13 @@ public final class Generator {
         EntityType t = new EntityType(entityType, names);
         names.getDirectoryEntityRequest(schema).mkdirs();
         // TODO only write out those requests needed
-        String simpleClassName = names.getSimpleClassNameEntityRequest(schema, t.getName());
+        String simpleClassName = t.getSimpleClassNameEntityRequest();
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
-            p.format("package %s;\n\n", names.getPackageEntityRequest(schema));
+            p.format("package %s;\n\n", t.getPackageEntityRequest());
             p.format("IMPORTSHERE");
 
             p.format("public final class %s implements %s {\n\n", simpleClassName,
