@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Test3.A"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EnumType Name="DayOfWeek">
+                <Member Name="sunday" Value="0" />
+                <Member Name="monday" Value="1" />
+                <Member Name="tuesday" Value="2" />
+                <Member Name="wednesday" Value="3" />
+                <Member Name="thursday" Value="4" />
+                <Member Name="friday" Value="5" />
+                <Member Name="saturday" Value="6" />
+            </EnumType>
+        </Schema>
+        <Schema Namespace="Test3.B"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Product">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32"
+                    Nullable="false" />
+                <Property Name="Name" Type="Edm.String" />
+                <Property Name="BirthDayOfWeek" Type="Test3.A.DayOfWeek" />
+            </EntityType>
+            <EntityContainer Name="Test3Service">
+                <EntitySet Name="Products"
+                    EntityType="Test3.B.Product">
+                </EntitySet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
