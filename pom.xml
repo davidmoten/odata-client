@@ -89,6 +89,7 @@
         <module>odata-client-runtime</module>
         <module>odata-client-generator</module>
         <module>odata-client-maven-plugin</module>
+        <module>odata-client-test-unit</module>
         <module>odata-client-test-service</module>
         <module>odata-client-test-trip-pin</module>
         <module>odata-client-test-northwind</module>
