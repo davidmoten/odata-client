@@ -10,7 +10,7 @@
         <artifactId>odata-client-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>odata-client-test</artifactId>
+    <artifactId>odata-client-test-service</artifactId>
     <name>${project.artifactId}</name>
     <description>OData client generation test</description>
 
