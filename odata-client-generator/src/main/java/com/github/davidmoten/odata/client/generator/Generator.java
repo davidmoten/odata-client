@@ -601,24 +601,7 @@ public final class Generator {
                                 p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n",
                                         indent.right(), imports.add(entityRequestType), x.getName());
                                 p.format("%s}\n", indent.left());
-                            } else {
-                                p.format("\n%spublic %s %s(%s id) {\n", indent, //
-                                        imports.add(
-                                                names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, inner)), //
-                                        Names.getGetterMethodWithoutGet(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                                p.format("%scontextPath.addSegment(\"%s\").addKeys(id),\n",
-                                        indent.right().right().right().right(), x.getName());
-                                p.format("%s%s.class,\n", indent, imports.add(names
-                                        .getFullClassNameFromTypeWithNamespace(names.getInnerType(names.getType(x)))));
-                                p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
-                                        imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                                names.getInnerType(names.getType(x)))), //
-                                        imports.add(names.getFullClassNameSchema(sch)));
-                                p.format("%s}\n", indent.left());
-
-                            }
-                        }
+                            }                         }
                         indent.left();
                     });
             p.format("\n}\n");
