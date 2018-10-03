@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
+import org.oasisopen.odata.csdl.v4.TEntityKeyElement;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
@@ -94,6 +95,18 @@ public final class EntityType extends Structure<TEntityType> {
 
     public File getDirectoryEntity() {
         return names.getDirectoryEntity(schema());
+    }
+
+    private Structure<TEntityType> getInheritanceRoot() {
+        List<Structure<TEntityType>> h = getHeirarchy();
+        return h.get(h.size() - 1);
+    }
+
+    public List<KeyElement> getRootKeys() {
+        Structure<TEntityType> root = getInheritanceRoot();
+        return Util.filter(root.value.getKeyOrPropertyOrNavigationProperty(), TEntityKeyElement.class) //
+                .map(x -> new KeyElement(x, names)) //
+                .collect(Collectors.toList());
     }
 
 }
