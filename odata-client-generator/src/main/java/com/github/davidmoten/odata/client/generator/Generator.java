@@ -387,8 +387,8 @@ public final class Generator {
     }
 
     private void writeComplexType(Schema schema, TComplexType complexType) {
-        names.getDirectoryComplexType(schema).mkdirs();
         ComplexType t = new ComplexType(complexType, names);
+        t.getDirectoryComplexType().mkdirs();
         String simpleClassName = t.getSimpleClassName();
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
