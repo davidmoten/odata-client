@@ -97,15 +97,16 @@ public final class EntityType extends Structure<TEntityType> {
         return names.getDirectoryEntity(schema());
     }
 
-    private Structure<TEntityType> getInheritanceRoot() {
-        List<Structure<TEntityType>> h = getHeirarchy();
-        return h.get(h.size() - 1);
+    private List<KeyElement> getKeysLocal() {
+        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TEntityKeyElement.class) //
+                .map(x -> new KeyElement(x, this, names)) //
+                .collect(Collectors.toList());
     }
 
-    public List<KeyElement> getRootKeys() {
-        Structure<TEntityType> root = getInheritanceRoot();
-        return Util.filter(root.value.getKeyOrPropertyOrNavigationProperty(), TEntityKeyElement.class) //
-                .map(x -> new KeyElement(x, names)) //
+    public List<KeyElement> getKeys() {
+        return getHeirarchy() //
+                .stream() //
+                .flatMap(x -> ((EntityType) x).getKeysLocal().stream()) //
                 .collect(Collectors.toList());
     }
 

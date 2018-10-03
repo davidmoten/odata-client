@@ -45,7 +45,7 @@ public abstract class Structure<T> {
 
     public abstract boolean isEntityType();
 
-    public final List<Structure<T>> getHeirarchy() {
+    public final List<? extends Structure<T>> getHeirarchy() {
         List<Structure<T>> a = new LinkedList<>();
         a.add(create(value));
         Structure<T> st = this;
@@ -96,7 +96,7 @@ public abstract class Structure<T> {
     }
 
     public final List<Field> getSuperFields(Imports imports) {
-        List<Structure<T>> h = getHeirarchy();
+        List<? extends Structure<T>> h = getHeirarchy();
         List<Field> list = h.subList(0, h.size() - 1) //
                 .stream() //
                 .flatMap(z -> z.getProperties() //

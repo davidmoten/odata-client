@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.Schema;
@@ -50,6 +51,7 @@ import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.generator.model.Field;
+import com.github.davidmoten.odata.client.generator.model.KeyElement;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
@@ -253,6 +255,21 @@ public final class Generator {
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
                     imports.add(ODataEntity.class));
+
+            // write keys as comments
+            List<KeyElement> keys = t.getKeys();
+            IntStream.range(0, keys.size()) //
+                    .forEach(i -> {
+                        p.format("%s// key %s\n", indent, i);
+                        String sig = keys.get(i) //
+                                .getPropertyRefs() //
+                                .stream() //
+                                .map(ref -> String.format("%s %s",
+                                        imports.add(ref.getImportedClassNameForReferredPropertyType(imports)),
+                                        ref.getFieldName()))
+                                .collect(Collectors.joining(", "));
+                        p.format("%s//    %s\n", indent, sig);
+                    });
 
             addContextPathInjectableField(imports, indent, p);
 
@@ -811,7 +828,7 @@ public final class Generator {
                     boolean isCollection = isCollection(x);
                     if (isCollection) {
                         String inner = names.getInnerType(t);
-                        String importedInnerType = toTypeNonCollection(inner, imports);
+                        String importedInnerType = names.toImportedTypeNonCollection(inner, imports);
                         boolean isEntity = names.isEntityWithNamespace(inner);
                         Class<?> collectionCls;
                         if (isEntity) {
@@ -833,7 +850,7 @@ public final class Generator {
                         }
                         p.format("%s}\n", indent.left());
                     } else {
-                        String importedType = toTypeNonCollection(t, imports);
+                        String importedType = names.toImportedTypeNonCollection(t, imports);
                         importedType = imports.add(Optional.class) + "<" + importedType + ">";
                         p.format("\n%spublic %s %s() {\n", indent, importedType, Names.getGetterMethod(x.getName()));
                         p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
@@ -980,14 +997,6 @@ public final class Generator {
 
     private static boolean isCollection(String t) {
         return t.startsWith(COLLECTION_PREFIX) && t.endsWith(")");
-    }
-
-    private String toTypeNonCollection(String t, Imports imports) {
-        if (t.startsWith("Edm.")) {
-            return names.toTypeFromEdm(t, imports);
-        } else {
-            return imports.add(names.getFullClassNameFromTypeWithNamespace(t));
-        }
     }
 
 }
