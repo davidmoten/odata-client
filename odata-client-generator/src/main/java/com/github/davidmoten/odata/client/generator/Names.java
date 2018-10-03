@@ -224,6 +224,19 @@ public final class Names {
         return toType(getType(x), imports, List.class);
     }
 
+    public String toImportedTypeNonCollection(TProperty x, Imports imports) {
+        Preconditions.checkArgument(!isCollection(x));
+        return toImportedTypeNonCollection(getType(x), imports);
+    }
+
+    public String toImportedTypeNonCollection(String t, Imports imports) {
+        if (t.startsWith("Edm.")) {
+            return toTypeFromEdm(t, imports);
+        } else {
+            return imports.add(getFullClassNameFromTypeWithNamespace(t));
+        }
+    }
+
     public String toType(String t, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
             return toTypeFromEdm(t, imports);
