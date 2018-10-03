@@ -487,13 +487,11 @@ public final class Generator {
             // add field
             indent.right();
             addContextPathField(imports, indent, p);
-            p.format("%sprivate final %s id;\n\n", indent, imports.add(String.class));
 
             // add constructor
-            p.format("%spublic %s(%s contextPath, %s id) {\n", indent, simpleClassName, imports.add(ContextPath.class),
+            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
                     imports.add(String.class));
             p.format("%sthis.contextPath = contextPath;\n", indent.right());
-            p.format("%sthis.id = id;\n", indent);
             p.format("%s}\n\n", indent.left());
 
             // write get
@@ -563,14 +561,14 @@ public final class Generator {
                                     x.getName());
                             p.format("%s%s.class,\n", indent, imports.add(
                                     names.getFullClassNameFromTypeWithNamespace(names.getInnerType(names.getType(x)))));
-                            p.format("%s(contextPath, id) -> new %s(contextPath, id), %s.INSTANCE);\n", indent,
+                            p.format("%s(contextPath, id) -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                     imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                             names.getInnerType(names.getType(x)))),
                                     imports.add(names.getFullClassNameSchema(sch)));
                             indent.left().left().left().left();
                         } else {
-                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), \"%s\");\n", indent.right(),
-                                    returnClass, x.getName(), x.getName());
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", indent.right(), returnClass,
+                                    x.getName());
                         }
                         p.format("%s}\n", indent.left());
 
@@ -583,7 +581,7 @@ public final class Generator {
                                         inner);
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id), id);\n",
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n",
                                         indent.right(), imports.add(entityRequestType), x.getName());
                                 p.format("%s}\n", indent.left());
                             } else {
@@ -596,7 +594,7 @@ public final class Generator {
                                         indent.right().right().right().right(), x.getName());
                                 p.format("%s%s.class,\n", indent, imports.add(names
                                         .getFullClassNameFromTypeWithNamespace(names.getInnerType(names.getType(x)))));
-                                p.format("%s(contextPath, id) -> new %s(contextPath, id), %s.INSTANCE);\n", indent,
+                                p.format("%s(contextPath, id) -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                         imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                                 names.getInnerType(names.getType(x)))), //
                                         imports.add(names.getFullClassNameSchema(sch)));
@@ -668,7 +666,7 @@ public final class Generator {
                                 x.getName());
                         p.format("%s%s.class,\n", indent,
                                 imports.add(names.getFullClassNameFromTypeWithNamespace(x.getEntityType())));
-                        p.format("%s(contextPath, id) -> new %s(contextPath, id), %s.INSTANCE);\n", indent,
+                        p.format("%s(contextPath, id) -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                 imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                         x.getEntityType())), //
                                 imports.add(names.getFullClassNameSchema(sch)));
@@ -679,8 +677,8 @@ public final class Generator {
                                     x.getEntityType());
                             p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                     Names.getIdentifier(x.getName()), imports.add(String.class));
-                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id), id);\n",
-                                    indent.right(), imports.add(entityRequestType), x.getName());
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n", indent.right(),
+                                    imports.add(entityRequestType), x.getName());
                             p.format("%s}\n", indent.left());
                         }
                     });
@@ -689,8 +687,8 @@ public final class Generator {
                     .forEach(x -> {
                         String importedType = toType(x, imports);
                         p.format("\n%spublic %s %s() {\n", indent, importedType, Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), \"%s\");\n", indent.right(),
-                                importedType, x.getName(), x.getName());
+                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", indent.right(), importedType,
+                                x.getName());
                         p.format("%s}\n", indent.left());
                     });
 
@@ -724,7 +722,7 @@ public final class Generator {
             // add constructor
             p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
                     imports.add(String.class));
-            p.format("%ssuper(contextPath, %s.class, (cp, id) -> new %s(cp, id), %s.INSTANCE);\n", indent.right(),
+            p.format("%ssuper(contextPath, %s.class, (cp, id) -> new %s(cp), %s.INSTANCE);\n", indent.right(),
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
                     imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
                     imports.add(names.getFullClassNameSchema(schema)));
@@ -756,7 +754,7 @@ public final class Generator {
                                         y);
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id), id);\n",
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n",
                                         indent.right(), imports.add(entityRequestType), x.getName());
                                 p.format("%s}\n", indent.left());
                             }
@@ -924,7 +922,7 @@ public final class Generator {
                                     x.getName());
                             p.format("%s%s.class,\n", indent, imports.add(
                                     names.getFullClassNameFromTypeWithNamespace(names.getInnerType(names.getType(x)))));
-                            p.format("%s(contextPath, id) -> new %s(contextPath, id), %s.INSTANCE);\n", indent,
+                            p.format("%s(contextPath, id) -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                     imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                             names.getInnerType(names.getType(x)))), //
                                     imports.add(names.getFullClassNameSchema(sch)));
