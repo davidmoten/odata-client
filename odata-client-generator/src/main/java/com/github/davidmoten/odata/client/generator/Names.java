@@ -24,6 +24,7 @@ import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
 import com.github.davidmoten.odata.client.edm.UnsignedByte;
+import com.github.davidmoten.odata.client.generator.model.EntityType;
 
 public final class Names {
 
@@ -42,6 +43,7 @@ public final class Names {
 
     private final Map<String, String> entityClassNamesFromNamespacedType;
     private final Map<String, String> classNamesFromNamespacedType;
+    private final Map<String, TEntityType> entityTypesFromNamespacedType;
 
     private final Options opts;
 
@@ -51,6 +53,7 @@ public final class Names {
         this.output = new File(opts.getOutputDirectory());
         this.classNamesFromNamespacedType = createMap(schemas, opts);
         this.entityClassNamesFromNamespacedType = createEntityMap(schemas, opts);
+        this.entityTypesFromNamespacedType = createEntityTypesMap(schemas, opts);
     }
 
     // factory method
@@ -60,6 +63,15 @@ public final class Names {
 
     private SchemaOptions getOptions(Schema schema) {
         return opts.getSchemaOptions(schema.getNamespace());
+    }
+
+    private Map<String, TEntityType> createEntityTypesMap(List<Schema> schemas2, Options opts2) {
+        Map<String, TEntityType> map = new HashMap<>();
+        for (Schema schema : schemas) {
+            Util.types(schema, TEntityType.class) //
+                    .forEach(x -> map.put(schema.getNamespace() + "." + x.getName(), x));
+        }
+        return map;
     }
 
     private Map<String, String> createMap(List<Schema> schemas, Options options) {
@@ -536,6 +548,14 @@ public final class Names {
     public File getClassFileCollectionRequest(Schema schema, String name) {
         return new File(getDirectoryCollectionRequest(schema),
                 getSimpleClassNameCollectionRequest(schema, name) + ".java");
+    }
+
+    public EntityType getEntityType(String typeWithNamespace) {
+        return new EntityType(entityTypesFromNamespacedType.get(typeWithNamespace), this);
+    }
+
+    public String getInnerType(TProperty p) {
+        return getInnerType(getType(p));
     }
 
 }

@@ -29,16 +29,20 @@ public class PropertyRef {
         return Names.getIdentifier(value.getName());
     }
 
-    public String getImportedClassNameForReferredPropertyType(Imports imports) {
+    public Property getReferredProperty() {
         return entityType //
                 .getHeirarchy() //
                 .stream() //
                 .flatMap(x -> x.getProperties().stream()) //
                 .filter(x -> x.getName().equals(getName())) //
-                // note that type should not be collection because is a key property
-                .map(x -> names.toImportedTypeNonCollection(x, imports)) //
+                .map(x -> new Property(x, names)) //
                 .findFirst() //
                 .get();
+    }
+
+    public String getImportedClassNameForReferredPropertyType(Imports imports) {
+        // note that type should not be collection because is a key property
+        return names.toImportedTypeNonCollection(getReferredProperty().getValue(), imports);
     }
 
 }
