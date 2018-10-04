@@ -21,4 +21,5 @@ Status: *pre-alpha* (in development)
 * support precision, scale (maybe)
 * support NavigationPropertyBindings
 * more decoupling of model from presentation in generation
+* add http client 
 

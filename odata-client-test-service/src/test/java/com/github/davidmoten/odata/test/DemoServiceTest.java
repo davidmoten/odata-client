@@ -99,7 +99,8 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatch() {
-        DemoService client = serviceBuilder().expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH).build();
+        DemoService client = serviceBuilder()
+                .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH).build();
         Product p = Product //
                 .create() //
                 .withDescription(Optional.of("Lowest fat milk"));
@@ -109,13 +110,12 @@ public class DemoServiceTest {
 
     private static ContainerBuilder<DemoService> serviceBuilder() {
         return DemoService.test() //
-        .baseUrl("https://services.odata.org/Experimental/OData/OData.svc") //
-        .pathStyle(PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS) ;
+                .baseUrl("https://services.odata.org/Experimental/OData/OData.svc") //
+                .pathStyle(PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
     }
 
     private static DemoService createClient(String path, String resource) {
-        return serviceBuilder()
-                .replyWithResource(path, resource) //
+        return serviceBuilder().replyWithResource(path, resource) //
                 .build();
     }
 
