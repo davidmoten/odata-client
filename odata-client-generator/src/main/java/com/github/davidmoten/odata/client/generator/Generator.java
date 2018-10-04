@@ -800,12 +800,13 @@ public final class Generator {
                             if (names.isEntityWithNamespace(y)) {
                                 String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                         y);
-                                // TODO use all key properties instead of id parameters
-                                p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
-                                        Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(new %s(id)));\n",
-                                        indent.right(), imports.add(entityRequestType), x.getName(),
-                                        imports.add(NameValue.class));
+                                EntityType et = names.getEntityType(y);
+                                KeyInfo k = getKeyInfo(et, imports);
+
+                                p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
+                                        Names.getIdentifier(x.getName()), k.typedParams);
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
+                                        imports.add(entityRequestType), x.getName(), k.addKeys);
                                 p.format("%s}\n", indent.left());
                             }
                         }
