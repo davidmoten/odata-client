@@ -3,10 +3,10 @@ package org.davidmoten.odata.client.maven;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -31,6 +31,12 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter(name = "metadata", required = true)
     File metadata;
 
+    @Parameter(name = "autoPackage", defaultValue = "true")
+    boolean autoPackage;
+
+    @Parameter(name = "autoPackagePrefix", defaultValue = "")
+    String autoPackagePrefix;
+
     @Parameter(name = "schemas")
     List<org.davidmoten.odata.client.maven.Schema> schemas;
 
@@ -48,7 +54,7 @@ public class GeneratorMojo extends AbstractMojo {
                         s.packageSuffixContainer, s.packageSuffixSchema, s.simpleClassNameSchema,
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix, s.pageComplexTypes))
                 .collect(Collectors.toList());
-        Options options = new Options(outputDirectory.getAbsolutePath(), schemaOptionsList);
+
         try (InputStream is = new FileInputStream(metadata)) {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
@@ -56,9 +62,30 @@ public class GeneratorMojo extends AbstractMojo {
             if (schemas.isEmpty()) {
                 throw new MojoExecutionException("no schema found!");
             }
-            List<Schema> list = t.getDataServices().getSchema();
-            list.forEach(sch -> getLog().info(sch.getNamespace()));
-            Generator g = new Generator(options, list);
+            // log schemas
+            List<Schema> schemas = t.getDataServices().getSchema();
+            schemas.forEach(sch -> getLog().info("schema: " + sch.getNamespace()));
+
+            // auto generate options when not configured
+            List<SchemaOptions> schemaOptionsList2 = schemas //
+                    .stream() //
+                    .flatMap(schema -> {
+                        Optional<SchemaOptions> o = schemaOptionsList //
+                                .stream() //
+                                .filter(so -> schema.getNamespace().equals(so.namespace)) //
+                                .findFirst();
+                        if (o.isPresent()) {
+                            return Stream.of(o.get());
+                        } else if (!autoPackage) {
+                            return Stream.empty();
+                        } else {
+                            return Stream.of(new SchemaOptions(schema.getNamespace(), autoPackagePrefix));
+                        }
+                    }) //
+                    .collect(Collectors.toList());
+
+            Options options = new Options(outputDirectory.getAbsolutePath(), schemaOptionsList2);
+            Generator g = new Generator(options, schemas);
             g.generate();
         } catch (Throwable e) {
             if (e instanceof MojoExecutionException) {
