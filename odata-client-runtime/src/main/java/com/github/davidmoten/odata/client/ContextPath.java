@@ -17,12 +17,8 @@ public final class ContextPath {
         return new ContextPath(context, path.addSegment(segment));
     }
 
-    public ContextPath addKey(String keys) {
+    public ContextPath addKeys(NameValue... keys) {
         return new ContextPath(context, path.addKeys(keys));
-    }
-
-    public ContextPath addKey(String name, Object value) {
-        return new ContextPath(context, path.addKeys(name + "=" + value));
     }
 
     public ContextPath addQuery(String key, String value) {
