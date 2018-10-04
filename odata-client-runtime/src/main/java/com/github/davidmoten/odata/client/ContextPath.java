@@ -17,7 +17,7 @@ public final class ContextPath {
         return new ContextPath(context, path.addSegment(segment));
     }
 
-    public ContextPath addKeys(String... keys) {
+    public ContextPath addKey(String keys) {
         return new ContextPath(context, path.addKeys(keys));
     }
 

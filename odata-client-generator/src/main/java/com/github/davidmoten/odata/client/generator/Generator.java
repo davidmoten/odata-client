@@ -645,7 +645,7 @@ public final class Generator {
                     if (key.getPropertyRefs().size() > 1) {
                         return String.format(".addKey(\"%s\", %s)", z.getName(), z.getFieldName());
                     } else {
-                        return String.format(".addKeys(%s.toString())", z.getFieldName());
+                        return String.format(".addKey(%s.toString())", z.getFieldName());
                     }
                 }) //
                 .collect(Collectors.joining());
@@ -719,7 +719,7 @@ public final class Generator {
                             // p.format("\n%spublic %s %s(%s id) {\n", indent,
                             // imports.add(entityRequestType),
                             // Names.getIdentifier(x.getName()), imports.add(String.class));
-                            // p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n",
+                            // p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKey(id));\n",
                             // indent.right(),
                             // imports.add(entityRequestType), x.getName());
                             // p.format("%s}\n", indent.left());
@@ -806,7 +806,7 @@ public final class Generator {
                                         y);
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n",
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKey(id));\n",
                                         indent.right(), imports.add(entityRequestType), x.getName());
                                 p.format("%s}\n", indent.left());
                             }
