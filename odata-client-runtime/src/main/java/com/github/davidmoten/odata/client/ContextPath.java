@@ -21,6 +21,10 @@ public final class ContextPath {
         return new ContextPath(context, path.addKeys(keys));
     }
 
+    public ContextPath addKey(String name, Object value) {
+        return new ContextPath(context, path.addKeys(name + "=" + value));
+    }
+
     public ContextPath addQuery(String key, String value) {
         return new ContextPath(context, path.addQuery(key, value));
     }
