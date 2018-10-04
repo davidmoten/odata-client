@@ -73,7 +73,7 @@ public class DemoServiceTest {
     @Test
     public void testOneItemFromTopLevelCollection() {
         DemoService client = createClient("/Products(1)", "/response-product.json");
-        Product p = client.products("1").get();
+        Product p = client.products(1).get();
         assertEquals("Milk", p.getName().get());
     }
 
@@ -103,7 +103,7 @@ public class DemoServiceTest {
         Product p = Product //
                 .create() //
                 .withDescription(Optional.of("Lowest fat milk"));
-        Product product = client.products("1").patch(p);
+        Product product = client.products(1).patch(p);
         assertEquals("Lowest fat milk", product.getDescription().get());
     }
 
