@@ -24,7 +24,7 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     }
 
     public R id(String id) {
-        return entityRequestFactory.create(contextPath.addKeys(id));
+        return entityRequestFactory.create(contextPath.addKey(id));
     }
 
     public CollectionPageEntity<T> get() {
