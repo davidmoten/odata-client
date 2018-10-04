@@ -248,11 +248,6 @@ public final class Generator {
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
-        // log keys
-        Util.filter(entityType.getKeyOrPropertyOrNavigationProperty(), TEntityKeyElement.class) //
-                .forEach(k -> k.getPropertyRef().forEach(
-                        r -> System.out.println(entityType.getName() + " key: " + r.getName())));
-
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
             p.format("package %s;\n\n", t.getPackage());
@@ -292,29 +287,7 @@ public final class Generator {
 
             // write constructor
             // build constructor parameters
-            String props = t.getFields(imports) //
-                    .stream() //
-                    .map(f -> String.format("@%s(\"%s\") %s %s", //
-                            imports.add(JsonProperty.class), //
-                            f.propertyName, //
-                            f.importedType, //
-                            f.fieldName)) //
-                    .map(x -> ",\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
-                    .collect(Collectors.joining());
-
-            p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-            p.format(
-                    "\n%spublic %s(@%s %s contextPath, @%s %s changedFields, @%s(\"%s\") %s odataType%s) {\n", //
-                    indent, //
-                    simpleClassName, //
-                    imports.add(JacksonInject.class), //
-                    imports.add(ContextPath.class), //
-                    imports.add(JacksonInject.class), //
-                    imports.add(ChangedFields.class), //
-                    imports.add(JsonProperty.class), //
-                    "@odata.type", //
-                    imports.add(String.class), //
-                    props);
+            writeConstructorSignature(t, simpleClassName, imports, indent, p);
             indent.right();
             if (t.getBaseType() != null) {
                 String superFields = t.getSuperFields(imports) //
@@ -402,17 +375,62 @@ public final class Generator {
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
-            // write patched class
-            p.format("%spublic static final class Patched implements %s<%s> {\n", indent,
-                    simpleClassName, imports.add(Patchable.class), simpleClassName);
-            p.format("%s@%s\n", indent.right(), imports.add(Override.class));
-            p.format("\n}\n");
+            // write Patched classs
+            p.format("\n%spublic static final class Patched extends %s implements %s<%s> {\n",
+                    indent, simpleClassName, imports.add(Patchable.class), simpleClassName);
             
+            //write Patched constructor
+            indent.right();
+            writeConstructorSignature(t, "Patched", imports, indent, p);
+            indent.right();
+            String superFields = t.getFields(imports) //
+                    .stream() //
+                    .map(f -> ", " + f.fieldName) //
+                    .collect(Collectors.joining());
+            p.format("%ssuper(contextPath, changedFields, odataType%s);\n", indent,
+                    superFields);
+            p.format("%s}\n", indent.left());
             
+            // write patch() method
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic %s patch() {\n", indent, simpleClassName);
+            p.format("%sreturn this;\n", indent.right());
+            p.format("%s}\n", indent.left());
+            p.format("%s}\n", indent.left());
+
+            p.format("%s}\n", indent.left());
+
             writeToFile(imports, w, t.getClassFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writeConstructorSignature(EntityType t, String simpleClassName, Imports imports, Indent indent,
+            PrintWriter p) {
+        String props = t.getFields(imports) //
+                .stream() //
+                .map(f -> String.format("@%s(\"%s\") %s %s", //
+                        imports.add(JsonProperty.class), //
+                        f.propertyName, //
+                        f.importedType, //
+                        f.fieldName)) //
+                .map(x -> ",\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
+                .collect(Collectors.joining());
+
+        p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
+        p.format(
+                "\n%spublic %s(@%s %s contextPath, @%s %s changedFields, @%s(\"%s\") %s odataType%s) {\n", //
+                indent, //
+                simpleClassName, //
+                imports.add(JacksonInject.class), //
+                imports.add(ContextPath.class), //
+                imports.add(JacksonInject.class), //
+                imports.add(ChangedFields.class), //
+                imports.add(JsonProperty.class), //
+                "@odata.type", //
+                imports.add(String.class), //
+                props);
     }
 
     private void writeToFile(Imports imports, StringWriter w, File classFile) throws IOException {
