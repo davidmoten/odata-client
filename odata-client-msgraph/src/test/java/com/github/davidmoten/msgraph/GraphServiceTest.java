@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -102,6 +104,7 @@ public class GraphServiceTest {
                 .get();
         // iterable implementation handles paging for you!
         for (Message m : messages) {
+            m.withIsRead(Optional.of(true));
             System.out.println(m.getSubject());
         }
 
