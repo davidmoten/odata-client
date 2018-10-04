@@ -9,7 +9,7 @@ Features
 
 Constraints
 * Every OData Entity must have a single primary key being an `Edm.String` with name id (can be inherited)
-
+* Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation)
 
 Status: *pre-alpha* (in development)
 
@@ -21,6 +21,5 @@ TODO
 * support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
 * support precision, scale (maybe)
 * support NavigationPropertyBindings
-* support multiple keys and honour types (just single key String supported at the moment)
 * more decoupling of model from presentation in generation
 
