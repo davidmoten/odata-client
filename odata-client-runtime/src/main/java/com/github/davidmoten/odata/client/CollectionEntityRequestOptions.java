@@ -13,10 +13,11 @@ public final class CollectionEntityRequestOptions implements RequestOptions {
     private final Optional<Long> skip;
     private final Optional<Long> top;
     private final Optional<String> select;
+    private final Optional<String> expand;
 
-    public CollectionEntityRequestOptions(Map<String, String> requestHeaders,
-            Optional<String> search, Optional<String> filter, Optional<String> orderBy,
-            Optional<Long> skip, Optional<Long> top, Optional<String> select) {
+    public CollectionEntityRequestOptions(Map<String, String> requestHeaders, Optional<String> search,
+            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
+            Optional<String> select, Optional<String> expand) {
         this.requestHeaders = requestHeaders;
         this.search = search;
         this.filter = filter;
@@ -24,6 +25,7 @@ public final class CollectionEntityRequestOptions implements RequestOptions {
         this.skip = skip;
         this.top = top;
         this.select = select;
+        this.expand = expand;
     }
 
     @Override
@@ -40,26 +42,8 @@ public final class CollectionEntityRequestOptions implements RequestOptions {
         skip.ifPresent(x -> map.put("$skip", String.valueOf(x)));
         top.ifPresent(x -> map.put("$top", String.valueOf(x)));
         select.ifPresent(x -> map.put("$select", x));
+        expand.ifPresent(x -> map.put("$expand", x));
         return map;
     }
 
-    public Optional<String> getSearch() {
-        return search;
-    }
-
-    public Optional<String> getFilter() {
-        return filter;
-    }
-
-    public Optional<String> getOrderBy() {
-        return orderBy;
-    }
-
-    public Optional<Long> getSkip() {
-        return skip;
-    }
-
-    public Optional<Long> getTop() {
-        return top;
-    }
 }
