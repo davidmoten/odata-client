@@ -104,8 +104,9 @@ public class GraphServiceTest {
                 .get();
         // iterable implementation handles paging for you!
         for (Message m : messages) {
-            m.withIsRead(Optional.of(true));
             System.out.println(m.getSubject());
+            //mark as read
+            m.withIsRead(Optional.of(true)).patch();
         }
 
         // List<Option> queryOptions = Lists.newArrayList( //
