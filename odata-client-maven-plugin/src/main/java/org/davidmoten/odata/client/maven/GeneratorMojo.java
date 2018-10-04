@@ -21,6 +21,7 @@ import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TDataServices;
 import org.oasisopen.odata.csdl.v4.TEdmx;
 
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.generator.Generator;
 import com.github.davidmoten.odata.client.generator.Options;
 import com.github.davidmoten.odata.client.generator.SchemaOptions;
@@ -79,7 +80,8 @@ public class GeneratorMojo extends AbstractMojo {
                         } else if (!autoPackage) {
                             return Stream.empty();
                         } else {
-                            return Stream.of(new SchemaOptions(schema.getNamespace(), autoPackagePrefix));
+                            return Stream.of(new SchemaOptions(schema.getNamespace(),
+                                    autoPackagePrefix + toPackage(schema.getNamespace())));
                         }
                     }) //
                     .collect(Collectors.toList());
@@ -94,5 +96,21 @@ public class GeneratorMojo extends AbstractMojo {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
         }
+    }
+
+    @VisibleForTesting
+    static String toPackage(String s) {
+        String result = s.chars() //
+                .map(ch -> Character.toLowerCase(ch)) //
+                .filter(ch -> Character.isDigit(ch) || (ch >= 'a' && ch <= 'z') || ch == '_' || ch == '.') //
+                .mapToObj(ch -> Character.toString((char) ch)) //
+                .collect(Collectors.joining());
+        while (result.startsWith(".")) {
+            result = result.substring(1);
+        }
+        while (result.endsWith(".")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 }
