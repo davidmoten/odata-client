@@ -86,7 +86,7 @@
                             </schemas>
                         </configuration>
                     </execution>
-                     <execution>
+                    <execution>
                         <id>test3</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -102,6 +102,22 @@
                                 <schema>
                                     <namespace>Test3.B</namespace>
                                     <packageName>test3b</packageName>
+                                </schema>
+                            </schemas>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test4</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/test/resources/metadata4.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>Test4</namespace>
+                                    <packageName>test4</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
