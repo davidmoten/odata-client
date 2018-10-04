@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Test4"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Product">
+                <Key>
+                    <PropertyRef Name="ID" />
+                    <PropertyRef Name="Name" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32"
+                    Nullable="false" />
+                <Property Name="Name" Type="Edm.String" />
+                <Property Name="Description" Type="Edm.String" />
+            </EntityType>
+            <EntityContainer Name="Test4Service">
+                <EntitySet Name="Products"
+                    EntityType="Test4.Product">
+                </EntitySet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
