@@ -47,28 +47,32 @@ public class Path {
         }
     }
 
-    public Path addKeys(String... keys) {
+    public Path addKeys(NameValue... keys) {
         String u = url;
         if (style == PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS) {
             if (keys.length > 0) {
                 u = append(u, "(");
                 boolean first = true;
-                for (String key : keys) {
+                for (NameValue key : keys) {
                     Preconditions.checkNotNull(key);
                     if (!first) {
                         u = append(u, ",");
                         first = false;
                     }
-                    u = append(u, key);
+                    if (keys.length == 1) {
+                        u = append(u, key.value());
+                    } else {
+                        u = append(u, key.name().map(x -> x + "=").orElse("") + key.value());
+                    }
                 }
                 u = append(u, ")");
             }
         } else {
             if (keys.length > 0) {
-                for (String key : keys) {
+                for (NameValue key : keys) {
                     Preconditions.checkNotNull(key);
                     u = addSegmentDelimiter(u);
-                    u = append(u, key);
+                    u = append(u, key.value());
                 }
             }
         }

@@ -44,6 +44,7 @@ import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.EntityRequestOptions;
+import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
@@ -643,12 +644,14 @@ public final class Generator {
                 .map(z -> z.getReferredProperty()) //
                 .map(z -> {
                     if (key.getPropertyRefs().size() > 1) {
-                        return String.format(".addKey(\"%s\", %s)", z.getName(), z.getFieldName());
+                        return String.format("new %s(\"%s\", %s)", imports.add(NameValue.class), z.getName(),
+                                z.getFieldName());
                     } else {
-                        return String.format(".addKey(%s.toString())", z.getFieldName());
+                        return String.format("new %s(%s.toString())", imports.add(NameValue.class), z.getFieldName());
                     }
                 }) //
-                .collect(Collectors.joining());
+                .collect(Collectors.joining(", "));
+        addKeys = ".addKeys(" + addKeys + ")";
         return new KeyInfo(typedParams, addKeys);
     }
 
@@ -716,13 +719,6 @@ public final class Generator {
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                     x.getEntityType());
-                            // p.format("\n%spublic %s %s(%s id) {\n", indent,
-                            // imports.add(entityRequestType),
-                            // Names.getIdentifier(x.getName()), imports.add(String.class));
-                            // p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKey(id));\n",
-                            // indent.right(),
-                            // imports.add(entityRequestType), x.getName());
-                            // p.format("%s}\n", indent.left());
 
                             EntityType et = names.getEntityType(x.getEntityType());
                             KeyInfo k = getKeyInfo(et, imports);
@@ -804,10 +800,12 @@ public final class Generator {
                             if (names.isEntityWithNamespace(y)) {
                                 String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                         y);
+                                // TODO use all key properties instead of id parameters
                                 p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), imports.add(String.class));
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKey(id));\n",
-                                        indent.right(), imports.add(entityRequestType), x.getName());
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(new %s(id)));\n",
+                                        indent.right(), imports.add(entityRequestType), x.getName(),
+                                        imports.add(NameValue.class));
                                 p.format("%s}\n", indent.left());
                             }
                         }
