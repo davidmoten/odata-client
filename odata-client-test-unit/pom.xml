@@ -54,16 +54,6 @@
                         </goals>
                         <configuration>
                             <metadata>src/test/resources/metadata1.xml</metadata>
-                            <schemas>
-                                <schema>
-                                    <namespace>Test1.A</namespace>
-                                    <packageName>test1a</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>Test1.B</namespace>
-                                    <packageName>test1b</packageName>
-                                </schema>
-                            </schemas>
                         </configuration>
                     </execution>
                     <execution>
@@ -74,16 +64,6 @@
                         </goals>
                         <configuration>
                             <metadata>src/test/resources/metadata2.xml</metadata>
-                            <schemas>
-                                <schema>
-                                    <namespace>Test2.A</namespace>
-                                    <packageName>test2a</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>Test2.B</namespace>
-                                    <packageName>test2b</packageName>
-                                </schema>
-                            </schemas>
                         </configuration>
                     </execution>
                     <execution>
@@ -114,12 +94,6 @@
                         </goals>
                         <configuration>
                             <metadata>src/test/resources/metadata4.xml</metadata>
-                            <schemas>
-                                <schema>
-                                    <namespace>Test4</namespace>
-                                    <packageName>test4</packageName>
-                                </schema>
-                            </schemas>
                         </configuration>
                     </execution>
                 </executions>

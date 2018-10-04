@@ -3,6 +3,7 @@ package org.davidmoten.odata.client.maven;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +50,9 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        if (schemas == null) {
+            schemas = Collections.emptyList();
+        }
         List<SchemaOptions> schemaOptionsList = schemas.stream()
                 .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum, s.packageSuffixEntity,
                         s.packageSuffixComplexType, s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
@@ -60,9 +64,6 @@ public class GeneratorMojo extends AbstractMojo {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
             TEdmx t = unmarshaller.unmarshal(new StreamSource(is), TEdmx.class).getValue();
-            if (schemas.isEmpty()) {
-                throw new MojoExecutionException("no schema found!");
-            }
             // log schemas
             List<Schema> schemas = t.getDataServices().getSchema();
             schemas.forEach(sch -> getLog().info("schema: " + sch.getNamespace()));
@@ -81,7 +82,7 @@ public class GeneratorMojo extends AbstractMojo {
                             return Stream.empty();
                         } else {
                             return Stream.of(new SchemaOptions(schema.getNamespace(),
-                                    autoPackagePrefix + toPackage(schema.getNamespace())));
+                                    blankIfNull(autoPackagePrefix) + toPackage(schema.getNamespace())));
                         }
                     }) //
                     .collect(Collectors.toList());
@@ -95,6 +96,14 @@ public class GeneratorMojo extends AbstractMojo {
             } else {
                 throw new MojoExecutionException(e.getMessage(), e);
             }
+        }
+    }
+
+    private static String blankIfNull(String s) {
+        if (s == null) {
+            return "";
+        } else {
+            return s;
         }
     }
 

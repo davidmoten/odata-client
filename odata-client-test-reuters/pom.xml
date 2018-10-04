@@ -54,64 +54,6 @@
                         </goals>
                         <configuration>
                             <metadata>src/test/resources/datascopeapi-reuters-metadata.xml</metadata>
-                            <schemas>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions.ExtractionRequests</namespace>
-                                    <packageName>reuters.dss.api.extractions.extractionRequests</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions.SubjectLists</namespace>
-                                    <packageName>reuters.dss.api.extractions.subjectlists</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions.ReportExtractions</namespace>
-                                    <packageName>reuters.dss.api.extractions.reportextractions</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions</namespace>
-                                    <packageName>reuters.dss.api.extractions</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions.ReportTemplates</namespace>
-                                    <packageName>reuters.dss.api.extractions.reporttemplates</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions.ExtractionConditions</namespace>
-                                    <packageName>reuters.dss.api.extractions.extractionconditions</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Content</namespace>
-                                    <packageName>reuters.dss.api.content</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Extractions.Schedules</namespace>
-                                    <packageName>reuters.dss.api.extractions.schedules</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Search</namespace>
-                                    <packageName>reuters.dss.api.search</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api</namespace>
-                                    <packageName>reuters.dss.api</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Content.Fund</namespace>
-                                    <packageName>reuters.dss.api.content.fund</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Content.Commodity</namespace>
-                                    <packageName>reuters.dss.api.content.commodity</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>ThomsonReuters.Dss.Api.Content.Equity</namespace>
-                                    <packageName>reuters.dss.api.content.equity</packageName>
-                                </schema>
-                                <schema>
-                                    <namespace>System</namespace>
-                                    <packageName>reuters.system</packageName>
-                                </schema>
-                            </schemas>
                         </configuration>
                     </execution>
                 </executions>
