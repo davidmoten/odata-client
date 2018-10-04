@@ -599,37 +599,13 @@ public final class Generator {
                                 String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                         inner);
                                 EntityType et = names.getEntityType(inner);
-                                {
-                                    KeyElement key = et.getFirstKey();
+                                KeyInfo k = getKeyInfo(et, imports);
 
-                                    String params = key //
-                                            .getPropertyRefs() //
-                                            .stream() //
-                                            .map(z -> z.getReferredProperty()) //
-                                            .map(z -> String.format("%s %s", z.getImportedType(imports),
-                                                    z.getFieldName())) //
-                                            .collect(Collectors.joining(", "));
-
-                                    String addKeys = et.getFirstKey() //
-                                            .getPropertyRefs() //
-                                            .stream() //
-                                            .map(z -> z.getReferredProperty()) //
-                                            .map(z -> {
-                                                if (key.getPropertyRefs().size() > 1) {
-                                                    return String.format(".addKey(\"%s\", %s)", z.getName(),
-                                                            z.getFieldName());
-                                                } else {
-                                                    return String.format(".addKeys(%s.toString())", z.getFieldName());
-                                                }
-                                            }) //
-                                            .collect(Collectors.joining());
-
-                                    p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
-                                            Names.getIdentifier(x.getName()), params);
-                                    p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
-                                            imports.add(entityRequestType), x.getName(), addKeys);
-                                    p.format("%s}\n", indent.left());
-                                }
+                                p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
+                                        Names.getIdentifier(x.getName()), k.typedParams);
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
+                                        imports.add(entityRequestType), x.getName(), k.addKeys);
+                                p.format("%s}\n", indent.left());
                             }
                         }
                         indent.left();
@@ -639,6 +615,41 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static final class KeyInfo {
+        final String typedParams;
+        final String addKeys;
+
+        KeyInfo(String typedParams, String addKeys) {
+            this.typedParams = typedParams;
+            this.addKeys = addKeys;
+        }
+    }
+
+    private KeyInfo getKeyInfo(EntityType et, Imports imports) {
+        KeyElement key = et.getFirstKey();
+
+        String typedParams = key //
+                .getPropertyRefs() //
+                .stream() //
+                .map(z -> z.getReferredProperty()) //
+                .map(z -> String.format("%s %s", z.getImportedType(imports), z.getFieldName())) //
+                .collect(Collectors.joining(", "));
+
+        String addKeys = et.getFirstKey() //
+                .getPropertyRefs() //
+                .stream() //
+                .map(z -> z.getReferredProperty()) //
+                .map(z -> {
+                    if (key.getPropertyRefs().size() > 1) {
+                        return String.format(".addKey(\"%s\", %s)", z.getName(), z.getFieldName());
+                    } else {
+                        return String.format(".addKeys(%s.toString())", z.getFieldName());
+                    }
+                }) //
+                .collect(Collectors.joining());
+        return new KeyInfo(typedParams, addKeys);
     }
 
     private void writeContainer(Schema schema, TEntityContainer t) {
@@ -705,10 +716,21 @@ public final class Generator {
                         if (names.isEntityWithNamespace(x.getEntityType())) {
                             String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                     x.getEntityType());
-                            p.format("\n%spublic %s %s(%s id) {\n", indent, imports.add(entityRequestType),
-                                    Names.getIdentifier(x.getName()), imports.add(String.class));
-                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n", indent.right(),
-                                    imports.add(entityRequestType), x.getName());
+                            // p.format("\n%spublic %s %s(%s id) {\n", indent,
+                            // imports.add(entityRequestType),
+                            // Names.getIdentifier(x.getName()), imports.add(String.class));
+                            // p.format("%sreturn new %s(contextPath.addSegment(\"%s\").addKeys(id));\n",
+                            // indent.right(),
+                            // imports.add(entityRequestType), x.getName());
+                            // p.format("%s}\n", indent.left());
+
+                            EntityType et = names.getEntityType(x.getEntityType());
+                            KeyInfo k = getKeyInfo(et, imports);
+
+                            p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
+                                    Names.getIdentifier(x.getName()), k.typedParams);
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
+                                    imports.add(entityRequestType), x.getName(), k.addKeys);
                             p.format("%s}\n", indent.left());
                         }
                     });
