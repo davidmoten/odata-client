@@ -4,11 +4,11 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import test2b.container.Test2Service;
-import test2b.entity.Product;
+import test2.b.container.Test2Service;
+import test2.b.entity.Product;
 
 public class Test2ServiceTest {
-    
+
     @Test
     public void testCanReferenceComplexTypeFromEntityContainerInAnotherSchema() {
         Test2Service client = Test2Service.test().baseUrl("http://base").build();

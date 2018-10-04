@@ -2,7 +2,7 @@ package com.github.davidmoten.odata.test;
 
 import org.junit.Test;
 
-import test1b.container.Test1Service;
+import test1.b.container.Test1Service;
 
 public class Test1ServiceTest {
 
