@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.CollectionPageEntity;
@@ -83,6 +84,53 @@ public class GraphServiceTest {
         FileAttachment f = (FileAttachment) m;
         assertEquals(6762, f.getContentBytes().get().length);
         assertEquals("lamp_thin.png", f.getContentId().get());
+    }
+
+    @Test
+    @Ignore // just want to see if compiles
+    public void testMailRead() {
+
+        GraphService client = serviceBuilder().build();
+        
+        CollectionPageEntity<Message> messages = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .expand("attachments") //
+                .orderBy("createdDateTime") //
+                .get();
+        // iterable implementation handles paging for you!
+        for (Message m : messages) {
+            System.out.println(m.getSubject());
+        }
+
+        // List<Option> queryOptions = Lists.newArrayList( //
+        // new QueryOption("$filter", "isRead eq false"), //
+        // new QueryOption("$expand", "attachments"), //
+        // new QueryOption("$orderBy", "createdDateTime"));
+        //
+        // IMessageCollectionPage p = client //
+        // .users(mailbox) //
+        // .mailFolders("inbox") //
+        // .messages() //
+        // .buildRequest(queryOptions) //
+        // .get();
+        // List<Message> list = p.getCurrentPage();
+        // while (true) {
+        // if (!list.isEmpty()) {
+        // log.info("msgraph returned " + list.size() + " in current page");
+        // MessagReceiver sender = senderFactory.create(connectionFactory, queue);
+        // sender.sendJmsMessages(list, client, mailbox);
+        // monitoring.setProperty(MonitoringKey.LastReportTime,
+        // System.currentTimeMillis());
+        // }
+        // if (p.getNextPage() == null) {
+        // break;
+        // }
+        // p = p.getNextPage().buildRequest().get();
+        // list = p.getCurrentPage();
+        // }
     }
 
     // test paged complex type
