@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+
+@JsonIgnoreType
 public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPageNonEntity<T>> {
 
     private final ContextPath contextPath;
@@ -12,18 +15,19 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
     private final List<T> list;
     private final String nextLink;
 
-    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list,
-            String nextLink) {
+    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, String nextLink) {
         this.contextPath = contextPath;
         this.cls = cls;
         this.list = list;
         this.nextLink = nextLink;
     }
 
+    @Override
     public List<T> values() {
         return list;
     }
 
+    @Override
     public Optional<CollectionPageNonEntity<T>> nextPage() {
         if (nextLink != null) {
             // TODO
@@ -49,7 +53,7 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
             @Override
             public T next() {
                 loadNext();
-                if (page == null) {
+                if (page == null || page.list == null) {
                     throw new NoSuchElementException();
                 } else {
                     T v = page.list.get(i);
@@ -61,7 +65,7 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
             private void loadNext() {
                 if (page != null) {
                     while (true) {
-                        if (page != null && i == page.list.size()) {
+                        if (page != null && page.list != null && i == page.list.size()) {
                             page = page.nextPage().orElse(null);
                             i = 0;
                         } else {
