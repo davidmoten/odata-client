@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ import org.oasisopen.odata.csdl.v4.TSingleton;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,6 +54,7 @@ import com.github.davidmoten.odata.client.generator.model.Field;
 import com.github.davidmoten.odata.client.generator.model.KeyElement;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Generator {
 
@@ -854,8 +853,7 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("\n%sprivate %s<%s,%s> unmappedFields;\n", indent, imports.add(Map.class), imports.add(String.class),
-                imports.add(Object.class));
+        p.format("\n%sprivate %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
 
     private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p) {
@@ -863,14 +861,14 @@ public final class Generator {
         // TODO protect "setUnmappedField" name against clashes
         p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
         p.format("%sif (unmappedFields == null) {\n", indent.right());
-        p.format("%sunmappedFields = new %s<>();\n", indent.right(), imports.add(HashMap.class));
+        p.format("%sunmappedFields = new %s();\n", indent.right(), imports.add(UnmappedFields.class));
         p.format("%s}\n", indent.left());
         p.format("%sunmappedFields.put(name, value);\n", indent);
         p.format("%s}\n", indent.left());
 
-        p.format("\n%spublic Map<String, Object> getUnmappedFields() {\n", indent);
-        p.format("%sreturn unmappedFields == null? %s.emptyMap(): unmappedFields;\n", indent.right(),
-                imports.add(Collections.class));
+        p.format("\n%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
+        p.format("%sreturn unmappedFields == null? %s.EMPTY: unmappedFields;\n", indent.right(),
+                imports.add(UnmappedFields.class));
         p.format("%s}\n", indent.left());
     }
 
@@ -999,7 +997,6 @@ public final class Generator {
                 .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
-                    p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
