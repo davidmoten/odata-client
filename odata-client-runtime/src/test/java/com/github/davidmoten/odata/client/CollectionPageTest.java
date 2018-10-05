@@ -20,8 +20,8 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths.get(CollectionPageTest.class
-                        .getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths
+                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = new Serializer() {
         };
@@ -70,7 +70,7 @@ public class CollectionPageTest {
         String lastName;
 
         @Override
-        public Map<String, String> getUnmappedFields() {
+        public Map<String, Object> getUnmappedFields() {
             return Collections.emptyMap();
         }
 

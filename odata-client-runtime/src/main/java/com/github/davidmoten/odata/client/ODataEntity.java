@@ -5,7 +5,8 @@ import java.util.Map;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 
 public interface ODataEntity {
-     Map<String,String> getUnmappedFields();
-     
-     ChangedFields getChangedFields();
+
+    Map<String, Object> getUnmappedFields();
+
+    ChangedFields getChangedFields();
 }

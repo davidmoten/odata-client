@@ -855,20 +855,20 @@ public final class Generator {
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
         p.format("\n%sprivate %s<%s,%s> unmappedFields;\n", indent, imports.add(Map.class), imports.add(String.class),
-                imports.add(String.class));
+                imports.add(Object.class));
     }
 
     private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
         // TODO protect "setUnmappedField" name against clashes
-        p.format("%sprivate void setUnmappedField(String name, String value) {\n", indent);
+        p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
         p.format("%sif (unmappedFields == null) {\n", indent.right());
         p.format("%sunmappedFields = new %s<>();\n", indent.right(), imports.add(HashMap.class));
         p.format("%s}\n", indent.left());
         p.format("%sunmappedFields.put(name, value);\n", indent);
         p.format("%s}\n", indent.left());
 
-        p.format("\n%spublic Map<String,String> getUnmappedFields() {\n", indent);
+        p.format("\n%spublic Map<String, Object> getUnmappedFields() {\n", indent);
         p.format("%sreturn unmappedFields == null? %s.emptyMap(): unmappedFields;\n", indent.right(),
                 imports.add(Collections.class));
         p.format("%s}\n", indent.left());
