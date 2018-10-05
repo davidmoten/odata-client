@@ -22,8 +22,11 @@ public final class RequestHelper {
             SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
+
+        Map<String, String> h = supplementRequestHeaders(options, "full");
+
         // get the response
-        HttpResponse response = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
+        HttpResponse response = cp.context().service().GET(cp.toUrl(), h);
         // deserialize
 
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
@@ -40,16 +43,12 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        Map<String, String> h = new HashMap<>();
-        h.put("OData-Version", "4.0");
-        h.put("Content-Type", "application/json;odata.metadata=minimal");
-        h.put("Accept", "application/json");
-        h.putAll(options.getRequestHeaders());
+        Map<String, String> h = supplementRequestHeaders(options, "minimal");
 
         final String url;
-        String editLink = entity.getUnmappedFields().get("@odata.editLink");
+        String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         if (editLink != null) {
-            url = editLink;
+            url = cp.context().service().getBasePath().toUrl() + "/" + editLink;
         } else {
             url = cp.toUrl();
         }
@@ -73,6 +72,15 @@ public final class RequestHelper {
         } else {
             return cls;
         }
+    }
+
+    private static Map<String, String> supplementRequestHeaders(RequestOptions options, String odataMetadataValue) {
+        Map<String, String> h = new HashMap<>();
+        h.put("OData-Version", "4.0");
+        h.put("Content-Type", "application/json;odata.metadata=" + odataMetadataValue);
+        h.put("Accept", "application/json");
+        h.putAll(options.getRequestHeaders());
+        return h;
     }
 
 }

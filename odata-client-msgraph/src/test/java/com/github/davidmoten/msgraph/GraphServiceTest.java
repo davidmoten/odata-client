@@ -11,6 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.CollectionPageEntity;
+import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
@@ -89,11 +90,16 @@ public class GraphServiceTest {
     }
 
     @Test
-    @Ignore // just want to see if compiles
     public void testMailRead() {
 
-        GraphService client = serviceBuilder().build();
-        
+        String editLink = "users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages('AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D')/microsoft.graph.eventMessage";
+
+        GraphService client = serviceBuilder() //
+                .replyWithResource(
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
+                        "/response-messages-expand-attachments.json") //
+                .expectRequest(editLink, "/request-patch-message-is-read.json", HttpMethod.PATCH) //
+                .build();
         CollectionPageEntity<Message> messages = client //
                 .users("fred") //
                 .mailFolders("inbox") //
@@ -103,11 +109,10 @@ public class GraphServiceTest {
                 .orderBy("createdDateTime") //
                 .get();
         // iterable implementation handles paging for you!
-        for (Message m : messages) {
-            System.out.println(m.getSubject());
-            //mark as read
-            m.withIsRead(Optional.of(true)).patch();
-        }
+        Message m = messages.iterator().next();
+        System.out.println(m.getSubject());
+        // mark as read
+        m.withIsRead(Optional.of(true)).patch();
 
         // List<Option> queryOptions = Lists.newArrayList( //
         // new QueryOption("$filter", "isRead eq false"), //

@@ -47,6 +47,7 @@ public interface Serializer {
                 return MAPPER.readValue(text, cls);
             }
         } catch (IOException e) {
+            System.out.println(text);
             throw new RuntimeException(e);
         }
     }
