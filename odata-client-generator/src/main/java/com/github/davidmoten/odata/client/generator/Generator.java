@@ -381,7 +381,12 @@ public final class Generator {
             // write patch() method
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s patch() {\n", indent, simpleClassName);
-            p.format("%sreturn this;\n", indent.right());
+            String params = t.getFields(imports) //
+                    .stream() //
+                    .map(f -> ", " + f.fieldName) //
+                    .collect(Collectors.joining());
+            p.format("%s// pass null for changedFields to reset it\n", indent);
+            p.format("%sreturn new %s(contextPath, null, odataType%s);\n", indent.right(), simpleClassName, params);
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
@@ -402,11 +407,11 @@ public final class Generator {
                         f.propertyName, //
                         f.importedType, //
                         f.fieldName)) //
-                .map(x -> ",\n" + Indent.INDENT + Indent.INDENT + Indent.INDENT + x) //
+                .map(x -> ",\n" + indent + Indent.INDENT + Indent.INDENT + x) //
                 .collect(Collectors.joining());
 
         p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-        p.format("\n%spublic %s(@%s %s contextPath, @%s %s changedFields, @%s(\"%s\") %s odataType%s) {\n", //
+        p.format("\n%sprotected %s(@%s %s contextPath, @%s %s changedFields, @%s(\"%s\") %s odataType%s) {\n", //
                 indent, //
                 simpleClassName, //
                 imports.add(JacksonInject.class), //
@@ -871,7 +876,7 @@ public final class Generator {
     }
 
     private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("%sprivate final %s contextPath;\n", indent, imports.add(ContextPath.class));
+        p.format("%sprotected final %s contextPath;\n", indent, imports.add(ContextPath.class));
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
