@@ -37,7 +37,7 @@ public final class ChangedFields implements Iterable<String> {
             }
         };
     }
-    
+
     public boolean contains(String name) {
         return set.contains(name);
     }
