@@ -109,9 +109,13 @@ public final class EntityType extends Structure<TEntityType> {
                 .flatMap(x -> ((EntityType) x).getKeysLocal().stream()) //
                 .collect(Collectors.toList());
     }
-    
+
     public KeyElement getFirstKey() {
         return getKeys().get(0);
+    }
+
+    public String getFullClassNameSchema() {
+        return names.getFullClassNameSchema(schema());
     }
 
 }

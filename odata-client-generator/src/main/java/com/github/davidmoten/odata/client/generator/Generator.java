@@ -46,6 +46,7 @@ import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.Patchable;
+import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
@@ -58,6 +59,7 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public final class Generator {
 
+    private static final String CLASS_NAME_PATCHED = "Patched";
     private static final String COLLECTION_PREFIX = "Collection(";
     // private final Schema schema;
     private final Names names;
@@ -364,12 +366,12 @@ public final class Generator {
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             // write Patched classs
-            p.format("\n%spublic static final class Patched extends %s implements %s<%s> {\n", indent, simpleClassName,
-                    imports.add(Patchable.class), simpleClassName);
+            p.format("\n%spublic static final class %s extends %s implements %s<%s> {\n", indent, CLASS_NAME_PATCHED,
+                    simpleClassName, imports.add(Patchable.class), simpleClassName);
 
             // write Patched constructor
             indent.right();
-            writeConstructorSignature(t, "Patched", imports, indent, p);
+            writeConstructorSignature(t, CLASS_NAME_PATCHED, imports, indent, p);
             indent.right();
             String superFields = t.getFields(imports) //
                     .stream() //
@@ -385,8 +387,12 @@ public final class Generator {
                     .stream() //
                     .map(f -> ", " + f.fieldName) //
                     .collect(Collectors.joining());
+
+            p.format("%s%s.patch(this, contextPath, %s.EMPTY,  %s.INSTANCE);\n", indent.right(),
+                    imports.add(RequestHelper.class), imports.add(RequestOptions.class),
+                    imports.add(t.getFullClassNameSchema()));
             p.format("%s// pass null for changedFields to reset it\n", indent);
-            p.format("%sreturn new %s(contextPath, null, odataType%s);\n", indent.right(), simpleClassName, params);
+            p.format("%sreturn new %s(contextPath, null, odataType%s);\n", indent, simpleClassName, params);
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
@@ -573,9 +579,8 @@ public final class Generator {
                     imports.add(EntityRequestOptions.class), //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(t.getFullClassNameEntity()));
-            p.format("%sreturn %s.patch(entity, contextPath, %s.class, options, %s.INSTANCE);\n", indent.right(),
+            p.format("%sreturn %s.patch(entity, contextPath, options, %s.INSTANCE);\n", indent.right(),
                     imports.add(RequestHelper.class), //
-                    imports.add(t.getFullClassNameEntity()), //
                     imports.add(names.getFullClassNameSchema(schema)));
             p.format("%s}\n", indent.left());
             indent.left();
@@ -920,7 +925,7 @@ public final class Generator {
                                 fieldName);
                         p.format("%s}\n", indent.left());
 
-                        String classSuffix = ofEntity ? ".Patched" : "";
+                        String classSuffix = ofEntity ? "." + CLASS_NAME_PATCHED : "";
                         p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
                                 Names.getSetterMethod(x.getName()), importedType, fieldName);
                         if (x.isUnicode() != null && !x.isUnicode()) {
