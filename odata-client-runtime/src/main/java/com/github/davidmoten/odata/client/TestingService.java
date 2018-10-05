@@ -88,6 +88,8 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
+                    System.out.println("PATCH called at "+ url);
+                    System.out.println(text);
                     String resourceName = content.get(BuilderBase.toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);

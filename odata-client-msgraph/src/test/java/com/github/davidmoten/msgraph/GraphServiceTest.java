@@ -90,7 +90,6 @@ public class GraphServiceTest {
     }
 
     @Test
-    @Ignore
     public void testMailRead() {
 
         String editLink = "users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages('AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D')/microsoft.graph.eventMessage";
@@ -113,7 +112,9 @@ public class GraphServiceTest {
         Message m = messages.iterator().next();
         System.out.println(m.getSubject());
         // mark as read
-        m.withIsRead(Optional.of(true)).patch();
+        client.users("fred") //
+            .messages(m.getId().get()) //
+            .patch(Message.builderMessage().isRead(true).build());
 
         // List<Option> queryOptions = Lists.newArrayList( //
         // new QueryOption("$filter", "isRead eq false"), //
