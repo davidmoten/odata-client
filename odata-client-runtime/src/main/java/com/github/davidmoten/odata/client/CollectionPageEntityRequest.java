@@ -1,5 +1,8 @@
 package com.github.davidmoten.odata.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+
+@JsonIgnoreType
 public class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
 
     private final ContextPath contextPath;
