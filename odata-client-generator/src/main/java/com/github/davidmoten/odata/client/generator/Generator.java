@@ -259,18 +259,15 @@ public final class Generator {
             p.format("public class %s%s implements %s {\n\n", simpleClassName,
                     t.getExtendsClause(imports), imports.add(ODataEntity.class));
 
+            indent.right();
             if (!t.hasBaseType()) {
                 addContextPathInjectableField(imports, indent, p);
+                addUnmappedFieldsField(imports, indent, p);
+                addChangedFieldsField(imports, indent, p);
             }
 
             // add other fields
             printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
-
-            addUnmappedFieldsField(imports, indent, p);
-
-            p.format("\n%s@%s\n", indent.right(), imports.add(JacksonInject.class));
-            p.format("%sprivate final %s changedFields;\n", indent,
-                    imports.add(ChangedFields.class));
 
             // write constructor
             // build constructor parameters
@@ -286,10 +283,8 @@ public final class Generator {
             }
             if (!t.hasBaseType()) {
                 p.format("%sthis.contextPath = contextPath;\n", indent);
-            }
-            p.format("%sthis.changedFields = changedFields;\n", indent);
-            p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
-            if (!t.hasBaseType()) {
+                p.format("%sthis.changedFields = changedFields;\n", indent);
+                p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
                 p.format("%sthis.odataType = odataType;\n", indent);
             }
 
@@ -406,6 +401,11 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void addChangedFieldsField(Imports imports, Indent indent, PrintWriter p) {
+        p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
+        p.format("%sprotected final %s changedFields;\n", indent, imports.add(ChangedFields.class));
     }
 
     private void writeConstructorSignature(EntityType t, String simpleClassName, Imports imports,
@@ -907,7 +907,7 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("\n%s@%s\n", indent.right(), imports.add(JacksonInject.class));
+        p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
         p.format("\n%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
 
@@ -933,7 +933,7 @@ public final class Generator {
     private static void addContextPathInjectableField(Imports imports, Indent indent,
             PrintWriter p) {
         // add context path field
-        p.format("%s@%s\n", indent.right(), imports.add(JacksonInject.class));
+        p.format("%s@%s\n", indent, imports.add(JacksonInject.class));
         addContextPathField(imports, indent, p);
     }
 
