@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public interface Serializer {
 
@@ -39,7 +40,8 @@ public interface Serializer {
                 ObjectMapper m = createObjectMapper();
                 Std iv = new InjectableValues.Std() //
                         .addValue(ContextPath.class, contextPath) //
-                        .addValue(ChangedFields.class, ChangedFields.EMPTY);
+                        .addValue(ChangedFields.class, ChangedFields.EMPTY) //
+                        .addValue(UnmappedFields.class, UnmappedFields.EMPTY);
                 m.setInjectableValues(iv);
 
                 return m.readValue(text, cls);

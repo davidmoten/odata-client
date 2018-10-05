@@ -287,10 +287,11 @@ public final class Generator {
                         .stream() //
                         .map(f -> ", " + f.fieldName) //
                         .collect(Collectors.joining());
-                p.format("%ssuper(contextPath, changedFields, odataType%s);\n", indent, superFields);
+                p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent, superFields);
             }
             p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%sthis.changedFields = changedFields;\n", indent);
+            p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
             if (!t.hasBaseType()) {
                 p.format("%sthis.odataType = odataType;\n", indent);
             }
@@ -343,10 +344,11 @@ public final class Generator {
                     .stream() //
                     .map(f -> ", " + f.fieldName) //
                     .collect(Collectors.joining());
-            p.format("%sreturn new %s(null, %s.EMPTY,\"%s\"%s);\n", //
+            p.format("%sreturn new %s(null, %s.EMPTY, %s.EMPTY, \"%s\"%s);\n", //
                     indent.right(), //
                     simpleClassName, //
                     imports.add(ChangedFields.class), //
+                    imports.add(UnmappedFields.class), //
                     t.getFullType(), //
                     builderProps);
             p.format("%s}\n", indent.left());
@@ -376,7 +378,7 @@ public final class Generator {
                     .stream() //
                     .map(f -> ", " + f.fieldName) //
                     .collect(Collectors.joining());
-            p.format("%ssuper(contextPath, changedFields, odataType%s);\n", indent, superFields);
+            p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent, superFields);
             p.format("%s}\n", indent.left());
 
             // write patch() method
@@ -391,7 +393,8 @@ public final class Generator {
                     imports.add(RequestHelper.class), imports.add(RequestOptions.class),
                     imports.add(t.getFullClassNameSchema()));
             p.format("%s// pass null for changedFields to reset it\n", indent);
-            p.format("%sreturn new %s(contextPath, null, odataType%s);\n", indent, simpleClassName, params);
+            p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName,
+                    params);
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
@@ -416,13 +419,16 @@ public final class Generator {
                 .collect(Collectors.joining());
 
         p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-        p.format("\n%sprotected %s(@%s %s contextPath, @%s %s changedFields, @%s(\"%s\") %s odataType%s) {\n", //
+        p.format(
+                "\n%sprotected %s(@%s %s contextPath, @%s %s changedFields, @%s %s unmappedFields, @%s(\"%s\") %s odataType%s) {\n", //
                 indent, //
                 simpleClassName, //
                 imports.add(JacksonInject.class), //
                 imports.add(ContextPath.class), //
                 imports.add(JacksonInject.class), //
                 imports.add(ChangedFields.class), //
+                imports.add(JacksonInject.class), //
+                imports.add(UnmappedFields.class), //
                 imports.add(JsonProperty.class), //
                 "@odata.type", //
                 imports.add(String.class), //
@@ -472,11 +478,13 @@ public final class Generator {
 
             // write constructor
             p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-            p.format("\n%spublic %s(@%s %s contextPath, @%s(\"%s\") %s odataType%s) {\n", //
+            p.format("\n%spublic %s(@%s %s contextPath, @%s %s unmappedFields, @%s(\"%s\") %s odataType%s) {\n", //
                     indent, //
                     simpleClassName, //
                     imports.add(JacksonInject.class), //
                     imports.add(ContextPath.class), //
+                    imports.add(JacksonInject.class), //
+                    imports.add(UnmappedFields.class), //
                     imports.add(JsonProperty.class), //
                     "@odata.type", //
                     imports.add(String.class), //
@@ -486,10 +494,11 @@ public final class Generator {
                         .stream() //
                         .map(f -> ", " + f.fieldName) //
                         .collect(Collectors.joining());
-                p.format("%ssuper(contextPath, odataType%s);\n", indent.right(), superFields);
+                p.format("%ssuper(contextPath, unmappedFields, odataType%s);\n", indent.right(), superFields);
                 indent.left();
             }
             p.format("%sthis.contextPath = contextPath;\n", indent.right());
+            p.format("%sthis.unmappedFields = unmappedFields;\n", indent.right());
             if (t.getBaseType() == null) {
                 p.format("%sthis.odataType = odataType;\n", indent);
             }
@@ -853,7 +862,8 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("\n%sprivate %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
+        p.format("\n%s@%s\n", indent.right(), imports.add(JacksonInject.class));
+        p.format("\n%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
 
     private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p) {
@@ -944,9 +954,10 @@ public final class Generator {
                                 .map(a -> ", " + a) //
                                 .collect(Collectors.joining());
                         if (ofEntity) {
-                            params = "contextPath, changedFields.add(\"" + x.getName() + "\")" + ", odataType" + params;
+                            params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
+                                    + ", unmappedFields, odataType" + params;
                         } else {
-                            params = "contextPath" + ", odataType" + params;
+                            params = "contextPath" + ", unmappedFields, odataType" + params;
                         }
 
                         indent.right();
