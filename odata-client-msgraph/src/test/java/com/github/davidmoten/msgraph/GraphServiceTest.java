@@ -67,7 +67,8 @@ public class GraphServiceTest {
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
         assertEquals(2, m.getUnmappedFields().size());
-        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"", m.getUnmappedFields().get("@odata.etag"));
+        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
+                m.getUnmappedFields().get("@odata.etag"));
         assertEquals(
                 "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages/$entity",
                 m.getUnmappedFields().get("@odata.context"));
@@ -75,13 +76,15 @@ public class GraphServiceTest {
 
     @Test
     public void testEntityCollectionNotFromEntityContainer() {
-        GraphService client = createClient("/me/messages/1/attachments", "/response-me-messages-1-attachments.json");
+        GraphService client = createClient("/me/messages/1/attachments",
+                "/response-me-messages-1-attachments.json");
         CollectionPageEntity<Attachment> m = client.me().messages("1").attachments().get();
     }
 
     @Test
     public void testDeserializationOfAttachmentEntityReturnsFileAttachment() {
-        GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json");
+        GraphService client = createClient("/me/messages/1/attachments/2",
+                "/response-attachment.json");
         Attachment m = client.me().messages("1").attachments("2").get();
         assertTrue(m instanceof FileAttachment);
         FileAttachment f = (FileAttachment) m;
@@ -107,14 +110,15 @@ public class GraphServiceTest {
                 .filter("isRead eq false") //
                 .expand("attachments") //
                 .orderBy("createdDateTime") //
+                .metadataMinimal() //
                 .get();
         // iterable implementation handles paging for you!
         Message m = messages.iterator().next();
         System.out.println(m.getSubject());
         // mark as read
         client.users("fred") //
-            .messages(m.getId().get()) //
-            .patch(Message.builderMessage().isRead(true).build());
+                .messages(m.getId().get()) //
+                .patch(Message.builderMessage().isRead(true).build());
 
         // List<Option> queryOptions = Lists.newArrayList( //
         // new QueryOption("$filter", "isRead eq false"), //
