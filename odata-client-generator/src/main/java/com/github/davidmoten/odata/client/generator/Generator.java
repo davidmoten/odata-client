@@ -990,7 +990,7 @@ public final class Generator {
 
                         String classSuffix = ofEntity ? "." + CLASS_NAME_PATCHED : "";
                         p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
-                                classSuffix, Names.getSetterMethod(x.getName()), importedType,
+                                classSuffix, Names.getWithMethod(x.getName()), importedType,
                                 fieldName);
                         if (x.isUnicode() != null && !x.isUnicode()) {
                             p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
