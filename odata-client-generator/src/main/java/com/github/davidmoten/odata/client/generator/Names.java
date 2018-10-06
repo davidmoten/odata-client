@@ -137,7 +137,7 @@ public final class Names {
         return "get" + upperFirst(name);
     }
 
-    public static String getSetterMethod(String name) {
+    public static String getWithMethod(String name) {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
         }
