@@ -1,4 +1,1 @@
-{
-	"@odata.type": "#microsoft.graph.eventMessage",
-	"IsRead": true
-}
+{"@odata.type":"#microsoft.graph.eventMessage","isRead":true}
