@@ -98,9 +98,9 @@ public class GraphServiceTest {
         GraphService client = serviceBuilder() //
                 .replyWithResource(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments.json") //
+                        "/response-messages-expand-attachments-minimal-metadata.json") //
                 .expectRequest(
-                        "/users/48d31887-5fad-4d73-a9f5-3c356e68a038/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAAiIsqMbYjsT5e-T7KzowPTAAAYbsdRAAA%3D",
+                        "/users/fred/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
                         "/request-patch-message-is-read.json", HttpMethod.PATCH) //
                 .build();
         CollectionPageEntity<Message> messages = client //
@@ -118,7 +118,7 @@ public class GraphServiceTest {
         // mark as read
         client.users("fred") //
                 .messages(m.getId().get()) //
-                .patch(Message.createMessage().withIsRead(Optional.of(true)));
+                .patch(m.withIsRead(Optional.of(true)));
 
         // List<Option> queryOptions = Lists.newArrayList( //
         // new QueryOption("$filter", "isRead eq false"), //
