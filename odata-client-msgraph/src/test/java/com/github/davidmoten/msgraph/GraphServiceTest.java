@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.CollectionPageEntity;
@@ -78,7 +77,7 @@ public class GraphServiceTest {
     public void testEntityCollectionNotFromEntityContainer() {
         GraphService client = createClient("/me/messages/1/attachments",
                 "/response-me-messages-1-attachments.json");
-        CollectionPageEntity<Attachment> m = client.me().messages("1").attachments().get();
+        client.me().messages("1").attachments().get();
     }
 
     @Test
