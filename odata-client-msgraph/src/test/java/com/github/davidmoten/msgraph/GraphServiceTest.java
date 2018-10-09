@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -77,7 +78,8 @@ public class GraphServiceTest {
     public void testEntityCollectionNotFromEntityContainer() {
         GraphService client = createClient("/me/messages/1/attachments",
                 "/response-me-messages-1-attachments.json");
-        client.me().messages("1").attachments().get();
+        List<Attachment> list = client.me().messages("1").attachments().get().toList();
+        assertEquals(16, list.size());
     }
 
     @Test
