@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -10,7 +11,16 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
     List<T> values();
 
     Optional<R> nextPage();
-    
+
+    default List<T> toList() {
+        List<T> list = new ArrayList<>();
+        Iterator<T> it = iterator();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+        return list;
+    }
+
     default Iterator<T> iterator() {
         return new Iterator<T>() {
 
