@@ -1,0 +1,12 @@
+The request below shows how to delete Person which has ETag supported. Please be noted that the value for If-Match should be the same with the ETag value of the specified Person.
+
+DELETE serviceRoot/People('vincentcalabrese')
+OData-Version: 4.0
+Content-Type: application/json;odata.metadata=minimal
+Accept: application/json
+If-Match: W/"08D15F3DD9A61539"
+
+
+Response Payload
+
+HTTP/1.1 204 No Content

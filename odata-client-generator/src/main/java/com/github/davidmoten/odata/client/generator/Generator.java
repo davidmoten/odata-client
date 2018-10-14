@@ -585,12 +585,16 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s update(%s<%s> options) {\n", indent, //
+            p.format("%spublic %s post(%s<%s> options, %s entity) {\n", indent, //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(EntityRequestOptions.class), //
+                    imports.add(t.getFullClassNameEntity()), //
                     imports.add(t.getFullClassNameEntity()));
-            p.format("%sthrow new %s(); \n", indent.right(),
-                    imports.add(UnsupportedOperationException.class));
+            p.format("%sreturn %s.post(entity, contextPath, %s.class, options, %s.INSTANCE);\n",
+                    indent.right(), //
+                    imports.add(RequestHelper.class), //
+                    imports.add(t.getFullClassNameEntity()), //
+                    imports.add(names.getFullClassNameSchema(schema)));
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
@@ -603,6 +607,18 @@ public final class Generator {
                     indent.right(), imports.add(RequestHelper.class), //
                     imports.add(names.getFullClassNameSchema(schema)));
             p.format("%s}\n", indent.left());
+
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic %s put(%s<%s> options, %s entity) {\n", indent, //
+                    imports.add(t.getFullClassNameEntity()), //
+                    imports.add(EntityRequestOptions.class), //
+                    imports.add(t.getFullClassNameEntity()), //
+                    imports.add(t.getFullClassNameEntity()));
+            p.format("%sreturn %s.put(entity, contextPath, options, %s.INSTANCE);\n",
+                    indent.right(), imports.add(RequestHelper.class), //
+                    imports.add(names.getFullClassNameSchema(schema)));
+            p.format("%s}\n", indent.left());
+
             indent.left();
 
             // TODO also support navigation properties with complexTypes?
