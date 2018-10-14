@@ -1,0 +1,13 @@
+POST serviceRoot/People('scottketchum')/Friends/$ref
+OData-Version: 4.0
+Content-Type: application/json;odata.metadata=minimal
+Accept: application/json
+
+{
+"@odata.id": "serviceRoot/People('vincentcalabrese')"
+}
+
+
+Response Payload
+
+HTTP/1.1 204 No Content

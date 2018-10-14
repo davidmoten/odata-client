@@ -77,7 +77,8 @@ public final class TestingService {
                     try {
                         URL resource = TestingService.class.getResource(resourceName);
                         if (resource == null) {
-                            throw new RuntimeException("resource not found on classpath: " + resourceName);
+                            throw new RuntimeException(
+                                    "resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
                         return new HttpResponse(200, text);
@@ -87,24 +88,26 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
-                    System.out.println("PATCH called at "+ url);
+                public HttpResponse PATCH(String url, Map<String, String> requestHeaders,
+                        String text) {
+                    System.out.println("PATCH called at " + url);
                     System.out.println(text);
                     String resourceName = content.get(BuilderBase.toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);
                     }
                     try {
-                        String expected = new String(
-                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                        String expected = new String(Files.readAllBytes(
+                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
                         JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
                         JsonNode textTree = Serializer.MAPPER.readTree(text);
                         if (expectedTree.equals(textTree)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
-                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
-                                    + "\n==== Expected =====\n" + expected);
+                            throw new RuntimeException(
+                                    "request does not match expected.\n==== Recieved ====\n" + text
+                                            + "\n==== Expected =====\n" + expected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -112,9 +115,44 @@ public final class TestingService {
                 }
 
                 @Override
+                public HttpResponse PUT(String url, Map<String, String> h, String json) {
+                    return PATCH(url, h, json);
+                }
+                
+                @Override
+                public HttpResponse POST(String url, Map<String, String> requestHeaders,
+                        String text) {
+                    System.out.println("PATCH called at " + url);
+                    System.out.println(text);
+                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.PATCH, url));
+                    if (resourceName == null) {
+                        throw new RuntimeException("PATCH response not found for url=" + url);
+                    }
+                    try {
+                        String expected = new String(Files.readAllBytes(
+                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
+
+                        JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
+                        JsonNode textTree = Serializer.MAPPER.readTree(text);
+                        if (expectedTree.equals(textTree)) {
+                            return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
+                        } else {
+                            throw new RuntimeException(
+                                    "request does not match expected.\n==== Recieved ====\n" + text
+                                            + "\n==== Expected =====\n" + expected);
+                        }
+                    } catch (IOException | URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
+                @Override
                 public Path getBasePath() {
                     return new Path(baseUrl, pathStyle);
                 }
+
+
             };
         }
 

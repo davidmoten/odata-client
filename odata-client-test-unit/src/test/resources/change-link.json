@@ -1,0 +1,19 @@
+A successful PUT request to a single-valued navigation property’s reference resource changes the related entity. The request below change the Airline of a Flight.
+PUT serviceRoot/People('russellwhyte')/Trips(1001)/PlanItems(11)/Microsoft.OData.SampleService.Models.TripPin.Flight/Airline/$ref
+
+OData-Version: 4.0
+Content-Type: application/json;odata.metadata=minimal
+Accept: application/json
+
+{
+"@odata.id": "serviceRoot/Airlines('FM')"
+}
+
+
+Response Payload
+
+HTTP/1.1 200 OK
+{
+    "@odata.context":"serviceRoot/TripPinServiceRW/$metadata#$ref",
+    "@odata.id":"serviceRoot/People('russellwhyte')/Trips(1001)/PlanItems(11)/Microsoft.OData.SampleService.Models.TripPin.Flight/Airline"
+}

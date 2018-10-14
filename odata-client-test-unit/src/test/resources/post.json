@@ -1,0 +1,43 @@
+POST serviceRoot/People
+OData-Version: 4.0
+Content-Type: application/json;odata.metadata=minimal
+Accept: application/json
+
+{
+"@odata.type" : "Microsoft.OData.SampleService.Models.TripPin.Person",
+"UserName": "teresa",
+"FirstName" : "Teresa",
+"LastName" : "Gilbert",
+"Gender" : "Female",
+"Emails" : ["teresa@example.com", "teresa@contoso.com"],
+"AddressInfo" : [
+{
+"Address" : "1 Suffolk Ln.",
+"City" :
+{
+"CountryRegion" : "United States",
+"Name" : "Boise",
+"Region" : "ID"
+}
+}]
+}
+
+
+Response Payload
+
+HTTP/1.1 201 Created
+Content-Length: 468
+Content-Type: application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+Location: serviceRoot/People('teresa')
+OData-Version: 4.0
+{
+    "@odata.context":"serviceRoot/$metadata#People/$entity",
+    "@odata.id":"serviceRoot/People('teresa')",
+    "@odata.editLink":"serviceRoot/People('teresa')",
+    "UserName":"teresa",
+    "FirstName":"Teresa",
+    "LastName":"Gilbert",
+    "Emails":["teresa@example.com","teresa@contoso.com"],
+    "AddressInfo":[{"Address":"1 Suffolk Ln.","City":{"CountryRegion":"United States","Name":"Boise","Region":"ID"}}],
+    "Gender":"Female"
+}

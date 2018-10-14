@@ -20,8 +20,8 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths
-                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths.get(CollectionPageTest.class
+                        .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = new Serializer() {
         };
@@ -41,6 +41,17 @@ public class CollectionPageTest {
             public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
                 return new HttpResponse(204, "");
             }
+
+            @Override
+            public HttpResponse PUT(String url, Map<String, String> requestHeaders, String text) {
+                return new HttpResponse(204, "");
+            }
+
+            @Override
+            public HttpResponse POST(String url, Map<String, String> h, String text) {
+                return new HttpResponse(201, "");
+            }
+
         };
         SchemaInfo schemaInfo = new SchemaInfo() {
 

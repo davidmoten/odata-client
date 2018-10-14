@@ -1,0 +1,17 @@
+The request below shows how to update Person which has ETag supported. Please be noted that the value for If-Match should be the same with the ETag value of the specified Person.
+
+PATCH serviceRoot/People('clydeguess')
+OData-Version: 4.0
+Content-Type: application/json;odata.metadata=minimal
+Accept: application/json
+If-Match: W/"08D15F3DD9126D84"
+
+{
+"@odata.type": "#Microsoft.OData.SampleService.Models.TripPin.Person",
+"FirstName" : "CLYDE"
+}
+
+
+Response Payload
+
+HTTP/1.1 204 No Content
