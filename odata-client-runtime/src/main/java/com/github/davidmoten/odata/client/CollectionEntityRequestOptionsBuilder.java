@@ -85,14 +85,18 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
         return this;
     }
 
-    public CollectionPageEntity<T> get() {
-        return request.get(build());
-    }
-
     CollectionEntityRequestOptions build() {
         requestHeaders.put("Accept", "application/json;odata.metadata=" + metadata);
         return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip,
                 top, select, expand);
+    }
+
+    public CollectionPageEntity<T> get() {
+        return request.get(build());
+    }
+
+    public T post(T entity) {
+        return request.post(build(), entity);
     }
 
 }

@@ -122,11 +122,11 @@ public final class TestingService {
                 @Override
                 public HttpResponse POST(String url, Map<String, String> requestHeaders,
                         String text) {
-                    System.out.println("PATCH called at " + url);
+                    System.out.println("POST called at " + url);
                     System.out.println(text);
-                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.PATCH, url));
+                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.POST, url));
                     if (resourceName == null) {
-                        throw new RuntimeException("PATCH response not found for url=" + url);
+                        throw new RuntimeException("POST response not found for url=" + url);
                     }
                     try {
                         String expected = new String(Files.readAllBytes(
@@ -135,7 +135,7 @@ public final class TestingService {
                         JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
                         JsonNode textTree = Serializer.MAPPER.readTree(text);
                         if (expectedTree.equals(textTree)) {
-                            return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
+                            return new HttpResponse(HttpURLConnection.HTTP_CREATED, null);
                         } else {
                             throw new RuntimeException(
                                     "request does not match expected.\n==== Recieved ====\n" + text

@@ -1,0 +1,23 @@
+{
+	"@odata.context": "serviceRoot/$metadata#People/$entity",
+	"@odata.id": "serviceRoot/People('teresa')",
+	"@odata.editLink": "serviceRoot/People('teresa')",
+	"UserName": "teresa",
+	"FirstName": "Teresa",
+	"LastName": "Gilbert",
+	"Emails": [
+		"teresa@example.com",
+		"teresa@contoso.com"
+	],
+	"AddressInfo": [
+		{
+			"Address": "1 Suffolk Ln.",
+			"City": {
+				"CountryRegion": "United States",
+				"Name": "Boise",
+				"Region": "ID"
+			}
+		}
+	],
+	"Gender": "Female"
+}

@@ -14,8 +14,6 @@ public interface EntityRequest<T extends ODataEntity> {
 
     T put(EntityRequestOptions<T> options, T entity);
     
-    T post(EntityRequestOptions<T> options, T entity);
-
     default T get() {
         return new EntityRequestOptionsBuilder<T>(this).get();
     }
@@ -28,10 +26,6 @@ public interface EntityRequest<T extends ODataEntity> {
         return new EntityRequestOptionsBuilder<T>(this).put(entity);
     }
     
-    default T post(T entity) {
-        return new EntityRequestOptionsBuilder<T>(this).post(entity);
-    }
-
     default EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
         return new EntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
