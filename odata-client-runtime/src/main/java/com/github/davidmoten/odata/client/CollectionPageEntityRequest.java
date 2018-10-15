@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 @JsonIgnoreType
 public class CollectionPageEntityRequest<T extends ODataEntity, R extends EntityRequest<T>> {
@@ -23,7 +24,12 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
+        RequestHelper.get(cp, cls, options, schemaInfo);
         return CollectionPageEntity.create(r.getText(), cls, cp, schemaInfo);
+    }
+
+    T post(CollectionEntityRequestOptions options, T entity) {
+        return RequestHelper.post(entity, contextPath, cls, options, schemaInfo);
     }
 
     public R id(String id) {
@@ -32,6 +38,10 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
 
     public CollectionPageEntity<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
+    }
+
+    public T post(T entity) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).post(entity);
     }
 
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {

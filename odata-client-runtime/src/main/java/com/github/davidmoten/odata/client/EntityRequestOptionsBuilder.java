@@ -48,10 +48,6 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
         return request.get(build());
     }
 
-    public T post(T entity) {
-        return request.post(build(), entity);
-    }
-    
     public T patch(T entity) {
         return request.patch(build(), entity);
     }
