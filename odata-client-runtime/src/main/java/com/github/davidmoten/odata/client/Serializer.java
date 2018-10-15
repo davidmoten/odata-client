@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
@@ -68,6 +69,15 @@ public interface Serializer {
     }
 
     default <T extends ODataEntity> String serialize(T entity) {
+        ObjectMapper m = createObjectMapper();
+        try {
+            return m.writeValueAsString(entity);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    default <T extends ODataEntity> String serializeChangesOnly(T entity) {
         try {
             ObjectMapper m = createObjectMapper();
             String s = m.writeValueAsString(entity);

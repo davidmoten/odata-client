@@ -75,7 +75,7 @@ public final class RequestHelper {
     private static <T extends ODataEntity> T patch(T entity, ContextPath contextPath,
             RequestOptions options, SchemaInfo schemaInfo, boolean usePUT) {
 
-        String json = Serializer.DEFAULT.serialize(entity);
+        String json = Serializer.DEFAULT.serializeChangesOnly(entity);
 
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());

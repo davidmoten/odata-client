@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.test;
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.HttpMethod;
+import com.github.davidmoten.odata.client.Serializer;
 
 import test1.a.entity.Product;
 import test1.b.container.Test1Service;
