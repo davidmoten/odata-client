@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.olingo.server.sample.CarsServlet;
 import org.eclipse.jetty.server.Server;
@@ -34,11 +35,25 @@ public class CarServiceTest {
         server.start();
         Container c = new Container(new Context(Serializer.DEFAULT,
                 Service.create(new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS))));
+
+        // test get collection
         List<Car> list = c.cars().get().toList();
         list.stream().forEach(car -> System.out.println(car.getModel().orElse("") + " at $"
                 + car.getCurrency().orElse("") + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
         assertEquals(5, list.size());
         assertEquals("F1 W03", list.get(0).getModel().orElse(null));
+
+        // get single entity
+        {
+            Car car = c.cars().id("1").get();
+            assertEquals("F1 W03", car.getModel().get());
+            
+            // test patch
+            car.withPrice(Optional.of(BigDecimal.valueOf(123456))).patch();
+            car = c.cars().id("1").get();
+            assertEquals(123456, car.getPrice().get());
+        }
+
         server.stop();
     }
 
