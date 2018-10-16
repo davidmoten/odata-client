@@ -34,12 +34,15 @@ public class CarServiceTest {
 
         server.start();
         Container c = new Container(new Context(Serializer.DEFAULT,
-                Service.create(new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS))));
+                Service.create(new Path("http://localhost:8090/cars.svc",
+                        PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS))));
 
         // test get collection
         List<Car> list = c.cars().get().toList();
-        list.stream().forEach(car -> System.out.println(car.getModel().orElse("") + " at $"
-                + car.getCurrency().orElse("") + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
+        list.stream()
+                .forEach(car -> System.out
+                        .println(car.getModel().orElse("") + " at $" + car.getCurrency().orElse("")
+                                + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
         assertEquals(5, list.size());
         assertEquals("F1 W03", list.get(0).getModel().orElse(null));
 
@@ -55,10 +58,11 @@ public class CarServiceTest {
                 car = c.cars().id("1").get();
                 assertEquals(123456, car.getPrice().get());
             }
-            
+
             // test put
+            // TODO implement update in CarServlet
             if (false) {
-                car.withPrice(Optional.of(BigDecimal.valueOf(123))).patch();
+                car.withPrice(Optional.of(BigDecimal.valueOf(123))).put();
                 car = c.cars().id("1").get();
                 assertEquals(123, car.getPrice().get());
             }
@@ -67,8 +71,8 @@ public class CarServiceTest {
         // create (post)
         // TODO support create in servlet
         if (false) {
-            Car car2 = Car.builder().model("Tesla").modelYear("2018").price(BigDecimal.valueOf(50000)).currency("AUD")
-                    .build();
+            Car car2 = Car.builder().model("Tesla").modelYear("2018")
+                    .price(BigDecimal.valueOf(50000)).currency("AUD").build();
             Car car = c.cars().post(car2);
             System.out.println("newId = " + car.getId().get());
         }
