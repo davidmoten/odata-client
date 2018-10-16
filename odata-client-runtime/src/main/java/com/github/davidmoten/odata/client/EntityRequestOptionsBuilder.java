@@ -36,8 +36,13 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
     }
 
     public EntityRequestOptionsBuilder<T> useCaches(boolean value) {
+        // TODO implement useCaches
         this.useCaches = value;
         return this;
+    }
+
+    public EntityRequestOptionsBuilder<T> ifMatch(String eTag) {
+        return requestHeader("If-Match", eTag);
     }
 
     public EntityRequestOptionsBuilder<T> useCaches() {
@@ -51,7 +56,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
     public T patch(T entity) {
         return request.patch(build(), entity);
     }
-    
+
     public T put(T entity) {
         return request.put(build(), entity);
     }
@@ -63,6 +68,5 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
     private EntityRequestOptions<T> build() {
         return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
     }
-
 
 }
