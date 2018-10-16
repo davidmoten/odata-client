@@ -47,7 +47,7 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-msgraph-client</id>
+                        <id>generate-client</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
