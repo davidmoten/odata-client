@@ -33,7 +33,9 @@ public final class TestingService {
     }
 
     public static abstract class BuilderBase<T extends BuilderBase<?, R>, R> {
-        Map<String, String> content = new HashMap<>();
+        Map<String, String> responses = new HashMap<>();
+        Map<String, String> requests = new HashMap<>();
+
         String baseUrl = "https://testing.com";
         PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
 
@@ -49,15 +51,19 @@ public final class TestingService {
             return (T) this;
         }
 
-        @SuppressWarnings("unchecked")
         public T replyWithResource(String path, String resourceName) {
-            content.put(toKey(HttpMethod.GET, baseUrl + path), resourceName);
+            return replyWithResource(path, resourceName, HttpMethod.GET);
+        }
+
+        @SuppressWarnings("unchecked")
+        public T replyWithResource(String path, String resourceName, HttpMethod method) {
+            responses.put(toKey(method, baseUrl + path), resourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
         public T expectRequest(String path, String resourceName, HttpMethod method) {
-            content.put(toKey(method, baseUrl + path), resourceName);
+            requests.put(toKey(method, baseUrl + path), resourceName);
             return (T) this;
         }
 
@@ -70,15 +76,14 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse GET(String url, Map<String, String> requestHeaders) {
-                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.GET, url));
+                    String resourceName = responses.get(BuilderBase.toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url);
                     }
                     try {
                         URL resource = TestingService.class.getResource(resourceName);
                         if (resource == null) {
-                            throw new RuntimeException(
-                                    "resource not found on classpath: " + resourceName);
+                            throw new RuntimeException("resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
                         return new HttpResponse(200, text);
@@ -88,26 +93,24 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse PATCH(String url, Map<String, String> requestHeaders,
-                        String text) {
+                public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
                     System.out.println("PATCH called at " + url);
                     System.out.println(text);
-                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.PATCH, url));
+                    String resourceName = requests.get(BuilderBase.toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);
                     }
                     try {
-                        String expected = new String(Files.readAllBytes(
-                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                        String expected = new String(
+                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
                         JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
                         JsonNode textTree = Serializer.MAPPER.readTree(text);
                         if (expectedTree.equals(textTree)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
-                            throw new RuntimeException(
-                                    "request does not match expected.\n==== Recieved ====\n" + text
-                                            + "\n==== Expected =====\n" + expected);
+                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
+                                    + "\n==== Expected =====\n" + expected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -118,40 +121,32 @@ public final class TestingService {
                 public HttpResponse PUT(String url, Map<String, String> h, String json) {
                     return PATCH(url, h, json);
                 }
-                
+
                 @Override
-                public HttpResponse POST(String url, Map<String, String> requestHeaders,
-                        String text) {
+                public HttpResponse POST(String url, Map<String, String> requestHeaders, String text) {
                     System.out.println("POST called at " + url);
                     System.out.println(text);
-                    String resourceName = content.get(BuilderBase.toKey(HttpMethod.POST, url));
-                    if (resourceName == null) {
-                        throw new RuntimeException("POST response not found for url=" + url);
-                    }
-                    try {
-                        String expected = new String(Files.readAllBytes(
-                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                    String requestResourceName = requests.get(BuilderBase.toKey(HttpMethod.POST, url));
 
-                        JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
-                        JsonNode textTree = Serializer.MAPPER.readTree(text);
-                        if (expectedTree.equals(textTree)) {
-                            return new HttpResponse(HttpURLConnection.HTTP_CREATED, null);
+                    try {
+                        String requestExpected = readResource(url, requestResourceName);
+                        if (matches(requestExpected, text)) {
+                            String responseResourceName = responses.get(BuilderBase.toKey(HttpMethod.POST, url));
+                            String responseExpected = readResource(url, responseResourceName);
+                            return new HttpResponse(HttpURLConnection.HTTP_CREATED, responseExpected);
                         } else {
-                            throw new RuntimeException(
-                                    "request does not match expected.\n==== Recieved ====\n" + text
-                                            + "\n==== Expected =====\n" + expected);
+                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
+                                    + "\n==== Expected =====\n" + requestExpected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
                 }
 
-
                 @Override
                 public Path getBasePath() {
                     return new Path(baseUrl, pathStyle);
                 }
-
 
             };
         }
@@ -176,6 +171,19 @@ public final class TestingService {
         public Service build() {
             return createService();
         }
+    }
+
+    private static boolean matches(String expectedJson, String actualJson) throws IOException {
+        JsonNode expectedTree = Serializer.MAPPER.readTree(expectedJson);
+        JsonNode textTree = Serializer.MAPPER.readTree(actualJson);
+        return expectedTree.equals(textTree);
+    }
+
+    private static String readResource(String url, String resourceName) throws IOException, URISyntaxException {
+        if (resourceName == null) {
+            throw new RuntimeException("resource not found for url=" + url);
+        }
+        return new String(Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
     }
 
 }

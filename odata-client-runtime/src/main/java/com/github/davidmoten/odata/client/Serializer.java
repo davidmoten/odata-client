@@ -44,7 +44,6 @@ public interface Serializer {
                         .addValue(ChangedFields.class, ChangedFields.EMPTY) //
                         .addValue(UnmappedFields.class, UnmappedFields.EMPTY);
                 m.setInjectableValues(iv);
-
                 return m.readValue(text, cls);
             } else {
                 return MAPPER.readValue(text, cls);
@@ -61,6 +60,9 @@ public interface Serializer {
 
     default Optional<String> getODataType(String text) {
         try {
+            if (text == null) {
+                return Optional.empty();
+            }
             ObjectNode node = new ObjectMapper().readValue(text, ObjectNode.class);
             return Optional.ofNullable(node.get("@odata.type")).map(JsonNode::asText);
         } catch (IOException e) {
