@@ -67,6 +67,11 @@ public final class TestingService {
             return (T) this;
         }
 
+        public T expectDelete(String path) {
+            requests.put(toKey(HttpMethod.DELETE, baseUrl + path), "DELETE");
+            return (T) this;
+        }
+
         private static String toKey(HttpMethod method, String url) {
             return method + "_" + url;
         }
@@ -83,7 +88,8 @@ public final class TestingService {
                     try {
                         URL resource = TestingService.class.getResource(resourceName);
                         if (resource == null) {
-                            throw new RuntimeException("resource not found on classpath: " + resourceName);
+                            throw new RuntimeException(
+                                    "resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
                         return new HttpResponse(200, text);
@@ -93,7 +99,8 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
+                public HttpResponse PATCH(String url, Map<String, String> requestHeaders,
+                        String text) {
                     System.out.println("PATCH called at " + url);
                     System.out.println(text);
                     String resourceName = requests.get(BuilderBase.toKey(HttpMethod.PATCH, url));
@@ -101,16 +108,17 @@ public final class TestingService {
                         throw new RuntimeException("PATCH response not found for url=" + url);
                     }
                     try {
-                        String expected = new String(
-                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                        String expected = new String(Files.readAllBytes(
+                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
                         JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
                         JsonNode textTree = Serializer.MAPPER.readTree(text);
                         if (expectedTree.equals(textTree)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
-                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
-                                    + "\n==== Expected =====\n" + expected);
+                            throw new RuntimeException(
+                                    "request does not match expected.\n==== Recieved ====\n" + text
+                                            + "\n==== Expected =====\n" + expected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -123,24 +131,39 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse POST(String url, Map<String, String> requestHeaders, String text) {
+                public HttpResponse POST(String url, Map<String, String> requestHeaders,
+                        String text) {
                     System.out.println("POST called at " + url);
                     System.out.println(text);
-                    String requestResourceName = requests.get(BuilderBase.toKey(HttpMethod.POST, url));
+                    String requestResourceName = requests
+                            .get(BuilderBase.toKey(HttpMethod.POST, url));
 
                     try {
                         String requestExpected = readResource(url, requestResourceName);
                         if (matches(requestExpected, text)) {
-                            String responseResourceName = responses.get(BuilderBase.toKey(HttpMethod.POST, url));
+                            String responseResourceName = responses
+                                    .get(BuilderBase.toKey(HttpMethod.POST, url));
                             String responseExpected = readResource(url, responseResourceName);
-                            return new HttpResponse(HttpURLConnection.HTTP_CREATED, responseExpected);
+                            return new HttpResponse(HttpURLConnection.HTTP_CREATED,
+                                    responseExpected);
                         } else {
-                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
-                                    + "\n==== Expected =====\n" + requestExpected);
+                            throw new RuntimeException(
+                                    "request does not match expected.\n==== Recieved ====\n" + text
+                                            + "\n==== Expected =====\n" + requestExpected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
+                }
+
+                @Override
+                public HttpResponse DELETE(String url, Map<String, String> requestHeaders) {
+                    System.out.println("DELETE called at " + url);
+                    String resourceName = requests.get(BuilderBase.toKey(HttpMethod.DELETE, url));
+                    if (resourceName == null) {
+                        throw new RuntimeException("DELETE request not expected for url=" + url);
+                    }
+                    return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                 }
 
                 @Override
@@ -179,11 +202,13 @@ public final class TestingService {
         return expectedTree.equals(textTree);
     }
 
-    private static String readResource(String url, String resourceName) throws IOException, URISyntaxException {
+    private static String readResource(String url, String resourceName)
+            throws IOException, URISyntaxException {
         if (resourceName == null) {
             throw new RuntimeException("resource not found for url=" + url);
         }
-        return new String(Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+        return new String(Files
+                .readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
     }
 
 }

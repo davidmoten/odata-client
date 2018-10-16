@@ -593,7 +593,8 @@ public final class Generator {
 
             // write get
             p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s get(%s<%s> options) {\n", indent, //
+            p.format("%spublic %s get(%s<%s> options) {\n", //
+                    indent, //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(EntityRequestOptions.class), //
                     imports.add(t.getFullClassNameEntity()));
@@ -604,32 +605,38 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic void delete(%s<%s> options) {\n", indent, //
+            p.format("%spublic void delete(%s<%s> options) {\n", //
+                    indent, //
                     imports.add(EntityRequestOptions.class), //
                     imports.add(t.getFullClassNameEntity()));
-            p.format("%sthrow new %s(); \n", indent.right(),
-                    imports.add(UnsupportedOperationException.class));
+            p.format("%s%s.delete(contextPath, options);\n", //
+                    indent.right(), //
+                    imports.add(RequestHelper.class));
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s patch(%s<%s> options, %s entity) {\n", indent, //
+            p.format("%spublic %s patch(%s<%s> options, %s entity) {\n", //
+                    indent, //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(EntityRequestOptions.class), //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(t.getFullClassNameEntity()));
             p.format("%sreturn %s.patch(entity, contextPath, options, %s.INSTANCE);\n",
-                    indent.right(), imports.add(RequestHelper.class), //
+                    indent.right(), //
+                    imports.add(RequestHelper.class), //
                     imports.add(names.getFullClassNameSchema(schema)));
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s put(%s<%s> options, %s entity) {\n", indent, //
+            p.format("%spublic %s put(%s<%s> options, %s entity) {\n", //
+                    indent, //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(EntityRequestOptions.class), //
                     imports.add(t.getFullClassNameEntity()), //
                     imports.add(t.getFullClassNameEntity()));
             p.format("%sreturn %s.put(entity, contextPath, options, %s.INSTANCE);\n",
-                    indent.right(), imports.add(RequestHelper.class), //
+                    indent.right(), //
+                    imports.add(RequestHelper.class), //
                     imports.add(names.getFullClassNameSchema(schema)));
             p.format("%s}\n", indent.left());
 

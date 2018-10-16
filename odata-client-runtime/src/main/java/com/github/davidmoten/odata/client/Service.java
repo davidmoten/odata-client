@@ -14,6 +14,8 @@ public interface Service {
 
     HttpResponse POST(String url, Map<String, String> requestHeaders, String content);
 
+    HttpResponse DELETE(String url, Map<String, String> requestHeaders);
+
     Path getBasePath();
 
     public static Service create(Path path) {
