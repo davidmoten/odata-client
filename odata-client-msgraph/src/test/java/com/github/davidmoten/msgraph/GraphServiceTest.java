@@ -66,7 +66,7 @@ public class GraphServiceTest {
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
-        assertEquals(2, m.getUnmappedFields().size());
+        assertEquals(4, m.getUnmappedFields().size());
         assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
                 m.getUnmappedFields().get("@odata.etag"));
         assertEquals(
