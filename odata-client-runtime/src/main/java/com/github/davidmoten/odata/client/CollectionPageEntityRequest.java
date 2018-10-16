@@ -20,12 +20,13 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
         this.schemaInfo = schemaInfo;
     }
 
-    // not public api
+    // TODO not public api so hide or rename
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
         RequestHelper.get(cp, cls, options, schemaInfo);
-        return CollectionPageEntity.create(r.getText(), cls, cp, schemaInfo);
+        return cp.context().serializer().deserializeCollectionPageEntity(r.getText(), cls, cp,
+                schemaInfo);
     }
 
     T post(CollectionEntityRequestOptions options, T entity) {
