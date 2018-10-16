@@ -1,10 +1,13 @@
 package com.github.davidmoten.odata.client.internal;
 
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.ODataEntity;
@@ -85,7 +88,26 @@ public final class RequestHelper {
         final String url;
         String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         if (editLink != null) {
-            url = cp.context().service().getBasePath().toUrl() + "/" + editLink;
+            if (editLink.startsWith("https://") || editLink.startsWith("http://")) {
+                url = editLink;
+            } else {
+                // TOOD unit test relative url in editLink
+                // from
+                // http://docs.oasis-open.org/odata/odata-json-format/v4.01/cs01/odata-json-format-v4.01-cs01.html#_Toc499720582
+                String context = (String) entity.getUnmappedFields().get("@odata.context");
+                if (context != null) {
+                    try {
+                        URL u = new URL(context);
+                        String p = u.getPath();
+                        String basePath = p.substring(0, p.lastIndexOf('/'));
+                        url = basePath + "/" + editLink;
+                    } catch (MalformedURLException e) {
+                        throw new ClientException(e);
+                    }
+                } else {
+                    url = cp.context().service().getBasePath().toUrl() + "/" + editLink;
+                }
+            }
         } else {
             url = cp.toUrl();
         }
