@@ -27,6 +27,7 @@ import org.oasisopen.odata.csdl.v4.TSingleton;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -391,7 +392,7 @@ public final class Generator {
     }
 
     private static void addChangedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
+        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%sprotected final %s changedFields;\n", indent, imports.add(ChangedFields.class));
     }
 
@@ -861,8 +862,7 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
-        // p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
+        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("\n%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
 
