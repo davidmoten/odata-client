@@ -18,7 +18,7 @@ public interface HttpService {
 
     Path getBasePath();
 
-    public static HttpService create(Path path) {
+    public static HttpService createDefaultService(Path path) {
         return new DefaultHttpService(path);
     }
 

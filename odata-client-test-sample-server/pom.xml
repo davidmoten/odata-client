@@ -65,6 +65,12 @@
             <artifactId>odata-commons-core</artifactId>
             <version>${olingo.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
