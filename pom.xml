@@ -43,6 +43,7 @@
         <jackson.version>2.9.7</jackson.version>
         <junit.version>4.12</junit.version>
         <olingo.version>4.5.0</olingo.version>
+        <httpclient.version>4.5.6</httpclient.version>
     </properties>
 
     <licenses>

@@ -34,7 +34,7 @@ public class CarServiceTest {
 
         server.start();
         Container c = new Container(new Context(Serializer.INSTANCE,
-                Service.create(new Path("http://localhost:8090/cars.svc",
+                HttpService.create(new Path("http://localhost:8090/cars.svc",
                         PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS))));
 
         // test get collection

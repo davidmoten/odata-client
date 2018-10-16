@@ -12,13 +12,13 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.Path;
-import com.github.davidmoten.odata.client.Service;
+import com.github.davidmoten.odata.client.HttpService;
 
-public final class DefaultService implements Service {
+public final class DefaultHttpService implements HttpService {
 
     private final Path basePath;
 
-    public DefaultService(Path basePath) {
+    public DefaultHttpService(Path basePath) {
         this.basePath = basePath;
     }
 

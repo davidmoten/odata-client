@@ -76,8 +76,8 @@ public final class TestingService {
             return method + "_" + url;
         }
 
-        protected Service createService() {
-            return new Service() {
+        protected HttpService createService() {
+            return new HttpService() {
 
                 @Override
                 public HttpResponse GET(String url, Map<String, String> requestHeaders) {
@@ -186,10 +186,10 @@ public final class TestingService {
 
     }
 
-    public static final class Builder extends BuilderBase<Builder, Service> {
+    public static final class Builder extends BuilderBase<Builder, HttpService> {
 
         @Override
-        public Service build() {
+        public HttpService build() {
             return createService();
         }
     }

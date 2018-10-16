@@ -14,7 +14,7 @@ import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.Serializer;
-import com.github.davidmoten.odata.client.Service;
+import com.github.davidmoten.odata.client.HttpService;
 
 public final class RequestHelper {
 
@@ -122,7 +122,7 @@ public final class RequestHelper {
             url = cp.toUrl();
         }
         // get the response
-        Service service = cp.context().service();
+        HttpService service = cp.context().service();
         final HttpResponse response;
         if (usePUT) {
             response = service.PUT(url, h, json);
