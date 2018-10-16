@@ -398,6 +398,8 @@ public final class Generator {
 
     private void writeConstructorSignature(EntityType t, String simpleClassName, Imports imports, Indent indent,
             PrintWriter p) {
+        String parameterIndent = indent + Indent.INDENT + Indent.INDENT;
+
         String props = t.getFields(imports) //
                 .stream() //
                 .map(f -> String.format("@%s(\"%s\") %s %s", //
@@ -405,20 +407,26 @@ public final class Generator {
                         f.propertyName, //
                         f.importedType, //
                         f.fieldName)) //
-                .map(x -> ",\n" + indent + Indent.INDENT + Indent.INDENT + x) //
+                .map(x -> {
+                    return ",\n" + parameterIndent + x;
+                }) //
                 .collect(Collectors.joining());
 
         p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
         p.format(
-                "\n%sprotected %s(@%s %s contextPath, @%s %s changedFields, @%s %s unmappedFields, @%s(\"%s\") %s odataType%s) {\n", //
+                "\n%sprotected %s(\n%s@%s %s contextPath, \n%s@%s %s changedFields, \n%s@%s %s unmappedFields, \n%s@%s(\"%s\") %s odataType%s) {\n", //
                 indent, //
                 simpleClassName, //
+                parameterIndent, //
                 imports.add(JacksonInject.class), //
                 imports.add(ContextPath.class), //
+                parameterIndent, //
                 imports.add(JacksonInject.class), //
                 imports.add(ChangedFields.class), //
+                parameterIndent, //
                 imports.add(JacksonInject.class), //
                 imports.add(UnmappedFields.class), //
+                parameterIndent, //
                 imports.add(JsonProperty.class), //
                 "@odata.type", //
                 imports.add(String.class), //
@@ -862,8 +870,8 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
-        p.format("\n%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
+        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+        p.format("%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
 
     private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p) {
@@ -884,7 +892,7 @@ public final class Generator {
 
     private static void addContextPathInjectableField(Imports imports, Indent indent, PrintWriter p) {
         // add context path field
-        p.format("%s@%s\n", indent, imports.add(JacksonInject.class));
+        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         addContextPathField(imports, indent, p);
     }
 
