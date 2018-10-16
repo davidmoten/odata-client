@@ -14,35 +14,35 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.StdErrLog;
 import org.junit.Test;
 
+import com.github.davidmoten.odata.client.internal.ApacheHttpClientHttpService;
+
 import olingo.odata.sample.container.Container;
 import olingo.odata.sample.entity.Car;
 
 public class CarServiceTest {
 
     @Test
-    public void test() throws Exception {
-        StdErrLog logger = new StdErrLog();
-        logger.setDebugEnabled(false);
-        Log.setLog(logger);
+    public void testWithDefaultHttpService() throws Exception {
+        Path basePath = new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
+        HttpService service = HttpService.createDefaultService(basePath);
+        checkServiceCalls(service).stop();
+    }
+    
+    @Test
+    public void testWithApacheHttpService() throws Exception {
+        Path basePath = new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
+        HttpService service = new ApacheHttpClientHttpService(basePath);
+        checkServiceCalls(service).stop();
+    }
 
-        Server server = new Server(8090);
-
-        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        handler.setSessionHandler(new SessionHandler());
-        handler.addServlet(CarsServlet.class, "/cars.svc/*");
-        server.setHandler(handler);
-
-        server.start();
-        Container c = new Container(new Context(Serializer.INSTANCE,
-                HttpService.create(new Path("http://localhost:8090/cars.svc",
-                        PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS))));
+    private static Server checkServiceCalls(HttpService service) throws Exception {
+        Container c = new Container(new Context(Serializer.INSTANCE, service));
+        Server server = startServer();
 
         // test get collection
         List<Car> list = c.cars().get().toList();
-        list.stream()
-                .forEach(car -> System.out
-                        .println(car.getModel().orElse("") + " at $" + car.getCurrency().orElse("")
-                                + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
+        list.stream().forEach(car -> System.out.println(car.getModel().orElse("") + " at $"
+                + car.getCurrency().orElse("") + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
         assertEquals(5, list.size());
         assertEquals("F1 W03", list.get(0).getModel().orElse(null));
 
@@ -71,13 +71,27 @@ public class CarServiceTest {
         // create (post)
         // TODO support create in servlet
         if (false) {
-            Car car2 = Car.builder().model("Tesla").modelYear("2018")
-                    .price(BigDecimal.valueOf(50000)).currency("AUD").build();
+            Car car2 = Car.builder().model("Tesla").modelYear("2018").price(BigDecimal.valueOf(50000)).currency("AUD")
+                    .build();
             Car car = c.cars().post(car2);
             System.out.println("newId = " + car.getId().get());
         }
+        return server;
+    }
 
-        server.stop();
+    private static Server startServer() throws Exception {
+        StdErrLog logger = new StdErrLog();
+        logger.setDebugEnabled(false);
+        Log.setLog(logger);
+
+        Server server = new Server(8090);
+
+        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        handler.setSessionHandler(new SessionHandler());
+        handler.addServlet(CarsServlet.class, "/cars.svc/*");
+        server.setHandler(handler);
+        server.start();
+        return server;
     }
 
 }
