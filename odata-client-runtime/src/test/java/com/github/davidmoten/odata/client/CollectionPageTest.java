@@ -25,7 +25,7 @@ public class CollectionPageTest {
                         .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = Serializer.INSTANCE;
-        Service service = new Service() {
+        HttpService service = new HttpService() {
 
             @Override
             public HttpResponse GET(String url, Map<String, String> requestHeaders) {

@@ -3,9 +3,9 @@ package com.github.davidmoten.odata.client;
 public final class Context {
 
     private final Serializer serializer;
-    private final Service service;
+    private final HttpService service;
 
-    public Context(Serializer serializer, Service service) {
+    public Context(Serializer serializer, HttpService service) {
         this.serializer = serializer;
         this.service = service;
     }
@@ -14,7 +14,7 @@ public final class Context {
         return serializer;
     }
 
-    public Service service() {
+    public HttpService service() {
         return service;
     }
 

@@ -2,9 +2,9 @@ package com.github.davidmoten.odata.client;
 
 import java.util.Map;
 
-import com.github.davidmoten.odata.client.internal.DefaultService;
+import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
-public interface Service {
+public interface HttpService {
 
     HttpResponse GET(String url, Map<String, String> requestHeaders);
 
@@ -18,8 +18,8 @@ public interface Service {
 
     Path getBasePath();
 
-    public static Service create(Path path) {
-        return new DefaultService(path);
+    public static HttpService create(Path path) {
+        return new DefaultHttpService(path);
     }
 
 }
