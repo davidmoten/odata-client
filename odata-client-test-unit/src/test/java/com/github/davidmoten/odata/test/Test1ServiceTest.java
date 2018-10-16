@@ -1,7 +1,14 @@
 package com.github.davidmoten.odata.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.Test;
 
+import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.HttpMethod;
 
 import test1.a.entity.Product;
@@ -14,11 +21,15 @@ public class Test1ServiceTest {
         Test1Service client = Test1Service.test().baseUrl("http://base").build();
         client.products(1);
     }
-    
+
     @Test
     public void testChangedFieldsAreSet() {
+        Product p = Product.builder().name("bingo").build();
+        assertTrue(p.getChangedFields().toSet().isEmpty());
+        p = p.withName(Optional.of("joey")).withID(Optional.of(124));
+        assertEquals(Sets.newHashSet("Name", "ID"), p.getChangedFields().toSet());
     }
-    
+
     @Test
     public void testPost() {
         Test1Service client = Test1Service //
@@ -30,5 +41,5 @@ public class Test1ServiceTest {
         Product p = Product.builder().name("bingo").build();
         client.products().post(p);
     }
-    
+
 }
