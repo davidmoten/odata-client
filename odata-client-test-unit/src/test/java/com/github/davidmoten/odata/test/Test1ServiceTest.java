@@ -41,5 +41,17 @@ public class Test1ServiceTest {
         Product p = Product.builder().name("bingo").build();
         client.products().post(p);
     }
+    
+    @Test
+    public void testDelete() {
+        Test1Service client = Test1Service //
+                .test() //
+                .baseUrl("http://base") //
+                .expectRequest("/Products", "/request-post.json", HttpMethod.POST) //
+                .replyWithResource("/Products", "/response-post.json", HttpMethod.POST) //
+                .build();
+        Product p = Product.builder().name("bingo").build();
+//        client.products().post(p);
+    }
 
 }

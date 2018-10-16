@@ -22,7 +22,7 @@ public class CarServiceTest {
     @Test
     public void test() throws Exception {
         StdErrLog logger = new StdErrLog();
-        logger.setDebugEnabled(true);
+        logger.setDebugEnabled(false);
         Log.setLog(logger);
 
         Server server = new Server(8090);
@@ -54,6 +54,13 @@ public class CarServiceTest {
                 car.withPrice(Optional.of(BigDecimal.valueOf(123456))).patch();
                 car = c.cars().id("1").get();
                 assertEquals(123456, car.getPrice().get());
+            }
+            
+            // test put
+            if (false) {
+                car.withPrice(Optional.of(BigDecimal.valueOf(123))).patch();
+                car = c.cars().id("1").get();
+                assertEquals(123, car.getPrice().get());
             }
         }
 
