@@ -42,12 +42,12 @@ public final class DefaultService implements Service {
 
     @Override
     public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String content) {
-        return patch(url, requestHeaders, content, HttpMethod.PATCH);
+        return update(url, requestHeaders, content, HttpMethod.PATCH);
     }
 
     @Override
     public HttpResponse PUT(String url, Map<String, String> requestHeaders, String content) {
-        return patch(url, requestHeaders, content, HttpMethod.PUT);
+        return update(url, requestHeaders, content, HttpMethod.PUT);
     }
 
     @Override
@@ -76,7 +76,7 @@ public final class DefaultService implements Service {
         return basePath;
     }
 
-    private static HttpResponse patch(String url, Map<String, String> requestHeaders, String content,
+    private static HttpResponse update(String url, Map<String, String> requestHeaders, String content,
             HttpMethod method) {
         try {
             URL u = new URL(url);
@@ -86,7 +86,7 @@ public final class DefaultService implements Service {
                 c.setRequestProperty(entry.getKey(), entry.getValue());
             }
             c.setDoOutput(true);
-            c.setDoInput(false);
+            c.setDoInput(true);
             try (OutputStream out = c.getOutputStream()) {
                 out.write(content.getBytes(StandardCharsets.UTF_8));
             }
