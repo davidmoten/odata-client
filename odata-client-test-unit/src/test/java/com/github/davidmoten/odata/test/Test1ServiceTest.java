@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.test;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.HttpMethod;
@@ -21,12 +20,12 @@ public class Test1ServiceTest {
     }
     
     @Test
-    @Ignore
     public void testPost() {
         Test1Service client = Test1Service //
                 .test() //
                 .baseUrl("http://base") //
                 .expectRequest("/Products", "/request-post.json", HttpMethod.POST) //
+                .replyWithResource("/Products", "/response-post.json", HttpMethod.POST) //
                 .build();
         Product p = Product.builder().name("bingo").build();
         client.products().post(p);

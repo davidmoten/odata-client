@@ -19,8 +19,8 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls,
-            RequestOptions options, SchemaInfo schemaInfo) {
+    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
+            SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -50,30 +50,30 @@ public final class RequestHelper {
 
         // deserialize
         if (response.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-            throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from url=" + cp.toUrl() + ", expected 204 (NO_CONTENT)");
+            throw new RuntimeException("Returned response code " + response.getResponseCode() + " from url="
+                    + cp.toUrl() + ", expected 204 (NO_CONTENT)");
         }
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
+        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText(HttpURLConnection.HTTP_CREATED));
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(response.getText(), c, contextPath);
+        return cp.context().serializer().deserialize(response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath);
     }
 
-    public static <T extends ODataEntity> T patch(T entity, ContextPath contextPath,
-            RequestOptions options, SchemaInfo schemaInfo) {
+    public static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, RequestOptions options,
+            SchemaInfo schemaInfo) {
         return patch(entity, contextPath, options, schemaInfo, false);
 
     }
 
-    public static <T extends ODataEntity> T put(T entity, ContextPath contextPath,
-            RequestOptions options, SchemaInfo schemaInfo) {
+    public static <T extends ODataEntity> T put(T entity, ContextPath contextPath, RequestOptions options,
+            SchemaInfo schemaInfo) {
         return patch(entity, contextPath, options, schemaInfo, true);
     }
 
-    private static <T extends ODataEntity> T patch(T entity, ContextPath contextPath,
-            RequestOptions options, SchemaInfo schemaInfo, boolean usePUT) {
+    private static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, RequestOptions options,
+            SchemaInfo schemaInfo, boolean usePUT) {
 
         String json = Serializer.DEFAULT.serializeChangesOnly(entity);
 
@@ -99,28 +99,25 @@ public final class RequestHelper {
         }
         // deserialize
         if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
-            throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from url=" + url + ", expected 204 (NO_CONTENT)");
+            throw new RuntimeException("Returned response code " + response.getResponseCode() + " from url=" + url
+                    + ", expected 204 (NO_CONTENT)");
         }
         return entity;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp,
-            SchemaInfo schemaInfo, Class<T> cls, String json) {
-        Optional<String> namespacedType = cp.context().serializer().getODataType(json)
-                .map(x -> x.substring(1));
+    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
+            Class<T> cls, String json) {
+        Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
 
         if (namespacedType.isPresent()) {
-            return (Class<? extends T>) schemaInfo
-                    .getEntityClassFromTypeWithNamespace(namespacedType.get());
+            return (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }
     }
 
-    private static Map<String, String> supplementRequestHeaders(RequestOptions options,
-            String odataMetadataValue) {
+    private static Map<String, String> supplementRequestHeaders(RequestOptions options, String odataMetadataValue) {
         Map<String, String> h = new HashMap<>();
         h.put("OData-Version", "4.0");
         h.put("Content-Type", "application/json;odata.metadata=" + odataMetadataValue);
