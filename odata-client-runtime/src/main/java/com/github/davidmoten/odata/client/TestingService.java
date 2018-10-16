@@ -111,9 +111,7 @@ public final class TestingService {
                         String expected = new String(Files.readAllBytes(
                                 Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
-                        JsonNode expectedTree = Serializer.MAPPER.readTree(expected);
-                        JsonNode textTree = Serializer.MAPPER.readTree(text);
-                        if (expectedTree.equals(textTree)) {
+                        if (Serializer.DEFAULT.matches(expected, text)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
                             throw new RuntimeException(
@@ -140,7 +138,7 @@ public final class TestingService {
 
                     try {
                         String requestExpected = readResource(url, requestResourceName);
-                        if (matches(requestExpected, text)) {
+                        if (Serializer.DEFAULT.matches(requestExpected, text)) {
                             String responseResourceName = responses
                                     .get(BuilderBase.toKey(HttpMethod.POST, url));
                             String responseExpected = readResource(url, responseResourceName);
@@ -194,12 +192,6 @@ public final class TestingService {
         public Service build() {
             return createService();
         }
-    }
-
-    private static boolean matches(String expectedJson, String actualJson) throws IOException {
-        JsonNode expectedTree = Serializer.MAPPER.readTree(expectedJson);
-        JsonNode textTree = Serializer.MAPPER.readTree(actualJson);
-        return expectedTree.equals(textTree);
     }
 
     private static String readResource(String url, String resourceName)

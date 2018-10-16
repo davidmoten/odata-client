@@ -20,12 +20,11 @@ import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
-public interface Serializer {
+public final class Serializer {
 
-    public static final Serializer DEFAULT = new Serializer() {
-    };
+    public static final Serializer DEFAULT = new Serializer();
 
-    public static final ObjectMapper MAPPER = createObjectMapper();
+    private static final ObjectMapper MAPPER = createObjectMapper();
 
     public static ObjectMapper createObjectMapper() {
         return new ObjectMapper() //
@@ -36,7 +35,7 @@ public interface Serializer {
         ;
     }
 
-    default <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath) {
+    public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath) {
         try {
             if (contextPath != null) {
                 ObjectMapper m = createObjectMapper();
@@ -55,11 +54,11 @@ public interface Serializer {
         }
     }
 
-    default <T> T deserialize(String text, Class<T> cls) {
+    public <T> T deserialize(String text, Class<T> cls) {
         return deserialize(text, cls, null);
     }
 
-    default Optional<String> getODataType(String text) {
+    public Optional<String> getODataType(String text) {
         try {
             if (text == null) {
                 return Optional.empty();
@@ -71,7 +70,7 @@ public interface Serializer {
         }
     }
 
-    default <T extends ODataEntity> String serialize(T entity) {
+    public <T extends ODataEntity> String serialize(T entity) {
         ObjectMapper m = createObjectMapper();
         try {
             return m.writeValueAsString(entity);
@@ -80,7 +79,7 @@ public interface Serializer {
         }
     }
 
-    default <T extends ODataEntity> String serializeChangesOnly(T entity) {
+    public <T extends ODataEntity> String serializeChangesOnly(T entity) {
         try {
             ObjectMapper m = createObjectMapper();
             String s = m.writeValueAsString(entity);
@@ -102,10 +101,10 @@ public interface Serializer {
         }
     }
 
-    default <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(
+    public <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(
             String json, Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
-            ObjectMapper m = Serializer.MAPPER;
+            ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list2 = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
@@ -121,6 +120,12 @@ public interface Serializer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean matches(String expectedJson, String actualJson) throws IOException {
+        JsonNode expectedTree = MAPPER.readTree(expectedJson);
+        JsonNode textTree = MAPPER.readTree(actualJson);
+        return expectedTree.equals(textTree);
     }
 
 }
