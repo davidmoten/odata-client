@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public final class ChangedFields implements Iterable<String> {
 
@@ -46,6 +48,10 @@ public final class ChangedFields implements Iterable<String> {
         Set<String> set2 = new HashSet<String>(set);
         set2.add(name);
         return new ChangedFields(set2);
+    }
+
+    public Set<String> toSet() {
+        return StreamSupport.stream(this.spliterator(), false).collect(Collectors.toSet());
     }
 
 }
