@@ -36,7 +36,7 @@ public final class DefaultService implements Service {
             String text = Util.readString(c.getInputStream(), StandardCharsets.UTF_8);
             return new HttpResponse(c.getResponseCode(), text);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ClientException(e);
         }
     }
 
@@ -76,6 +76,23 @@ public final class DefaultService implements Service {
         return basePath;
     }
 
+    @Override
+    public HttpResponse DELETE(String url, Map<String, String> requestHeaders) {
+        try {
+            URL u = new URL(url);
+            HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod(HttpMethod.DELETE.toString());
+            for (Entry<String, String> entry : requestHeaders.entrySet()) {
+                c.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+            c.setDoOutput(false);
+            c.setDoInput(false);
+            return new HttpResponse(c.getResponseCode(), null);
+        } catch (IOException e) {
+            throw new ClientException(e);
+        }
+    }
+
     private static HttpResponse update(String url, Map<String, String> requestHeaders, String content,
             HttpMethod method) {
         try {
@@ -96,5 +113,4 @@ public final class DefaultService implements Service {
             throw new ClientException(e);
         }
     }
-
 }

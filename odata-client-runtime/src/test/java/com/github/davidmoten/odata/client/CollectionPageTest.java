@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,17 +40,22 @@ public class CollectionPageTest {
 
             @Override
             public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
-                return new HttpResponse(204, "");
+                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
             public HttpResponse PUT(String url, Map<String, String> requestHeaders, String text) {
-                return new HttpResponse(204, "");
+                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
             public HttpResponse POST(String url, Map<String, String> h, String text) {
-                return new HttpResponse(201, "");
+                return new HttpResponse(HttpURLConnection.HTTP_CREATED, "");
+            }
+
+            @Override
+            public HttpResponse DELETE(String url, Map<String, String> requestHeaders) {
+                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
         };
