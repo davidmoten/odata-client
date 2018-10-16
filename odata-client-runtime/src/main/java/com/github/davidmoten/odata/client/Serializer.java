@@ -22,7 +22,11 @@ import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Serializer {
 
-    public static final Serializer DEFAULT = new Serializer();
+    public static final Serializer INSTANCE = new Serializer();
+
+    private Serializer() {
+        // prevent instantiation
+    }
 
     private static final ObjectMapper MAPPER = createObjectMapper();
 

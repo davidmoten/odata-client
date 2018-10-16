@@ -44,7 +44,7 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        String json = Serializer.DEFAULT.serialize(entity);
+        String json = Serializer.INSTANCE.serialize(entity);
 
         Map<String, String> h = supplementRequestHeaders(options, "minimal");
 
@@ -88,7 +88,7 @@ public final class RequestHelper {
     private static <T extends ODataEntity> T patch(T entity, ContextPath contextPath,
             RequestOptions options, SchemaInfo schemaInfo, boolean usePUT) {
 
-        String json = Serializer.DEFAULT.serializeChangesOnly(entity);
+        String json = Serializer.INSTANCE.serializeChangesOnly(entity);
 
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());

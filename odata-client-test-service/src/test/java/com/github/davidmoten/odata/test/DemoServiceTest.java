@@ -93,7 +93,7 @@ public class DemoServiceTest {
         Product p = Product //
                 .create() //
                 .withDescription(Optional.of("Lower fat milk"));
-        Serializer.DEFAULT.serialize(p);
+        Serializer.INSTANCE.serialize(p);
         assertEquals("Lower fat milk", p.getDescription().get());
     }
 
