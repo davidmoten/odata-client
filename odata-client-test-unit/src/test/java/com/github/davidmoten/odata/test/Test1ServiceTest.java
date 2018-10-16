@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -34,7 +33,6 @@ public class Test1ServiceTest {
     public void testPost() {
         Test1Service client = Test1Service //
                 .test() //
-                .baseUrl("http://base") //
                 .expectRequest("/Products", "/request-post.json", HttpMethod.POST) //
                 .replyWithResource("/Products", "/response-post.json", HttpMethod.POST) //
                 .build();

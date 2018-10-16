@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public interface Serializer {
@@ -96,6 +97,27 @@ public interface Serializer {
             }
             o.remove(list);
             return o.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    default <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(
+            String json, Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+        try {
+            ObjectMapper m = Serializer.MAPPER;
+            ObjectNode o = m.readValue(json, ObjectNode.class);
+            List<T> list2 = new ArrayList<T>();
+            for (JsonNode item : o.get("value")) {
+                String text = m.writeValueAsString(item);
+                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo,
+                        cls, text);
+                list2.add(deserialize(text, subClass, contextPath));
+            }
+            // TODO support relative urls using odata.context if present
+            Optional<String> nextLink2 = Optional.ofNullable(o.get("@odata.nextLink"))
+                    .map(JsonNode::asText);
+            return new CollectionPageEntity<T>(cls, list2, nextLink2, contextPath, schemaInfo);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
