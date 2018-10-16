@@ -33,7 +33,7 @@ public class CarServiceTest {
         server.setHandler(handler);
 
         server.start();
-        Container c = new Container(new Context(Serializer.DEFAULT,
+        Container c = new Container(new Context(Serializer.INSTANCE,
                 Service.create(new Path("http://localhost:8090/cars.svc",
                         PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS))));
 

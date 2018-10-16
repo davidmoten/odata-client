@@ -111,7 +111,7 @@ public final class TestingService {
                         String expected = new String(Files.readAllBytes(
                                 Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
-                        if (Serializer.DEFAULT.matches(expected, text)) {
+                        if (Serializer.INSTANCE.matches(expected, text)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
                             throw new RuntimeException(
@@ -138,7 +138,7 @@ public final class TestingService {
 
                     try {
                         String requestExpected = readResource(url, requestResourceName);
-                        if (Serializer.DEFAULT.matches(requestExpected, text)) {
+                        if (Serializer.INSTANCE.matches(requestExpected, text)) {
                             String responseResourceName = responses
                                     .get(BuilderBase.toKey(HttpMethod.POST, url));
                             String responseExpected = readResource(url, responseResourceName);
@@ -181,7 +181,7 @@ public final class TestingService {
 
         @Override
         public T build() {
-            return _create(new Context(Serializer.DEFAULT, createService()));
+            return _create(new Context(Serializer.INSTANCE, createService()));
         }
 
     }
