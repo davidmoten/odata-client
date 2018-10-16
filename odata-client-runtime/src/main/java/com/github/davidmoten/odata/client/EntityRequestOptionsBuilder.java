@@ -56,8 +56,13 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
         return request.put(build(), entity);
     }
 
+    public void delete() {
+        request.delete(build());
+    }
+
     private EntityRequestOptions<T> build() {
         return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
     }
+
 
 }
