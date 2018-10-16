@@ -18,6 +18,10 @@ public interface EntityRequest<T extends ODataEntity> {
         return new EntityRequestOptionsBuilder<T>(this).get();
     }
 
+    default void delete() {
+        new EntityRequestOptionsBuilder<T>(this).delete();
+    }
+    
     default T patch(T entity) {
         return new EntityRequestOptionsBuilder<T>(this).patch(entity);
     }
