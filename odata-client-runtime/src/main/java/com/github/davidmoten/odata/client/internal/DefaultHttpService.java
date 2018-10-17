@@ -33,7 +33,8 @@ public final class DefaultHttpService implements HttpService {
 
     @Override
     public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String content) {
-        return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content);
+        throw new ClientException(
+                "PATCH is not supported by java.net.URLConnection, use PUT instead (or use the HttpService implementation based on Apache HttpClient)");
     }
 
     @Override
