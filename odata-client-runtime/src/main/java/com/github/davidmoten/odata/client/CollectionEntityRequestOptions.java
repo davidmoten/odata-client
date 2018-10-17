@@ -1,12 +1,13 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public final class CollectionEntityRequestOptions implements RequestOptions {
 
-    private final Map<String, String> requestHeaders;
+    private final List<RequestHeader> requestHeaders;
     private final Optional<String> search;
     private final Optional<String> filter;
     private final Optional<String> orderBy;
@@ -15,7 +16,7 @@ public final class CollectionEntityRequestOptions implements RequestOptions {
     private final Optional<String> select;
     private final Optional<String> expand;
 
-    public CollectionEntityRequestOptions(Map<String, String> requestHeaders, Optional<String> search,
+    public CollectionEntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
             Optional<String> select, Optional<String> expand) {
         this.requestHeaders = requestHeaders;
@@ -29,7 +30,7 @@ public final class CollectionEntityRequestOptions implements RequestOptions {
     }
 
     @Override
-    public Map<String, String> getRequestHeaders() {
+    public List<RequestHeader> getRequestHeaders() {
         return requestHeaders;
     }
 

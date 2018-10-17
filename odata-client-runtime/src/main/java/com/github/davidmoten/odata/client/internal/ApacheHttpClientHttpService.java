@@ -2,8 +2,7 @@ package com.github.davidmoten.odata.client.internal;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -20,15 +19,16 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
+import com.github.davidmoten.odata.client.RequestHeader;
 
 public class ApacheHttpClientHttpService implements HttpService {
 
     private final Path basePath;
     private final CloseableHttpClient client;
-    private final Function<Map<String, String>, Map<String, String>> requestHeadersModifier;
+    private final Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier;
 
     public ApacheHttpClientHttpService(Path basePath, Supplier<CloseableHttpClient> clientSupplier,
-            Function<Map<String, String>, Map<String, String>> requestHeadersModifier) {
+            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
         this.basePath = basePath;
         this.client = clientSupplier.get();
         this.requestHeadersModifier = requestHeadersModifier;
@@ -39,27 +39,27 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse GET(String url, Map<String, String> requestHeaders) {
+    public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
         return getResponse(requestHeaders, new HttpGet(url), true, null);
     }
 
     @Override
-    public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String content) {
+    public HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(requestHeaders, new HttpPatch(url), false, content);
     }
 
     @Override
-    public HttpResponse PUT(String url, Map<String, String> requestHeaders, String content) {
+    public HttpResponse PUT(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(requestHeaders, new HttpPut(url), false, content);
     }
 
     @Override
-    public HttpResponse POST(String url, Map<String, String> requestHeaders, String content) {
+    public HttpResponse POST(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(requestHeaders, new HttpGet(url), true, content);
     }
 
     @Override
-    public HttpResponse DELETE(String url, Map<String, String> requestHeaders) {
+    public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
         return getResponse(requestHeaders, new HttpGet(url), false, null);
     }
 
@@ -68,11 +68,11 @@ public class ApacheHttpClientHttpService implements HttpService {
         return basePath;
     }
 
-    private HttpResponse getResponse(Map<String, String> requestHeaders, HttpUriRequest request, boolean doInput,
+    private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request, boolean doInput,
             String content) {
 
-        for (Entry<String, String> entry : requestHeadersModifier.apply(requestHeaders).entrySet()) {
-            request.addHeader(entry.getKey(), entry.getValue());
+        for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
+            request.addHeader(header.name(), header.value());
         }
         try {
             if (content != null && request instanceof HttpEntityEnclosingRequest) {

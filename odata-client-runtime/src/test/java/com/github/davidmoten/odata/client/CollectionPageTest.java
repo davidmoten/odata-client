@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -21,14 +22,14 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths.get(CollectionPageTest.class
-                        .getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths
+                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = Serializer.INSTANCE;
         HttpService service = new HttpService() {
 
             @Override
-            public HttpResponse GET(String url, Map<String, String> requestHeaders) {
+            public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
                 return new HttpResponse(200, json);
             }
 
@@ -38,22 +39,22 @@ public class CollectionPageTest {
             }
 
             @Override
-            public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String text) {
+            public HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String text) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse PUT(String url, Map<String, String> requestHeaders, String text) {
+            public HttpResponse PUT(String url, List<RequestHeader> requestHeaders, String text) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse POST(String url, Map<String, String> h, String text) {
+            public HttpResponse POST(String url, List<RequestHeader> h, String text) {
                 return new HttpResponse(HttpURLConnection.HTTP_CREATED, "");
             }
 
             @Override
-            public HttpResponse DELETE(String url, Map<String, String> requestHeaders) {
+            public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 

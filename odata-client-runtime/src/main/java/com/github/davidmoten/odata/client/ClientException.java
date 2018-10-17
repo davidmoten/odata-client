@@ -11,4 +11,8 @@ public final class ClientException extends RuntimeException {
     public ClientException(Throwable e) {
         super(e);
     }
+
+    public ClientException(String message, Throwable e) {
+        super(message, e);
+    }
 }

@@ -1,7 +1,7 @@
 package com.github.davidmoten.odata.client;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -9,7 +9,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
 
     private final EntityRequest<T> request;
-    private final Map<String, String> requestHeaders = new HashMap<>();
+    private final List<RequestHeader> requestHeaders = new ArrayList<>();
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
     private boolean useCaches = false;
@@ -19,7 +19,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
     }
 
     public EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
-        requestHeaders.put(key, value);
+        requestHeaders.add(new RequestHeader(key, value));
         return this;
     }
 

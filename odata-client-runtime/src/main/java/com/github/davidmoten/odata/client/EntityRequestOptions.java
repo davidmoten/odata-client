@@ -1,17 +1,18 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public final class EntityRequestOptions<T extends ODataEntity> implements RequestOptions {
 
-    private final Map<String, String> requestHeaders;
+    private final List<RequestHeader> requestHeaders;
     private final Optional<String> select;
     private final Optional<String> expand;
     private final boolean useCaches;
 
-    public EntityRequestOptions(Map<String, String> requestHeaders, Optional<String> select, Optional<String> expand,
+    public EntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> select, Optional<String> expand,
             boolean useCaches) {
         this.requestHeaders = requestHeaders;
         this.select = select;
@@ -32,7 +33,7 @@ public final class EntityRequestOptions<T extends ODataEntity> implements Reques
     }
 
     @Override
-    public Map<String, String> getRequestHeaders() {
+    public List<RequestHeader> getRequestHeaders() {
         // TODO include useCaches as header?
         return requestHeaders;
     }
