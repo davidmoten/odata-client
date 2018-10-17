@@ -376,44 +376,6 @@ public final class Generator {
         }
     }
 
-    private void writeBuilder(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
-        // write builder
-        p.format("\n%spublic static final class Builder {\n", indent);
-        indent.right();
-        List<Field> fields = t.getFields(imports);
-
-        // write builder fields
-        fields //
-                .forEach(f -> {
-                    p.format("%s%s %s;\n", indent, f.importedType, f.fieldName);
-                });
-
-        // write builder setters
-
-        fields.forEach(f -> {
-            p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType, f.fieldName);
-            p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
-            p.format("%sreturn this;\n", indent);
-            p.format("%s}\n", indent.left());
-        });
-
-        p.format("\n%spublic %s build() {\n", indent, simpleClassName);
-        String builderProps = fields //
-                .stream() //
-                .map(f -> ", " + f.fieldName) //
-                .collect(Collectors.joining());
-        p.format("%sreturn new %s(null, %s.EMPTY, %s.EMPTY, \"%s\"%s);\n", //
-                indent.right(), //
-                simpleClassName, //
-                imports.add(ChangedFields.class), //
-                imports.add(UnmappedFields.class), //
-                t.getFullType(), //
-                builderProps);
-        p.format("%s}\n", indent.left());
-
-        p.format("%s}\n", indent.left());
-    }
-
     private static void addChangedFieldsField(Imports imports, Indent indent, PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%sprotected final %s changedFields;\n", indent, imports.add(ChangedFields.class));
@@ -543,6 +505,8 @@ public final class Generator {
                     t.getFields(imports), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
+
+            writeBuilder(t, simpleClassName, imports, indent, p);
 
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFile());
@@ -896,6 +860,54 @@ public final class Generator {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private void writeBuilder(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
+        // write builder
+        p.format("\n%spublic static final class Builder {\n", indent);
+        indent.right();
+        List<Field> fields = t.getFields(imports);
+
+        // write builder fields
+        fields //
+                .forEach(f -> {
+                    p.format("%s%s %s;\n", indent, f.importedType, f.fieldName);
+                });
+
+        // write builder setters
+
+        fields.forEach(f -> {
+            p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType, f.fieldName);
+            p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
+            p.format("%sreturn this;\n", indent);
+            p.format("%s}\n", indent.left());
+        });
+
+        p.format("\n%spublic %s build() {\n", indent, simpleClassName);
+        String builderProps = fields //
+                .stream() //
+                .map(f -> ", " + f.fieldName) //
+                .collect(Collectors.joining());
+        if (t instanceof EntityType) {
+            p.format("%sreturn new %s(null, %s.EMPTY, %s.EMPTY, \"%s\"%s);\n", //
+                    indent.right(), //
+                    simpleClassName, //
+                    imports.add(ChangedFields.class), //
+                    imports.add(UnmappedFields.class), //
+                    t.getFullType(), //
+                    builderProps);
+        } else {
+            // exclude changedFields parameter
+            p.format("%sreturn new %s(null, %s.EMPTY, \"%s\"%s);\n", //
+                    indent.right(), //
+                    simpleClassName, //
+                    imports.add(UnmappedFields.class), //
+                    t.getFullType(), //
+                    builderProps);
+        }
+        p.format("%s}\n", indent.left());
+
+        p.format("%s}\n", indent.left());
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
