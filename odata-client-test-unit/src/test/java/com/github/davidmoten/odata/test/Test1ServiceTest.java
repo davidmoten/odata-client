@@ -22,7 +22,7 @@ public class Test1ServiceTest {
     @Test
     public void testChangedFieldsAreSet() {
         Product p = Product.builder().name("bingo").build();
-        assertTrue(p.getChangedFields().toSet().isEmpty());
+        assertEquals(Sets.newHashSet("Name"), p.getChangedFields().toSet());
         p = p.withName("joey").withID(124);
         assertEquals(Sets.newHashSet("Name", "ID"), p.getChangedFields().toSet());
     }

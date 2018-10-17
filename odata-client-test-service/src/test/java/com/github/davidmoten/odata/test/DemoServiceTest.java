@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 
@@ -49,8 +48,7 @@ public class DemoServiceTest {
 
     @Test
     public void testCollectionSelect() {
-        DemoService client = createClient("/Products?$select=Name",
-                "/response-products-select-name.json");
+        DemoService client = createClient("/Products?$select=Name", "/response-products-select-name.json");
         List<Product> page = client.products().select("Name").get().currentPage();
         assertEquals(11, page.size());
     }
@@ -92,29 +90,29 @@ public class DemoServiceTest {
     @Test
     public void serializeProduct() {
         Product p = Product //
-                .create() //
-                .withDescription("Lower fat milk");
+                .builder() //
+                .description("Lower fat milk") //
+                .build();
         Serializer.INSTANCE.serialize(p);
         assertEquals("Lower fat milk", p.getDescription().get());
     }
 
     @Test
     public void testEntityPatch() {
-        DemoService client = serviceBuilder()
-                .replyWithResource("/Products(1)", "/response-product.json") //
+        DemoService client = serviceBuilder().replyWithResource("/Products(1)", "/response-product.json") //
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH) //
                 .build();
         Product p = Product //
-                .create() //
-                .withDescription("Lowest fat milk");
+                .builder() //
+                .description("Lowest fat milk") //
+                .build();
         Product product = client.products(1).patch(p);
         assertEquals("Lowest fat milk", product.getDescription().get());
     }
 
     @Test
     public void testEntityPatchDirect() {
-        DemoService client = serviceBuilder()
-                .replyWithResource("/Products(1)", "/response-product.json") //
+        DemoService client = serviceBuilder().replyWithResource("/Products(1)", "/response-product.json") //
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH) //
                 .build();
         Product p = client.products(1).get();
