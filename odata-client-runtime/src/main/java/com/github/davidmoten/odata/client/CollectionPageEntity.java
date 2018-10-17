@@ -22,7 +22,7 @@ public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, Col
     }
 
     @Override
-    public List<T> values() {
+    public List<T> currentPage() {
         return list;
     }
 

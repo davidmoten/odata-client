@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.msgraph;
+package com.github.davidmoten.msgraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public final class MsGraph {
         // prevent instantiation
     }
 
-    public Builder tenantName(String tenantName) {
+    public static Builder tenantName(String tenantName) {
         return new Builder(tenantName);
     }
 
@@ -90,7 +90,7 @@ public final class MsGraph {
         Path basePath = new Path("https://graph.microsoft.com/v1.0", PathStyle.IDENTIFIERS_AS_SEGMENTS);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
-                () -> HttpClientBuilder.create().build(), //
+                () -> HttpClientBuilder.create().useSystemProperties().build(), //
                 m -> authenticate(m, accessTokenProvider));
         return new GraphService(new Context(Serializer.INSTANCE, httpService));
     }

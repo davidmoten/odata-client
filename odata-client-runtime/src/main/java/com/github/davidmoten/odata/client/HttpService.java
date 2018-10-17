@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
-public interface HttpService {
+public interface HttpService extends AutoCloseable {
 
     HttpResponse GET(String url, List<RequestHeader> requestHeaders);
 

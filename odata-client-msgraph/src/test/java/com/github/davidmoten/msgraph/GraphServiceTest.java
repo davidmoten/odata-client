@@ -30,8 +30,8 @@ public class GraphServiceTest {
         GraphService client = createClient("/users/1", "/response-user.json");
         User user = client.users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
-        assertEquals(1, user.getBusinessPhones().values().size());
-        assertEquals("+61 2 1234567", user.getBusinessPhones().values().get(0));
+        assertEquals(1, user.getBusinessPhones().currentPage().size());
+        assertEquals("+61 2 1234567", user.getBusinessPhones().currentPage().get(0));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class GraphServiceTest {
         assertNotNull(client.users().get());
         CollectionPageEntity<User> c = client.users().get();
         assertNotNull(c);
-        assertEquals(31, c.values().size());
+        assertEquals(31, c.currentPage().size());
         assertFalse(c.nextPage().isPresent());
     }
 
@@ -52,11 +52,11 @@ public class GraphServiceTest {
                 .build();
         CollectionPageEntity<Contact> c = client.me().contacts().get();
         assertNotNull(c);
-        assertEquals(10, c.values().size());
+        assertEquals(10, c.currentPage().size());
         assertTrue(c.nextPage().isPresent());
         c = c.nextPage().get();
-        assertEquals(10, c.values().size());
-        assertEquals("Justin", c.values().get(9).getGivenName().get());
+        assertEquals(10, c.currentPage().size());
+        assertEquals("Justin", c.currentPage().get(9).getGivenName().get());
     }
 
     @Test

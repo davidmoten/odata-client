@@ -84,4 +84,9 @@ public final class DefaultHttpService implements HttpService {
             throw new ClientException(e);
         }
     }
+
+    @Override
+    public void close() throws Exception {
+        // do nothing
+    }
 }

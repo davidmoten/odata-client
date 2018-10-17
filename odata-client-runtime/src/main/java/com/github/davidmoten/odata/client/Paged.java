@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
 
-    List<T> values();
+    List<T> currentPage();
 
     Optional<R> nextPage();
 
@@ -21,6 +21,7 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
         return list;
     }
 
+    @Override
     default Iterator<T> iterator() {
         return new Iterator<T>() {
 
@@ -39,7 +40,7 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
                 if (page == null) {
                     throw new NoSuchElementException();
                 } else {
-                    T v = page.values().get(i);
+                    T v = page.currentPage().get(i);
                     i++;
                     return v;
                 }
@@ -48,7 +49,7 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
             private void loadNext() {
                 if (page != null) {
                     while (true) {
-                        if (page != null && i == page.values().size()) {
+                        if (page != null && i == page.currentPage().size()) {
                             page = page.nextPage().orElse(null);
                             i = 0;
                         } else {
