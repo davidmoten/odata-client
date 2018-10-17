@@ -974,9 +974,10 @@ public final class Generator {
                         p.format("%s}\n", indent.left());
                     } else {
 
-                        String importedType = names.toImportedTypeNonCollection(t, imports);
-                        importedType = imports.add(Optional.class) + "<" + importedType + ">";
-                        p.format("\n%spublic %s %s() {\n", indent, importedType, Names.getGetterMethod(x.getName()));
+                        final String importedType = names.toImportedTypeNonCollection(t, imports);
+                        String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
+                        p.format("\n%spublic %s %s() {\n", indent, importedTypeWithOptional,
+                                Names.getGetterMethod(x.getName()));
                         p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
                                 fieldName);
                         p.format("%s}\n", indent.left());
@@ -992,13 +993,7 @@ public final class Generator {
 
                         // prepare parameters to constructor to return immutable copy
                         String params = fields.stream() //
-                                .map(field -> {
-                                    if (field.name.equals(x.getName())) {
-                                        return field.fieldName + ".orElse(null)";
-                                    } else {
-                                        return field.fieldName;
-                                    }
-                                }) //
+                                .map(f -> f.fieldName) //
                                 .map(a -> ", " + a) //
                                 .collect(Collectors.joining());
                         if (ofEntity) {
@@ -1009,7 +1004,8 @@ public final class Generator {
                         }
 
                         indent.right();
-                        p.format("%s%s.checkNotNull(%s);\n", indent, imports.add(Preconditions.class), fieldName);
+                        // p.format("%s%s.checkNotNull(%s);\n", indent,
+                        // imports.add(Preconditions.class), fieldName);
                         p.format("%sreturn new %s%s(%s);\n", indent, simpleClassName, classSuffix, params);
                         // p.format("%sreturn null;\n", indent);
                         p.format("%s}\n", indent.left());

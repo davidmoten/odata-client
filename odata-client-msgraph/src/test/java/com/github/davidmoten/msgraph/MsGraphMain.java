@@ -15,8 +15,8 @@ import odata.msgraph.client.enums.BodyType;
 public class MsGraphMain {
 
     public static void main(String[] args) {
-        
-        // this test creates 
+
+        // this test creates
         System.setProperty("https.proxyHost", "proxy.amsa.gov.au");
         System.setProperty("https.proxyPort", "8080");
 
@@ -39,12 +39,17 @@ public class MsGraphMain {
         System.out.println("count in Drafts folder=" + count);
 
         String id = UUID.randomUUID().toString().substring(0, 6);
-        Message m = Message.createMessage().withSubject(Optional.of("hi there " + id))
-                .withBody(Optional.of(ItemBody.builder() //
-                        .content("hello there how are you") //
-                        .contentType(BodyType.TEXT).build())) //
-                .withFrom(Optional.of(Recipient.builder()
-                        .emailAddress(EmailAddress.builder().address("dnex001@amsa.gov.au").build()).build()));
+        Message m = Message.builderMessage() //
+                .subject("hi there " + id) //
+                .body(ItemBody.builder() //
+                .content("hello there how are you") //
+                .contentType(BodyType.TEXT).build()) //
+                .from(Recipient.builder() //
+                        .emailAddress(EmailAddress.builder() //
+                                .address("dnex001@amsa.gov.au") //
+                                .build())
+                        .build())
+                .build();
 
         // Create the draft message
         Message saved = drafts.messages().post(m);
@@ -52,13 +57,13 @@ public class MsGraphMain {
         // change subject
         saved.getUnmappedFields().entrySet().forEach(System.out::println);
 
-        client.users(mailbox).messages(saved.getId().get()).patch(saved.withSubject(Optional.of("new subject " + id)));
+        client.users(mailbox).messages(saved.getId().get()).patch(saved.withSubject("new subject " + id));
 
         String amendedSubject = drafts.messages(saved.getId().get()).get().getSubject().get();
         if (!("new subject " + id).equals(amendedSubject)) {
             throw new RuntimeException("subject not amended");
         }
-        
+
         long count2 = drafts.messages() //
                 .metadataNone() //
                 .get() //

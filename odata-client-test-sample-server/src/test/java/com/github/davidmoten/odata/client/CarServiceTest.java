@@ -54,7 +54,7 @@ public class CarServiceTest {
             // test patch
             // TODO HttpUrlConnection does not support PATCH verb
             if (false) {
-                car.withPrice(Optional.of(BigDecimal.valueOf(123456))).patch();
+                car.withPrice(BigDecimal.valueOf(123456)).patch();
                 car = c.cars().id("1").get();
                 assertEquals(123456, car.getPrice().get());
             }
@@ -62,7 +62,7 @@ public class CarServiceTest {
             // test put
             // TODO implement update in CarServlet
             if (false) {
-                car.withPrice(Optional.of(BigDecimal.valueOf(123))).put();
+                car.withPrice(BigDecimal.valueOf(123)).put();
                 car = c.cars().id("1").get();
                 assertEquals(123, car.getPrice().get());
             }
