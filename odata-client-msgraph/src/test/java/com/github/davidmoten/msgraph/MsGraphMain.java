@@ -27,7 +27,7 @@ public class MsGraphMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
 
-        String mailbox = "dnex001@amsa.gov.au";
+        String mailbox = System.getProperty("mailbox");
         MailFolderRequest drafts = client //
                 .users(mailbox) //
                 .mailFolders("Drafts");
@@ -46,7 +46,7 @@ public class MsGraphMain {
                 .contentType(BodyType.TEXT).build()) //
                 .from(Recipient.builder() //
                         .emailAddress(EmailAddress.builder() //
-                                .address("dnex001@amsa.gov.au") //
+                                .address(mailbox) //
                                 .build())
                         .build())
                 .build();
