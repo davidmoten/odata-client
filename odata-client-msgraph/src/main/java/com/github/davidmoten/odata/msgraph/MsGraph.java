@@ -26,7 +26,60 @@ public final class MsGraph {
         // prevent instantiation
     }
 
-    public static GraphService createService(String tenantName, String clientId, String clientSecret,
+    public Builder tenantName(String tenantName) {
+        return new Builder(tenantName);
+    }
+
+    public static final class Builder {
+        String tenantName;
+        String clientId;
+        String clientSecret;
+        long duration = 5;
+        TimeUnit unit = TimeUnit.MINUTES;
+
+        Builder(String tenantName) {
+            this.tenantName = tenantName;
+        }
+        
+        public Builder2 clientId(String clientId) {
+            this.clientId = clientId;
+            return new Builder2(this);
+        }
+        
+    }
+
+    public static final class Builder2 {
+        final Builder b;
+
+        public Builder2(Builder b) {
+            this.b = b;
+        }
+
+        public Builder3 clientSecret(String clientSecret) {
+            b.clientSecret = clientSecret;
+            return new Builder3(b);
+        }
+    }
+
+    public static final class Builder3 {
+        final Builder b;
+
+        public Builder3(Builder b) {
+            this.b = b;
+        }
+
+        public Builder3 refreshBeforeExpiry(long duration, TimeUnit unit) {
+            b.duration = duration;
+            b.unit = unit;
+            return this;
+        }
+
+        public GraphService build() {
+            return createService(b.tenantName, b.clientId, b.clientSecret, b.duration, b.unit);
+        }
+    }
+
+    private static GraphService createService(String tenantName, String clientId, String clientSecret,
             long refreshBeforeExpiryDuration, TimeUnit refreshBeforeExpiryUnit) {
         MsGraphAccessTokenProvider accessTokenProvider = MsGraphAccessTokenProvider //
                 .tenantName(tenantName) //
