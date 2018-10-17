@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.Util;
 
-//ThreadSafe
 public final class MsGraphAccessTokenProvider {
 
     private static final int OK = 200;
@@ -69,8 +68,8 @@ public final class MsGraphAccessTokenProvider {
 
     private String refreshAccessToken() {
         try {
+            //TODO use logger
             System.out.println("getting new token");
-            // TODO cache the value and return it till expires
             URL url = new URL(OAUTH2_TOKEN_URL_PREFIX + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
             con.setRequestMethod(POST);
