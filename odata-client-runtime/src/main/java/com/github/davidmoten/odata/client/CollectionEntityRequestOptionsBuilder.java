@@ -1,7 +1,7 @@
 package com.github.davidmoten.odata.client;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -9,7 +9,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, R extends EntityRequest<T>> {
 
     private final CollectionPageEntityRequest<T, R> request;
-    private final Map<String, String> requestHeaders = new HashMap<>();
+    private final List<RequestHeader> requestHeaders = new ArrayList<>();
     private Optional<String> search = Optional.empty();
     private Optional<String> filter = Optional.empty();
     private Optional<String> orderBy = Optional.empty();
@@ -23,8 +23,8 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
         this.request = request;
     }
 
-    public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
-        requestHeaders.put(key, value);
+    public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String name, String value) {
+        requestHeaders.add(new RequestHeader(name, value));
         return this;
     }
 
@@ -86,9 +86,8 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntity, 
     }
 
     CollectionEntityRequestOptions build() {
-        requestHeaders.put("Accept", "application/json;odata.metadata=" + metadata);
-        return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip,
-                top, select, expand);
+        requestHeaders.add(new RequestHeader("Accept", "application/json;odata.metadata=" + metadata));
+        return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select, expand);
     }
 
     public CollectionPageEntity<T> get() {
