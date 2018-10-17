@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Immutable
+ */
 public final class ChangedFields implements Iterable<String> {
 
     public static final ChangedFields EMPTY = new ChangedFields();

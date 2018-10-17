@@ -855,9 +855,10 @@ public final class Generator {
     private void writeBuilder(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
         String builderSuffix = t.getBaseType() == null ? "" : simpleClassName;
 
-        p.format("\n%spublic static %s create%s() {\n", indent, simpleClassName, builderSuffix);
-        p.format("%sreturn builder%s().build();\n", indent.right(), builderSuffix);
-        p.format("%s}\n", indent.left());
+        // p.format("\n%spublic static %s create%s() {\n", indent, simpleClassName,
+        // builderSuffix);
+        // p.format("%sreturn builder%s().build();\n", indent.right(), builderSuffix);
+        // p.format("%s}\n", indent.left());
 
         p.format("\n%spublic static Builder builder%s() {\n", indent, builderSuffix);
         p.format("%sreturn new Builder();\n", indent.right());
@@ -872,12 +873,15 @@ public final class Generator {
                 .forEach(f -> {
                     p.format("%s%s %s;\n", indent, f.importedType, f.fieldName);
                 });
+        p.format("%s%s changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class),
+                imports.add(ChangedFields.class));
 
         // write builder setters
 
         fields.forEach(f -> {
             p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType, f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
+            p.format("%sthis.changedFields = changedFields.add(\"%s\");\n", indent, f.name);
             p.format("%sreturn this;\n", indent);
             p.format("%s}\n", indent.left());
         });
@@ -888,10 +892,9 @@ public final class Generator {
                 .map(f -> ", " + f.fieldName) //
                 .collect(Collectors.joining());
         if (t instanceof EntityType) {
-            p.format("%sreturn new %s(null, %s.EMPTY, %s.EMPTY, \"%s\"%s);\n", //
+            p.format("%sreturn new %s(null, changedFields, %s.EMPTY, \"%s\"%s);\n", //
                     indent.right(), //
                     simpleClassName, //
-                    imports.add(ChangedFields.class), //
                     imports.add(UnmappedFields.class), //
                     t.getFullType(), //
                     builderProps);
