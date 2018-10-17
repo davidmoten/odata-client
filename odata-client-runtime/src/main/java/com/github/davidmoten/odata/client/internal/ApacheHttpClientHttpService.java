@@ -35,11 +35,12 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     public ApacheHttpClientHttpService(Path basePath) {
-        this(basePath, () -> HttpClientBuilder.create().build(), m -> m);
+        this(basePath, () -> HttpClientBuilder.create().useSystemProperties().build(), m -> m);
     }
 
     @Override
     public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
+        System.out.println("GET from url " + url);
         return getResponse(requestHeaders, new HttpGet(url), true, null);
     }
 
@@ -78,7 +79,9 @@ public class ApacheHttpClientHttpService implements HttpService {
             if (content != null && request instanceof HttpEntityEnclosingRequest) {
                 ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(content));
             }
+            System.out.println("executing request");
             org.apache.http.HttpResponse response = client.execute(request);
+            System.out.println("executed request, code=" + response.getStatusLine().getStatusCode());
             final String text;
             if (doInput) {
                 text = Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8);
@@ -89,6 +92,11 @@ public class ApacheHttpClientHttpService implements HttpService {
         } catch (IOException e) {
             throw new ClientException(e);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        client.close();
     }
 
 }

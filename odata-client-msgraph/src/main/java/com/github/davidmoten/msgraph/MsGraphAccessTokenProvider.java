@@ -1,4 +1,4 @@
-package com.github.davidmoten.odata.msgraph;
+package com.github.davidmoten.msgraph;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

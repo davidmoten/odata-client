@@ -160,6 +160,11 @@ public final class TestingService {
                     return new Path(baseUrl, pathStyle);
                 }
 
+                @Override
+                public void close() throws Exception {
+                    // do nothing
+                }
+
             };
         }
 

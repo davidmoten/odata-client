@@ -23,7 +23,7 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
     }
 
     @Override
-    public List<T> values() {
+    public List<T> currentPage() {
         return list;
     }
 

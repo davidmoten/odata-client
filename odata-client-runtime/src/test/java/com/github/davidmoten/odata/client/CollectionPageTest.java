@@ -58,6 +58,11 @@ public class CollectionPageTest {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
+            @Override
+            public void close() throws Exception {
+                // do nothing
+            }
+
         };
         SchemaInfo schemaInfo = new SchemaInfo() {
 
@@ -71,8 +76,8 @@ public class CollectionPageTest {
         Context context = new Context(serializer, service);
         CollectionPageEntity<Person> c = serializer.deserializeCollectionPageEntity(json, Person.class,
                 new ContextPath(context, service.getBasePath()), schemaInfo);
-        assertEquals(2, c.values().size());
-        assertEquals("Russell", c.values().get(0).firstName);
+        assertEquals(2, c.currentPage().size());
+        assertEquals("Russell", c.currentPage().get(0).firstName);
     }
 
     static final class Person implements ODataEntity {
