@@ -129,7 +129,7 @@ public final class RequestHelper {
             response = service.PATCH(url, h, json);
         }
         // deserialize
-        if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
+        if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
             throw new RuntimeException("Returned response code " + response.getResponseCode()
                     + " from PATCH/PUT at url=" + url + ", expected 204 (NO_CONTENT)");
         }
