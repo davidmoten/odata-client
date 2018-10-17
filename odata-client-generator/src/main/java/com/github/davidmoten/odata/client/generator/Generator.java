@@ -355,7 +355,7 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(), t.getProperties(),
                     t.getFields(imports), true);
             printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
 
@@ -549,7 +549,7 @@ public final class Generator {
                     });
             p.format("%s}\n", indent.left());
 
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getProperties(),
+            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(), t.getProperties(),
                     t.getFields(imports), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
@@ -979,7 +979,7 @@ public final class Generator {
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
-            String simpleClassName, List<TProperty> properties, List<Field> fields,
+            String simpleClassName, String fullType, List<TProperty> properties, List<Field> fields,
             boolean ofEntity) {
 
         // write getters and setters
@@ -1048,7 +1048,8 @@ public final class Generator {
                                 .collect(Collectors.joining());
                         if (ofEntity) {
                             params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
-                                    + ", unmappedFields, odataType" + params;
+                                    + ", unmappedFields, odataType==null?\"" + fullType
+                                    + "\":odataType" + params;
                         } else {
                             params = "contextPath" + ", unmappedFields, odataType" + params;
                         }
