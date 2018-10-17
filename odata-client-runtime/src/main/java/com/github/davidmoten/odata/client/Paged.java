@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
 
@@ -19,6 +21,10 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
             list.add(it.next());
         }
         return list;
+    }
+
+    default Stream<T> stream() {
+        return StreamSupport.stream(this.spliterator(), false);
     }
 
     @Override
