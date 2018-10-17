@@ -7,8 +7,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
@@ -55,12 +58,12 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     @Override
     public HttpResponse POST(String url, List<RequestHeader> requestHeaders, String content) {
-        return getResponse(requestHeaders, new HttpGet(url), true, content);
+        return getResponse(requestHeaders, new HttpPost(url), true, content);
     }
 
     @Override
     public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
-        return getResponse(requestHeaders, new HttpGet(url), false, null);
+        return getResponse(requestHeaders, new HttpDelete(url), false, null);
     }
 
     @Override
@@ -77,17 +80,21 @@ public class ApacheHttpClientHttpService implements HttpService {
         try {
             if (content != null && request instanceof HttpEntityEnclosingRequest) {
                 ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(content));
+                System.out.println("content=\n" + content);
             }
             System.out.println("executing request");
-            org.apache.http.HttpResponse response = client.execute(request);
-            System.out.println("executed request, code=" + response.getStatusLine().getStatusCode());
-            final String text;
-            if (doInput) {
-                text = Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-            } else {
-                text = null;
+            try (CloseableHttpResponse response = client.execute(request)) {
+                System.out.println("executed request, code=" + response.getStatusLine().getStatusCode());
+                final String text;
+                if (doInput) {
+                    text = Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                } else {
+                    text = null;
+                }
+
+                System.out.println("response text=\n" + text);
+                return new HttpResponse(response.getStatusLine().getStatusCode(), text);
             }
-            return new HttpResponse(response.getStatusLine().getStatusCode(), text);
         } catch (IOException e) {
             throw new ClientException(e);
         }

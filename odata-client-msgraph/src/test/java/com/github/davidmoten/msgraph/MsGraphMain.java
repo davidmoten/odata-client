@@ -1,7 +1,5 @@
 package com.github.davidmoten.msgraph;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -23,11 +21,24 @@ public class MsGraphMain {
                 .build();
 
         String mailbox = "dnex001@amsa.gov.au";
-        client //
-                .users(mailbox) //
-                .mailFolders() //
+
+//        client //
+//                .users(mailbox) //
+//                .mailFolders() //
+//                .get() //
+//                .forEach(x -> System.out.println(x.getDisplayName().orElse("?")));
+
+        client.users(mailbox) //
+                .mailFolders("Inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .expand("attachments") //
                 .get() //
-                .forEach(x -> System.out.println(x.getDisplayName().orElse("?")));
+                .stream() //
+                .map(x -> x.getSubject().orElse("")) //
+                .forEach(System.out::println);
+        
+        System.exit(0);
 
         Message m = client //
                 .users(mailbox) //
@@ -36,17 +47,18 @@ public class MsGraphMain {
                 .get() //
                 .currentPage().get(0);
 
+        m = client //
+                .users(mailbox) //
+                .messages(m.getId().orElse("")) //
+                .get();
+
         System.out.println(m.getId().orElse(""));
         System.out.println(m.getSubject().orElse(""));
         System.out.println(m.getBody().map(b -> b.getContent().orElse("")).orElse(""));
-        System.out.println(m.getUnmappedFields());
+        // System.out.println(m.getUnmappedFields());
 
-//        m.withImportance(Optional.of(Importance.LOW)).patch();
+        m.withImportance(Optional.of(Importance.LOW)).put();
 
-        Message m2 = client.users(mailbox).messages(m.getId().orElse("")).get();
-        m2.withImportance(Optional.of(Importance.LOW)).patch();
-        assertEquals(Importance.LOW,
-                m2.getImportance().orElse(null));
         System.out.println("=============\ndone");
     }
 

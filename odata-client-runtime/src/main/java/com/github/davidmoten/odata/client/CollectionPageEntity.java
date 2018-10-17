@@ -30,6 +30,7 @@ public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, Col
     public Optional<CollectionPageEntity<T>> nextPage() {
         if (nextLink.isPresent()) {
             // TODO add request headers used in initial call?
+            // TODO handle relative nextLink?
             HttpResponse response = contextPath.context().service().GET(nextLink.get(), Collections.emptyList());
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at
