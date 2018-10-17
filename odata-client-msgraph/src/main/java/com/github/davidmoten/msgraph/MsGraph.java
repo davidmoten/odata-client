@@ -19,6 +19,7 @@ import odata.msgraph.client.container.GraphService;
 
 public final class MsGraph {
 
+    private static final String MSGRAPH_1_0_BASE_URL = "https://graph.microsoft.com/v1.0";
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String OAUTH_BEARER_PREFIX = "Bearer ";
 
@@ -40,12 +41,12 @@ public final class MsGraph {
         Builder(String tenantName) {
             this.tenantName = tenantName;
         }
-        
+
         public Builder2 clientId(String clientId) {
             this.clientId = clientId;
             return new Builder2(this);
         }
-        
+
     }
 
     public static final class Builder2 {
@@ -87,7 +88,7 @@ public final class MsGraph {
                 .clientSecret(clientSecret) //
                 .refreshBeforeExpiry(refreshBeforeExpiryDuration, refreshBeforeExpiryUnit) //
                 .build();
-        Path basePath = new Path("https://graph.microsoft.com/v1.0", PathStyle.IDENTIFIERS_AS_SEGMENTS);
+        Path basePath = new Path(MSGRAPH_1_0_BASE_URL, PathStyle.IDENTIFIERS_AS_SEGMENTS);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
                 () -> HttpClientBuilder.create().useSystemProperties().build(), //
@@ -95,7 +96,7 @@ public final class MsGraph {
         return new GraphService(new Context(Serializer.INSTANCE, httpService));
     }
 
-    private static List<RequestHeader> authenticate(List<RequestHeader> m,
+    public static List<RequestHeader> authenticate(List<RequestHeader> m,
             MsGraphAccessTokenProvider accessTokenProvider) {
         if (m.stream().anyMatch(x -> x.name().equals(AUTHORIZATION_HEADER_NAME))) {
             return m;

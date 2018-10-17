@@ -9,6 +9,7 @@ public class MsGraphMain {
     public static void main(String[] args) {
         System.setProperty("https.proxyHost", "proxy.amsa.gov.au");
         System.setProperty("https.proxyPort", "8080");
+        
         GraphService client = MsGraph //
                 .tenantName(System.getProperty("tenantName")) //
                 .clientId(System.getProperty("clientId")) //
