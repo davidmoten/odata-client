@@ -1,15 +1,22 @@
 package com.github.davidmoten.msgraph;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import odata.msgraph.client.complex.EmailAddress;
+import odata.msgraph.client.complex.ItemBody;
+import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Message;
-import odata.msgraph.client.enums.Importance;
+import odata.msgraph.client.entity.request.MailFolderRequest;
+import odata.msgraph.client.enums.BodyType;
 
 public class MsGraphMain {
 
     public static void main(String[] args) {
+        
+        // this test creates 
         System.setProperty("https.proxyHost", "proxy.amsa.gov.au");
         System.setProperty("https.proxyPort", "8080");
 
@@ -21,57 +28,49 @@ public class MsGraphMain {
                 .build();
 
         String mailbox = "dnex001@amsa.gov.au";
-        long count = client.users(mailbox) //
-            .mailFolders("Drafts") //
-            .messages() //
-            .metadataNone() //
-            .get() //
-            .stream() //
-            .count(); //
-        System.out.println("count in Drafts folder=" + count);
-        
-        Message m = Message.createMessage().withSubject(Optional.of("hi there"));
-        
-        System.exit(0);
-
-//        client //
-//                .users(mailbox) //
-//                .mailFolders() //
-//                .get() //
-//                .forEach(x -> System.out.println(x.getDisplayName().orElse("?")));
-
-        client.users(mailbox) //
-                .mailFolders("Inbox") //
-                .messages() //
-                .filter("isRead eq false") //
-                .expand("attachments") //
+        MailFolderRequest drafts = client //
+                .users(mailbox) //
+                .mailFolders("Drafts");
+        long count = drafts.messages() //
+                .metadataNone() //
                 .get() //
                 .stream() //
-                .map(x -> x.getSubject().orElse("")) //
-                .forEach(System.out::println);
+                .count(); //
+        System.out.println("count in Drafts folder=" + count);
+
+        String id = UUID.randomUUID().toString().substring(0, 6);
+        Message m = Message.createMessage().withSubject(Optional.of("hi there " + id))
+                .withBody(Optional.of(ItemBody.builder() //
+                        .content("hello there how are you") //
+                        .contentType(BodyType.TEXT).build())) //
+                .withFrom(Optional.of(Recipient.builder()
+                        .emailAddress(EmailAddress.builder().address("dnex001@amsa.gov.au").build()).build()));
+
+        // Create the draft message
+        Message saved = drafts.messages().post(m);
+
+        // change subject
+        saved.getUnmappedFields().entrySet().forEach(System.out::println);
+
+        client.users(mailbox).messages(saved.getId().get()).patch(saved.withSubject(Optional.of("new subject " + id)));
+
+        String amendedSubject = drafts.messages(saved.getId().get()).get().getSubject().get();
+        if (!("new subject " + id).equals(amendedSubject)) {
+            throw new RuntimeException("subject not amended");
+        }
         
-        System.exit(0);
-
-        m = client //
-                .users(mailbox) //
-                .messages() //
-                .filter("(receivedDateTime ge 2018-10-13T04:00:00Z) and (receivedDateTime le 2018-10-13T05:00:00Z)") //
+        long count2 = drafts.messages() //
+                .metadataNone() //
                 .get() //
-                .currentPage().get(0);
+                .stream() //
+                .count(); //
+        if (count2 != count + 1) {
+            throw new RuntimeException("unexpected count");
+        }
 
-        m = client //
-                .users(mailbox) //
-                .messages(m.getId().orElse("")) //
-                .get();
-
-        System.out.println(m.getId().orElse(""));
-        System.out.println(m.getSubject().orElse(""));
-        System.out.println(m.getBody().map(b -> b.getContent().orElse("")).orElse(""));
-        // System.out.println(m.getUnmappedFields());
-
-        m.withImportance(Optional.of(Importance.LOW)).put();
-
-        System.out.println("=============\ndone");
+        // Delete the draft message
+        drafts.messages(saved.getId().get()) //
+                .delete();
     }
 
 }
