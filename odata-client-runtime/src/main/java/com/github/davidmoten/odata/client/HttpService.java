@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
@@ -18,8 +19,9 @@ public interface HttpService {
 
     Path getBasePath();
 
-    public static HttpService createDefaultService(Path path) {
-        return new DefaultHttpService(path);
+    public static HttpService createDefaultService(Path path,
+            Function<Map<String, String>, Map<String, String>> requestHeadersModifier) {
+        return new DefaultHttpService(path, requestHeadersModifier);
     }
 
 }

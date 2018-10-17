@@ -1,18 +1,15 @@
 package com.github.davidmoten.odata.client.internal;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpMessage;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
@@ -28,39 +25,42 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     private final Path basePath;
     private final CloseableHttpClient client;
+    private final Function<Map<String, String>, Map<String, String>> requestHeadersModifier;
 
-    public ApacheHttpClientHttpService(Path basePath, Supplier<CloseableHttpClient> clientSupplier) {
+    public ApacheHttpClientHttpService(Path basePath, Supplier<CloseableHttpClient> clientSupplier,
+            Function<Map<String, String>, Map<String, String>> requestHeadersModifier) {
         this.basePath = basePath;
         this.client = clientSupplier.get();
+        this.requestHeadersModifier = requestHeadersModifier;
     }
 
     public ApacheHttpClientHttpService(Path basePath) {
-        this(basePath, () -> HttpClientBuilder.create().build());
+        this(basePath, () -> HttpClientBuilder.create().build(), m -> m);
     }
 
     @Override
     public HttpResponse GET(String url, Map<String, String> requestHeaders) {
-        return getResponse(requestHeaders, new HttpGet(url));
+        return getResponse(requestHeaders, new HttpGet(url), true, null);
     }
 
     @Override
     public HttpResponse PATCH(String url, Map<String, String> requestHeaders, String content) {
-        return getResponseFromRequestWithContent(requestHeaders, content, new HttpPatch(url));
+        return getResponse(requestHeaders, new HttpPatch(url), false, content);
     }
 
     @Override
     public HttpResponse PUT(String url, Map<String, String> requestHeaders, String content) {
-        return getResponseFromRequestWithContent(requestHeaders, content, new HttpPut(url));
+        return getResponse(requestHeaders, new HttpPut(url), false, content);
     }
 
     @Override
     public HttpResponse POST(String url, Map<String, String> requestHeaders, String content) {
-        return getResponseFromRequestWithContent(requestHeaders, content, new HttpPost(url));
+        return getResponse(requestHeaders, new HttpGet(url), true, content);
     }
 
     @Override
     public HttpResponse DELETE(String url, Map<String, String> requestHeaders) {
-        return getResponse(requestHeaders, new HttpDelete(url));
+        return getResponse(requestHeaders, new HttpGet(url), false, null);
     }
 
     @Override
@@ -68,30 +68,27 @@ public class ApacheHttpClientHttpService implements HttpService {
         return basePath;
     }
 
-    private HttpResponse getResponse(Map<String, String> requestHeaders, HttpUriRequest h) {
-        addHeaders(h, requestHeaders);
+    private HttpResponse getResponse(Map<String, String> requestHeaders, HttpUriRequest request, boolean doInput,
+            String content) {
+
+        for (Entry<String, String> entry : requestHeadersModifier.apply(requestHeaders).entrySet()) {
+            request.addHeader(entry.getKey(), entry.getValue());
+        }
         try {
-            org.apache.http.HttpResponse response = client.execute(h);
-            return new HttpResponse(response.getStatusLine().getStatusCode(),
-                    Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8));
+            if (content != null && request instanceof HttpEntityEnclosingRequest) {
+                ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(content));
+            }
+            org.apache.http.HttpResponse response = client.execute(request);
+            final String text;
+            if (doInput) {
+                text = Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+            } else {
+                text = null;
+            }
+            return new HttpResponse(response.getStatusLine().getStatusCode(), text);
         } catch (IOException e) {
             throw new ClientException(e);
         }
     }
 
-    private <T extends HttpEntityEnclosingRequest & HttpUriRequest> HttpResponse getResponseFromRequestWithContent(
-            Map<String, String> requestHeaders, String content, T h) {
-        try {
-            h.setEntity(new StringEntity(content));
-        } catch (UnsupportedEncodingException e) {
-            throw new ClientException(e);
-        }
-        return getResponse(requestHeaders, h);
-    }
-
-    private static void addHeaders(HttpMessage m, Map<String, String> requestHeaders) {
-        for (Entry<String, String> entry : requestHeaders.entrySet()) {
-            m.addHeader(entry.getKey(), entry.getValue());
-        }
-    }
 }
