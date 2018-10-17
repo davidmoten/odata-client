@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 
@@ -119,7 +118,7 @@ public class GraphServiceTest {
         // mark as read
         client.users("fred") //
                 .messages(m.getId().get()) //
-                .patch(m.withIsRead(Optional.of(true)));
+                .patch(m.withIsRead(true));
 
         // List<Option> queryOptions = Lists.newArrayList( //
         // new QueryOption("$filter", "isRead eq false"), //

@@ -3,8 +3,6 @@ package com.github.davidmoten.odata.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Optional;
-
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
@@ -25,7 +23,7 @@ public class Test1ServiceTest {
     public void testChangedFieldsAreSet() {
         Product p = Product.builder().name("bingo").build();
         assertTrue(p.getChangedFields().toSet().isEmpty());
-        p = p.withName(Optional.of("joey")).withID(Optional.of(124));
+        p = p.withName("joey").withID(124);
         assertEquals(Sets.newHashSet("Name", "ID"), p.getChangedFields().toSet());
     }
 

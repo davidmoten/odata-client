@@ -93,7 +93,7 @@ public class DemoServiceTest {
     public void serializeProduct() {
         Product p = Product //
                 .create() //
-                .withDescription(Optional.of("Lower fat milk"));
+                .withDescription("Lower fat milk");
         Serializer.INSTANCE.serialize(p);
         assertEquals("Lower fat milk", p.getDescription().get());
     }
@@ -106,7 +106,7 @@ public class DemoServiceTest {
                 .build();
         Product p = Product //
                 .create() //
-                .withDescription(Optional.of("Lowest fat milk"));
+                .withDescription("Lowest fat milk");
         Product product = client.products(1).patch(p);
         assertEquals("Lowest fat milk", product.getDescription().get());
     }
@@ -118,7 +118,7 @@ public class DemoServiceTest {
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH) //
                 .build();
         Product p = client.products(1).get();
-        Product product = p.withDescription(Optional.of("Lowest fat milk")).patch();
+        Product product = p.withDescription("Lowest fat milk").patch();
         assertEquals("Lowest fat milk", product.getDescription().get());
     }
 
