@@ -24,10 +24,10 @@ public class CarServiceTest {
     @Test
     public void testWithDefaultHttpService() throws Exception {
         Path basePath = new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
-        HttpService service = HttpService.createDefaultService(basePath);
+        HttpService service = HttpService.createDefaultService(basePath, m -> m);
         checkServiceCalls(service).stop();
     }
-    
+
     @Test
     public void testWithApacheHttpService() throws Exception {
         Path basePath = new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
