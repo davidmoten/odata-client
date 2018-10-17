@@ -27,21 +27,21 @@ Status: *pre-alpha* (in development)
 Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread:
 
 ```java
-GraphService client = MsGraph //
-    .tenantName(tenantName) //
-    .clientId(clientId) //
-    .clientSecret(clientSecret) //
-    .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
+GraphService client = MsGraph 
+    .tenantName(tenantName) 
+    .clientId(clientId) 
+    .clientSecret(clientSecret) 
+    .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
     .build();
 String mailbox = "me";
-client.users(mailbox) //
-    .mailFolders("Inbox") //
-    .messages() //
-    .filter("isRead eq false") //
-    .expand("attachments") //
-    .get() //
-    .stream() //
-    .map(x -> x.getSubject().orElse("")) //
+client.users(mailbox) 
+    .mailFolders("Inbox") 
+    .messages() 
+    .filter("isRead eq false") 
+    .expand("attachments") 
+    .get() 
+    .stream() 
+    .map(x -> x.getSubject().orElse("")) 
     .forEach(System.out::println);
 ```
 
