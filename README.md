@@ -10,6 +10,7 @@ Status: *pre-alpha* (in development)
 * OData inheritance supported for serialization and derialization
 * Interschema references supported (Thompson-Reuters uses interschema references)
 * Http calls using java.net.URLConnection or using Apache HttpClient
+* Collections are `Iterable` and streamable (via `.stream()`)
 * Microsoft Graph v1.0 client
 
 ## Constraints
