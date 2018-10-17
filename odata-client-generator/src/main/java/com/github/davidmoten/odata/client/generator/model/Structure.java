@@ -119,4 +119,6 @@ public abstract class Structure<T> {
     public abstract String getSimpleClassName();
 
     public abstract String getPackage();
+
+    public abstract String getFullType();
 }

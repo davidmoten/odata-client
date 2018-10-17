@@ -21,6 +21,18 @@ public class MsGraphMain {
                 .build();
 
         String mailbox = "dnex001@amsa.gov.au";
+        long count = client.users(mailbox) //
+            .mailFolders("Drafts") //
+            .messages() //
+            .metadataNone() //
+            .get() //
+            .stream() //
+            .count(); //
+        System.out.println("count in Drafts folder=" + count);
+        
+        Message m = Message.createMessage().withSubject(Optional.of("hi there"));
+        
+        System.exit(0);
 
 //        client //
 //                .users(mailbox) //
@@ -40,7 +52,7 @@ public class MsGraphMain {
         
         System.exit(0);
 
-        Message m = client //
+        m = client //
                 .users(mailbox) //
                 .messages() //
                 .filter("(receivedDateTime ge 2018-10-13T04:00:00Z) and (receivedDateTime le 2018-10-13T05:00:00Z)") //

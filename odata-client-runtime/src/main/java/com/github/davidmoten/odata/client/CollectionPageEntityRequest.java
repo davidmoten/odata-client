@@ -25,8 +25,7 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().GET(cp.toUrl(), options.getRequestHeaders());
         RequestHelper.get(cp, cls, options, schemaInfo);
-        return cp.context().serializer().deserializeCollectionPageEntity(r.getText(), cls, cp,
-                schemaInfo);
+        return cp.context().serializer().deserializeCollectionPageEntity(r.getText(), cls, cp, schemaInfo);
     }
 
     T post(CollectionEntityRequestOptions options, T entity) {
@@ -71,6 +70,18 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
 
     public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(clause);
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> metadataFull() {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).metadataFull();
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> metadataMinimal() {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).metadataMinimal();
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> metadataNone() {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).metadataNone();
     }
 
 }

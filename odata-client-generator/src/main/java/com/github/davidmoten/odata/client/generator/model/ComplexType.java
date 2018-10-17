@@ -73,6 +73,7 @@ public final class ComplexType extends Structure<TComplexType> {
         return names.getDirectoryComplexType(schema());
     }
 
+    @Override
     public String getFullType() {
         return names.getFullTypeFromSimpleType(schema(), getName());
     }
