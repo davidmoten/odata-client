@@ -40,7 +40,6 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     @Override
     public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
-        System.out.println("GET from url " + url);
         return getResponse(requestHeaders, new HttpGet(url), true, null);
     }
 
@@ -71,7 +70,7 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request, boolean doInput,
             String content) {
-
+        System.out.println(request.getMethod() + " from url " + request.getURI());
         for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
             request.addHeader(header.name(), header.value());
         }
