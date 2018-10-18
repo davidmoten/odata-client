@@ -851,15 +851,11 @@ public final class Generator {
     private void writeBuilder(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
         String builderSuffix = t.getBaseType() == null ? "" : simpleClassName;
 
-        // p.format("\n%spublic static %s create%s() {\n", indent, simpleClassName,
-        // builderSuffix);
-        // p.format("%sreturn builder%s().build();\n", indent.right(), builderSuffix);
-        // p.format("%s}\n", indent.left());
-
         p.format("\n%spublic static Builder builder%s() {\n", indent, builderSuffix);
         p.format("%sreturn new Builder();\n", indent.right());
         p.format("%s}\n", indent.left());
-        // write builder
+
+        // write Builder class
         p.format("\n%spublic static final class Builder {\n", indent);
         indent.right();
         List<Field> fields = t.getFields(imports);
@@ -867,10 +863,14 @@ public final class Generator {
         // write builder fields
         fields //
                 .forEach(f -> {
-                    p.format("%s%s %s;\n", indent, f.importedType, f.fieldName);
+                    p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName);
                 });
-        p.format("%s%s changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class),
+        p.format("%sprivate %s changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class),
                 imports.add(ChangedFields.class));
+
+        p.format("\n%sBuilder() {\n", indent);
+        p.format("%s// prevent instantiation\n", indent.right());
+        p.format("%s}\n", indent.left());
 
         // write builder setters
 
