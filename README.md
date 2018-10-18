@@ -23,6 +23,8 @@ Status: *pre-alpha* (in development)
 * support NavigationPropertyBindings
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
+* support functions
+* support actions
 
 ## MsGraph Client Usage
 Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread:
