@@ -16,9 +16,12 @@ public class MsGraphMain {
 
     public static void main(String[] args) {
 
-        // this test creates
-        System.setProperty("https.proxyHost", "proxy.amsa.gov.au");
-        System.setProperty("https.proxyPort", "8080");
+        // this test
+        // counts the messages in Drafts folder
+        // adds a new message to the Drafts folder
+        // changes the subject of the new message
+        // checks that the count of messages has increased by one
+        // deletes the message
 
         GraphService client = MsGraph //
                 .tenantName(System.getProperty("tenantName")) //
@@ -31,19 +34,21 @@ public class MsGraphMain {
         MailFolderRequest drafts = client //
                 .users(mailbox) //
                 .mailFolders("Drafts");
+        
+        // count number of messages in Drafts
         long count = drafts.messages() //
                 .metadataNone() //
                 .get() //
                 .stream() //
                 .count(); //
-        System.out.println("count in Drafts folder=" + count);
 
+        // Prepare a new message
         String id = UUID.randomUUID().toString().substring(0, 6);
         Message m = Message.builderMessage() //
                 .subject("hi there " + id) //
                 .body(ItemBody.builder() //
-                .content("hello there how are you") //
-                .contentType(BodyType.TEXT).build()) //
+                        .content("hello there how are you") //
+                        .contentType(BodyType.TEXT).build()) //
                 .from(Recipient.builder() //
                         .emailAddress(EmailAddress.builder() //
                                 .address(mailbox) //
@@ -55,16 +60,23 @@ public class MsGraphMain {
         Message saved = drafts.messages().post(m);
 
         // change subject
-        saved.getUnmappedFields().entrySet().forEach(System.out::println);
+        client //
+                .users(mailbox) //
+                .messages(saved.getId().get()) //
+                .patch(saved.withSubject("new subject " + id));
 
-        client.users(mailbox).messages(saved.getId().get()).patch(saved.withSubject("new subject " + id));
-
-        String amendedSubject = drafts.messages(saved.getId().get()).get().getSubject().get();
+        // check the subject has changed by reloading the message
+        String amendedSubject = drafts //
+                .messages(saved.getId().get()) //
+                .get() //
+                .getSubject() //
+                .get();
         if (!("new subject " + id).equals(amendedSubject)) {
             throw new RuntimeException("subject not amended");
         }
 
-        long count2 = drafts.messages() //
+        long count2 = drafts //
+                .messages() //
                 .metadataNone() //
                 .get() //
                 .stream() //
@@ -74,7 +86,8 @@ public class MsGraphMain {
         }
 
         // Delete the draft message
-        drafts.messages(saved.getId().get()) //
+        drafts //
+                .messages(saved.getId().get()) //
                 .delete();
     }
 
