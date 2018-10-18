@@ -937,7 +937,7 @@ public final class Generator {
 
     private static void addContextPathInjectableField(Imports imports, Indent indent, PrintWriter p) {
         // add context path field
-        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
+        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         addContextPathField(imports, indent, p);
     }
 
