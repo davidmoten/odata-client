@@ -308,55 +308,8 @@ public final class Generator {
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
-            // write Patched classs
-            p.format("\n%spublic static final class %s extends %s implements %s<%s> {\n", indent, CLASS_NAME_PATCHED,
-                    simpleClassName, imports.add(Patchable.class), simpleClassName);
-
-            // write Patched constructor
-            indent.right();
-            writeConstructorSignature(t, CLASS_NAME_PATCHED, imports, indent, p);
-            indent.right();
-            String superFields = t.getFields(imports) //
-                    .stream() //
-                    .map(f -> ", " + f.fieldName) //
-                    .collect(Collectors.joining());
-            p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent, superFields);
-            p.format("%s}\n", indent.left());
-
-            // write patch() method
-            {
-                p.format("\n%s@%s\n", indent, imports.add(Override.class));
-                p.format("%spublic %s patch() {\n", indent, simpleClassName);
-                String params = t.getFields(imports) //
-                        .stream() //
-                        .map(f -> ", " + f.fieldName) //
-                        .collect(Collectors.joining());
-
-                p.format("%s%s.patch(this, contextPath, %s.EMPTY,  %s.INSTANCE);\n", indent.right(),
-                        imports.add(RequestHelper.class), imports.add(RequestOptions.class),
-                        imports.add(t.getFullClassNameSchema()));
-                p.format("%s// pass null for changedFields to reset it\n", indent);
-                p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName,
-                        params);
-                p.format("%s}\n", indent.left());
-            }
-            {
-                p.format("\n%s@%s\n", indent, imports.add(Override.class));
-                p.format("%spublic %s put() {\n", indent, simpleClassName);
-                String params = t.getFields(imports) //
-                        .stream() //
-                        .map(f -> ", " + f.fieldName) //
-                        .collect(Collectors.joining());
-
-                p.format("%s%s.put(this, contextPath, %s.EMPTY,  %s.INSTANCE);\n", indent.right(),
-                        imports.add(RequestHelper.class), imports.add(RequestOptions.class),
-                        imports.add(t.getFullClassNameSchema()));
-                p.format("%s// pass null for changedFields to reset it\n", indent);
-                p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName,
-                        params);
-                p.format("%s}\n", indent.left());
-            }
-            p.format("%s}\n", indent.left());
+            // write Patched class
+            writePatchedClass(t, simpleClassName, imports, indent, p);
 
             p.format("%s}\n", indent.left());
 
@@ -364,6 +317,49 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writePatchedClass(EntityType t, String simpleClassName, Imports imports, Indent indent,
+            PrintWriter p) {
+        p.format("\n%spublic static final class %s extends %s implements %s<%s> {\n", indent, CLASS_NAME_PATCHED,
+                simpleClassName, imports.add(Patchable.class), simpleClassName);
+
+        // write Patched constructor
+        indent.right();
+        writeConstructorSignature(t, CLASS_NAME_PATCHED, imports, indent, p);
+        indent.right();
+        String superFields = t.getFields(imports) //
+                .stream() //
+                .map(f -> ", " + f.fieldName) //
+                .collect(Collectors.joining());
+        p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent, superFields);
+        p.format("%s}\n", indent.left());
+
+        // write patch() method
+        writePutOrPatchMethod(t, simpleClassName, imports, indent, p, true);
+
+        // write put method
+        writePutOrPatchMethod(t, simpleClassName, imports, indent, p, false);
+
+        p.format("%s}\n", indent.left());
+    }
+
+    private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports, Indent indent,
+            PrintWriter p, boolean isPatch) {
+        String methodName = isPatch ? "patch" : "put";
+        p.format("\n%s@%s\n", indent, imports.add(Override.class));
+        p.format("%spublic %s %s() {\n", indent, simpleClassName, methodName);
+        String params = t.getFields(imports) //
+                .stream() //
+                .map(f -> ", " + f.fieldName) //
+                .collect(Collectors.joining());
+
+        p.format("%s%s.%s(this, contextPath, %s.EMPTY,  %s.INSTANCE);\n", indent.right(),
+                imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class),
+                imports.add(t.getFullClassNameSchema()));
+        p.format("%s// pass null for changedFields to reset it\n", indent);
+        p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName, params);
+        p.format("%s}\n", indent.left());
     }
 
     private static void addChangedFieldsField(Imports imports, Indent indent, PrintWriter p) {
