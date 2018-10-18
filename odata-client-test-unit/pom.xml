@@ -53,7 +53,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/metadata1.xml</metadata>
+                            <metadata>src/main/odata/metadata1.xml</metadata>
                         </configuration>
                     </execution>
                     <execution>
@@ -63,7 +63,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/metadata2.xml</metadata>
+                            <metadata>src/main/odata/metadata2.xml</metadata>
                         </configuration>
                     </execution>
                     <execution>
@@ -73,7 +73,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/metadata3.xml</metadata>
+                            <metadata>src/main/odata/metadata3.xml</metadata>
                             <schemas>
                                 <schema>
                                     <namespace>Test3.A</namespace>
@@ -93,7 +93,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/metadata4.xml</metadata>
+                            <metadata>src/main/odata/metadata4.xml</metadata>
                         </configuration>
                     </execution>
                 </executions>
