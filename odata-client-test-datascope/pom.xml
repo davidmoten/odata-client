@@ -10,7 +10,7 @@
         <artifactId>odata-client-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>odata-client-test-reuters</artifactId>
+    <artifactId>odata-client-test-datascope</artifactId>
     <name>${project.artifactId}</name>
     <description>OData client generation test</description>
 
@@ -47,13 +47,23 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-northwind-model</id>
+                        <id>generate-extractions-model</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/datascopeapi-reuters-metadata.xml</metadata>
+                            <metadata>src/odata/datascopeapi-extractions-metadata.xml</metadata>
+                        </configuration>
+                    </execution>
+                        <execution>
+                        <id>generate-search-model</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/odata/datascopeapi-search-metadata.xml</metadata>
                         </configuration>
                     </execution>
                 </executions>
