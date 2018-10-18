@@ -251,7 +251,7 @@ public final class Generator {
 
             p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
             printPropertyOrder(imports, p, t.getProperties());
-            p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
+            p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
                     imports.add(ODataEntity.class));
 
             indent.right();
@@ -472,7 +472,7 @@ public final class Generator {
             if (!t.hasBaseType()) {
                 p.format("%sthis.contextPath = contextPath;\n", indent);
             }
-            p.format("%sthis.unmappedFields = unmappedFields;\n", indent.right());
+            p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
             if (t.getBaseType() == null) {
                 p.format("%sthis.odataType = odataType;\n", indent);
             }
