@@ -119,4 +119,9 @@ public final class EntityType extends Structure<TEntityType> {
         return names.getFullClassNameSchema(schema());
     }
 
+    @Override
+    public boolean isAbstract() {
+        return value.isAbstract();
+    }
+
 }
