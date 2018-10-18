@@ -13,21 +13,21 @@ Status: *pre-alpha* (in development)
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Microsoft Graph v1.0 client
 
-## Constraints
+## Limitations
 * Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation)
 
-## TODO
-* support OpenType (arbitrary extra fields get written)
-* support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
-* support precision, scale (maybe)
-* support NavigationPropertyBindings
-* more decoupling of model from presentation in generation
-* use annotations (docs) in javadoc
-* support functions
-* support actions
+## MsGraph Client 
+Use this dependency:
 
-## MsGraph Client Usage
-Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread:
+```xml
+<dependency>
+    <groupId>com.github.davidmoten</groupId>
+    <artifactId>odata-client-msgraph</artifactId>
+    <version>VERSION_HERE</version>
+</dependency>
+```
+### Create a client
+The first step is to create a client that will be used for all calls in your application.
 
 ```java
 GraphService client = MsGraph 
@@ -36,6 +36,11 @@ GraphService client = MsGraph
     .clientSecret(clientSecret) 
     .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
     .build();
+```
+### Usage example 1 - simple
+Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread:
+
+```java
 String mailbox = "me";
 client.users(mailbox) 
     .mailFolders("Inbox") 
@@ -47,6 +52,7 @@ client.users(mailbox)
     .map(x -> x.getSubject().orElse("")) 
     .forEach(System.out::println);
 ```
+### Usage example 2 - more complex
 
 Here's a more complex example which does the following:
 
@@ -119,6 +125,14 @@ drafts //
     .messages(saved.getId().get()) //
     .delete();
 ```
-
+## TODO
+* support OpenType (arbitrary extra fields get written)
+* support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
+* support precision, scale (maybe)
+* support NavigationPropertyBindings
+* more decoupling of model from presentation in generation
+* use annotations (docs) in javadoc
+* support functions
+* support actions
 
 
