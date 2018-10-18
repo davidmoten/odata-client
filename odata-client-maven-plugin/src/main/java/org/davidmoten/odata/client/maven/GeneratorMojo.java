@@ -2,6 +2,7 @@ package org.davidmoten.odata.client.maven;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -15,9 +16,11 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TDataServices;
 import org.oasisopen.odata.csdl.v4.TEdmx;
@@ -31,7 +34,7 @@ import com.github.davidmoten.odata.client.generator.SchemaOptions;
 public class GeneratorMojo extends AbstractMojo {
 
     @Parameter(name = "metadata", required = true)
-    File metadata;
+    String metadata;
 
     @Parameter(name = "autoPackage", defaultValue = "true")
     boolean autoPackage;
@@ -47,6 +50,9 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
+    
+    @Component
+    MavenProject project;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -60,7 +66,28 @@ public class GeneratorMojo extends AbstractMojo {
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix, s.pageComplexTypes))
                 .collect(Collectors.toList());
 
-        try (InputStream is = new FileInputStream(metadata)) {
+        InputStream is = null;
+        try {
+            InputStream cis = GeneratorMojo.class.getResourceAsStream(metadata);
+            if (cis == null) {
+                File metadataFile = new File(metadata);
+                System.out.println("metadataFile = " + metadataFile.getAbsolutePath());
+                if (metadataFile.exists()) {
+                    is = new FileInputStream(metadataFile);
+                } else {
+                    metadataFile = new File(project.getBasedir(), metadata);
+                    System.out.println("metadataFile = " + metadataFile.getAbsolutePath());
+                    if (metadataFile.exists()) {
+                        is = new FileInputStream(metadataFile);
+                    } else {
+                    throw new MojoExecutionException(
+                            "could not find metadata on classpath or file system: " + metadata);
+                    }
+                }
+            } else {
+                is = cis;
+            }
+
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
             TEdmx t = unmarshaller.unmarshal(new StreamSource(is), TEdmx.class).getValue();
@@ -95,6 +122,14 @@ public class GeneratorMojo extends AbstractMojo {
                 throw (MojoExecutionException) e;
             } else {
                 throw new MojoExecutionException(e.getMessage(), e);
+            }
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    throw new MojoExecutionException(e.getMessage(), e);
+                }
             }
         }
     }
