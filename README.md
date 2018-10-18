@@ -45,5 +45,77 @@ client.users(mailbox)
     .forEach(System.out::println);
 ```
 
+Here's a more complex example which does the following:
+
+* Counts the number of messages in the *Drafts* folder
+* Prepares a new message
+* Saves the message in the *Drafts* folder
+* Changes the subject of the saved message
+* Checks the subject has changed by reloading
+* Checks the count has increased by one
+* Deletes the message
+
+```java
+MailFolderRequest drafts = client //
+    .users(mailbox) //
+    .mailFolders("Drafts");
+
+// count number of messages in Drafts
+long count = drafts.messages() //
+    .metadataNone() //
+    .get() //
+    .stream() //
+    .count(); //
+
+// Prepare a new message
+String id = UUID.randomUUID().toString().substring(0, 6);
+Message m = Message
+    .builderMessage() //
+    .subject("hi there " + id) //
+    .body(ItemBody.builder() //
+            .content("hello there how are you") //
+            .contentType(BodyType.TEXT).build()) //
+    .from(Recipient.builder() //
+            .emailAddress(EmailAddress.builder() //
+                    .address(mailbox) //
+                    .build())
+            .build())
+    .build();
+
+// Create the draft message
+Message saved = drafts.messages().post(m);
+
+// change subject
+client //
+    .users(mailbox) //
+    .messages(saved.getId().get()) //
+    .patch(saved.withSubject("new subject " + id));
+
+// check the subject has changed by reloading the message
+String amendedSubject = drafts //
+    .messages(saved.getId().get()) //
+    .get() //
+    .getSubject() //
+    .get();
+if (!("new subject " + id).equals(amendedSubject)) {
+    throw new RuntimeException("subject not amended");
+}
+
+long count2 = drafts //
+    .messages() //
+    .metadataNone() //
+    .get() //
+    .stream() //
+    .count(); //
+if (count2 != count + 1) {
+    throw new RuntimeException("unexpected count");
+}
+
+// Delete the draft message
+drafts //
+    .messages(saved.getId().get()) //
+    .delete();
+```
+
 
 
