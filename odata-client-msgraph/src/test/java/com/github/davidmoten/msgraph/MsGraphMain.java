@@ -1,6 +1,5 @@
 package com.github.davidmoten.msgraph;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
