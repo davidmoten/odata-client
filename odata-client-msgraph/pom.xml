@@ -76,6 +76,25 @@
                     </execution>
                 </executions>
             </plugin>
+<!--             <plugin> -->
+<!--                 <groupId>org.apache.olingo</groupId> -->
+<!--                 <artifactId>pojogen-maven-plugin</artifactId> -->
+<!--                 <version>4.5.0</version> -->
+<!--                 <configuration> -->
+<!--                     <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory> -->
+<!--                     <localEdm>${basedir}/../odata-client-generator/src/test/resources/msgraph-1.0-20180905-formatted.xml</localEdm> -->
+<!--                     <basePackage>odata.msgraph.olingo.client</basePackage> -->
+<!--                 </configuration> -->
+<!--                 <executions> -->
+<!--                     <execution> -->
+<!--                         <id>v4pojoGen</id> -->
+<!--                         <phase>generate-sources</phase> -->
+<!--                         <goals> -->
+<!--                             <goal>v4pojoGen</goal> -->
+<!--                         </goals> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
+<!--             </plugin> -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -126,6 +145,25 @@
                                         <ignore></ignore>
                                     </action>
                                 </pluginExecution>
+<!--                                 <pluginExecution> -->
+<!--                                     <pluginExecutionFilter> -->
+<!--                                         <groupId> -->
+<!--                                             org.apache.olingo -->
+<!--                                         </groupId> -->
+<!--                                         <artifactId> -->
+<!--                                             pojogen-maven-plugin -->
+<!--                                         </artifactId> -->
+<!--                                         <versionRange> -->
+<!--                                             [4.5.0,) -->
+<!--                                         </versionRange> -->
+<!--                                         <goals> -->
+<!--                                             <goal>v4pojoGen</goal> -->
+<!--                                         </goals> -->
+<!--                                     </pluginExecutionFilter> -->
+<!--                                     <action> -->
+<!--                                         <ignore></ignore> -->
+<!--                                     </action> -->
+<!--                                 </pluginExecution> -->
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
