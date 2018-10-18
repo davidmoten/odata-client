@@ -52,6 +52,12 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

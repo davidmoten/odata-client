@@ -110,17 +110,17 @@ public final class Serializer {
         try {
             ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
-            List<T> list2 = new ArrayList<T>();
+            List<T> list = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
                 String text = m.writeValueAsString(item);
                 Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo,
                         cls, text);
-                list2.add(deserialize(text, subClass, contextPath));
+                list.add(deserialize(text, subClass, contextPath));
             }
             // TODO support relative urls using odata.context if present
-            Optional<String> nextLink2 = Optional.ofNullable(o.get("@odata.nextLink"))
+            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink"))
                     .map(JsonNode::asText);
-            return new CollectionPageEntity<T>(cls, list2, nextLink2, contextPath, schemaInfo);
+            return new CollectionPageEntity<T>(cls, list, nextLink, contextPath, schemaInfo);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

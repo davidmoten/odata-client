@@ -17,6 +17,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.HttpResponse;
@@ -25,6 +27,8 @@ import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.RequestHeader;
 
 public class ApacheHttpClientHttpService implements HttpService {
+
+    private static final Logger log = LoggerFactory.getLogger(ApacheHttpClientHttpService.class);
 
     private final Path basePath;
     private final CloseableHttpClient client;
@@ -73,26 +77,25 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request, boolean doInput,
             String content) {
-        System.out.println(request.getMethod() + " from url " + request.getURI());
+        log.debug("{} from url {}", request.getMethod(), request.getURI());
         for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
             request.addHeader(header.name(), header.value());
         }
         try {
             if (content != null && request instanceof HttpEntityEnclosingRequest) {
                 ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(content));
-                System.out.println("content=\n" + content);
+                log.debug("content={}", content);
             }
-            System.out.println("executing request");
+            log.debug("executing request");
             try (CloseableHttpResponse response = client.execute(request)) {
-                System.out.println("executed request, code=" + response.getStatusLine().getStatusCode());
+                log.debug("executed request, code={}", response.getStatusLine().getStatusCode());
                 final String text;
                 if (doInput) {
                     text = Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8);
                 } else {
                     text = null;
                 }
-
-                System.out.println("response text=\n" + text);
+                log.debug("response text=\n{}", text);
                 return new HttpResponse(response.getStatusLine().getStatusCode(), text);
             }
         } catch (IOException e) {
@@ -102,7 +105,9 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     @Override
     public void close() throws Exception {
+        log.info("closing client");
         client.close();
+        log.info("closed client");
     }
 
 }
