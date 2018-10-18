@@ -10,12 +10,17 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.Util;
 
 public final class MsGraphAccessTokenProvider {
+
+    private static final Logger log = LoggerFactory.getLogger(MsGraphAccessTokenProvider.class);
 
     private static final int OK = 200;
     private static final String POST = "POST";
@@ -68,8 +73,7 @@ public final class MsGraphAccessTokenProvider {
 
     private String refreshAccessToken() {
         try {
-            //TODO use logger
-            System.out.println("getting new token");
+            log.debug("refreshing access token");
             URL url = new URL(OAUTH2_TOKEN_URL_PREFIX + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
             con.setRequestMethod(POST);
@@ -89,13 +93,14 @@ public final class MsGraphAccessTokenProvider {
             String json = Util.readString(con.getInputStream(), StandardCharsets.UTF_8);
 
             if (responseCode != OK) {
-                throw new RuntimeException("Response code=" + responseCode + ", output=" + json);
+                throw new IOException("Response code=" + responseCode + ", output=" + json);
             } else {
                 ObjectMapper om = new ObjectMapper();
                 JsonNode o = om.readTree(json);
                 // update the cached values
                 expiryTime = o.get("expires_on").asLong() * 1000;
                 accessToken = o.get("access_token").asText();
+                log.debug("refreshed access token");
                 return accessToken;
             }
         } catch (IOException e) {
@@ -123,7 +128,7 @@ public final class MsGraphAccessTokenProvider {
         final String tenantName;
         String clientId;
         String clientSecret;
-        
+
         // default to refresh access token on every call of get()
         long refreshBeforeExpiryMs = Long.MAX_VALUE;
 
