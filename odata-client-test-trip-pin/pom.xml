@@ -53,7 +53,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/odata-test-service-trip-pin-metadata.xml</metadata>
+                            <metadata>src/main/odata/odata-test-service-trip-pin-metadata.xml</metadata>
                             <schemas>
                                 <schema>
                                     <namespace>Microsoft.OData.SampleService.Models.TripPin</namespace>

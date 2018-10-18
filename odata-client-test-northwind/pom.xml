@@ -53,7 +53,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/test/resources/odata-test-service-northwind-metadata.xml</metadata>
+                            <metadata>src/main/odata/odata-test-service-northwind-metadata.xml</metadata>
                             <schemas>
                                 <schema>
                                     <namespace>NorthwindModel</namespace>

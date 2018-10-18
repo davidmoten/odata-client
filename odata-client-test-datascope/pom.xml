@@ -53,7 +53,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/odata/datascopeapi-extractions-metadata.xml</metadata>
+                            <metadata>src/main/odata/datascopeapi-extractions-metadata.xml</metadata>
                         </configuration>
                     </execution>
                         <execution>
@@ -63,7 +63,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/odata/datascopeapi-search-metadata.xml</metadata>
+                            <metadata>src/main/odata/datascopeapi-search-metadata.xml</metadata>
                         </configuration>
                     </execution>
                 </executions>
