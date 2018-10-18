@@ -34,6 +34,8 @@ public abstract class Structure<T> {
     public final boolean hasBaseType() {
         return getBaseType() != null;
     }
+    
+    public abstract boolean isAbstract();
 
     public abstract List<TProperty> getProperties();
 
