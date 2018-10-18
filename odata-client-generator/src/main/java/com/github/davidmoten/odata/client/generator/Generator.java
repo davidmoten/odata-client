@@ -924,7 +924,7 @@ public final class Generator {
         p.format("%s}\n", indent.left());
 
         p.format("\n%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
-        p.format("%sreturn unmappedFields == null? %s.EMPTY: unmappedFields;\n", indent.right(),
+        p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
                 imports.add(UnmappedFields.class));
         p.format("%s}\n", indent.left());
     }
@@ -997,7 +997,7 @@ public final class Generator {
                                 .collect(Collectors.joining());
                         if (ofEntity) {
                             params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
-                                    + ", unmappedFields, odataType==null?\"" + fullType + "\":odataType" + params;
+                                    + ", unmappedFields, odataType == null ? \"" + fullType + "\" : odataType" + params;
                         } else {
                             params = "contextPath" + ", unmappedFields, odataType" + params;
                         }
