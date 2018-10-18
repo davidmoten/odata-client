@@ -1,0 +1,1642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Search" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <ComplexType Name="AllInstrumentSearchRequest">
+        <Property Name="InstrumentTypeGroups" Type="Collection(ThomsonReuters.Dss.Api.Content.InstrumentTypeGroup)" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument type codes (e.g., CMO/ABS, Equities, Gov/Corp, US Municipals)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="EquitySearchRequest">
+        <Property Name="SubTypeCodes" Type="Collection(Edm.String)" />
+        <Property Name="AssetCategoryCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code indicating the instrument's security classification type. Replaced by Thomson Reuters Classification Scheme. (GCODES link:  Asset Category Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CompanyName" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Issuer's abbreviated name." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Currency code for the trading instrument. (GCODES link:  Currency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Description" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument description; Format varies by instrument type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="DomicileCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="ISO code representing the current country of the company's principal executive offices.  (GCODES link:  Country Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FairValueIndicator" Type="ThomsonReuters.Dss.Api.Content.Equity.FairValueIndicator">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N/Either flag indicating whether the instrument includes fair value information." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExchangeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Exchange code identifying where the instrument trades. (GCODES link:  Exchange Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="GicsCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Global Industry Classification Standard code for the sub-industry level." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FileCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Internal product code used to define a group of instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="OrgId" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Unique number that identifies a company in Thomson Reuters database." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.Equity.EquityStatus">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Ticker" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code assigned by an exchange or issuer for identification of their security. For Futures and Options, it is the series or product-level code provided by the exchange and is the same for all expiries or strikes on that series. For Montreal and OPRA, it is the contract-level exchange feed symbol as defined by the local market convention." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="EquitySearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="DomicileCode" Type="Edm.String" />
+        <Property Name="CurrencyCodes" Type="Edm.String" />
+        <Property Name="SubTypeCode" Type="Edm.String" />
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.Equity.EquityStatus" Nullable="false" />
+        <Property Name="IssuerName" Type="Edm.String" />
+        <Property Name="IssuerOrgId" Type="Edm.String" />
+        <Property Name="Exchange" Type="Edm.String" />
+        <Property Name="FileCode" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="FuturesAndOptionsSearchRequest">
+        <Property Name="FuturesAndOptionsType" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.FuturesAndOptionsType">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the asset sub classification within the security type code. (GCODES link:  Asset Sub Type Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="PutCall" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.PutCall">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Identifies the option being exercised as a put or call option." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FileCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Internal product code used to define a group of instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="UnderlyingRic" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Equity exchange quotation (not used for options on NASDAQ equities)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExerciseStyle" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.ExerciseStyle">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code indicating when the option can be exercised." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Currency code for the trading instrument. (GCODES link:  Currency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Description" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument description; Format varies by instrument type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExchangeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Exchange code identifying where the instrument trades. (GCODES link:  Exchange Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="StrikePrice" Type="ThomsonReuters.Dss.Api.Search.NumericComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Price at which the holder agrees to buy or sell the underlying futures contract on or before the option expiration date." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExpirationDate" Type="ThomsonReuters.Dss.Api.Search.DateComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Date on which a futures or an options contract automatically expires." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.FuturesAndOptionsStatus">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="FuturesAndOptionsSearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="ExchangeCode" Type="Edm.String" />
+        <Property Name="CurrencyCode" Type="Edm.String" />
+        <Property Name="FuturesAndOptionsType" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.FuturesAndOptionsType" />
+        <Property Name="PutCallCode" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.PutCall" />
+        <Property Name="ExpirationDate" Type="Edm.DateTimeOffset" />
+        <Property Name="StrikePrice" Type="Edm.Decimal" />
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.FuturesAndOptions.FuturesAndOptionsStatus" />
+      </ComplexType>
+      <ComplexType Name="BenchmarkSearchRequest">
+        <Property Name="Description" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument description; Format varies by instrument type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="BenchmarkSearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument" />
+      <ComplexType Name="GovCorpSearchRequest">
+        <Property Name="AssetStatuses" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="GovCorpContributorCode" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the instrument's pricing source. (GCODES link:  Price Source Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CountryCode" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="ISO country code for the instrument. (GCODES link:  Country Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Coupon" Type="ThomsonReuters.Dss.Api.Search.NumericComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Stated annual interest rate for a bond, note, or other fixed income instrument, expressed as a percentage of face value." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Currency code for the trading instrument. (GCODES link:  Currency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IndustrySectorCode" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code identifying the industry of the issuer. (GCODES link:  Industry Sector Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Group" Type="ThomsonReuters.Dss.Api.Search.GovCorpSecurityGroups">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the asset sub classification within the security type code. (GCODES link:  Asset Sub Type Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="MoodyRatingsCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Current Moody's published or announced rating for the asset. (GCODES link:  Rating Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="StandardPoorsRatingsCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Standard and Poor's current published or announced rating. (GCODES link:  Rating Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Callable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the bond is callable." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Convertable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the security may be exchanged or converted into another type of security from the issuer (for example, common stock)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Extendable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether there is a provision to extend the maturity date." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Putable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the bond is putable." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Sinkable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the bond has a sinking fund provision." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Issuer" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Long name of the company." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IssueDate" Type="ThomsonReuters.Dss.Api.Search.DateComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Asset's issuance date." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="MaturityDate" Type="ThomsonReuters.Dss.Api.Search.DateComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument's maturity date." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="NextPayDate" Type="ThomsonReuters.Dss.Api.Search.DateComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Date the next coupon payment will be made." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="OrgId" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Unique number that identifies a company in Thomson Reuters database." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Ticker" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code assigned by an exchange or issuer for identification of their security. For Futures and Options, it is the series or product-level code provided by the exchange and is the same for all expiries or strikes on that series. For Montreal and OPRA, it is the contract-level exchange feed symbol as defined by the local market convention." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="EntitySearchRequest">
+        <Property Name="Name" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Long name of the company." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Enter all or part of the entity's name.  Select Official Name Only to restrict your search to the entity's official name. If you do not select this option, the search will be expanded to include trading name(s) by which the entity is known in the market place." />
+        </Property>
+        <Property Name="OfficialNameOnly" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Legal Entity's official/legal name." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Use Official Name Only to restrict your search to the entity's official name. If you do not select this option, the search will be expanded to include trading name(s) by which the entity is known in the market place." />
+        </Property>
+        <Property Name="DomicileCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="ISO code representing the current country of the company's principal executive offices. (GCODES link:  Country Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Select one or more countries in which the entity is based. This location can differ from the entity's country of incorporation for entities registered in offshore locations or entities that operate in multiple locations. Use CountryOfIncorporationCodes to select the country in which the entity is incorporated." />
+        </Property>
+        <Property Name="CountryOfIncorporationCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code indicating the ISO country in which the legal entity is incorporated. (GCODES link:  Country Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="TrBusinessClassificationCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code indicating the instrument's classification within the business sector level (second level in the four-level hierarchy) as defined by TRBC." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Select the Thomson Reuters Business Code for the business of the entity." />
+        </Property>
+        <Property Name="VerifiedOnly" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Indicates that the entity was manually verified, with minimum required fields updated from approved sources." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Set to true to return only verified records in the search results." />
+        </Property>
+        <Property Name="RegulatedOnly" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the legal entity is regulated." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Select to constrain your search to return regulated legal entities only. When cleared, both regulated and non-regulated legal entities are returned." />
+        </Property>
+        <Property Name="IssuersOnly" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the legal entity is an issuer of securities." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ActiveOnly" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the legal entity is active. Flag is triggered based on whether the legal entity is obsolete." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="FundSearchRequest">
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.Fund.FundStatus">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FundName" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument description; Format varies by instrument type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FundAdministrator" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Name of the company administering the fund." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="PortfolioManager" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Company that has the day-to-day responsibility for investing and monitoring the assets within the fund's portfolio." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="DomicileCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="ISO code representing the current country of the company's principal executive offices.  (GCODES link:  Country Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Currency code for the trading instrument. (GCODES link:  Currency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SubTypes" Type="Collection(ThomsonReuters.Dss.Api.Content.Fund.FundSubType)" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the asset sub classification within the security type code. (GCODES link:  Asset Sub Type Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="FundSearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedEntity">
+        <Property Name="FundName" Type="Edm.String" />
+        <Property Name="FundAdministrator" Type="Edm.String" />
+        <Property Name="PortfolioManager" Type="Edm.String" />
+        <Property Name="DomicileCode" Type="Edm.String" />
+        <Property Name="CurrencyCode" Type="Edm.String" />
+        <Property Name="InvestmentType" Type="Edm.String" />
+        <Property Name="SubType" Type="ThomsonReuters.Dss.Api.Content.Fund.FundSubType" Nullable="false" />
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.Fund.FundStatus" Nullable="false" />
+        <Property Name="IssuerName" Type="Edm.String" />
+        <Property Name="IssuerOrgId" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="CommoditySearchRequest">
+        <Property Name="KeywordQuery" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Searches multiple fields for a value." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="The fields searched are identifier, description, long description, file code, and lot units." />
+        </Property>
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.Commodity.CommodityStatus">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ContractMonthAndYear" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Month and year of delivery that uniquely identifies the futures contract at the exchange, formatted as 'MMMYYYY'. Currently, not available for all futures." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Description" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument description; Format varies by instrument type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExpirationDate" Type="ThomsonReuters.Dss.Api.Search.DateComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Date on which a futures or an options contract automatically expires." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="PrimaryChain" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Primary Chain is the immediate chain under which a RIC is listed." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetCategoryCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Codes indicating the instrument's security classification type. Replaced by Thomson Reuters Classification Scheme. (GCODES link: Asset Category Codes)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetCategoryCodesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Asset Category.  The operator causes searches to include or exclude data that contains the values enumerated by AssetCategoryCodes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Currency codes for the trading instrument. (GCODES link: Currency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Currency Code.  The operator causes searches to include or exclude data that contains the values enumerated by CurrencyCodes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExchangeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Exchange codes identifying where the instrument trades. (GCODES link: Exchange Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExchangeCodesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Exchange Code.  The operator causes searches to include or exclude data that contains the values enumerated by ExchangeCodes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FileCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Internal product code used to define a group of instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FileCodesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by File Code.  The operator causes searches to include or exclude data that contains the values enumerated by FileCodes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FrequenciesOfUpdate" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Indicators of how often pricing for the instrument updates." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FrequenciesOfUpdateOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Frequency of Update.  The operator causes searches to include or exclude data that contains the values enumerated by FrequenciesOfUpdate." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="LotUnits" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Defines the physical units in which a contract trades." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="LotUnitsOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Lot Unit.  The operator causes searches to include or exclude data that contains the values enumerated by LotUnits." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="RcsUnderlyingProducts" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Product or natural resource underlying a specific asset." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="RcsUnderlyingProductsOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Underlying Product.  The operator causes searches to include or exclude data that contains the values enumerated by FrequenciesOfUpdate." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SourceNames" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Full-length description of the source of the data." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SourceNamesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Source Name.  The operator causes searches to include or exclude data that contains the values enumerated by SourceNames." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SourceTypes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Label for the type of institution that is populated in Source Name field." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SourceTypesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Source Type.  The operator causes searches to include or exclude data that contains the values enumerated by SourceTypes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="TrClassificationSchemes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Codes indicating the instrument's asset classification scheme as provided by Thomson Reuters." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="TrClassificationSchemesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Classification Scheme.  The operator causes searches to include or exclude data that contains the values enumerated by TrClassificationSchemes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CommoditiesUnderlyingAssets" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Product underlying the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CommoditiesUnderlyingAssetsOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by Underlying Asset.  The operator causes searches to include or exclude data that contains the values enumerated by CommoditiesUnderlyingAssets." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="PdpCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="PDP codes to identify exchanges and other data sources." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="PdpCodesOperator" Type="ThomsonReuters.Dss.Api.Search.SetMembershipOperator" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="This operator controls the selection by PDP Code. The operator causes searches to include or exclude data that contains the values enumerated by PdpCodes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Annotation Term="Org.OData.Core.V1.Description" String="Describes search parameters provided to the Commodities Search Service." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="String search terms are case-sensitive, and match the exact phrase. For those fields that are enumerable, the search terms are a logical 'OR'.  Search terms on multiple fields are a logical 'AND'." />
+      </ComplexType>
+      <ComplexType Name="CommoditySearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="LongDescription" Type="Edm.String" />
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.Commodity.CommodityStatus" Nullable="false" />
+        <Property Name="CurrencyCode" Type="Edm.String" />
+        <Property Name="CurrencyCodeDescription" Type="Edm.String" />
+        <Property Name="ExchangeCode" Type="Edm.String" />
+        <Property Name="ExchangeCodeDescription" Type="Edm.String" />
+        <Property Name="FileCode" Type="Edm.String" />
+        <Property Name="FileCodeDescription" Type="Edm.String" />
+        <Property Name="RcsUnderlyingProduct" Type="Edm.String" />
+        <Property Name="TrClassificationScheme" Type="Edm.String" />
+        <Property Name="ContractMonthAndYear" Type="Edm.String" />
+        <Property Name="PrimaryChainOrTile" Type="Edm.String" />
+        <Property Name="AssetCategory" Type="Edm.String" />
+        <Property Name="FrequencyOfUpdate" Type="Edm.String" />
+        <Property Name="LotUnits" Type="Edm.String" />
+        <Property Name="SourceName" Type="Edm.String" />
+        <Property Name="SourceType" Type="Edm.String" />
+        <Property Name="CommoditiesUnderlyingAsset" Type="Edm.String" />
+        <Property Name="ExpirationDate" Type="Edm.DateTimeOffset" />
+      </ComplexType>
+      <ComplexType Name="MortgageSearchRequest">
+        <Property Name="AgencyCode" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code indicating the issuing agency of the MBS. (GCODES link:  Agency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="PoolNumber" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Actual loan number (for loan-level collateral) or synthetic pool number (for an aggregation of loans)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Actual loan number (for loan-level collateral) or synthetic pool number (for an aggregation of loans)." />
+        </Property>
+        <Property Name="PoolTypeCode" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code indicating the classification scheme for pools." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CouponRate" Type="ThomsonReuters.Dss.Api.Search.NumericComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Stated annual interest rate for a bond, note, or other fixed income instrument, expressed as a percentage of face value." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="The Coupon can be either a NumericValueComparison or NumericRangeComparison.  The NumericValueComparison allows you to limit the search results to those greater than, greater than or equal to, less than, less than or equal to or equal to a certain rate.  The NumericRangeComparison allows you to limit the search results to coupon rates within the specified range." />
+        </Property>
+        <Property Name="AmortizationType" Type="ThomsonReuters.Dss.Api.Content.FixedIncome.Mortgage.MortgageAmortizationType">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the scheduled mortgage principal amortization method." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetStatuses" Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.Mortgage.MortgageStatus)" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SecurityGroup" Type="ThomsonReuters.Dss.Api.Content.FixedIncome.Mortgage.MortgageSecurityGroup">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the asset sub classification within the security type code. (GCODES link:  Asset Sub Type Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="SettleMonth" Type="ThomsonReuters.Dss.Api.Content.Month">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the settlement month for a TBA asset." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Annotation Term="Org.OData.Core.V1.Description" String="Search criteria for Mortgage Pass Through securities." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="UsMunicipalSearchRequest">
+        <Property Name="AssetStatuses" Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.UsMunicipal.UsMunicipalStatus)" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CouponRate" Type="ThomsonReuters.Dss.Api.Search.NumericComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Stated annual interest rate for a bond, note, or other fixed income instrument, expressed as a percentage of face value." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="The Coupon can be either a NumericValueComparison or NumericRangeComparison.  The NumericValueComparison allows you to limit the search results to those greater than, greater than or equal to, less than, less than or equal to or equal to a certain rate.  The NumericRangeComparison allows you to limit the search results to coupon rates within the specified range." />
+        </Property>
+        <Property Name="Callable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the bond is callable." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Callable or redeemable bonds are bonds that can be redeemed or paid off by the issuer prior to the bonds' maturity date." />
+        </Property>
+        <Property Name="Putable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the bond is putable." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="A putable bond (put bond, putable or retractable bond) is a bond with an embedded put option.  The holder of the putable bond as the right, but not the obligation, to demand early repayment of the principal." />
+        </Property>
+        <Property Name="Sinkable" Type="Edm.Boolean" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Y/N flag indicating whether the bond has a sinking fund provision." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Sinking Fund Redemption requires the issuer to regularly redeem a fixed portion or all of the bonds in accordance with a fixed schedule." />
+        </Property>
+        <Property Name="IssuerDescription" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Long name of the company." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="MaturityDate" Type="ThomsonReuters.Dss.Api.Search.DateComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument's maturity date." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="The MaturityDate can be either a DateValueComparison or DateRangeComparison.  The DateValueComparison allows you to limit the search results to those greater than, greater than or equal to, less than, less than or equal to or equal to a certain rate.  The DateRangeComparison allows you to limit the search results to maturity dates within the specified range." />
+        </Property>
+        <Property Name="MoodyRatingsCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Current Moody's published or announced rating for the asset. (GCODES link:  Rating Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="StandardPoorsRatingsCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Standard and Poor's current published or announced rating. (GCODES link:  Rating Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="StateCode" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code identifying the state where the party's principal executive offices are located. (GCODES link:  State Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Annotation Term="Org.OData.Core.V1.Description" String="Search criteria for US Municipal bonds." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="CmoAbsSearchRequest">
+        <Property Name="SecurityGroup" Type="ThomsonReuters.Dss.Api.Search.CmoAbsSecurityGroup">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the asset sub classification within the security type code. (GCODES link:  Asset Sub Type Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Issue" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Unique short name to identify the issuer." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Tranche" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Unique name to identify the tranche within a deal." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Series" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Unique name used to identify the deal from the issuer." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CouponRate" Type="ThomsonReuters.Dss.Api.Search.NumericComparison">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Stated annual interest rate for a bond, note, or other fixed income instrument, expressed as a percentage of face value." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetStatuses" Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.CmoAbs.CmoAbsStatus)" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Currency code for the trading instrument. (GCODES link:  Currency Codes)" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Annotation Term="Org.OData.Core.V1.Description" String="Search criteria for collateralized mortgage obligations and asset backed securities" />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="MifidSubclassSearchRequest">
+        <Property Name="KeywordQuery" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Searches multiple fields for a value." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="The fields searched are identifier." />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="PreferredIdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Annotation Term="Org.OData.Core.V1.Description" String="Describes search parameters provided to the MiFID Sub-Class Search Service." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="String search terms are case-sensitive, and match the exact phrase. For those fields that are enumerable, the search terms are a logical 'OR'.  Search terms on multiple fields are a logical 'AND'." />
+      </ComplexType>
+      <ComplexType Name="MifidSubclassSearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="AssetClassCode" Type="Edm.String" />
+        <Property Name="AssetClassDescription" Type="Edm.String" />
+        <Property Name="SubAssetClassCode" Type="Edm.String" />
+        <Property Name="SubAssetClassDescription" Type="Edm.String" />
+        <Property Name="SubAssetClassPermId" Type="Edm.String" />
+        <Property Name="SubClassPermId" Type="Edm.String" />
+        <Property Name="CdsSubClass" Type="Edm.String" />
+        <Property Name="DeliveryCashSettleLocation" Type="Edm.String" />
+        <Property Name="FreightType" Type="Edm.String" />
+        <Property Name="FreightSubType" Type="Edm.String" />
+        <Property Name="FreightSize" Type="Edm.String" />
+        <Property Name="LoadType" Type="Edm.String" />
+        <Property Name="MifidContractType" Type="Edm.String" />
+        <Property Name="MifidLiquidityFlagEsma" Type="Edm.String" />
+        <Property Name="ThresholdEffectiveDate" Type="Edm.DateTimeOffset" />
+        <Property Name="ThresholdEndDate" Type="Edm.DateTimeOffset" />
+        <Property Name="NotionalCurrency" Type="Edm.String" />
+        <Property Name="NotionalCurrencyPair" Type="Edm.String" />
+        <Property Name="Parameter" Type="Edm.String" />
+        <Property Name="PostTradeLisThresholdValue" Type="Edm.Int64" />
+        <Property Name="PostTradeSstiThresholdValue" Type="Edm.Int64" />
+        <Property Name="PreTradeLisThresholdValue" Type="Edm.Int64" />
+        <Property Name="PreTradeSstiThresholdValue" Type="Edm.Int64" />
+        <Property Name="SettlementType" Type="Edm.String" />
+        <Property Name="SpecificRouteOrTimeCharterAverage" Type="Edm.String" />
+        <Property Name="UnderlyingAssetType" Type="Edm.String" />
+        <Property Name="UnderlyingCommodity" Type="Edm.String" />
+        <Property Name="TermOfTheUnderlyingInterestRate" Type="Edm.String" />
+        <Property Name="TermOfTheUnderlyingBond" Type="Edm.String" />
+        <Property Name="TimeToMaturityBucket" Type="Edm.String" />
+        <Property Name="TimeToMaturityBucketOfTheOption" Type="Edm.String" />
+        <Property Name="MifidUnderlyingIndexName" Type="Edm.String" />
+        <Property Name="UnderlyingInterestRate" Type="Edm.String" />
+        <Property Name="UnderlyingIsin" Type="Edm.String" />
+        <Property Name="UnderlyingIssuerLei" Type="Edm.String" />
+        <Property Name="UnderlyingReferenceEntityType" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="OtcsSearchRequest">
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The identification system (e.g., CUSIP, ISIN, RIC) used to uniquely identify a company or issuer, and type of security. The only valid value for OTCS Search at the moment is ISIN" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Identifier" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Unique alphanumeric code that corresponds to the Identifier Types." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="AssetStatus" Type="ThomsonReuters.Dss.Api.Content.OtcsStatus" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Code representing the status of the instrument." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Describes search parameters provided to the OTCS Limited Terms Search Service." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="String search terms are case-sensitive, and match the exact phrase. For those fields that are enumerable, the search terms are a logical 'OR'.  Search terms on multiple fields are a logical 'AND'." />
+      </ComplexType>
+      <ComplexType Name="OtcsSearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="AssetClassCode" Type="Edm.String" />
+        <Property Name="AssetClassDescription" Type="Edm.String" />
+        <Property Name="SubAssetClassCode" Type="Edm.String" />
+        <Property Name="SubAssetClassDescription" Type="Edm.String" />
+        <Property Name="ExpirationDate" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="CfiCode" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="HistoricalSearchRequest">
+        <Property Name="Identifier" Type="Edm.String" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument identifier of HistoricalSearchRequest.IdentifierType." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The Identifier Type of the HistoricalSearchRequest.Identifier. Supported Types are RIC, CUSIP, ISIN, SEDOL. Optional: Search will look for the identifier in all supported types when not specified." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Range" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The Date range in which the instrument was active. If the instrument exists, but was not active in the specified date range, it will not be returned." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ResultsBy" Type="ThomsonReuters.Dss.Api.Search.HistoricalResultsBy" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Determines what information is returned for each found RIC. By RIC: Returns information purely based on the RIC history. By Entity: Returns information based on the entity associated with the RIC on the end date of the Range. This will cause RIC rename history to be returned. Optional: Defaults to searching by RIC when not specified." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="DomainCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Limit search results to the specified Eikon Domain(s)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request to search for historical instruments by identifier." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="HistoricalSearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="DomainCode" Type="Edm.String" />
+        <Property Name="ValidFrom" Type="Edm.DateTimeOffset" />
+        <Property Name="ValidTo" Type="Edm.DateTimeOffset" />
+        <Property Name="FirstDate" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="LastDate" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="History" Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalInstrumentRicChangeHistory)" />
+      </ComplexType>
+      <ComplexType Name="HistoricalBulkSearchRequest">
+        <Property Name="Identifiers" Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalBulkSearchIdentifier)" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Instrument identifiers for the search." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Range" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Specifies the date range to include for the search." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ResultsBy" Type="ThomsonReuters.Dss.Api.Search.HistoricalResultsBy" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Specifies how the results will be gathered." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request to search for multiple historical instruments by identifier." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="HistoricalBulkSearchResult">
+        <Property Name="Results" Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalSearchResult)" />
+        <Property Name="TruncatedIdentifier" Type="Edm.String" />
+        <Property Name="TruncatedIdentiferExpansionCount" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Truncated" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="ValidationMessages" Type="Collection(Edm.String)" />
+      </ComplexType>
+      <ComplexType Name="HistoricalCriteriaSearchRequest">
+        <Property Name="RicPattern" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for RIC identifiers that match the specified regular expression." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="DescriptionPattern" Type="Edm.String">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for instrument descriptions that match the specified regular expression." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="BondTypeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Bond Type. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ContributorIds" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Contributor. Applies to OTC instruments only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CountryCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Country RIC Prefix Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CurrencyCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Currency." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="DomainCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Limit search results to the specified Eikon Domain(s)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExchangeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Exchange." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="FutureMonthCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Future Delivery Month. Applies to Futures only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="InstrumentTypeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Instrument Type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="OptionMonthCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Expiry Month. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="OptionTypeCodes" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Option Type. Applies to Options only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="CouponRate" Type="ThomsonReuters.Dss.Api.Search.DecimalValueRange">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Coupon Rate. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="StrikePrice" Type="ThomsonReuters.Dss.Api.Search.DecimalValueRange">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Strike Price. Applies to Options only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ExpiryDate" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Expiry Date range. Applies to Futures and Options only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="MaturityDate" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search by Maturity Date range. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Range" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The Date range in which the instrument was active. If the instrument exists, but was not active in the specified date range, it will not be returned." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ResultsBy" Type="ThomsonReuters.Dss.Api.Search.HistoricalResultsBy" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Determines what information is returned for each found RIC. By RIC: Returns information purely based on the found RICs history. By Entity: Returns information based on the entity associated with the RIC on the end date of the Range. This will cause RIC rename history to be returned. Optional: Defaults to searching by RIC." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request to search for historical instruments by criteria." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="HistoricalChainResolutionRequest">
+        <Property Name="ChainRics" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="List of Chain RICs to return constituents for." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Range" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The Date range in which constituents are members of the chain. A constituent will be returned if it was a member for any part of the date range." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request to resolve a chain's historical constituents." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="HistoricalChainInstrument" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="Constituents" Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalChainConstituent)" />
+      </ComplexType>
+      <ComplexType Name="ReferenceHistoryRequest">
+        <Property Name="Rics" Type="Collection(Edm.String)">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The RIC identifiers to return reference history for." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="Range" Type="ThomsonReuters.Dss.Api.Search.DateTimeRange" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="The Date range to return reference history changes from." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Property Name="ResultsBy" Type="ThomsonReuters.Dss.Api.Search.HistoricalResultsBy" Nullable="false">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Determines what reference history is returned for each RIC. By RIC: Returns reference history for the RICs specified. By Entity: Returns reference history based on the entity associated with the RIC on the end date of the Range. This will causes reference history from multiple RICs to be merged into one list if there was a RIC rename during the date range specified. Optional: Defaults to 'By RIC' when not specified." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Property>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request to lookup reference history be RICs and a date/time range." />
+        <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+      </ComplexType>
+      <ComplexType Name="ReferenceHistoryResult">
+        <Property Name="Ric" Type="Edm.String" />
+        <Property Name="HistoryEvents" Type="Collection(ThomsonReuters.Dss.Api.Search.FidHistoryEvent)" />
+      </ComplexType>
+      <ComplexType Name="HistoricalLookupEntry">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="HistoricalInstrumentRicChangeHistory">
+        <Property Name="Ric" Type="Edm.String" />
+        <Property Name="ValidFrom" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="ValidTo" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="FirstDate" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="LastDate" Type="Edm.DateTimeOffset" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="HistoricalChainConstituent" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedInstrument">
+        <Property Name="DomainCode" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="NumericComparison" Abstract="true" />
+      <ComplexType Name="NumericValueComparison" BaseType="ThomsonReuters.Dss.Api.Search.NumericComparison">
+        <Property Name="ComparisonOperator" Type="ThomsonReuters.Dss.Api.Search.ComparisonOperator" Nullable="false" />
+        <Property Name="Value" Type="Edm.Decimal" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="NumericRangeComparison" BaseType="ThomsonReuters.Dss.Api.Search.NumericComparison">
+        <Property Name="From" Type="Edm.Decimal" Nullable="false" />
+        <Property Name="To" Type="Edm.Decimal" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="DateComparison" Abstract="true" />
+      <ComplexType Name="DateValueComparison" BaseType="ThomsonReuters.Dss.Api.Search.DateComparison">
+        <Property Name="ComparisonOperator" Type="ThomsonReuters.Dss.Api.Search.ComparisonOperator" Nullable="false" />
+        <Property Name="Value" Type="Edm.DateTimeOffset" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="DateRangeComparison" BaseType="ThomsonReuters.Dss.Api.Search.DateComparison">
+        <Property Name="From" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="To" Type="Edm.DateTimeOffset" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="GovCorpSecurityGroups">
+        <Property Name="Agency" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Government" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Corporate" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Supra" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="SubGroupCode" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="EntitySearchResult" BaseType="ThomsonReuters.Dss.Api.Content.ValidatedEntity">
+        <Property Name="Type" Type="Edm.String" />
+        <Property Name="Domicile" Type="Edm.String" />
+        <Property Name="CountryOfIncorporation" Type="Edm.String" />
+        <Property Name="ParentOrgId" Type="Edm.String" />
+        <Property Name="UltimateParentOrgId" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="CmoAbsSecurityGroup">
+        <Property Name="Agency" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="AssetBacked" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Cdo" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Cmbs" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="WholeLoan" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="SubGroupTypeCode" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="DateTimeRange">
+        <Property Name="Start" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="End" Type="Edm.DateTimeOffset" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="HistoricalBulkSearchIdentifier">
+        <Property Name="Identifier" Type="Edm.String" Nullable="false" />
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="LineNumber" Type="Edm.String" />
+        <Property Name="Exchange" Type="Edm.String" />
+        <Property Name="Currency" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="DecimalValueRange">
+        <Property Name="Value" Type="Edm.Decimal" />
+        <Property Name="Min" Type="Edm.Decimal" />
+        <Property Name="Max" Type="Edm.Decimal" />
+      </ComplexType>
+      <ComplexType Name="FidHistoryEvent">
+        <Property Name="Field" Type="Edm.String" />
+        <Property Name="Value" Type="Edm.String" />
+        <Property Name="Timestamp" Type="Edm.DateTimeOffset" Nullable="false" />
+      </ComplexType>
+      <EnumType Name="ComparisonOperator">
+        <Member Name="Equals" Value="0" />
+        <Member Name="NotEquals" Value="1" />
+        <Member Name="LessThan" Value="2" />
+        <Member Name="LessThanEquals" Value="3" />
+        <Member Name="GreaterThan" Value="4" />
+        <Member Name="GreaterThanEquals" Value="5" />
+      </EnumType>
+      <EnumType Name="SetMembershipOperator">
+        <Member Name="Include" Value="0" />
+        <Member Name="Exclude" Value="1" />
+      </EnumType>
+      <EnumType Name="HistoricalResultsBy">
+        <Member Name="Ric" Value="0" />
+        <Member Name="Entity" Value="1" />
+      </EnumType>
+      <Action Name="InstrumentSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.AllInstrumentSearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.ValidatedInstrument)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="EquitySearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.EquitySearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.EquitySearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="FuturesAndOptionsSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.FuturesAndOptionsSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.FuturesAndOptionsSearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="BenchmarkSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.BenchmarkSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.BenchmarkSearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="GovCorpSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.GovCorpSearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.ValidatedInstrument)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="EntitySearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.EntitySearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.ValidatedEntity)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="FundSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.FundSearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.FundSearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="CommoditySearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.CommoditySearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.CommoditySearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="MortgageSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.MortgageSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search criteria" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.ValidatedInstrument)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="UsMunicipalSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.UsMunicipalSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search criteria" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.ValidatedInstrument)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="CmoAbsSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.CmoAbsSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search criteria" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.ValidatedInstrument)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="MifidSubclassSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.MifidSubclassSearchRequest" />
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.MifidSubclassSearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="OtcsSearch">
+        <Parameter Name="SearchRequest" Type="ThomsonReuters.Dss.Api.Search.OtcsSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.OtcsSearchResult)" />
+        <Annotation Term="Org.OData.Capabilities.V1.Paging" Bool="true" />
+      </Action>
+      <Action Name="HistoricalSearch">
+        <Parameter Name="Request" Type="ThomsonReuters.Dss.Api.Search.HistoricalSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Identifier based search request" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalSearchResult)" />
+      </Action>
+      <Action Name="HistoricalBulkSearch">
+        <Parameter Name="Request" Type="ThomsonReuters.Dss.Api.Search.HistoricalBulkSearchRequest" />
+        <ReturnType Type="ThomsonReuters.Dss.Api.Search.HistoricalBulkSearchResult" />
+      </Action>
+      <Action Name="HistoricalCriteriaSearch">
+        <Parameter Name="Request" Type="ThomsonReuters.Dss.Api.Search.HistoricalCriteriaSearchRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Criteria based search request" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalSearchResult)" />
+      </Action>
+      <Action Name="HistoricalChainResolution">
+        <Parameter Name="Request" Type="ThomsonReuters.Dss.Api.Search.HistoricalChainResolutionRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Chain resolution request." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalChainInstrument)" />
+      </Action>
+      <Action Name="ReferenceHistory">
+        <Parameter Name="Request" Type="ThomsonReuters.Dss.Api.Search.ReferenceHistoryRequest">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Request by RIC" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </Parameter>
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.ReferenceHistoryResult)" />
+      </Action>
+      <Function Name="GetHistoricalBondTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalCountries">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalCurrencies">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalDomains">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalExchanges">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalFutureMonths">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalInstrumentTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalOptionTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetHistoricalOptionMonths">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Search.HistoricalLookupEntry)" />
+      </Function>
+      <Function Name="GetGicsIndustryClassifications">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.GicsIndustryClassification)" />
+      </Function>
+      <Function Name="GetExchanges">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.Exchange)" />
+      </Function>
+      <Function Name="GetCountries">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.Country)" />
+      </Function>
+      <Function Name="GetStates">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.State)" />
+      </Function>
+      <Function Name="GetCurrencies">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.Currency)" />
+      </Function>
+      <Function Name="GetFileCodes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FileCode)" />
+      </Function>
+      <Function Name="GetTrBusinessClassifications">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.TrBusinessClassification)" />
+      </Function>
+      <Function Name="GetGovCorpContributors">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.GovCorp.GovCorpContributor)" />
+      </Function>
+      <Function Name="GetIndustrySectors">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.IndustrySector)" />
+      </Function>
+      <Function Name="GetEquitySubTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.Equity.EquitySubType)" />
+      </Function>
+      <Function Name="GetMoodyRatings">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.MoodyRating)" />
+      </Function>
+      <Function Name="GetStandardAndPoorsRatings">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.StandardAndPoorsRating)" />
+      </Function>
+      <Function Name="GetMortgageAgencies">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.Mortgage.MortgageAgency)" />
+      </Function>
+      <Function Name="GetMortgagePoolTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.Mortgage.MortgagePoolType)" />
+      </Function>
+      <Function Name="GetCmoAbsSubGroupTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.CmoAbs.CmoAbsSubGroupType)" />
+      </Function>
+      <Function Name="GetAssetCategories">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.AssetCategory)" />
+      </Function>
+      <Function Name="GetInstrumentSubTypes">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.InstrumentSubType)" />
+      </Function>
+      <Function Name="GetGovCorpAssetStatuses">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.GovCorp.GovCorpAssetStatus)" />
+      </Function>
+      <Function Name="GetGovCorpSubGroups">
+        <ReturnType Type="Collection(ThomsonReuters.Dss.Api.Content.FixedIncome.GovCorp.GovCorpSubGroup)" />
+      </Function>
+      <EntityContainer Name="Search">
+        <ActionImport Name="InstrumentSearch" Action="ThomsonReuters.Dss.Api.Search.InstrumentSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for one or more instruments by instrument type." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="EquitySearch" Action="ThomsonReuters.Dss.Api.Search.EquitySearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for equities (common, preferred, etc.), indices, exchange warrants, equity options, open funds, etc. Note, the paging skip token does not work.  The search will return 500 results (page size) by default.  If your result set is larger than this, you can increase the page size in the request or narrow your search criteria." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="FuturesAndOptionsSearch" Action="ThomsonReuters.Dss.Api.Search.FuturesAndOptionsSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for futures and options and options on futures." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="BenchmarkSearch" Action="ThomsonReuters.Dss.Api.Search.BenchmarkSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for benchmark instruments" />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="GovCorpSearch" Action="ThomsonReuters.Dss.Api.Search.GovCorpSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for government/corporate instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="EntitySearch" Action="ThomsonReuters.Dss.Api.Search.EntitySearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for a public or private legal entity, including issuers of debt and equity instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="FundSearch" Action="ThomsonReuters.Dss.Api.Search.FundSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for fund-level and fund shares class data." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="CommoditySearch" Action="ThomsonReuters.Dss.Api.Search.CommoditySearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for commodities." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="MortgageSearch" Action="ThomsonReuters.Dss.Api.Search.MortgageSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for mortgage backed securities." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="UsMunicipalSearch" Action="ThomsonReuters.Dss.Api.Search.UsMunicipalSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for US municipal bonds." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="CmoAbsSearch" Action="ThomsonReuters.Dss.Api.Search.CmoAbsSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for collateralized mortgage obligations and asset backed securities." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="MifidSubclassSearch" Action="ThomsonReuters.Dss.Api.Search.MifidSubclassSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for MiFID Sub-Classes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="OtcsSearch" Action="ThomsonReuters.Dss.Api.Search.OtcsSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for OTCS Instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="HistoricalSearch" Action="ThomsonReuters.Dss.Api.Search.HistoricalSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for historical instruments given an instrument identifier." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="Return instruments may be currently active, or inactive 'historical only' instruments." />
+        </ActionImport>
+        <ActionImport Name="HistoricalBulkSearch" Action="ThomsonReuters.Dss.Api.Search.HistoricalBulkSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for historical instruments given a list of instrument identifiers." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="HistoricalCriteriaSearch" Action="ThomsonReuters.Dss.Api.Search.HistoricalCriteriaSearch">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Search for historical instruments given search criteria. Instruments may be currently active, or inactive 'historical only' instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="HistoricalChainResolution" Action="ThomsonReuters.Dss.Api.Search.HistoricalChainResolution">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Resolve current and past chain constituents given a Chain RIC. Instruments may be currently active, or inactive 'historical only' instruments." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <ActionImport Name="ReferenceHistory" Action="ThomsonReuters.Dss.Api.Search.ReferenceHistory">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Retrieve FID reference history events for a set of RICs in a specified date range." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </ActionImport>
+        <FunctionImport Name="GetHistoricalBondTypes" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalBondTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Bond Type Codes and Names. This includes present and past entries. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalCountries" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalCountries" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Country RIC Prefix Codes and Names. This includes present and past entries. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalCurrencies" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalCurrencies" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Currency Codes and Names. This includes present and past entries." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalDomains" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalDomains" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Eikon Domain Codes and Names. This includes present and past entries." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalExchanges" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalExchanges" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Exchange Codes and Names. This includes present and past entries." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalFutureMonths" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalFutureMonths" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Future Delivery Month Codes and Names. Applies to Futures only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalInstrumentTypes" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalInstrumentTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Instrument Type Codes and Names. This includes present and past entries." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalOptionTypes" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalOptionTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Option Type Codes and Names. This includes present and past entries. Applies to Options only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetHistoricalOptionMonths" Function="ThomsonReuters.Dss.Api.Search.GetHistoricalOptionMonths" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of Expiry Month Codes and Names. Applies to Fixed Income only." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetGicsIndustryClassifications" Function="ThomsonReuters.Dss.Api.Search.GetGicsIndustryClassifications" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of Global Industry Classification Standard (GICS) industry classifications." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetExchanges" Function="ThomsonReuters.Dss.Api.Search.GetExchanges" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of exchange codes and their descriptions (e.g., Shanghai Stock Exchange (SHH))." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetCountries" Function="ThomsonReuters.Dss.Api.Search.GetCountries" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of country codes and their descriptions." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetStates" Function="ThomsonReuters.Dss.Api.Search.GetStates" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of US state codes and their descriptions (e.g., Minnesota)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetCurrencies" Function="ThomsonReuters.Dss.Api.Search.GetCurrencies" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of currency codes, ISO codes and their descriptions (e.g., U.S. Dollar, Swiss Franc)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetFileCodes" Function="ThomsonReuters.Dss.Api.Search.GetFileCodes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of file codes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetTrBusinessClassifications" Function="ThomsonReuters.Dss.Api.Search.GetTrBusinessClassifications" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the Thomson Reuters business classification codes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetGovCorpContributors" Function="ThomsonReuters.Dss.Api.Search.GetGovCorpContributors" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of Gov/Corp contributor names and codes." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetIndustrySectors" Function="ThomsonReuters.Dss.Api.Search.GetIndustrySectors" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of industry sectors (e.g., Agency, Banks, Consumer Goods)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetEquitySubTypes" Function="ThomsonReuters.Dss.Api.Search.GetEquitySubTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns a list of equity sub-types (e.g., Convertible Preference, Depository Receipts, Financial Index, etc.)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetMoodyRatings" Function="ThomsonReuters.Dss.Api.Search.GetMoodyRatings" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the Moody's ratings codes and descriptions (e.g., NR, Aaa, #Aaa)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetStandardAndPoorsRatings" Function="ThomsonReuters.Dss.Api.Search.GetStandardAndPoorsRatings" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the Standard and Poor's (SandP) ratings codes and descriptions (e.g., AAA, AA+)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetMortgageAgencies" Function="ThomsonReuters.Dss.Api.Search.GetMortgageAgencies" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of mortgage agency codes and descriptions (e.g., Fannie Mae)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetMortgagePoolTypes" Function="ThomsonReuters.Dss.Api.Search.GetMortgagePoolTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of mortgage pool type codes and descriptions (e.g., FH 15yr COOP nonGLD)." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetCmoAbsSubGroupTypes" Function="ThomsonReuters.Dss.Api.Search.GetCmoAbsSubGroupTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns sub groups for CMOs and ABS used for CmoAbsSearch." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetAssetCategories" Function="ThomsonReuters.Dss.Api.Search.GetAssetCategories" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of asset categories." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetInstrumentSubTypes" Function="ThomsonReuters.Dss.Api.Search.GetInstrumentSubTypes" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of sub groups for instruments used for InstrumentSearch." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetGovCorpAssetStatuses" Function="ThomsonReuters.Dss.Api.Search.GetGovCorpAssetStatuses" IncludeInServiceDocument="true">
+          <Annotation Term="Org.OData.Core.V1.Description" String="Returns the list of Gov/Corp asset statuses." />
+          <Annotation Term="Org.OData.Core.V1.LongDescription" String="" />
+        </FunctionImport>
+        <FunctionImport Name="GetGovCorpSubGroups" Function="ThomsonReuters.Dss.Api.Search.GetGovCorpSubGroups" IncludeInServiceDocument="true" />
+      </EntityContainer>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <ComplexType Name="ValidatedInstrument">
+        <Property Name="Key" Type="Edm.String" />
+        <Property Name="Description" Type="Edm.String" />
+        <Property Name="InstrumentType" Type="ThomsonReuters.Dss.Api.Content.InstrumentType" Nullable="false" />
+        <Property Name="Status" Type="ThomsonReuters.Dss.Api.Content.ValidityStatus" Nullable="false" />
+        <Property Name="Source" Type="Edm.String" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="UserDefinedIdentifier" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier2" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier3" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier4" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier5" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier6" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="ValidatedEntity">
+        <Property Name="Key" Type="Edm.String" />
+        <Property Name="Description" Type="Edm.String" />
+        <Property Name="InstrumentType" Type="ThomsonReuters.Dss.Api.Content.InstrumentType" Nullable="false" />
+        <Property Name="Identifier" Type="Edm.String" />
+        <Property Name="IdentifierType" Type="ThomsonReuters.Dss.Api.Content.IdentifierType" Nullable="false" />
+        <Property Name="UserDefinedIdentifier" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier2" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier3" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier4" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier5" Type="Edm.String" />
+        <Property Name="UserDefinedIdentifier6" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="GicsIndustryClassification">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="Exchange">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="Country">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+        <Property Name="IsoCode" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="State">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="Currency">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="FileCode">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="TrBusinessClassification">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="IndustrySector">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="MoodyRating">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="StandardAndPoorsRating">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="AssetCategory">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="InstrumentSubType">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <EnumType Name="InstrumentTypeGroup">
+        <Member Name="FuturesAndOptions" Value="0" />
+        <Member Name="Equities" Value="1" />
+        <Member Name="Funds" Value="2" />
+        <Member Name="GovCorp" Value="3" />
+        <Member Name="MortgageBackedSecurities" Value="4" />
+        <Member Name="CollatetizedMortgageObligations" Value="5" />
+        <Member Name="Municipals" Value="6" />
+        <Member Name="Money" Value="7" />
+        <Member Name="Commodities" Value="8" />
+      </EnumType>
+      <EnumType Name="IdentifierType">
+        <Member Name="NONE" Value="0" />
+        <Member Name="ZPage" Value="1" />
+        <Member Name="OPOL" Value="2" />
+        <Member Name="ChainRIC" Value="3" />
+        <Member Name="OCCCode" Value="4" />
+        <Member Name="UnderlyingRIC" Value="5" />
+        <Member Name="RICRoot" Value="6" />
+        <Member Name="FacilityId" Value="7" />
+        <Member Name="LIN" Value="8" />
+        <Member Name="UserDefined" Value="9" />
+        <Member Name="FileCode" Value="10" />
+        <Member Name="Ticker" Value="11" />
+        <Member Name="LipperID" Value="12" />
+        <Member Name="MIC" Value="13" />
+        <Member Name="Sicovam" Value="14" />
+        <Member Name="LocalCode" Value="15" />
+        <Member Name="ISMA" Value="16" />
+        <Member Name="SICC" Value="17" />
+        <Member Name="Sedol" Value="18" />
+        <Member Name="CommonCode" Value="19" />
+        <Member Name="BridgeSymbol" Value="20" />
+        <Member Name="Wertpapier" Value="21" />
+        <Member Name="Valoren" Value="22" />
+        <Member Name="Isin" Value="23" />
+        <Member Name="Cusip" Value="24" />
+        <Member Name="Ric" Value="25" />
+        <Member Name="RcpId" Value="26" />
+        <Member Name="Duns" Value="27" />
+        <Member Name="Lei" Value="28" />
+        <Member Name="BIC" Value="29" />
+        <Member Name="Cik" Value="30" />
+        <Member Name="PrimaryRegulatorId" Value="31" />
+        <Member Name="CompanyRegistrationNumber" Value="32" />
+        <Member Name="TaxFileId" Value="33" />
+        <Member Name="OrgId" Value="34" />
+        <Member Name="Cin" Value="35" />
+        <Member Name="Sym" Value="36" />
+        <Member Name="FundLipperId" Value="37" />
+        <Member Name="Pid" Value="38" />
+        <Member Name="Pix" Value="39" />
+        <Member Name="ArgentineAfipCode" Value="40" />
+        <Member Name="PpnCusip" Value="41" />
+      </EnumType>
+      <EnumType Name="InstrumentType">
+        <Member Name="MortAggregate" Value="0" />
+        <Member Name="BankLoansIdentifyingFeatures" Value="1" />
+        <Member Name="BankLoan" Value="2" />
+        <Member Name="BankQuote" Value="3" />
+        <Member Name="BankLoanQuote" Value="4" />
+        <Member Name="Cash" Value="5" />
+        <Member Name="CMOQuote" Value="6" />
+        <Member Name="CounterParty" Value="7" />
+        <Member Name="Derivative" Value="8" />
+        <Member Name="DerivativeQuote" Value="9" />
+        <Member Name="Entity" Value="10" />
+        <Member Name="EquityParty" Value="11" />
+        <Member Name="EquityQuote" Value="12" />
+        <Member Name="Equity" Value="13" />
+        <Member Name="FundClass" Value="14" />
+        <Member Name="FundIndex" Value="15" />
+        <Member Name="Fund" Value="16" />
+        <Member Name="GovCorpBond" Value="17" />
+        <Member Name="GovCorpChain" Value="18" />
+        <Member Name="GovCorpParty" Value="19" />
+        <Member Name="GovCorpQuote" Value="20" />
+        <Member Name="GovCorpUnderlying" Value="21" />
+        <Member Name="LipperBenchmark" Value="22" />
+        <Member Name="MergersAndAcquisitions" Value="23" />
+        <Member Name="MutualFundQuote" Value="24" />
+        <Member Name="MortGeneric" Value="25" />
+        <Member Name="MoneyMarketQuote" Value="26" />
+        <Member Name="MoneyMarket" Value="27" />
+        <Member Name="MortPoolQuote" Value="28" />
+        <Member Name="MortTBAs" Value="29" />
+        <Member Name="MortgageTBAQuote" Value="30" />
+        <Member Name="MutualFund" Value="31" />
+        <Member Name="MuniBond" Value="32" />
+        <Member Name="MuniChain" Value="33" />
+        <Member Name="MuniIssue" Value="34" />
+        <Member Name="MuniParty" Value="35" />
+        <Member Name="MuniQuote" Value="36" />
+        <Member Name="Benchmark" Value="37" />
+        <Member Name="PublicEquityOffering" Value="38" />
+        <Member Name="MortgagePool" Value="39" />
+        <Member Name="RIGsPointQuote" Value="40" />
+        <Member Name="RIGsCurveChain" Value="41" />
+        <Member Name="CMOTranche" Value="42" />
+        <Member Name="Unknown" Value="43" />
+        <Member Name="Commodity" Value="44" />
+        <Member Name="MifidSubclass" Value="45" />
+        <Member Name="OtcDerivatives" Value="46" />
+      </EnumType>
+      <EnumType Name="ValidityStatus">
+        <Member Name="Valid" Value="0" />
+        <Member Name="NotFound" Value="1" />
+        <Member Name="NotAnInstrument" Value="2" />
+        <Member Name="BadInstrumentType" Value="3" />
+        <Member Name="IsChainNotInstrument" Value="4" />
+        <Member Name="InstrumentNotPermitted" Value="5" />
+        <Member Name="InstrumentNotReviewed" Value="6" />
+        <Member Name="NotAChain" Value="7" />
+        <Member Name="ChainOfChains" Value="8" />
+        <Member Name="NotBeginningOfChain" Value="9" />
+        <Member Name="IsInstrumentNotChain" Value="10" />
+        <Member Name="ChainNotPermitted" Value="11" />
+        <Member Name="ChainNotReviewed" Value="12" />
+        <Member Name="ChainHasBadLinks" Value="13" />
+      </EnumType>
+      <EnumType Name="Month">
+        <Member Name="January" Value="1" />
+        <Member Name="February" Value="2" />
+        <Member Name="March" Value="3" />
+        <Member Name="April" Value="4" />
+        <Member Name="May" Value="5" />
+        <Member Name="June" Value="6" />
+        <Member Name="July" Value="7" />
+        <Member Name="August" Value="8" />
+        <Member Name="September" Value="9" />
+        <Member Name="October" Value="10" />
+        <Member Name="November" Value="11" />
+        <Member Name="December" Value="12" />
+      </EnumType>
+      <EnumType Name="OtcsStatus">
+        <Member Name="All" Value="0" />
+        <Member Name="Active" Value="1" />
+        <Member Name="Inactive" Value="2" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.FixedIncome.GovCorp" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <ComplexType Name="GovCorpContributor">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="GovCorpAssetStatus">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="GovCorpSubGroup">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.Equity" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <ComplexType Name="EquitySubType">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <EnumType Name="EquityStatus">
+        <Member Name="Active" Value="0" />
+        <Member Name="Inactive" Value="1" />
+      </EnumType>
+      <EnumType Name="FairValueIndicator">
+        <Member Name="Yes" Value="0" />
+        <Member Name="No" Value="1" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.FixedIncome.Mortgage" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <ComplexType Name="MortgageAgency">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="MortgagePoolType">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <EnumType Name="MortgageAmortizationType">
+        <Member Name="Arm" Value="0" />
+        <Member Name="ArmReverse" Value="1" />
+        <Member Name="Balloon" Value="2" />
+        <Member Name="BiWeekly" Value="3" />
+        <Member Name="FixedRateReverse" Value="4" />
+        <Member Name="Gem" Value="5" />
+        <Member Name="Gpm" Value="6" />
+        <Member Name="LevelPay" Value="7" />
+        <Member Name="Tpm" Value="8" />
+      </EnumType>
+      <EnumType Name="MortgageStatus">
+        <Member Name="ExchangedConverted" Value="0" />
+        <Member Name="ExpiredMatured" Value="1" />
+        <Member Name="Issued" Value="2" />
+        <Member Name="NotActive" Value="3" />
+      </EnumType>
+      <EnumType Name="MortgageSecurityGroup">
+        <Member Name="AgencyPools" Value="0" />
+        <Member Name="Generics" Value="1" />
+        <Member Name="Tbas" Value="2" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.FixedIncome.CmoAbs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <ComplexType Name="CmoAbsSubGroupType">
+        <Property Name="Code" Type="Edm.String" />
+        <Property Name="Name" Type="Edm.String" />
+      </ComplexType>
+      <EnumType Name="CmoAbsStatus">
+        <Member Name="ExpiredMatured" Value="0" />
+        <Member Name="Issued" Value="1" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.FuturesAndOptions" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EnumType Name="FuturesAndOptionsType">
+        <Member Name="Futures" Value="0" />
+        <Member Name="Options" Value="1" />
+        <Member Name="FuturesOnOptions" Value="2" />
+      </EnumType>
+      <EnumType Name="PutCall">
+        <Member Name="Put" Value="0" />
+        <Member Name="Call" Value="1" />
+      </EnumType>
+      <EnumType Name="FuturesAndOptionsStatus">
+        <Member Name="Active" Value="0" />
+        <Member Name="Inactive" Value="1" />
+      </EnumType>
+      <EnumType Name="ExerciseStyle">
+        <Member Name="American" Value="0" />
+        <Member Name="European" Value="1" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.Commodity" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EnumType Name="CommodityStatus">
+        <Member Name="Active" Value="0" />
+        <Member Name="Inactive" Value="1" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.Fund" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EnumType Name="FundSubType">
+        <Member Name="ClosedEndFund" Value="0" />
+        <Member Name="ExchangeTradedFund" Value="1" />
+        <Member Name="InsuranceFund" Value="2" />
+        <Member Name="InvestmentFund" Value="3" />
+        <Member Name="MutualFund" Value="4" />
+        <Member Name="PensionFund" Value="5" />
+        <Member Name="TassHedgeFund" Value="6" />
+      </EnumType>
+      <EnumType Name="FundStatus">
+        <Member Name="Active" Value="0" />
+        <Member Name="Inactive" Value="1" />
+      </EnumType>
+    </Schema>
+    <Schema Namespace="ThomsonReuters.Dss.Api.Content.FixedIncome.UsMunicipal" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EnumType Name="UsMunicipalStatus">
+        <Member Name="Called" Value="0" />
+        <Member Name="ExpiredMatured" Value="1" />
+        <Member Name="InDefault" Value="2" />
+        <Member Name="Issued" Value="3" />
+        <Member Name="NotActive" Value="4" />
+        <Member Name="ReOpening" Value="5" />
+        <Member Name="RepaidBeforeMaturity" Value="6" />
+        <Member Name="Tendered" Value="7" />
+        <Member Name="ToBeCalled" Value="8" />
+        <Member Name="ToBeIssued" Value="9" />
+      </EnumType>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

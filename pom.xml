@@ -97,7 +97,7 @@
         <module>odata-client-test-service</module>
         <module>odata-client-test-trip-pin</module>
         <module>odata-client-test-northwind</module>
-        <module>odata-client-test-reuters</module>
+        <module>odata-client-test-datascope</module>
         <module>odata-client-msgraph</module>
     </modules>
 

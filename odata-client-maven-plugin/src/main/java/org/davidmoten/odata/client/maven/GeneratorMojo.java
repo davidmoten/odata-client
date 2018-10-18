@@ -50,7 +50,7 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
-    
+
     @Component
     MavenProject project;
 
@@ -80,8 +80,8 @@ public class GeneratorMojo extends AbstractMojo {
                     if (metadataFile.exists()) {
                         is = new FileInputStream(metadataFile);
                     } else {
-                    throw new MojoExecutionException(
-                            "could not find metadata on classpath or file system: " + metadata);
+                        throw new MojoExecutionException(
+                                "could not find metadata on classpath or file system: " + metadata);
                     }
                 }
             } else {
