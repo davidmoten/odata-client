@@ -249,7 +249,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
+            printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
                     imports.add(ODataEntity.class));
@@ -317,6 +317,10 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void printJsonIncludeNonNull(Imports imports, PrintWriter p) {
+        p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
     }
 
     private void writePatchedClass(EntityType t, String simpleClassName, Imports imports, Indent indent,
@@ -424,6 +428,8 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
+            printJsonIncludeNonNull(imports, p);
+            printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s {\n\n", simpleClassName, t.getExtendsClause(imports));
 
             indent.right();
