@@ -1067,8 +1067,8 @@ public final class Generator {
                                 .collect(Collectors.joining());
                         if (ofEntity) {
                             params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
-                                    + ", unmappedFields, odataType == null ? \"" + fullType
-                                    + "\" : odataType" + params;
+                                    + ", unmappedFields, " + imports.add(com.github.davidmoten.odata.client.Util.class)
+                                    + ".nvl(odataType, \"" + fullType + "\")" + params;
                         } else {
                             params = "contextPath" + ", unmappedFields, odataType" + params;
                         }
