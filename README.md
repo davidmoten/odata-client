@@ -14,7 +14,7 @@ Status: *pre-alpha* (in development)
 * Microsoft Graph v1.0 client
 
 ## Limitations
-* Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation)
+* Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation). I've yet to come across a service that uses multiple keys but it is possible.
 
 ## MsGraph Client 
 Use this dependency:
