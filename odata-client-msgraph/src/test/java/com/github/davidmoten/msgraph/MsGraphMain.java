@@ -15,7 +15,7 @@ public class MsGraphMain {
 
     public static void main(String[] args) {
 
-        // this test
+        // this system integration test
         // counts the messages in Drafts folder
         // adds a new message to the Drafts folder
         // changes the subject of the new message
