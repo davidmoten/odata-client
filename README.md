@@ -134,5 +134,7 @@ drafts //
 * use annotations (docs) in javadoc
 * support functions
 * support actions
+* support `count`
+* support `raw`
 
 
