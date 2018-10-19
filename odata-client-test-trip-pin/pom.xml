@@ -21,7 +21,19 @@
             <artifactId>odata-client-runtime</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>odata-client-api</artifactId>
+            <version>${olingo.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>odata-client-proxy</artifactId>
+            <version>${olingo.version}</version>
+        </dependency>
+        
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -65,6 +77,25 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.olingo</groupId>
+                <artifactId>pojogen-maven-plugin</artifactId>
+                <version>4.5.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/generated-sources/pojogen</outputDirectory>
+                    <localEdm>${basedir}/src/main/odata/odata-test-service-trip-pin-metadata.xml</localEdm>
+                    <basePackage>odata</basePackage>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>v4pojoGen</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>v4pojoGen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>3.0.0</version>
@@ -78,6 +109,18 @@
                         <configuration>
                             <sources>
                                 <source>${project.build.directory}/generated-sources/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-source2</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/pojogen/ojc-plugin</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -108,6 +151,25 @@
                                         </versionRange>
                                         <goals>
                                             <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.olingo
+                                        </groupId>
+                                        <artifactId>
+                                            pojogen-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [4.5.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>v4pojoGen</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
