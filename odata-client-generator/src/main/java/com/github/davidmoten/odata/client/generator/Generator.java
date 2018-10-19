@@ -40,7 +40,6 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
-import com.github.davidmoten.odata.client.EntityRequestOptions;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.Patchable;
@@ -523,63 +522,14 @@ public final class Generator {
             p.format("public final class %s extends %s {\n\n", simpleClassName,
                     imports.add(EntityRequest.class) + "<" + imports.add(t.getFullClassNameEntity()) + ">");
 
-            // p.format("%s@%s()\n",indent.right(), imports.add(JsonCreator.class));
-            // p.format("%public %s(()\n",indent.right(), imports.add(JsonCreator.class));
-
-            // add field
             indent.right();
-            addContextPathField(imports, indent, p);
 
             // add constructor
             p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
                     imports.add(String.class));
-            p.format("%sthis.contextPath = contextPath;\n", indent.right());
-            p.format("%s}\n\n", indent.left());
-
-            // write get
-            p.format("%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s get(%s<%s> options) {\n", //
-                    indent, //
-                    imports.add(t.getFullClassNameEntity()), //
-                    imports.add(EntityRequestOptions.class), //
-                    imports.add(t.getFullClassNameEntity()));
-            p.format("%sreturn %s.get(contextPath, %s.class, options, %s.INSTANCE);\n", indent.right(),
-                    imports.add(RequestHelper.class), //
-                    imports.add(t.getFullClassNameEntity()), //
-                    imports.add(names.getFullClassNameSchema(schema)));
-            p.format("%s}\n", indent.left());
-
-            p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic void delete(%s<%s> options) {\n", //
-                    indent, //
-                    imports.add(EntityRequestOptions.class), //
-                    imports.add(t.getFullClassNameEntity()));
-            p.format("%s%s.delete(contextPath, options);\n", //
+            p.format("%ssuper(%s.class, contextPath, %s.INSTANCE);\n", //
                     indent.right(), //
-                    imports.add(RequestHelper.class));
-            p.format("%s}\n", indent.left());
-
-            p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s patch(%s<%s> options, %s entity) {\n", //
-                    indent, //
                     imports.add(t.getFullClassNameEntity()), //
-                    imports.add(EntityRequestOptions.class), //
-                    imports.add(t.getFullClassNameEntity()), //
-                    imports.add(t.getFullClassNameEntity()));
-            p.format("%sreturn %s.patch(entity, contextPath, options, %s.INSTANCE);\n", indent.right(), //
-                    imports.add(RequestHelper.class), //
-                    imports.add(names.getFullClassNameSchema(schema)));
-            p.format("%s}\n", indent.left());
-
-            p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s put(%s<%s> options, %s entity) {\n", //
-                    indent, //
-                    imports.add(t.getFullClassNameEntity()), //
-                    imports.add(EntityRequestOptions.class), //
-                    imports.add(t.getFullClassNameEntity()), //
-                    imports.add(t.getFullClassNameEntity()));
-            p.format("%sreturn %s.put(entity, contextPath, options, %s.INSTANCE);\n", indent.right(), //
-                    imports.add(RequestHelper.class), //
                     imports.add(names.getFullClassNameSchema(schema)));
             p.format("%s}\n", indent.left());
 

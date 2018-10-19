@@ -1,19 +1,34 @@
 package com.github.davidmoten.odata.client;
 
+import com.github.davidmoten.odata.client.internal.RequestHelper;
+
 public abstract class EntityRequest<T extends ODataEntity> {
 
-    // TODO customize HTTP headers, add delete, update, patch, put, post, select,
-    // search,
-    // expand, useCaches
-    // TODO make extra methods invisible
+    private final Class<T> cls;
+    protected final ContextPath contextPath;
+    private final SchemaInfo schemaInfo;
 
-    public abstract T get(EntityRequestOptions<T> options);
+    public EntityRequest(Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+        this.cls = cls;
+        this.contextPath = contextPath;
+        this.schemaInfo = schemaInfo;
+    }
 
-    public abstract void delete(EntityRequestOptions<T> options);
+    T get(EntityRequestOptions<T> options) {
+        return RequestHelper.get(contextPath, cls, options, schemaInfo);
+    }
 
-    public abstract T patch(EntityRequestOptions<T> options, T entity);
+    void delete(EntityRequestOptions<T> options) {
+        RequestHelper.delete(contextPath, options);
+    }
 
-    public abstract T put(EntityRequestOptions<T> options, T entity);
+    T patch(EntityRequestOptions<T> options, T entity) {
+        return RequestHelper.patch(entity, contextPath, options, schemaInfo);
+    }
+
+    T put(EntityRequestOptions<T> options, T entity) {
+        return RequestHelper.put(entity, contextPath, options, schemaInfo);
+    }
 
     public T get() {
         return new EntityRequestOptionsBuilder<T>(this).get();
