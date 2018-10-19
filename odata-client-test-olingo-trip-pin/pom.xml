@@ -10,16 +10,22 @@
         <artifactId>odata-client-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>odata-client-test-trip-pin</artifactId>
+    <artifactId>odata-client-test-olingo-trip-pin</artifactId>
     <name>${project.artifactId}</name>
-    <description>OData client generation test</description>
+    <description>Olingo client generation test</description>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.github.davidmoten</groupId>
-            <artifactId>odata-client-runtime</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>odata-client-api</artifactId>
+            <version>${olingo.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>odata-client-proxy</artifactId>
+            <version>${olingo.version}</version>
         </dependency>
         
         <!-- Test Dependencies -->
@@ -42,25 +48,21 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.github.davidmoten</groupId>
-                <artifactId>odata-client-maven-plugin</artifactId>
-                <version>${project.parent.version}</version>
+                <groupId>org.apache.olingo</groupId>
+                <artifactId>pojogen-maven-plugin</artifactId>
+                <version>4.5.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/generated-sources/pojogen</outputDirectory>
+                    <localEdm>${basedir}/src/main/odata/odata-test-service-trip-pin-metadata.xml</localEdm>
+                    <basePackage>odata</basePackage>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>generate-msgraph-client</id>
+                        <id>v4pojoGen</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>v4pojoGen</goal>
                         </goals>
-                        <configuration>
-                            <metadata>src/main/odata/odata-test-service-trip-pin-metadata.xml</metadata>
-                            <schemas>
-                                <schema>
-                                    <namespace>Microsoft.OData.SampleService.Models.TripPin</namespace>
-                                    <packageName>odata.test.trip.pin</packageName>
-                                </schema>
-                            </schemas>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -77,7 +79,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/java</source>
+                                <source>${project.build.directory}/generated-sources/pojogen/ojc-plugin</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -94,20 +96,20 @@
                     <version>1.0.0</version>
                     <configuration>
                         <lifecycleMappingMetadata>
-                            <pluginExecutions>
+                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>
-                                            com.github.davidmoten
+                                            org.apache.olingo
                                         </groupId>
                                         <artifactId>
-                                            odata-client-maven-plugin
+                                            pojogen-maven-plugin
                                         </artifactId>
                                         <versionRange>
-                                            [0.1-SNAPSHOT,)
+                                            [4.5.0,)
                                         </versionRange>
                                         <goals>
-                                            <goal>generate</goal>
+                                            <goal>v4pojoGen</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
