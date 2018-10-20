@@ -13,6 +13,12 @@ Status: *pre-alpha* (in development)
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Microsoft Graph v1.0 client
 
+## How to build
+`mvn clean install`
+
+## How to generate java classes for an OData service
+Add *odata-client-maven-plugin* and *build-helper-maven-plugin* to your `pom.xml` as per [odata-client-msgraph/pom.xml](odata-client-plugin/pom.xml). You'll also need to save a copy of the service metadata (at http://SERVICE_ROOT/$metadata) to a file in your `src/odata` directory. Once everything is in place a build of your maven project will generate the classes and make them available as source (that's what the *build-helper-maven-plugin* does).
+
 ## Limitations
 * Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation). I've yet to come across a service that uses multiple keys but it is possible.
 
