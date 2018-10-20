@@ -136,5 +136,6 @@ drafts //
 * support actions
 * support `count`
 * support `raw`
-
+* support geographical primitive types (where's the spec?!!)
+* support references to other metadata files (imports)
 
