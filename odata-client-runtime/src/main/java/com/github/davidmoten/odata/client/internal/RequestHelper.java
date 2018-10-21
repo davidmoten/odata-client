@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client.internal;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -155,6 +156,10 @@ public final class RequestHelper {
         h.add(new RequestHeader("Accept", "application/json"));
         h.addAll(options.getRequestHeaders());
         return h;
+    }
+
+    public static InputStream getStream(ContextPath contextPath, RequestOptions options) {
+        throw new ClientException("not implemented yet"); 
     }
 
 }
