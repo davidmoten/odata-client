@@ -11,7 +11,7 @@ public class Test2ServiceTest {
 
     @Test
     public void testCanReferenceComplexTypeFromEntityContainerInAnotherSchema() {
-        Test2Service client = Test2Service.test().baseUrl("http://base").build();
+        Test2Service client = Test2Service.test().build();
         client.products(1);
         Product p = Product.builder().build();
         assertFalse(p.getAddress().isPresent());
