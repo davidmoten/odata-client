@@ -23,8 +23,8 @@ public class CollectionPageTest {
     @Test
     public void testParseCollectionResponse() throws IOException, URISyntaxException {
         String json = new String(
-                Files.readAllBytes(Paths
-                        .get(CollectionPageTest.class.getResource("/odata-paged-collection-response.json").toURI())),
+                Files.readAllBytes(Paths.get(CollectionPageTest.class
+                        .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = Serializer.INSTANCE;
         HttpService service = new HttpService() {
@@ -81,8 +81,8 @@ public class CollectionPageTest {
         };
 
         Context context = new Context(serializer, service);
-        CollectionPageEntity<Person> c = serializer.deserializeCollectionPageEntity(json, Person.class,
-                new ContextPath(context, service.getBasePath()), schemaInfo);
+        CollectionPageEntity<Person> c = serializer.deserializeCollectionPageEntity(json,
+                Person.class, new ContextPath(context, service.getBasePath()), schemaInfo);
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
     }

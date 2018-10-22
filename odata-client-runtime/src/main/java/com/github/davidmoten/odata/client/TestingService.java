@@ -1,10 +1,12 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -168,14 +170,14 @@ public final class TestingService {
 
                 @Override
                 public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
-                    // TODO Auto-generated method stub
-                    return null;
+                    HttpResponse h = get(url, requestHeaders);
+                    return new ByteArrayInputStream(h.getText().getBytes(StandardCharsets.UTF_8));
                 }
 
             };
         }
 
-        abstract R build();
+        public abstract R build();
     }
 
     public static abstract class ContainerBuilder<T> extends BuilderBase<ContainerBuilder<T>, T> {

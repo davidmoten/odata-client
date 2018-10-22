@@ -15,7 +15,7 @@ public class Test1ServiceTest {
 
     @Test
     public void testCanReferenceEntityFromEntityContainerInAnotherSchema() {
-        Test1Service client = Test1Service.test().baseUrl("http://base").build();
+        Test1Service client = Test1Service.test().build();
         client.products(1);
     }
 
