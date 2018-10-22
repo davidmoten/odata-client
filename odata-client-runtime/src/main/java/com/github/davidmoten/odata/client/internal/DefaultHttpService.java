@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,28 +28,28 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
+    public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
         return getResponse(url, requestHeaders, HttpMethod.GET, true, null);
     }
 
     @Override
-    public HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
         throw new ClientException(
                 "PATCH is not supported by java.net.URLConnection, use PUT instead (or use the HttpService implementation based on Apache HttpClient)");
     }
 
     @Override
-    public HttpResponse PUT(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(url, requestHeaders, HttpMethod.PUT, false, content);
     }
 
     @Override
-    public HttpResponse POST(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(url, requestHeaders, HttpMethod.POST, true, content);
     }
 
     @Override
-    public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
+    public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
         return getResponse(url, requestHeaders, HttpMethod.DELETE, false, null);
     }
 
@@ -88,5 +89,23 @@ public final class DefaultHttpService implements HttpService {
     @Override
     public void close() throws Exception {
         // do nothing
+    }
+
+    @Override
+    public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+        try {
+            URL u = new URL(url);
+            HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            c.setRequestMethod(HttpMethod.GET.toString());
+            for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
+                c.setRequestProperty(header.name(), header.value());
+            }
+            c.setDoInput(true);
+            c.setDoOutput(false);
+            return c.getInputStream();
+        } catch (IOException e) {
+            throw new ClientException(e);
+        }
+        
     }
 }

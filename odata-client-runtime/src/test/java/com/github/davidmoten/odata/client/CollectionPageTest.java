@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +30,7 @@ public class CollectionPageTest {
         HttpService service = new HttpService() {
 
             @Override
-            public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
+            public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
                 return new HttpResponse(200, json);
             }
 
@@ -39,28 +40,34 @@ public class CollectionPageTest {
             }
 
             @Override
-            public HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String text) {
+            public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String text) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse PUT(String url, List<RequestHeader> requestHeaders, String text) {
+            public HttpResponse put(String url, List<RequestHeader> requestHeaders, String text) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse POST(String url, List<RequestHeader> h, String text) {
+            public HttpResponse post(String url, List<RequestHeader> h, String text) {
                 return new HttpResponse(HttpURLConnection.HTTP_CREATED, "");
             }
 
             @Override
-            public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
+            public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
             public void close() throws Exception {
                 // do nothing
+            }
+
+            @Override
+            public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+                // TODO Auto-generated method stub
+                return null;
             }
 
         };
