@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
@@ -46,27 +47,27 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
+    public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
         return getResponse(requestHeaders, new HttpGet(url), true, null);
     }
 
     @Override
-    public HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(requestHeaders, new HttpPatch(url), false, content);
     }
 
     @Override
-    public HttpResponse PUT(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(requestHeaders, new HttpPut(url), false, content);
     }
 
     @Override
-    public HttpResponse POST(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, String content) {
         return getResponse(requestHeaders, new HttpPost(url), true, content);
     }
 
     @Override
-    public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
+    public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
         return getResponse(requestHeaders, new HttpDelete(url), false, null);
     }
 
@@ -75,8 +76,8 @@ public class ApacheHttpClientHttpService implements HttpService {
         return basePath;
     }
 
-    private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request, boolean doInput,
-            String content) {
+    private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request,
+            boolean doInput, String content) {
         log.debug("{} from url {}", request.getMethod(), request.getURI());
         for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
             request.addHeader(header.name(), header.value());
@@ -91,7 +92,8 @@ public class ApacheHttpClientHttpService implements HttpService {
                 log.debug("executed request, code={}", response.getStatusLine().getStatusCode());
                 final String text;
                 if (doInput) {
-                    text = Util.readString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                    text = Util.readString(response.getEntity().getContent(),
+                            StandardCharsets.UTF_8);
                 } else {
                     text = null;
                 }
@@ -108,6 +110,38 @@ public class ApacheHttpClientHttpService implements HttpService {
         log.info("closing client");
         client.close();
         log.info("closed client");
+    }
+
+    @Override
+    public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+        HttpGet request = new HttpGet(url);
+        log.debug("{} from url {}", request.getMethod(), request.getURI());
+        for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
+            request.addHeader(header.name(), header.value());
+        }
+        try {
+            log.debug("executing request");
+            final CloseableHttpResponse response = client.execute(request);
+            log.debug("executed request, code={}", response.getStatusLine().getStatusCode());
+            InputStream is = response.getEntity().getContent();
+            return new InputStream() {
+                @Override
+                public int read() throws IOException {
+                    return is.read();
+                }
+
+                @Override
+                public void close() throws IOException {
+                    try {
+                        is.close();
+                    } finally {
+                        response.close();
+                    }
+                }
+            };
+        } catch (IOException e) {
+            throw new ClientException(e);
+        }
     }
 
 }

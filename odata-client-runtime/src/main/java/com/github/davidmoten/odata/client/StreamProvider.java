@@ -6,13 +6,13 @@ import java.util.function.Supplier;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-public final class StreamWithContentType implements Supplier<InputStream> {
+public final class StreamProvider implements Supplier<InputStream> {
 
     private final ContextPath contextPath;
     private final RequestOptions options;
     private final String contentType;
 
-    public StreamWithContentType(ContextPath contextPath, RequestOptions options, String contentType) {
+    public StreamProvider(ContextPath contextPath, RequestOptions options, String contentType) {
         Preconditions.checkNotNull(contextPath);
         Preconditions.checkNotNull(contentType);
         this.contextPath = contextPath;

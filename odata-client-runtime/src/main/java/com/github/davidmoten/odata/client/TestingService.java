@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -79,7 +80,7 @@ public final class TestingService {
             return new HttpService() {
 
                 @Override
-                public HttpResponse GET(String url, List<RequestHeader> requestHeaders) {
+                public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
                     String resourceName = responses.get(BuilderBase.toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url);
@@ -97,7 +98,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String text) {
+                public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String text) {
                     System.out.println("PATCH called at " + url);
                     System.out.println(text);
                     String resourceName = requests.get(BuilderBase.toKey(HttpMethod.PATCH, url));
@@ -120,12 +121,12 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse PUT(String url, List<RequestHeader> h, String json) {
-                    return PATCH(url, h, json);
+                public HttpResponse put(String url, List<RequestHeader> h, String json) {
+                    return patch(url, h, json);
                 }
 
                 @Override
-                public HttpResponse POST(String url, List<RequestHeader> requestHeaders, String text) {
+                public HttpResponse post(String url, List<RequestHeader> requestHeaders, String text) {
                     System.out.println("POST called at " + url);
                     System.out.println(text);
                     String requestResourceName = requests.get(BuilderBase.toKey(HttpMethod.POST, url));
@@ -146,7 +147,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse DELETE(String url, List<RequestHeader> requestHeaders) {
+                public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
                     System.out.println("DELETE called at " + url);
                     String resourceName = requests.get(BuilderBase.toKey(HttpMethod.DELETE, url));
                     if (resourceName == null) {
@@ -163,6 +164,12 @@ public final class TestingService {
                 @Override
                 public void close() throws Exception {
                     // do nothing
+                }
+
+                @Override
+                public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+                    // TODO Auto-generated method stub
+                    return null;
                 }
 
             };

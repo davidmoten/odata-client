@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Function;
 
@@ -7,15 +8,17 @@ import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
 public interface HttpService extends AutoCloseable {
 
-    HttpResponse GET(String url, List<RequestHeader> requestHeaders);
+    HttpResponse get(String url, List<RequestHeader> requestHeaders);
 
-    HttpResponse PATCH(String url, List<RequestHeader> requestHeaders, String content);
+    HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content);
 
-    HttpResponse PUT(String url, List<RequestHeader> requestHeaders, String content);
+    HttpResponse put(String url, List<RequestHeader> requestHeaders, String content);
 
-    HttpResponse POST(String url, List<RequestHeader> requestHeaders, String content);
+    HttpResponse post(String url, List<RequestHeader> requestHeaders, String content);
 
-    HttpResponse DELETE(String url, List<RequestHeader> requestHeaders);
+    HttpResponse delete(String url, List<RequestHeader> requestHeaders);
+
+    InputStream getStream(String url, List<RequestHeader> requestHeaders);
 
     Path getBasePath();
 
