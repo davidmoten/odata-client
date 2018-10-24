@@ -41,26 +41,24 @@ public class MsGraphMain {
                 .users(mailbox) //
                 .mailFolders("Drafts");
 
+        // test streaming of DriveItem.content
         String user = System.getProperty("email");
         client.users(user).drive().items("01N6X7VZ6TXOGWV354WND3QHDNUYRXKVVH").get();
-        for (DriveItem item : client.users(user).drive().root().children().id("Attachments")
-                .children().metadataFull().get()) {
-            System.out.println(item);
-
+        for (DriveItem item : client //
+                .users(user) //
+                .drive() //
+                .root() //
+                .children() //
+                .id("Attachments") //
+                .children() //
+                .metadataFull() //
+                .get()) {
+            // read content and count bytes
             StreamProvider stream = item.getContent().get();
             item.getUnmappedFields().entrySet().forEach(System.out::println);
             System.out.println(stream.contentType());
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            byte[] b = new byte[8192];
-            try (InputStream is = stream.get()) {
-                int n;
-                while ((n = is.read(b)) != -1) {
-                    bytes.write(b, 0, n);
-                }
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            System.out.println("read " + bytes.size());
+            byte[] bytes = toBytes(stream);
+            System.out.println("read " + item.getName().orElse("?") + " size=" + bytes.length);
         }
 
         // count number of messages in Drafts
@@ -86,6 +84,7 @@ public class MsGraphMain {
 
         // Create the draft message
         Message saved = drafts.messages().post(m);
+        System.out.println("saved=" + saved);
 
         // change subject
         client //
@@ -118,6 +117,20 @@ public class MsGraphMain {
                 .messages(saved.getId().get()) //
                 .delete();
 
+    }
+
+    private static byte[] toBytes(StreamProvider stream) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        byte[] b = new byte[8192];
+        try (InputStream is = stream.get()) {
+            int n;
+            while ((n = is.read(b)) != -1) {
+                bytes.write(b, 0, n);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return bytes.toByteArray();
     }
 
 }

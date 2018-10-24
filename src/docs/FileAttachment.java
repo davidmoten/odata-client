@@ -212,4 +212,35 @@ public class FileAttachment extends Attachment implements ODataEntity {
             return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
         }
     }
-}
+
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        b.append("FileAttachment[");
+            b.append(',');
+            b.append("id=");
+            b.append(this.id);
+            b.append("lastModifiedDateTime=");
+            b.append(this.lastModifiedDateTime);
+            b.append("name=");
+            b.append(this.name);
+            b.append("contentType=");
+            b.append(this.contentType);
+            b.append("size=");
+            b.append(this.size);
+            b.append("isInline=");
+            b.append(this.isInline);
+            b.append("contentId=");
+            b.append(this.contentId);
+            b.append("contentLocation=");
+            b.append(this.contentLocation);
+            b.append("contentBytes=");
+            b.append(this.contentBytes);
+            b.append("]");
+            b.append(",unmappedFields=");
+            b.append(unmappedFields);
+            b.append(",odataType=");
+            b.append(odataType);
+            return b.toString();
+        }
+    }
