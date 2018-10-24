@@ -24,8 +24,6 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
         return this;
     }
 
-    // TODO add metadata options
-
     public EntityRequestOptionsBuilder<T> select(String clause) {
         Preconditions.checkNotNull(clause);
         this.select = Optional.of(clause);
