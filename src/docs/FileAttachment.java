@@ -173,6 +173,7 @@ public class FileAttachment extends Attachment implements ODataEntity {
         unmappedFields.put(name, value);
     }
 
+    @Override
     public UnmappedFields getUnmappedFields() {
         return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
     }
