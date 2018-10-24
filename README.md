@@ -147,6 +147,10 @@ drafts //
 * support Edm.Stream type
 * auto-rerequest with odata.metadata=full header if Edm.Stream is read
 
+## Usage Notes
+### Streams
+To find the read url for a property that is of type `Edm.Stream` you generally need to read the entity containing the stream property with the `Accept: odata.metadata=full` request header (set `.metadataFull()` before calling `get()` on an entity).
+
 ## Implementation Notes
 Suppose Person has a Navigation Property of Photo then using the TripPin service example, calling HTTP GET of 
 
