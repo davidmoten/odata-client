@@ -3,11 +3,19 @@ package com.github.davidmoten.msgraph;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
+import com.github.davidmoten.odata.client.StreamProvider;
+
 import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.Message;
+import odata.msgraph.client.entity.request.DriveItemRequest;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.BodyType;
 
@@ -33,7 +41,13 @@ public class MsGraphMain {
         MailFolderRequest drafts = client //
                 .users(mailbox) //
                 .mailFolders("Drafts");
-        
+
+        for (DriveItem item : client.users(System.getProperty("email")).drive().root().children().get()) {
+            System.out.println(item);
+            StreamProvider stream = item.getContent().get();
+            System.out.println(stream.contentType());
+        }
+
         // count number of messages in Drafts
         long count = drafts.messages() //
                 .metadataNone() //
@@ -88,6 +102,7 @@ public class MsGraphMain {
         drafts //
                 .messages(saved.getId().get()) //
                 .delete();
+
     }
 
 }
