@@ -144,4 +144,29 @@ drafts //
 * support `raw`
 * support geographical primitive types (where's the spec?!!)
 * support references to other metadata files (imports)
+* support Edm.Stream type
+
+## Implementation Notes
+Suppose Person has a Navigation Property of Photo then using the TripPin service example, calling HTTP GET of 
+
+https://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/People('russellwhyte')/Photo
+
+returns:
+```json
+{
+"@odata.context": "http://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/$metadata#Photos/$entity",
+"@odata.id": "http://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/Photos(2)",
+"@odata.editLink": "http://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/Photos(2)",
+"@odata.mediaContentType": "image/jpeg",
+"@odata.mediaEtag": "W/\"08D6394B7BA10B11\"",
+"Id": 2,
+"Name": "My Photo 2"
+}
+```
+We then grab the `@odata.editLink` url and call that with `/$value` on the end to GET the photo bytes:
+
+https://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/Photos(2)/$value
+
+
+
 
