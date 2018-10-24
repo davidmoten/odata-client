@@ -1,12 +1,12 @@
 package com.github.davidmoten.msgraph;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.StreamProvider;
 
 import odata.msgraph.client.complex.EmailAddress;
@@ -15,7 +15,6 @@ import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.Message;
-import odata.msgraph.client.entity.request.DriveItemRequest;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.BodyType;
 
@@ -44,11 +43,24 @@ public class MsGraphMain {
 
         String user = System.getProperty("email");
         client.users(user).drive().items("01N6X7VZ6TXOGWV354WND3QHDNUYRXKVVH").get();
-        for (DriveItem item : client.users(user).drive().root().children().id("Attachments").children().metadataFull().get()) {
+        for (DriveItem item : client.users(user).drive().root().children().id("Attachments")
+                .children().metadataFull().get()) {
             System.out.println(item);
-            
+
             StreamProvider stream = item.getContent().get();
+            item.getUnmappedFields().entrySet().forEach(System.out::println);
             System.out.println(stream.contentType());
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            byte[] b = new byte[8192];
+            try (InputStream is = stream.get()) {
+                int n;
+                while ((n = is.read(b)) != -1) {
+                    bytes.write(b, 0, n);
+                }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            System.out.println("read " + bytes.size());
         }
 
         // count number of messages in Drafts

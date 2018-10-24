@@ -27,6 +27,8 @@ import com.github.davidmoten.odata.client.StreamProvider;
 
 public final class RequestHelper {
 
+    private static final String CONTENT_TYPE_APPLICATION_OCTET_STREAM = "application/octet-stream";
+
     private RequestHelper() {
         // prevent instantiation
     }
@@ -182,7 +184,7 @@ public final class RequestHelper {
             return Optional.empty();
         } else {
             if (contentType == null) {
-                contentType = "application/octet-stream";
+                contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
             // TODO support relative editLink?
             Context context = contextPath.context();
@@ -204,7 +206,7 @@ public final class RequestHelper {
             return Optional.empty();
         } else {
             if (contentType == null) {
-                contentType = "application/octet-stream";
+                contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
             // TODO support relative editLink?
             Context context = contextPath.context();

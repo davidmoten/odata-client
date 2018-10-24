@@ -20,7 +20,7 @@ public class Test5ServiceTest {
                 .replyWithResource("/Products/2", "/response-get-stream.json") //
                 .replyWithResource("/Photos(123)/%24value", "/response-get-stream.txt") //
                 .build();
-        StreamProvider stream = client.products(2).get().getStream().get();
+        StreamProvider stream = client.products(2).metadataFull().get().getStream().get();
         assertEquals("image/jpeg",stream.contentType());
         try (InputStream is = stream.get()) {
             byte[] bytes = getBytes(is);
