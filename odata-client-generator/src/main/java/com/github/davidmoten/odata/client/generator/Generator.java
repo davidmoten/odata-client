@@ -331,8 +331,9 @@ public final class Generator {
             first[0] = true;
             t.getFields(imports).stream().forEach(f -> {
                 if (first[0]) {
-                    p.format("%sb.append(',');\n", indent.right());
                     first[0] = false;
+                } else {
+                    p.format("%sb.append(',');\n", indent.right());
                 }
                 p.format("%sb.append(\"%s=\");\n", indent, f.name);
                 p.format("%sb.append(this.%s);\n", indent, f.fieldName);
