@@ -42,8 +42,11 @@ public class MsGraphMain {
                 .users(mailbox) //
                 .mailFolders("Drafts");
 
-        for (DriveItem item : client.users(System.getProperty("email")).drive().root().children().get()) {
+        String user = System.getProperty("email");
+        client.users(user).drive().items("01N6X7VZ6TXOGWV354WND3QHDNUYRXKVVH").get();
+        for (DriveItem item : client.users(user).drive().root().children().id("Attachments").children().metadataFull().get()) {
             System.out.println(item);
+            
             StreamProvider stream = item.getContent().get();
             System.out.println(stream.contentType());
         }

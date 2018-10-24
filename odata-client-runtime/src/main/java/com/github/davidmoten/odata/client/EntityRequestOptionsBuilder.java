@@ -13,6 +13,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
     private boolean useCaches = false;
+    private String metadata = "minimal";
 
     EntityRequestOptionsBuilder(EntityRequest<T> request) {
         this.request = request;
@@ -22,6 +23,8 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
         requestHeaders.add(new RequestHeader(key, value));
         return this;
     }
+
+    // TODO add metadata options
 
     public EntityRequestOptionsBuilder<T> select(String clause) {
         Preconditions.checkNotNull(clause);
@@ -49,6 +52,21 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
         return useCaches(true);
     }
 
+    public EntityRequestOptionsBuilder<T> metadataNone() {
+        this.metadata = "none";
+        return this;
+    }
+
+    public EntityRequestOptionsBuilder<T> metadataMinimal() {
+        this.metadata = "minimal";
+        return this;
+    }
+
+    public EntityRequestOptionsBuilder<T> metadataFull() {
+        this.metadata = "full";
+        return this;
+    }
+
     public T get() {
         return request.get(build());
     }
@@ -66,6 +84,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntity> {
     }
 
     private EntityRequestOptions<T> build() {
+        requestHeaders.add(new RequestHeader("Accept", "application/json;odata.metadata=" + metadata));
         return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
     }
 

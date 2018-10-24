@@ -58,4 +58,16 @@ public abstract class EntityRequest<T extends ODataEntity> {
         return new EntityRequestOptionsBuilder<T>(this).expand(clause);
     }
 
+    public EntityRequestOptionsBuilder<T> metadataFull() {
+        return new EntityRequestOptionsBuilder<T>(this).metadataFull();
+    }
+
+    public EntityRequestOptionsBuilder<T> metadataMinimal() {
+        return new EntityRequestOptionsBuilder<T>(this).metadataMinimal();
+    }
+
+    public EntityRequestOptionsBuilder<T> metadataNone() {
+        return new EntityRequestOptionsBuilder<T>(this).metadataNone();
+    }
+
 }
