@@ -28,6 +28,10 @@ public class Path {
         this(url, Collections.emptyMap(), style);
     }
 
+    public PathStyle style() {
+        return style;
+    }
+
     private String append(String url, String s) {
         return url + encode(s);
     }
