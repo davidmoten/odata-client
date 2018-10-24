@@ -333,7 +333,7 @@ public final class Generator {
                 if (first[0]) {
                     first[0] = false;
                 } else {
-                    p.format("%sb.append(',');\n", indent);
+                    p.format("%sb.append(\", \");\n", indent);
                 }
                 p.format("%sb.append(\"%s=\");\n", indent, f.name);
                 p.format("%sb.append(this.%s);\n", indent, f.fieldName);
