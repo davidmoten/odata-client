@@ -124,4 +124,8 @@ public final class EntityType extends Structure<TEntityType> {
         return value.isAbstract();
     }
 
+    public boolean hasStream() {
+        return value.isHasStream();
+    }
+
 }

@@ -4,14 +4,13 @@
     <edmx:DataServices>
         <Schema Namespace="Test5"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="Product">
+            <EntityType Name="Product" HasStream="true">
                 <Key>
                     <PropertyRef Name="ID" />
                 </Key>
                 <Property Name="ID" Type="Edm.Int32"
                     Nullable="false" />
                 <Property Name="Name" Type="Edm.String" />
-                <Property Name="Photo" Type="Edm.Stream" />
             </EntityType>
             <EntityContainer Name="Test5Service">
                 <EntitySet Name="Products"
