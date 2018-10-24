@@ -145,6 +145,7 @@ drafts //
 * support geographical primitive types (where's the spec?!!)
 * support references to other metadata files (imports)
 * support Edm.Stream type
+* auto-rerequest with odata.metadata=full header if Edm.Stream is read
 
 ## Implementation Notes
 Suppose Person has a Navigation Property of Photo then using the TripPin service example, calling HTTP GET of 
