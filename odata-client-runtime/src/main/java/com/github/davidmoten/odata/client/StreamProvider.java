@@ -10,13 +10,15 @@ public final class StreamProvider {
     private final ContextPath contextPath;
     private final RequestOptions options;
     private final String contentType;
+    private final String base64;
 
-    public StreamProvider(ContextPath contextPath, RequestOptions options, String contentType) {
+    public StreamProvider(ContextPath contextPath, RequestOptions options, String contentType, String base64) {
         Preconditions.checkNotNull(contextPath);
         Preconditions.checkNotNull(contentType);
         this.contextPath = contextPath;
         this.options = options;
         this.contentType = contentType;
+        this.base64 = base64;
     }
 
     /**
@@ -29,7 +31,7 @@ public final class StreamProvider {
      * @return InputStream for the requested content that must be closed after use
      */
     public InputStream get() {
-        return RequestHelper.getStream(contextPath, options);
+        return RequestHelper.getStream(contextPath, options, base64);
     }
 
     /**

@@ -1,15 +1,20 @@
 package com.github.davidmoten.odata.client.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
+import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
+import com.github.davidmoten.odata.client.HasUnmappedFields;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntity;
@@ -160,11 +165,16 @@ public final class RequestHelper {
         return h;
     }
 
-    public static InputStream getStream(ContextPath contextPath, RequestOptions options) {
-        ContextPath cp = contextPath.addQueries(options.getQueries());
-        return contextPath.context().service().getStream(cp.toUrl(), options.getRequestHeaders());
+    public static InputStream getStream(ContextPath contextPath, RequestOptions options, String base64) {
+        if (base64 != null) {
+            return new ByteArrayInputStream(Base64.getDecoder().decode(base64));
+        } else {
+            ContextPath cp = contextPath.addQueries(options.getQueries());
+            return contextPath.context().service().getStream(cp.toUrl(), options.getRequestHeaders());
+        }
     }
 
+    // for HasStream case (only for entities, not for complexTypes)
     public static Optional<StreamProvider> createStream(ContextPath contextPath, ODataEntity entity) {
         String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
@@ -175,10 +185,35 @@ public final class RequestHelper {
                 contentType = "application/octet-stream";
             }
             // TODO support relative editLink?
-            return Optional.of(new StreamProvider(
-                    new ContextPath(contextPath.context(), new Path(editLink, contextPath.path().style()))
-                            .addSegment("$value"),
-                    RequestOptions.EMPTY, contentType));
+            Context context = contextPath.context();
+            Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
+            return Optional.of(new StreamProvider( //
+                    new ContextPath(context, path), //
+                    RequestOptions.EMPTY, //
+                    contentType, //
+                    null));
+        }
+    }
+
+    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath, HasUnmappedFields item,
+            String fieldName, String base64) {
+        Preconditions.checkNotNull(fieldName);
+        String readLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaReadLink");
+        String contentType = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaContentType");
+        if (readLink == null && base64 != null) {
+            return Optional.empty();
+        } else {
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            // TODO support relative editLink?
+            Context context = contextPath.context();
+            Path path = new Path(readLink, contextPath.path().style()).addSegment("$value");
+            return Optional.of(new StreamProvider( //
+                    new ContextPath(context, path), //
+                    RequestOptions.EMPTY, //
+                    contentType, //
+                    base64));
         }
     }
 

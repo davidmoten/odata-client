@@ -21,7 +21,6 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
-import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
 import com.github.davidmoten.odata.client.edm.UnsignedByte;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
@@ -292,7 +291,7 @@ public final class Names {
         } else if (t.equals("Edm.Binary")) {
             return "byte[]";
         } else if (t.equals("Edm.Stream")) {
-            return imports.add(StreamProvider.class);
+            return imports.add(String.class);
         } else if (t.equals("Edm.GeographyPoint")) {
             return imports.add(GeographyPoint.class);
         } else if (t.equals("Edm.Decimal")) {

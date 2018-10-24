@@ -41,6 +41,7 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
+import com.github.davidmoten.odata.client.HasUnmappedFields;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.Patchable;
@@ -439,7 +440,8 @@ public final class Generator {
 
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
-            p.format("public class %s%s {\n\n", simpleClassName, t.getExtendsClause(imports));
+            p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
+                    imports.add(HasUnmappedFields.class));
 
             indent.right();
             if (!t.hasBaseType()) {
@@ -893,7 +895,8 @@ public final class Generator {
         p.format("%sunmappedFields.put(name, value);\n", indent);
         p.format("%s}\n", indent.left());
 
-        p.format("\n%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
+        p.format("\n%s@%s\n", indent, imports.add(Override.class));
+        p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
         p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
                 imports.add(UnmappedFields.class));
         p.format("%s}\n", indent.left());
@@ -942,40 +945,50 @@ public final class Generator {
                         }
                         p.format("%s}\n", indent.left());
                     } else {
-
-                        final String importedType = names.toImportedTypeNonCollection(t, imports);
-                        String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
-                        p.format("\n%spublic %s %s() {\n", indent, importedTypeWithOptional,
-                                Names.getGetterMethod(x.getName()));
-                        p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
-                                fieldName);
-                        p.format("%s}\n", indent.left());
-
-                        String classSuffix = ofEntity ? "." + CLASS_NAME_PATCHED : "";
-                        p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
-                                Names.getWithMethod(x.getName()), importedType, fieldName);
-                        if (x.isUnicode() != null && !x.isUnicode()) {
-                            p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(EntityPreconditions.class),
-                                    fieldName, fieldName);
-                            indent.left();
-                        }
-
-                        // prepare parameters to constructor to return immutable copy
-                        String params = fields.stream() //
-                                .map(f -> f.fieldName) //
-                                .map(a -> ", " + a) //
-                                .collect(Collectors.joining());
-                        if (ofEntity) {
-                            params = "contextPath, changedFields.add(\"" + x.getName() + "\")" + ", unmappedFields, "
-                                    + imports.add(com.github.davidmoten.odata.client.Util.class) + ".nvl(odataType, \""
-                                    + fullType + "\")" + params;
+                        boolean isStream = "Edm.Stream".equals(names.getType(x));
+                        if (isStream) {
+                            p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class),
+                                    imports.add(StreamProvider.class), Names.getGetterMethod(x.getName()));
+                            p.format("%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
+                                    indent.right(), imports.add(RequestHelper.class), x.getName(), fieldName);
+                            p.format("%s}\n", indent.left());
+                            // TODO how to patch streamed content?
                         } else {
-                            params = "contextPath" + ", unmappedFields, odataType" + params;
-                        }
+                            final String importedType = names.toImportedTypeNonCollection(t, imports);
+                            String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
+                            p.format("\n%spublic %s %s() {\n", indent, importedTypeWithOptional,
+                                    Names.getGetterMethod(x.getName()));
+                            p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
+                                    fieldName);
+                            p.format("%s}\n", indent.left());
 
-                        indent.right();
-                        p.format("%sreturn new %s%s(%s);\n", indent, simpleClassName, classSuffix, params);
-                        p.format("%s}\n", indent.left());
+                            String classSuffix = ofEntity ? "." + CLASS_NAME_PATCHED : "";
+                            p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
+                                    Names.getWithMethod(x.getName()), importedType, fieldName);
+                            if (x.isUnicode() != null && !x.isUnicode()) {
+                                p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
+                                        imports.add(EntityPreconditions.class), fieldName, fieldName);
+                                indent.left();
+                            }
+
+                            // prepare parameters to constructor to return immutable copy
+                            String params = fields.stream() //
+                                    .map(f -> f.fieldName) //
+                                    .map(a -> ", " + a) //
+                                    .collect(Collectors.joining());
+                            if (ofEntity) {
+                                params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
+                                        + ", unmappedFields, "
+                                        + imports.add(com.github.davidmoten.odata.client.Util.class)
+                                        + ".nvl(odataType, \"" + fullType + "\")" + params;
+                            } else {
+                                params = "contextPath" + ", unmappedFields, odataType" + params;
+                            }
+
+                            indent.right();
+                            p.format("%sreturn new %s%s(%s);\n", indent, simpleClassName, classSuffix, params);
+                            p.format("%s}\n", indent.left());
+                        }
                     }
 
                 });
