@@ -13,6 +13,7 @@ import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
@@ -173,7 +174,11 @@ public final class RequestHelper {
             if (contentType == null) {
                 contentType = "application/octet-stream";
             }
-            return Optional.of(new StreamProvider(contextPath.addSegment("$value"), RequestOptions.EMPTY, contentType));
+            // TODO support relative editLink?
+            return Optional.of(new StreamProvider(
+                    new ContextPath(contextPath.context(), new Path(editLink, contextPath.path().style()))
+                            .addSegment("$value"),
+                    RequestOptions.EMPTY, contentType));
         }
     }
 

@@ -33,6 +33,10 @@ public final class ContextPath {
         return context;
     }
 
+    public Path path() {
+        return path;
+    }
+
     public ContextPath addQueries(Map<String, String> queries) {
         Path p = path;
         for (Entry<String, String> entry : queries.entrySet()) {

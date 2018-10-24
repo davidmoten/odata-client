@@ -12,6 +12,15 @@
                     Nullable="false" />
                 <Property Name="Name" Type="Edm.String" />
             </EntityType>
+            <EntityType Name="Product2">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32"
+                    Nullable="false" />
+                <Property Name="Name" Type="Edm.String" />
+                <Property Name="Photo" Type="Edm.Stream"/>
+            </EntityType>
             <EntityContainer Name="Test5Service">
                 <EntitySet Name="Products"
                     EntityType="Test5.Product">
