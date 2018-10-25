@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.ODataEntity;
-import com.github.davidmoten.odata.client.Patchable;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.Util;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
@@ -145,24 +144,24 @@ public class FileAttachment extends Attachment implements ODataEntity {
         return Optional.ofNullable(contentId);
     }
 
-    public FileAttachment.Patched withContentId(String contentId) {
-        return new FileAttachment.Patched(contextPath, changedFields.add("contentId"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+    public FileAttachment withContentId(String contentId) {
+        return new FileAttachment(contextPath, changedFields.add("contentId"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
     }
 
     public Optional<String> getContentLocation() {
         return Optional.ofNullable(contentLocation);
     }
 
-    public FileAttachment.Patched withContentLocation(String contentLocation) {
-        return new FileAttachment.Patched(contextPath, changedFields.add("contentLocation"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+    public FileAttachment withContentLocation(String contentLocation) {
+        return new FileAttachment(contextPath, changedFields.add("contentLocation"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
     }
 
     public Optional<byte[]> getContentBytes() {
         return Optional.ofNullable(contentBytes);
     }
 
-    public FileAttachment.Patched withContentBytes(byte[] contentBytes) {
-        return new FileAttachment.Patched(contextPath, changedFields.add("contentBytes"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+    public FileAttachment withContentBytes(byte[] contentBytes) {
+        return new FileAttachment(contextPath, changedFields.add("contentBytes"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
     }
 
     @JsonAnySetter
@@ -178,39 +177,16 @@ public class FileAttachment extends Attachment implements ODataEntity {
         return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
     }
 
-    public static final class Patched extends FileAttachment implements Patchable<FileAttachment> {
+    public FileAttachment patch() {
+        RequestHelper.patch(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
+        // pass null for changedFields to reset it
+        return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+    }
 
-        @JsonCreator
-        protected Patched(
-                @JacksonInject ContextPath contextPath, 
-                @JacksonInject ChangedFields changedFields, 
-                @JacksonInject UnmappedFields unmappedFields, 
-                @JsonProperty("@odata.type") String odataType,
-                @JsonProperty("id") String id,
-                @JsonProperty("lastModifiedDateTime") OffsetDateTime lastModifiedDateTime,
-                @JsonProperty("name") String name,
-                @JsonProperty("contentType") String contentType,
-                @JsonProperty("size") Integer size,
-                @JsonProperty("isInline") Boolean isInline,
-                @JsonProperty("contentId") String contentId,
-                @JsonProperty("contentLocation") String contentLocation,
-                @JsonProperty("contentBytes") byte[] contentBytes) {
-            super(contextPath, changedFields, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
-        }
-
-        @Override
-        public FileAttachment patch() {
-            RequestHelper.patch(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
-            // pass null for changedFields to reset it
-            return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
-        }
-
-        @Override
-        public FileAttachment put() {
-            RequestHelper.put(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
-            // pass null for changedFields to reset it
-            return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
-        }
+    public FileAttachment put() {
+        RequestHelper.put(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
+        // pass null for changedFields to reset it
+        return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
     }
 
     @Override
