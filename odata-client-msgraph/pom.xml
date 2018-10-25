@@ -65,7 +65,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>../odata-client-generator/src/main/odata/msgraph-1.0-20180905-formatted.xml</metadata>
+                            <metadata>../odata-client-generator/src/main/odata/msgraph-1.0-20181025-formatted.xml</metadata>
                             <schemas>
                                 <schema>
                                     <namespace>microsoft.graph</namespace>
