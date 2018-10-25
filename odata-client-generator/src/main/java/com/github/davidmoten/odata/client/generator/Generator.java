@@ -200,7 +200,7 @@ public final class Generator {
                                 imports.add(JsonProperty.class), //
                                 x.getName(), //
                                 indent, //
-                                Names.toConstant(x.getName()), //
+                                names.getEnumInstanceName(t, x.getName()), //
                                 x.getName(), //
                                 x.getValue()))
                         .collect(Collectors.joining(",\n\n"));
