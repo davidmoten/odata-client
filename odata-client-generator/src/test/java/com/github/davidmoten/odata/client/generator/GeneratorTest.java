@@ -26,7 +26,7 @@ public class GeneratorTest {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
         TEdmx t = unmarshaller
-                .unmarshal(new StreamSource(new FileInputStream("src/main/odata/msgraph-1.0-20181025-formatted.xml")),
+                .unmarshal(new StreamSource(new FileInputStream("src/main/odata/msgraph-metadata.xml")),
                         TEdmx.class)
                 .getValue();
         SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph", "microsoft.graph.generated");

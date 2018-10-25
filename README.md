@@ -131,6 +131,10 @@ drafts //
     .messages(saved.getId().get()) //
     .delete();
 ```
+### Updating Microsoft Graph metadata
+Developer instructions:
+* Copy latest from https://graph.microsoft.com/v1.0/$metadata and place in `odata-client-generator/src/main/odata/msgraph-metadata.xml` then format it using `xmllint --format <input> <output>`
+
 ## TODO
 * support OpenType (arbitrary extra fields get written)
 * support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
