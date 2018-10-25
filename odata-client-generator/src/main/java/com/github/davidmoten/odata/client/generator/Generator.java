@@ -44,7 +44,6 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.HasUnmappedFields;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntity;
-import com.github.davidmoten.odata.client.Patchable;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
@@ -319,7 +318,7 @@ public final class Generator {
             }
 
             // write Patched class
-            writePatchedClass(t, simpleClassName, imports, indent, p);
+            writePatchAndPutMethods(t, simpleClassName, imports, indent, p);
 
             // write toString
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
@@ -358,36 +357,20 @@ public final class Generator {
         p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
     }
 
-    private void writePatchedClass(EntityType t, String simpleClassName, Imports imports, Indent indent,
+    private void writePatchAndPutMethods(EntityType t, String simpleClassName, Imports imports, Indent indent,
             PrintWriter p) {
-        p.format("\n%spublic static final class %s extends %s implements %s<%s> {\n", indent, CLASS_NAME_PATCHED,
-                simpleClassName, imports.add(Patchable.class), simpleClassName);
-
-        // write Patched constructor
-        indent.right();
-        writeConstructorSignature(t, CLASS_NAME_PATCHED, imports, indent, p);
-        indent.right();
-        String superFields = t.getFields(imports) //
-                .stream() //
-                .map(f -> ", " + f.fieldName) //
-                .collect(Collectors.joining());
-        p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent, superFields);
-        p.format("%s}\n", indent.left());
-
         // write patch() method
         writePutOrPatchMethod(t, simpleClassName, imports, indent, p, true);
 
         // write put method
         writePutOrPatchMethod(t, simpleClassName, imports, indent, p, false);
 
-        p.format("%s}\n", indent.left());
     }
 
     private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports, Indent indent,
             PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
-        p.format("\n%s@%s\n", indent, imports.add(Override.class));
-        p.format("%spublic %s %s() {\n", indent, simpleClassName, methodName);
+        p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
         String params = t.getFields(imports) //
                 .stream() //
                 .map(f -> ", " + f.fieldName) //
@@ -987,7 +970,7 @@ public final class Generator {
                                     fieldName);
                             p.format("%s}\n", indent.left());
 
-                            String classSuffix = ofEntity ? "." + CLASS_NAME_PATCHED : "";
+                            String classSuffix = "";
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
                                     Names.getWithMethod(x.getName()), importedType, fieldName);
                             if (x.isUnicode() != null && !x.isUnicode()) {
