@@ -42,9 +42,4 @@ public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, Col
         }
     }
 
-    public static <T extends ODataEntity> CollectionPageEntity<T> from(Context context, CollectionPageJson c,
-            Class<T> cls) {
-        throw new UnsupportedOperationException();
-    }
-
 }
