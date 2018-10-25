@@ -791,9 +791,9 @@ public final class Generator {
                         if (x.getType().get(0).startsWith(COLLECTION_PREFIX)) {
                             String y = names.getInnerType(names.getType(x));
                             p.format("%spublic %s %s() {\n", //
-                                    indent, // tional`
+                                    indent, //
                                     imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
-                                    x.getName());
+                                    Names.getIdentifier(x.getName()));
 
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
                                     indent.right(), //
