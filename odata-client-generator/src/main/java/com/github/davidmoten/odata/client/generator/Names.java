@@ -15,6 +15,7 @@ import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
+import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
@@ -555,6 +556,28 @@ public final class Names {
 
     public String getInnerType(TProperty p) {
         return getInnerType(getType(p));
+    }
+
+    public String getEnumInstanceName(TEnumType t, String name) {
+        // ensures uniqueness
+        //
+        // maps enum names to enum instance names
+        // e.g. theResponse -> THE_RESPONSE
+        Map<String, String> map = new HashMap<>();
+        Util.filter(t.getMemberOrAnnotation(), TEnumTypeMember.class) //
+                .forEach(m -> {
+                    String instanceName = Names.toConstant(m.getName());
+                    if (!map.containsValue(instanceName)) {
+                        map.put(m.getName(), instanceName);
+                    } else {
+                        int i = 1;
+                        while (map.containsValue(instanceName + i)) {
+                            i++;
+                        }
+                        map.put(m.getName(), instanceName + i);
+                    }
+                });
+        return map.get(name);
     }
 
 }
