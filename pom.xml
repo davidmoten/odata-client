@@ -100,6 +100,7 @@
         <module>odata-client-test-northwind</module>
         <module>odata-client-test-datascope</module>
         <module>odata-client-msgraph</module>
+        <module>odata-client-msgraph-beta</module>
     </modules>
 
     <build>
