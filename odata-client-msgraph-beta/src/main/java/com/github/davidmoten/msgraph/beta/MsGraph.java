@@ -1,4 +1,4 @@
-package com.github.davidmoten.msgraph;
+package com.github.davidmoten.msgraph.beta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import odata.msgraph.client.container.GraphService;
 
 public final class MsGraph {
 
-    private static final String MSGRAPH_1_0_BASE_URL = "https://graph.microsoft.com/v1.0";
+    private static final String MSGRAPH_1_0_BASE_URL = "https://graph.microsoft.com/beta";
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String OAUTH_BEARER_PREFIX = "Bearer ";
 
