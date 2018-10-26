@@ -327,6 +327,9 @@ public final class Generator {
             // write Patched class
             writePatchAndPutMethods(t, simpleClassName, imports, indent, p);
 
+            // write copy method
+            writeCopyMethod(t, simpleClassName, imports, indent, p, true);
+
             // write toString
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic %s toString() {\n", indent, imports.add(String.class));
@@ -358,6 +361,25 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p,
+            boolean ofEntity) {
+        p.format("%sprivate %s _copy() {\n", indent, simpleClassName);
+        // use _x as identifier so doesn't conflict with any field name
+        p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
+        p.format("%s_x.contextPath = contextPath;\n", indent);
+        if (ofEntity) {
+            p.format("%s_x.changedFields = changedFields;\n", indent);
+        }
+        p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
+        p.format("%s_x.odataType = odataType;\n", //
+                indent);
+        t.getFields(imports) //
+                .stream() //
+                .map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName)).forEach(p::print);
+        p.format("%sreturn _x;\n", indent);
+        p.format("%s}\n", indent.left());
     }
 
     private void writeNoArgsConstructor(String simpleClassName, Indent indent, PrintWriter p, boolean hasBaseType) {
@@ -558,6 +580,9 @@ public final class Generator {
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             writeBuilder(t, simpleClassName, imports, indent, p);
+
+            // write copy method
+            writeCopyMethod(t, simpleClassName, imports, indent, p, false);
 
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFile());
@@ -1057,19 +1082,15 @@ public final class Generator {
                                 p.format("%sreturn new %s%s(%s);\n", indent, simpleClassName, classSuffix, params);
                             } else {
                                 // use _x as identifier so doesn't conflict with any field name
-                                p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
-                                p.format("%s_x.contextPath = contextPath;\n", indent);
+                                p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName, simpleClassName);
                                 if (ofEntity) {
                                     p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
                                 }
-                                p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
                                 p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
                                         indent, //
                                         imports.add(com.github.davidmoten.odata.client.Util.class), //
                                         fullType);
-                                fields.stream()
-                                        .map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName))
-                                        .forEach(p::print);
+                                p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
                                 p.format("%sreturn _x;\n", indent);
                             }
 

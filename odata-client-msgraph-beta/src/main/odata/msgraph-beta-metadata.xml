@@ -9488,250 +9488,250 @@
         <Property Name="requireEncryptionForWriteAccess" Type="Edm.Boolean" Nullable="false"/>
         <Property Name="blockCrossOrganizationWriteAccess" Type="Edm.Boolean" Nullable="false"/>
       </ComplexType>
-<!--       <EntityType Name="windows10GeneralConfiguration" BaseType="microsoft.graph.deviceConfiguration"> -->
-<!--         <Property Name="windows10AppsForceUpdateSchedule" Type="microsoft.graph.windows10AppsForceUpdateSchedule"/> -->
-<!--         <Property Name="enableAutomaticRedeployment" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="assignedAccessSingleModeUserName" Type="Edm.String"/> -->
-<!--         <Property Name="assignedAccessSingleModeAppUserModelId" Type="Edm.String"/> -->
-<!--         <Property Name="microsoftAccountSignInAssistantSettings" Type="microsoft.graph.signInAssistantOptions" Nullable="false"/> -->
-<!--         <Property Name="authenticationAllowSecondaryDevice" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="authenticationAllowFIDODevice" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cryptographyAllowFipsAlgorithmPolicy" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="displayAppListWithGdiDPIScalingTurnedOn" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="displayAppListWithGdiDPIScalingTurnedOff" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="enterpriseCloudPrintDiscoveryEndPoint" Type="Edm.String"/> -->
-<!--         <Property Name="enterpriseCloudPrintOAuthAuthority" Type="Edm.String"/> -->
-<!--         <Property Name="enterpriseCloudPrintOAuthClientIdentifier" Type="Edm.String"/> -->
-<!--         <Property Name="enterpriseCloudPrintResourceIdentifier" Type="Edm.String"/> -->
-<!--         <Property Name="enterpriseCloudPrintDiscoveryMaxLimit" Type="Edm.Int32"/> -->
-<!--         <Property Name="enterpriseCloudPrintMopriaDiscoveryResourceIdentifier" Type="Edm.String"/> -->
-<!--         <Property Name="messagingBlockSync" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="messagingBlockMMS" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="messagingBlockRichCommunicationServices" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="printerNames" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="printerDefaultName" Type="Edm.String"/> -->
-<!--         <Property Name="printerBlockAddition" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchBlockDiacritics" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchDisableAutoLanguageDetection" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchDisableIndexingEncryptedItems" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchEnableRemoteQueries" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchDisableUseLocation" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchDisableLocation" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchDisableIndexerBackoff" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchDisableIndexingRemovableDrive" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchEnableAutomaticIndexSizeManangement" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="searchBlockWebResults" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="securityBlockAzureADJoinedDevicesAutoEncryption" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="diagnosticsDataSubmissionMode" Type="microsoft.graph.diagnosticDataSubmissionMode" Nullable="false"/> -->
-<!--         <Property Name="oneDriveDisableFileSync" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="systemTelemetryProxyServer" Type="Edm.String"/> -->
-<!--         <Property Name="inkWorkspaceAccess" Type="microsoft.graph.inkAccessSetting" Nullable="false"/> -->
-<!--         <Property Name="inkWorkspaceAccessState" Type="microsoft.graph.stateManagementSetting" Nullable="false"/> -->
-<!--         <Property Name="inkWorkspaceBlockSuggestedApps" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="smartScreenEnableAppInstallControl" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="personalizationDesktopImageUrl" Type="Edm.String"/> -->
-<!--         <Property Name="personalizationLockScreenImageUrl" Type="Edm.String"/> -->
-<!--         <Property Name="bluetoothAllowedServices" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="bluetoothBlockAdvertising" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="bluetoothBlockDiscoverableMode" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="bluetoothBlockPrePairing" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockAutofill" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeCookiePolicy" Type="microsoft.graph.edgeCookiePolicy" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockDeveloperTools" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockSendingDoNotTrackHeader" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockExtensions" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockInPrivateBrowsing" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockJavaScript" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockPasswordManager" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockAddressBarDropdown" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockCompatibilityList" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeClearBrowsingDataOnExit" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeAllowStartPagesModification" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeDisableFirstRunPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockLiveTileDataCollection" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeSyncFavoritesWithInternetExplorer" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeFavoritesListLocation" Type="Edm.String"/> -->
-<!--         <Property Name="edgeBlockEditFavorites" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cellularBlockDataWhenRoaming" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cellularBlockVpn" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cellularBlockVpnWhenRoaming" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cellularData" Type="microsoft.graph.configurationUsage" Nullable="false"/> -->
-<!--         <Property Name="defenderBlockEndUserAccess" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderDaysBeforeDeletingQuarantinedMalware" Type="Edm.Int32"/> -->
-<!--         <Property Name="defenderDetectedMalwareActions" Type="microsoft.graph.defenderDetectedMalwareActions"/> -->
-<!--         <Property Name="defenderSystemScanSchedule" Type="microsoft.graph.weeklySchedule" Nullable="false"/> -->
-<!--         <Property Name="defenderFilesAndFoldersToExclude" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="defenderFileExtensionsToExclude" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="defenderScanMaxCpu" Type="Edm.Int32"/> -->
-<!--         <Property Name="defenderMonitorFileActivity" Type="microsoft.graph.defenderMonitorFileActivity" Nullable="false"/> -->
-<!--         <Property Name="defenderPotentiallyUnwantedAppAction" Type="microsoft.graph.defenderPotentiallyUnwantedAppAction"/> -->
-<!--         <Property Name="defenderPotentiallyUnwantedAppActionSetting" Type="microsoft.graph.defenderProtectionType" Nullable="false"/> -->
-<!--         <Property Name="defenderProcessesToExclude" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="defenderPromptForSampleSubmission" Type="microsoft.graph.defenderPromptForSampleSubmission" Nullable="false"/> -->
-<!--         <Property Name="defenderRequireBehaviorMonitoring" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderRequireCloudProtection" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderRequireNetworkInspectionSystem" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderRequireRealTimeMonitoring" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanArchiveFiles" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanDownloads" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanNetworkFiles" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanIncomingMail" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanMappedNetworkDrivesDuringFullScan" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanRemovableDrivesDuringFullScan" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScanScriptsLoadedInInternetExplorer" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderSignatureUpdateIntervalInHours" Type="Edm.Int32"/> -->
-<!--         <Property Name="defenderScanType" Type="microsoft.graph.defenderScanType" Nullable="false"/> -->
-<!--         <Property Name="defenderScheduledScanTime" Type="Edm.TimeOfDay"/> -->
-<!--         <Property Name="defenderScheduledQuickScanTime" Type="Edm.TimeOfDay"/> -->
-<!--         <Property Name="defenderCloudBlockLevel" Type="microsoft.graph.defenderCloudBlockLevelType" Nullable="false"/> -->
-<!--         <Property Name="defenderCloudExtendedTimeout" Type="Edm.Int32"/> -->
-<!--         <Property Name="defenderCloudExtendedTimeoutInSeconds" Type="Edm.Int32"/> -->
-<!--         <Property Name="defenderBlockOnAccessProtection" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="defenderScheduleScanDay" Type="microsoft.graph.defenderScheduleScanDay" Nullable="false"/> -->
-<!--         <Property Name="defenderSubmitSamplesConsentType" Type="microsoft.graph.defenderSubmitSamplesConsentType" Nullable="false"/> -->
-<!--         <Property Name="lockScreenAllowTimeoutConfiguration" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="lockScreenBlockActionCenterNotifications" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="lockScreenBlockCortana" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="lockScreenBlockToastNotifications" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="lockScreenTimeoutInSeconds" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordBlockSimple" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="passwordExpirationDays" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordMinimumLength" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordMinutesOfInactivityBeforeScreenTimeout" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordMinimumCharacterSetCount" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordPreviousPasswordBlockCount" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordRequired" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="passwordRequireWhenResumeFromIdleState" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="passwordRequiredType" Type="microsoft.graph.requiredPasswordType" Nullable="false"/> -->
-<!--         <Property Name="passwordSignInFailureCountBeforeFactoryReset" Type="Edm.Int32"/> -->
-<!--         <Property Name="passwordMinimumAgeInDays" Type="Edm.Int32"/> -->
-<!--         <Property Name="privacyAdvertisingId" Type="microsoft.graph.stateManagementSetting" Nullable="false"/> -->
-<!--         <Property Name="privacyAutoAcceptPairingAndConsentPrompts" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="privacyBlockInputPersonalization" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="privacyBlockPublishUserActivities" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="privacyBlockActivityFeed" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startBlockUnpinningAppsFromTaskbar" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuAppListVisibility" Type="microsoft.graph.windowsStartMenuAppListVisibilityType" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideChangeAccountSettings" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideFrequentlyUsedApps" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideHibernate" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideLock" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHidePowerButton" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideRecentJumpLists" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideRecentlyAddedApps" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideRestartOptions" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideShutDown" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideSignOut" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideSleep" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideSwitchAccount" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuHideUserTile" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="startMenuLayoutEdgeAssetsXml" Type="Edm.Binary"/> -->
-<!--         <Property Name="startMenuLayoutXml" Type="Edm.Binary"/> -->
-<!--         <Property Name="startMenuMode" Type="microsoft.graph.windowsStartMenuModeType" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderDocuments" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderDownloads" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderFileExplorer" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderHomeGroup" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderMusic" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderNetwork" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderPersonalFolder" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderPictures" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderSettings" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="startMenuPinnedFolderVideos" Type="microsoft.graph.visibilitySetting" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockSettingsApp" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockSystemPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockDevicesPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockNetworkInternetPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockPersonalizationPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockAccountsPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockTimeLanguagePage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockEaseOfAccessPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockPrivacyPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockUpdateSecurityPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockAppsPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockGamingPage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlockConsumerSpecificFeatures" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlockOnActionCenter" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlockTailoredExperiences" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlockThirdPartyNotifications" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlockWelcomeExperience" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightBlockWindowsTips" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsSpotlightConfigureOnLockScreen" Type="microsoft.graph.windowsSpotlightEnablementSettings" Nullable="false"/> -->
-<!--         <Property Name="networkProxyApplySettingsDeviceWide" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="networkProxyDisableAutoDetect" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="networkProxyAutomaticConfigurationUrl" Type="Edm.String"/> -->
-<!--         <Property Name="networkProxyServer" Type="microsoft.graph.windows10NetworkProxyServer"/> -->
-<!--         <Property Name="accountsBlockAddingNonMicrosoftAccountEmail" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="antiTheftModeBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="bluetoothBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cameraBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="connectedDevicesServiceBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="certificatesBlockManualRootCertificateInstallation" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="copyPasteBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="cortanaBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="deviceManagementBlockFactoryResetOnMobile" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="deviceManagementBlockManualUnenroll" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="safeSearchFilter" Type="microsoft.graph.safeSearchFilterType" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockPopups" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockSearchSuggestions" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeBlockSendingIntranetTrafficToInternetExplorer" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeRequireSmartScreen" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="edgeEnterpriseModeSiteListLocation" Type="Edm.String"/> -->
-<!--         <Property Name="edgeFirstRunUrl" Type="Edm.String"/> -->
-<!--         <Property Name="edgeSearchEngine" Type="microsoft.graph.edgeSearchEngineBase"/> -->
-<!--         <Property Name="edgeHomepageUrls" Type="Collection(Edm.String)"/> -->
-<!--         <Property Name="edgeBlockAccessToAboutFlags" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="smartScreenBlockPromptOverride" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="smartScreenBlockPromptOverrideForFiles" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="webRtcBlockLocalhostIpAddress" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="internetSharingBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockAddProvisioningPackage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockRemoveProvisioningPackage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockChangeSystemTime" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockEditDeviceName" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockChangeRegion" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockChangeLanguage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="settingsBlockChangePowerSleep" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="locationServicesBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="microsoftAccountBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="microsoftAccountBlockSettingsSync" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="nfcBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="resetProtectionModeBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="screenCaptureBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="storageBlockRemovableStorage" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="storageRequireMobileDeviceEncryption" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="usbBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="voiceRecordingBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="wiFiBlockAutomaticConnectHotspots" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="wiFiBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="wiFiBlockManualConfiguration" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="wiFiScanInterval" Type="Edm.Int32"/> -->
-<!--         <Property Name="wirelessDisplayBlockProjectionToThisDevice" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="wirelessDisplayBlockUserInputFromReceiver" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="wirelessDisplayRequirePinForPairing" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsStoreBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="appsAllowTrustedAppsSideloading" Type="microsoft.graph.stateManagementSetting" Nullable="false"/> -->
-<!--         <Property Name="windowsStoreBlockAutoUpdate" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="developerUnlockSetting" Type="microsoft.graph.stateManagementSetting" Nullable="false"/> -->
-<!--         <Property Name="sharedUserAppDataAllowed" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="appsBlockWindowsStoreOriginatedApps" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="windowsStoreEnablePrivateStoreOnly" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="storageRestrictAppDataToSystemVolume" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="storageRestrictAppInstallToSystemVolume" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="gameDvrBlocked" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="experienceBlockDeviceDiscovery" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="experienceBlockErrorDialogWhenNoSIM" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="experienceBlockTaskSwitcher" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="logonBlockFastUserSwitching" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="tenantLockdownRequireNetworkDuringOutOfBoxExperience" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="appManagementMSIAllowUserControlOverInstall" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="appManagementMSIAlwaysInstallWithElevatedPrivileges" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <Property Name="dataProtectionBlockDirectMemoryAccess" Type="Edm.Boolean" Nullable="false"/> -->
-<!--         <NavigationProperty Name="assignedAccessMultiModeProfiles" Type="Collection(microsoft.graph.windowsAssignedAccessProfile)" ContainsTarget="true"/> -->
-<!--         <NavigationProperty Name="privacyAccessControls" Type="Collection(microsoft.graph.windowsPrivacyDataAccessControlItem)" ContainsTarget="true"/> -->
-<!--       </EntityType> -->
+      <EntityType Name="windows10GeneralConfiguration" BaseType="microsoft.graph.deviceConfiguration">
+        <Property Name="windows10AppsForceUpdateSchedule" Type="microsoft.graph.windows10AppsForceUpdateSchedule"/>
+        <Property Name="enableAutomaticRedeployment" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="assignedAccessSingleModeUserName" Type="Edm.String"/>
+        <Property Name="assignedAccessSingleModeAppUserModelId" Type="Edm.String"/>
+        <Property Name="microsoftAccountSignInAssistantSettings" Type="microsoft.graph.signInAssistantOptions" Nullable="false"/>
+        <Property Name="authenticationAllowSecondaryDevice" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="authenticationAllowFIDODevice" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cryptographyAllowFipsAlgorithmPolicy" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="displayAppListWithGdiDPIScalingTurnedOn" Type="Collection(Edm.String)"/>
+        <Property Name="displayAppListWithGdiDPIScalingTurnedOff" Type="Collection(Edm.String)"/>
+        <Property Name="enterpriseCloudPrintDiscoveryEndPoint" Type="Edm.String"/>
+        <Property Name="enterpriseCloudPrintOAuthAuthority" Type="Edm.String"/>
+        <Property Name="enterpriseCloudPrintOAuthClientIdentifier" Type="Edm.String"/>
+        <Property Name="enterpriseCloudPrintResourceIdentifier" Type="Edm.String"/>
+        <Property Name="enterpriseCloudPrintDiscoveryMaxLimit" Type="Edm.Int32"/>
+        <Property Name="enterpriseCloudPrintMopriaDiscoveryResourceIdentifier" Type="Edm.String"/>
+        <Property Name="messagingBlockSync" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="messagingBlockMMS" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="messagingBlockRichCommunicationServices" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="printerNames" Type="Collection(Edm.String)"/>
+        <Property Name="printerDefaultName" Type="Edm.String"/>
+        <Property Name="printerBlockAddition" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchBlockDiacritics" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchDisableAutoLanguageDetection" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchDisableIndexingEncryptedItems" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchEnableRemoteQueries" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchDisableUseLocation" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchDisableLocation" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchDisableIndexerBackoff" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchDisableIndexingRemovableDrive" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchEnableAutomaticIndexSizeManangement" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="searchBlockWebResults" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="securityBlockAzureADJoinedDevicesAutoEncryption" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="diagnosticsDataSubmissionMode" Type="microsoft.graph.diagnosticDataSubmissionMode" Nullable="false"/>
+        <Property Name="oneDriveDisableFileSync" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="systemTelemetryProxyServer" Type="Edm.String"/>
+        <Property Name="inkWorkspaceAccess" Type="microsoft.graph.inkAccessSetting" Nullable="false"/>
+        <Property Name="inkWorkspaceAccessState" Type="microsoft.graph.stateManagementSetting" Nullable="false"/>
+        <Property Name="inkWorkspaceBlockSuggestedApps" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="smartScreenEnableAppInstallControl" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="personalizationDesktopImageUrl" Type="Edm.String"/>
+        <Property Name="personalizationLockScreenImageUrl" Type="Edm.String"/>
+        <Property Name="bluetoothAllowedServices" Type="Collection(Edm.String)"/>
+        <Property Name="bluetoothBlockAdvertising" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="bluetoothBlockDiscoverableMode" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="bluetoothBlockPrePairing" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockAutofill" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeCookiePolicy" Type="microsoft.graph.edgeCookiePolicy" Nullable="false"/>
+        <Property Name="edgeBlockDeveloperTools" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockSendingDoNotTrackHeader" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockExtensions" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockInPrivateBrowsing" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockJavaScript" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockPasswordManager" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockAddressBarDropdown" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockCompatibilityList" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeClearBrowsingDataOnExit" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeAllowStartPagesModification" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeDisableFirstRunPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockLiveTileDataCollection" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeSyncFavoritesWithInternetExplorer" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeFavoritesListLocation" Type="Edm.String"/>
+        <Property Name="edgeBlockEditFavorites" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cellularBlockDataWhenRoaming" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cellularBlockVpn" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cellularBlockVpnWhenRoaming" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cellularData" Type="microsoft.graph.configurationUsage" Nullable="false"/>
+        <Property Name="defenderBlockEndUserAccess" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderDaysBeforeDeletingQuarantinedMalware" Type="Edm.Int32"/>
+        <Property Name="defenderDetectedMalwareActions" Type="microsoft.graph.defenderDetectedMalwareActions"/>
+        <Property Name="defenderSystemScanSchedule" Type="microsoft.graph.weeklySchedule" Nullable="false"/>
+        <Property Name="defenderFilesAndFoldersToExclude" Type="Collection(Edm.String)"/>
+        <Property Name="defenderFileExtensionsToExclude" Type="Collection(Edm.String)"/>
+        <Property Name="defenderScanMaxCpu" Type="Edm.Int32"/>
+        <Property Name="defenderMonitorFileActivity" Type="microsoft.graph.defenderMonitorFileActivity" Nullable="false"/>
+        <Property Name="defenderPotentiallyUnwantedAppAction" Type="microsoft.graph.defenderPotentiallyUnwantedAppAction"/>
+        <Property Name="defenderPotentiallyUnwantedAppActionSetting" Type="microsoft.graph.defenderProtectionType" Nullable="false"/>
+        <Property Name="defenderProcessesToExclude" Type="Collection(Edm.String)"/>
+        <Property Name="defenderPromptForSampleSubmission" Type="microsoft.graph.defenderPromptForSampleSubmission" Nullable="false"/>
+        <Property Name="defenderRequireBehaviorMonitoring" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderRequireCloudProtection" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderRequireNetworkInspectionSystem" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderRequireRealTimeMonitoring" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanArchiveFiles" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanDownloads" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanNetworkFiles" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanIncomingMail" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanMappedNetworkDrivesDuringFullScan" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanRemovableDrivesDuringFullScan" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScanScriptsLoadedInInternetExplorer" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderSignatureUpdateIntervalInHours" Type="Edm.Int32"/>
+        <Property Name="defenderScanType" Type="microsoft.graph.defenderScanType" Nullable="false"/>
+        <Property Name="defenderScheduledScanTime" Type="Edm.TimeOfDay"/>
+        <Property Name="defenderScheduledQuickScanTime" Type="Edm.TimeOfDay"/>
+        <Property Name="defenderCloudBlockLevel" Type="microsoft.graph.defenderCloudBlockLevelType" Nullable="false"/>
+        <Property Name="defenderCloudExtendedTimeout" Type="Edm.Int32"/>
+        <Property Name="defenderCloudExtendedTimeoutInSeconds" Type="Edm.Int32"/>
+        <Property Name="defenderBlockOnAccessProtection" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defenderScheduleScanDay" Type="microsoft.graph.defenderScheduleScanDay" Nullable="false"/>
+        <Property Name="defenderSubmitSamplesConsentType" Type="microsoft.graph.defenderSubmitSamplesConsentType" Nullable="false"/>
+        <Property Name="lockScreenAllowTimeoutConfiguration" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="lockScreenBlockActionCenterNotifications" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="lockScreenBlockCortana" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="lockScreenBlockToastNotifications" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="lockScreenTimeoutInSeconds" Type="Edm.Int32"/>
+        <Property Name="passwordBlockSimple" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="passwordExpirationDays" Type="Edm.Int32"/>
+        <Property Name="passwordMinimumLength" Type="Edm.Int32"/>
+        <Property Name="passwordMinutesOfInactivityBeforeScreenTimeout" Type="Edm.Int32"/>
+        <Property Name="passwordMinimumCharacterSetCount" Type="Edm.Int32"/>
+        <Property Name="passwordPreviousPasswordBlockCount" Type="Edm.Int32"/>
+        <Property Name="passwordRequired" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="passwordRequireWhenResumeFromIdleState" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="passwordRequiredType" Type="microsoft.graph.requiredPasswordType" Nullable="false"/>
+        <Property Name="passwordSignInFailureCountBeforeFactoryReset" Type="Edm.Int32"/>
+        <Property Name="passwordMinimumAgeInDays" Type="Edm.Int32"/>
+        <Property Name="privacyAdvertisingId" Type="microsoft.graph.stateManagementSetting" Nullable="false"/>
+        <Property Name="privacyAutoAcceptPairingAndConsentPrompts" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="privacyBlockInputPersonalization" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="privacyBlockPublishUserActivities" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="privacyBlockActivityFeed" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startBlockUnpinningAppsFromTaskbar" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuAppListVisibility" Type="microsoft.graph.windowsStartMenuAppListVisibilityType" Nullable="false"/>
+        <Property Name="startMenuHideChangeAccountSettings" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideFrequentlyUsedApps" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideHibernate" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideLock" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHidePowerButton" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideRecentJumpLists" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideRecentlyAddedApps" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideRestartOptions" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideShutDown" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideSignOut" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideSleep" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideSwitchAccount" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuHideUserTile" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="startMenuLayoutEdgeAssetsXml" Type="Edm.Binary"/>
+        <Property Name="startMenuLayoutXml" Type="Edm.Binary"/>
+        <Property Name="startMenuMode" Type="microsoft.graph.windowsStartMenuModeType" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderDocuments" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderDownloads" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderFileExplorer" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderHomeGroup" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderMusic" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderNetwork" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderPersonalFolder" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderPictures" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderSettings" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="startMenuPinnedFolderVideos" Type="microsoft.graph.visibilitySetting" Nullable="false"/>
+        <Property Name="settingsBlockSettingsApp" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockSystemPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockDevicesPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockNetworkInternetPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockPersonalizationPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockAccountsPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockTimeLanguagePage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockEaseOfAccessPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockPrivacyPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockUpdateSecurityPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockAppsPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockGamingPage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlockConsumerSpecificFeatures" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlockOnActionCenter" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlockTailoredExperiences" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlockThirdPartyNotifications" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlockWelcomeExperience" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightBlockWindowsTips" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsSpotlightConfigureOnLockScreen" Type="microsoft.graph.windowsSpotlightEnablementSettings" Nullable="false"/>
+        <Property Name="networkProxyApplySettingsDeviceWide" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="networkProxyDisableAutoDetect" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="networkProxyAutomaticConfigurationUrl" Type="Edm.String"/>
+        <Property Name="networkProxyServer" Type="microsoft.graph.windows10NetworkProxyServer"/>
+        <Property Name="accountsBlockAddingNonMicrosoftAccountEmail" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="antiTheftModeBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="bluetoothBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cameraBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="connectedDevicesServiceBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="certificatesBlockManualRootCertificateInstallation" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="copyPasteBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="cortanaBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="deviceManagementBlockFactoryResetOnMobile" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="deviceManagementBlockManualUnenroll" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="safeSearchFilter" Type="microsoft.graph.safeSearchFilterType" Nullable="false"/>
+        <Property Name="edgeBlockPopups" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockSearchSuggestions" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeBlockSendingIntranetTrafficToInternetExplorer" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeRequireSmartScreen" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="edgeEnterpriseModeSiteListLocation" Type="Edm.String"/>
+        <Property Name="edgeFirstRunUrl" Type="Edm.String"/>
+        <Property Name="edgeSearchEngine" Type="microsoft.graph.edgeSearchEngineBase"/>
+        <Property Name="edgeHomepageUrls" Type="Collection(Edm.String)"/>
+        <Property Name="edgeBlockAccessToAboutFlags" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="smartScreenBlockPromptOverride" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="smartScreenBlockPromptOverrideForFiles" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="webRtcBlockLocalhostIpAddress" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="internetSharingBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockAddProvisioningPackage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockRemoveProvisioningPackage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockChangeSystemTime" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockEditDeviceName" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockChangeRegion" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockChangeLanguage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="settingsBlockChangePowerSleep" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="locationServicesBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="microsoftAccountBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="microsoftAccountBlockSettingsSync" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="nfcBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="resetProtectionModeBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="screenCaptureBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="storageBlockRemovableStorage" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="storageRequireMobileDeviceEncryption" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="usbBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="voiceRecordingBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="wiFiBlockAutomaticConnectHotspots" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="wiFiBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="wiFiBlockManualConfiguration" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="wiFiScanInterval" Type="Edm.Int32"/>
+        <Property Name="wirelessDisplayBlockProjectionToThisDevice" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="wirelessDisplayBlockUserInputFromReceiver" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="wirelessDisplayRequirePinForPairing" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsStoreBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="appsAllowTrustedAppsSideloading" Type="microsoft.graph.stateManagementSetting" Nullable="false"/>
+        <Property Name="windowsStoreBlockAutoUpdate" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="developerUnlockSetting" Type="microsoft.graph.stateManagementSetting" Nullable="false"/>
+        <Property Name="sharedUserAppDataAllowed" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="appsBlockWindowsStoreOriginatedApps" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="windowsStoreEnablePrivateStoreOnly" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="storageRestrictAppDataToSystemVolume" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="storageRestrictAppInstallToSystemVolume" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="gameDvrBlocked" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="experienceBlockDeviceDiscovery" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="experienceBlockErrorDialogWhenNoSIM" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="experienceBlockTaskSwitcher" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="logonBlockFastUserSwitching" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="tenantLockdownRequireNetworkDuringOutOfBoxExperience" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="appManagementMSIAllowUserControlOverInstall" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="appManagementMSIAlwaysInstallWithElevatedPrivileges" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="dataProtectionBlockDirectMemoryAccess" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="assignedAccessMultiModeProfiles" Type="Collection(microsoft.graph.windowsAssignedAccessProfile)" ContainsTarget="true"/>
+        <NavigationProperty Name="privacyAccessControls" Type="Collection(microsoft.graph.windowsPrivacyDataAccessControlItem)" ContainsTarget="true"/>
+      </EntityType>
       <ComplexType Name="windows10AppsForceUpdateSchedule">
         <Property Name="startDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
         <Property Name="recurrence" Type="microsoft.graph.windows10AppsUpdateRecurrence" Nullable="false"/>

@@ -139,20 +139,10 @@ public class FileAttachment extends Attachment implements ODataEntity {
     }
 
     public FileAttachment withContentId(String contentId) {
-        FileAttachment _x = new FileAttachment();
-        _x.contextPath = contextPath;
+        FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentId");
-        _x.unmappedFields = unmappedFields;
         _x.odataType = Util.nvl(odataType, "microsoft.graph.fileAttachment");
-        _x.id = id;
-        _x.lastModifiedDateTime = lastModifiedDateTime;
-        _x.name = name;
-        _x.contentType = contentType;
-        _x.size = size;
-        _x.isInline = isInline;
         _x.contentId = contentId;
-        _x.contentLocation = contentLocation;
-        _x.contentBytes = contentBytes;
         return _x;
     }
 
@@ -161,20 +151,10 @@ public class FileAttachment extends Attachment implements ODataEntity {
     }
 
     public FileAttachment withContentLocation(String contentLocation) {
-        FileAttachment _x = new FileAttachment();
-        _x.contextPath = contextPath;
+        FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentLocation");
-        _x.unmappedFields = unmappedFields;
         _x.odataType = Util.nvl(odataType, "microsoft.graph.fileAttachment");
-        _x.id = id;
-        _x.lastModifiedDateTime = lastModifiedDateTime;
-        _x.name = name;
-        _x.contentType = contentType;
-        _x.size = size;
-        _x.isInline = isInline;
-        _x.contentId = contentId;
         _x.contentLocation = contentLocation;
-        _x.contentBytes = contentBytes;
         return _x;
     }
 
@@ -183,19 +163,9 @@ public class FileAttachment extends Attachment implements ODataEntity {
     }
 
     public FileAttachment withContentBytes(byte[] contentBytes) {
-        FileAttachment _x = new FileAttachment();
-        _x.contextPath = contextPath;
+        FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentBytes");
-        _x.unmappedFields = unmappedFields;
         _x.odataType = Util.nvl(odataType, "microsoft.graph.fileAttachment");
-        _x.id = id;
-        _x.lastModifiedDateTime = lastModifiedDateTime;
-        _x.name = name;
-        _x.contentType = contentType;
-        _x.size = size;
-        _x.isInline = isInline;
-        _x.contentId = contentId;
-        _x.contentLocation = contentLocation;
         _x.contentBytes = contentBytes;
         return _x;
     }
@@ -239,6 +209,23 @@ public class FileAttachment extends Attachment implements ODataEntity {
         FileAttachment _x = new FileAttachment();
         _x.contextPath = contextPath;
         _x.changedFields = null;
+        _x.unmappedFields = unmappedFields;
+        _x.odataType = odataType;
+        _x.id = id;
+        _x.lastModifiedDateTime = lastModifiedDateTime;
+        _x.name = name;
+        _x.contentType = contentType;
+        _x.size = size;
+        _x.isInline = isInline;
+        _x.contentId = contentId;
+        _x.contentLocation = contentLocation;
+        _x.contentBytes = contentBytes;
+        return _x;
+    }
+    private FileAttachment _copy() {
+        FileAttachment _x = new FileAttachment();
+        _x.contextPath = contextPath;
+        _x.changedFields = changedFields;
         _x.unmappedFields = unmappedFields;
         _x.odataType = odataType;
         _x.id = id;
