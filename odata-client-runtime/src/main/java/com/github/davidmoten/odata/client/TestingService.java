@@ -140,7 +140,7 @@ public final class TestingService {
                             String responseExpected = readResource(url, responseResourceName);
                             return new HttpResponse(HttpURLConnection.HTTP_CREATED, responseExpected);
                         } else {
-                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
+                            throw new RuntimeException("request does not match expected.\n==== Received ====\n" + text
                                     + "\n==== Expected =====\n" + requestExpected);
                         }
                     } catch (IOException | URISyntaxException e) {
