@@ -12,6 +12,7 @@ Status: *pre-alpha* (in development)
 * Http calls using java.net.URLConnection or using Apache HttpClient
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Microsoft Graph v1.0 client
+* Microsoft Graph Beta client
 
 ## How to build
 `mvn clean install`
@@ -156,6 +157,7 @@ Developer instructions:
 To find the read url for a property that is of type `Edm.Stream` you generally need to read the entity containing the stream property with the `Accept: odata.metadata=full` request header (set `.metadataFull()` before calling `get()` on an entity).
 
 ## Implementation Notes
+### HasStream
 Suppose Person has a Navigation Property of Photo then using the TripPin service example, calling HTTP GET of 
 
 https://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/People('russellwhyte')/Photo
@@ -176,6 +178,8 @@ We then grab the `@odata.editLink` url and call that with `/$value` on the end t
 
 https://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/Photos(2)/$value
 
+### Generated classes, final fields and setting via constructors
+The initial design for setting fields was via constructors with final fields but Msgraph Beta service goes for gold on the number of fields and well exceeds the JVM limit of 256 with the `Windows10GeneralConfiguration` entity. As a consequence we have private theoretically mutable fields and a protected no-arg constructor. In practice though the fields are not mutable as the only creation access is through a `builder()` or `with*(...)` which return new instances. 
 
 
 
