@@ -1,13 +1,10 @@
 package microsoft.graph.generated.entity;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.ODataEntity;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.Util;
@@ -28,33 +25,16 @@ import microsoft.graph.generated.schema.SchemaInfo;
 public class FileAttachment extends Attachment implements ODataEntity {
 
     @JsonProperty("contentId")
-    protected final String contentId;
+    protected String contentId;
 
     @JsonProperty("contentLocation")
-    protected final String contentLocation;
+    protected String contentLocation;
 
     @JsonProperty("contentBytes")
-    protected final byte[] contentBytes;
+    protected byte[] contentBytes;
 
-    @JsonCreator
-    protected FileAttachment(
-            @JacksonInject ContextPath contextPath, 
-            @JacksonInject ChangedFields changedFields, 
-            @JacksonInject UnmappedFields unmappedFields, 
-            @JsonProperty("@odata.type") String odataType,
-            @JsonProperty("id") String id,
-            @JsonProperty("lastModifiedDateTime") OffsetDateTime lastModifiedDateTime,
-            @JsonProperty("name") String name,
-            @JsonProperty("contentType") String contentType,
-            @JsonProperty("size") Integer size,
-            @JsonProperty("isInline") Boolean isInline,
-            @JsonProperty("contentId") String contentId,
-            @JsonProperty("contentLocation") String contentLocation,
-            @JsonProperty("contentBytes") byte[] contentBytes) {
-        super(contextPath, changedFields, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline);
-        this.contentId = contentId;
-        this.contentLocation = contentLocation;
-        this.contentBytes = contentBytes;
+    protected FileAttachment() {
+        super();
     }
 
     public static Builder builderFileAttachment() {
@@ -132,7 +112,21 @@ public class FileAttachment extends Attachment implements ODataEntity {
         }
 
         public FileAttachment build() {
-            return new FileAttachment(null, changedFields, UnmappedFields.EMPTY, "microsoft.graph.fileAttachment", id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+            FileAttachment _x = new FileAttachment();
+            _x.contextPath = null;
+            _x.changedFields = changedFields;
+            _x.unmappedFields = UnmappedFields.EMPTY;
+            _x.odataType = "microsoft.graph.fileAttachment";
+            _x.id = id;
+            _x.lastModifiedDateTime = lastModifiedDateTime;
+            _x.name = name;
+            _x.contentType = contentType;
+            _x.size = size;
+            _x.isInline = isInline;
+            _x.contentId = contentId;
+            _x.contentLocation = contentLocation;
+            _x.contentBytes = contentBytes;
+            return _x;
         }
     }
 
@@ -145,7 +139,21 @@ public class FileAttachment extends Attachment implements ODataEntity {
     }
 
     public FileAttachment withContentId(String contentId) {
-        return new FileAttachment(contextPath, changedFields.add("contentId"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+        FileAttachment _x = new FileAttachment();
+        _x.contextPath = contextPath;
+        _x.changedFields = changedFields.add("contentId");
+        _x.unmappedFields = unmappedFields;
+        _x.odataType = Util.nvl(odataType, "microsoft.graph.fileAttachment");
+        _x.id = id;
+        _x.lastModifiedDateTime = lastModifiedDateTime;
+        _x.name = name;
+        _x.contentType = contentType;
+        _x.size = size;
+        _x.isInline = isInline;
+        _x.contentId = contentId;
+        _x.contentLocation = contentLocation;
+        _x.contentBytes = contentBytes;
+        return _x;
     }
 
     public Optional<String> getContentLocation() {
@@ -153,7 +161,21 @@ public class FileAttachment extends Attachment implements ODataEntity {
     }
 
     public FileAttachment withContentLocation(String contentLocation) {
-        return new FileAttachment(contextPath, changedFields.add("contentLocation"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+        FileAttachment _x = new FileAttachment();
+        _x.contextPath = contextPath;
+        _x.changedFields = changedFields.add("contentLocation");
+        _x.unmappedFields = unmappedFields;
+        _x.odataType = Util.nvl(odataType, "microsoft.graph.fileAttachment");
+        _x.id = id;
+        _x.lastModifiedDateTime = lastModifiedDateTime;
+        _x.name = name;
+        _x.contentType = contentType;
+        _x.size = size;
+        _x.isInline = isInline;
+        _x.contentId = contentId;
+        _x.contentLocation = contentLocation;
+        _x.contentBytes = contentBytes;
+        return _x;
     }
 
     public Optional<byte[]> getContentBytes() {
@@ -161,7 +183,21 @@ public class FileAttachment extends Attachment implements ODataEntity {
     }
 
     public FileAttachment withContentBytes(byte[] contentBytes) {
-        return new FileAttachment(contextPath, changedFields.add("contentBytes"), unmappedFields, Util.nvl(odataType, "microsoft.graph.fileAttachment"), id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+        FileAttachment _x = new FileAttachment();
+        _x.contextPath = contextPath;
+        _x.changedFields = changedFields.add("contentBytes");
+        _x.unmappedFields = unmappedFields;
+        _x.odataType = Util.nvl(odataType, "microsoft.graph.fileAttachment");
+        _x.id = id;
+        _x.lastModifiedDateTime = lastModifiedDateTime;
+        _x.name = name;
+        _x.contentType = contentType;
+        _x.size = size;
+        _x.isInline = isInline;
+        _x.contentId = contentId;
+        _x.contentLocation = contentLocation;
+        _x.contentBytes = contentBytes;
+        return _x;
     }
 
     @JsonAnySetter
@@ -180,13 +216,41 @@ public class FileAttachment extends Attachment implements ODataEntity {
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
         // pass null for changedFields to reset it
-        return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+        FileAttachment _x = new FileAttachment();
+        _x.contextPath = contextPath;
+        _x.changedFields = null;
+        _x.unmappedFields = unmappedFields;
+        _x.odataType = odataType;
+        _x.id = id;
+        _x.lastModifiedDateTime = lastModifiedDateTime;
+        _x.name = name;
+        _x.contentType = contentType;
+        _x.size = size;
+        _x.isInline = isInline;
+        _x.contentId = contentId;
+        _x.contentLocation = contentLocation;
+        _x.contentBytes = contentBytes;
+        return _x;
     }
 
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
         // pass null for changedFields to reset it
-        return new FileAttachment(contextPath, null, unmappedFields, odataType, id, lastModifiedDateTime, name, contentType, size, isInline, contentId, contentLocation, contentBytes);
+        FileAttachment _x = new FileAttachment();
+        _x.contextPath = contextPath;
+        _x.changedFields = null;
+        _x.unmappedFields = unmappedFields;
+        _x.odataType = odataType;
+        _x.id = id;
+        _x.lastModifiedDateTime = lastModifiedDateTime;
+        _x.name = name;
+        _x.contentType = contentType;
+        _x.size = size;
+        _x.isInline = isInline;
+        _x.contentId = contentId;
+        _x.contentLocation = contentLocation;
+        _x.contentBytes = contentBytes;
+        return _x;
     }
 
     @Override

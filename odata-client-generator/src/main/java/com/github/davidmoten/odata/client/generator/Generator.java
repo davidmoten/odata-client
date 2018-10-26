@@ -238,6 +238,8 @@ public final class Generator {
         }
     }
 
+    private static final boolean SET_VIA_CONSTRUCTOR = false;
+
     private void writeEntity(TEntityType entityType) {
         EntityType t = new EntityType(entityType, names);
         t.getDirectoryEntity().mkdirs();
@@ -266,35 +268,40 @@ public final class Generator {
             printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
 
             // write constructor
-            // build constructor parameters
-            writeConstructorSignature(t, simpleClassName, imports, indent, p);
-            indent.right();
-            if (t.getBaseType() != null) {
-                String superFields = t.getSuperFields(imports) //
-                        .stream() //
-                        .map(f -> ", " + f.fieldName) //
-                        .collect(Collectors.joining());
-                p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent, superFields);
-            }
-            if (!t.hasBaseType()) {
-                p.format("%sthis.contextPath = contextPath;\n", indent);
-                p.format("%sthis.changedFields = changedFields;\n", indent);
-                p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
-                p.format("%sthis.odataType = odataType;\n", indent);
-            }
+            if (SET_VIA_CONSTRUCTOR) {
+                writeConstructorSignature(t, simpleClassName, imports, indent, p);
+                indent.right();
+                if (t.hasBaseType()) {
+                    String superFields = t.getSuperFields(imports) //
+                            .stream() //
+                            .map(f -> ", " + f.fieldName) //
+                            .collect(Collectors.joining());
+                    p.format("%ssuper(contextPath, changedFields, unmappedFields, odataType%s);\n", indent,
+                            superFields);
+                }
+                if (!t.hasBaseType()) {
+                    p.format("%sthis.contextPath = contextPath;\n", indent);
+                    p.format("%sthis.changedFields = changedFields;\n", indent);
+                    p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
+                    p.format("%sthis.odataType = odataType;\n", indent);
+                }
 
-            // print constructor field assignments
-            t.getProperties() //
-                    .forEach(x -> {
-                        String fieldName = Names.getIdentifier(x.getName());
-                        p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
-                        if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-                            p.format("%sthis.%sNextLink = %sNextLink;\n", indent, fieldName, fieldName);
-                        }
-                    });
+                // print constructor field assignments
+                t.getProperties() //
+                        .forEach(x -> {
+                            String fieldName = Names.getIdentifier(x.getName());
+                            p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
+                            if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                                p.format("%sthis.%sNextLink = %sNextLink;\n", indent, fieldName, fieldName);
+                            }
+                        });
 
-            // close constructor
-            p.format("%s}\n", indent.left());
+                // close constructor
+                p.format("%s}\n", indent.left());
+            } else {
+                // write no-args constructor
+                writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
+            }
 
             writeBuilder(t, simpleClassName, imports, indent, p);
 
@@ -353,6 +360,15 @@ public final class Generator {
         }
     }
 
+    private void writeNoArgsConstructor(String simpleClassName, Indent indent, PrintWriter p, boolean hasBaseType) {
+        p.format("\n%sprotected %s() {\n", indent, simpleClassName);
+        indent.right();
+        if (hasBaseType) {
+            p.format("%ssuper();\n", indent);
+        }
+        p.format("%s}\n", indent.left());
+    }
+
     private void printJsonIncludeNonNull(Imports imports, PrintWriter p) {
         p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
     }
@@ -380,13 +396,33 @@ public final class Generator {
                 imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class),
                 imports.add(t.getFullClassNameSchema()));
         p.format("%s// pass null for changedFields to reset it\n", indent);
-        p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName, params);
+        if (SET_VIA_CONSTRUCTOR) {
+            p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName,
+                    params);
+        } else {
+            // use _x as identifier so doesn't conflict with any field name
+            p.format("%s%s _x = new %s();\n", indent, simpleClassName, simpleClassName);
+            p.format("%s_x.contextPath = contextPath;\n", indent);
+            p.format("%s_x.changedFields = null;\n", indent);
+            p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
+            p.format("%s_x.odataType = odataType;\n", //
+                    indent);
+            t.getFields(imports) //
+                    .stream() //
+                    .map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName)) //
+                    .forEach(p::print);
+            p.format("%sreturn _x;\n", indent);
+        }
         p.format("%s}\n", indent.left());
     }
 
     private static void addChangedFieldsField(Imports imports, Indent indent, PrintWriter p) {
+        if (!SET_VIA_CONSTRUCTOR) {
+            p.format("\n%s@%s", indent, imports.add(JacksonInject.class));
+        }
         p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
-        p.format("%sprotected final %s changedFields;\n", indent, imports.add(ChangedFields.class));
+        String finalOrBlank = SET_VIA_CONSTRUCTOR ? "final " : "";
+        p.format("%sprotected %s%s changedFields;\n", indent, finalOrBlank, imports.add(ChangedFields.class));
     }
 
     private void writeConstructorSignature(EntityType t, String simpleClassName, Imports imports, Indent indent,
@@ -473,44 +509,48 @@ public final class Generator {
                     .collect(Collectors.joining());
 
             // write constructor
-            p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
-            p.format("\n%spublic %s(@%s %s contextPath, @%s %s unmappedFields, @%s(\"%s\") %s odataType%s) {\n", //
-                    indent, //
-                    simpleClassName, //
-                    imports.add(JacksonInject.class), //
-                    imports.add(ContextPath.class), //
-                    imports.add(JacksonInject.class), //
-                    imports.add(UnmappedFields.class), //
-                    imports.add(JsonProperty.class), //
-                    "@odata.type", //
-                    imports.add(String.class), //
-                    props);
-            if (t.getBaseType() != null) {
-                String superFields = t.getSuperFields(imports) //
-                        .stream() //
-                        .map(f -> ", " + f.fieldName) //
-                        .collect(Collectors.joining());
-                p.format("%ssuper(contextPath, unmappedFields, odataType%s);\n", indent.right(), superFields);
-                indent.left();
+            if (SET_VIA_CONSTRUCTOR) {
+                p.format("\n%s@%s", indent, imports.add(JsonCreator.class));
+                p.format("\n%spublic %s(@%s %s contextPath, @%s %s unmappedFields, @%s(\"%s\") %s odataType%s) {\n", //
+                        indent, //
+                        simpleClassName, //
+                        imports.add(JacksonInject.class), //
+                        imports.add(ContextPath.class), //
+                        imports.add(JacksonInject.class), //
+                        imports.add(UnmappedFields.class), //
+                        imports.add(JsonProperty.class), //
+                        "@odata.type", //
+                        imports.add(String.class), //
+                        props);
+                if (t.getBaseType() != null) {
+                    String superFields = t.getSuperFields(imports) //
+                            .stream() //
+                            .map(f -> ", " + f.fieldName) //
+                            .collect(Collectors.joining());
+                    p.format("%ssuper(contextPath, unmappedFields, odataType%s);\n", indent.right(), superFields);
+                    indent.left();
+                }
+                indent.right();
+                if (!t.hasBaseType()) {
+                    p.format("%sthis.contextPath = contextPath;\n", indent);
+                }
+                p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
+                if (t.getBaseType() == null) {
+                    p.format("%sthis.odataType = odataType;\n", indent);
+                }
+                // print constructor field assignments
+                t.getProperties() //
+                        .forEach(x -> {
+                            String fieldName = Names.getIdentifier(x.getName());
+                            p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
+                            if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
+                                p.format("%sthis.%sNextLink = %sNextLink;\n", indent, fieldName, fieldName);
+                            }
+                        });
+                p.format("%s}\n", indent.left());
+            } else {
+                writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
             }
-            indent.right();
-            if (!t.hasBaseType()) {
-                p.format("%sthis.contextPath = contextPath;\n", indent);
-            }
-            p.format("%sthis.unmappedFields = unmappedFields;\n", indent);
-            if (t.getBaseType() == null) {
-                p.format("%sthis.odataType = odataType;\n", indent);
-            }
-            // print constructor field assignments
-            t.getProperties() //
-                    .forEach(x -> {
-                        String fieldName = Names.getIdentifier(x.getName());
-                        p.format("%sthis.%s = %s;\n", indent, fieldName, fieldName);
-                        if (isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-                            p.format("%sthis.%sNextLink = %sNextLink;\n", indent, fieldName, fieldName);
-                        }
-                    });
-            p.format("%s}\n", indent.left());
 
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(), t.getProperties(),
                     t.getFields(imports), false);
@@ -863,25 +903,38 @@ public final class Generator {
         });
 
         p.format("\n%spublic %s build() {\n", indent, simpleClassName);
-        String builderProps = fields //
-                .stream() //
-                .map(f -> ", " + f.fieldName) //
-                .collect(Collectors.joining());
-        if (t instanceof EntityType) {
-            p.format("%sreturn new %s(null, changedFields, %s.EMPTY, \"%s\"%s);\n", //
-                    indent.right(), //
-                    simpleClassName, //
-                    imports.add(UnmappedFields.class), //
-                    t.getFullType(), //
-                    builderProps);
+        if (SET_VIA_CONSTRUCTOR) {
+            String builderProps = fields //
+                    .stream() //
+                    .map(f -> ", " + f.fieldName) //
+                    .collect(Collectors.joining());
+            if (t instanceof EntityType) {
+                p.format("%sreturn new %s(null, changedFields, %s.EMPTY, \"%s\"%s);\n", //
+                        indent.right(), //
+                        simpleClassName, //
+                        imports.add(UnmappedFields.class), //
+                        t.getFullType(), //
+                        builderProps);
+            } else {
+                p.format("%sreturn new %s(null, %s.EMPTY, \"%s\"%s);\n", //
+                        indent.right(), //
+                        simpleClassName, //
+                        imports.add(UnmappedFields.class), //
+                        t.getFullType(), //
+                        builderProps);
+            }
         } else {
-            // exclude changedFields parameter
-            p.format("%sreturn new %s(null, %s.EMPTY, \"%s\"%s);\n", //
-                    indent.right(), //
-                    simpleClassName, //
-                    imports.add(UnmappedFields.class), //
-                    t.getFullType(), //
-                    builderProps);
+            // use _x as identifier so doesn't conflict with any field name
+            p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
+            p.format("%s_x.contextPath = null;\n", indent);
+            if (t instanceof EntityType) {
+                p.format("%s_x.changedFields = changedFields;\n", indent);
+            }
+            p.format("%s_x.unmappedFields = %s.EMPTY;\n", indent, imports.add(UnmappedFields.class));
+            p.format("%s_x.odataType = \"%s\";\n", indent, t.getFullType());
+            fields.stream().map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName))
+                    .forEach(p::print);
+            p.format("%sreturn _x;\n", indent);
         }
         p.format("%s}\n", indent.left());
 
@@ -889,6 +942,9 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
+        if (!SET_VIA_CONSTRUCTOR) {
+            p.format("\n%s@%s", indent, imports.add(JacksonInject.class));
+        }
         p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
@@ -912,12 +968,16 @@ public final class Generator {
 
     private static void addContextPathInjectableField(Imports imports, Indent indent, PrintWriter p) {
         // add context path field
+        if (!SET_VIA_CONSTRUCTOR) {
+            p.format("\n%s@%s", indent, imports.add(JacksonInject.class));
+        }
         p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         addContextPathField(imports, indent, p);
     }
 
     private static void addContextPathField(Imports imports, Indent indent, PrintWriter p) {
-        p.format("%sprotected final %s contextPath;\n", indent, imports.add(ContextPath.class));
+        String finalOrBlank = SET_VIA_CONSTRUCTOR ? "final " : "";
+        p.format("%sprotected %s%s contextPath;\n", indent, finalOrBlank, imports.add(ContextPath.class));
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p, String simpleClassName,
@@ -979,22 +1039,40 @@ public final class Generator {
                                 indent.left();
                             }
 
-                            // prepare parameters to constructor to return immutable copy
-                            String params = fields.stream() //
-                                    .map(f -> f.fieldName) //
-                                    .map(a -> ", " + a) //
-                                    .collect(Collectors.joining());
-                            if (ofEntity) {
-                                params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
-                                        + ", unmappedFields, "
-                                        + imports.add(com.github.davidmoten.odata.client.Util.class)
-                                        + ".nvl(odataType, \"" + fullType + "\")" + params;
+                            if (SET_VIA_CONSTRUCTOR) {
+                                indent.right();
+                                // prepare parameters to constructor to return immutable copy
+                                String params = fields.stream() //
+                                        .map(f -> f.fieldName) //
+                                        .map(a -> ", " + a) //
+                                        .collect(Collectors.joining());
+                                if (ofEntity) {
+                                    params = "contextPath, changedFields.add(\"" + x.getName() + "\")"
+                                            + ", unmappedFields, "
+                                            + imports.add(com.github.davidmoten.odata.client.Util.class)
+                                            + ".nvl(odataType, \"" + fullType + "\")" + params;
+                                } else {
+                                    params = "contextPath" + ", unmappedFields, odataType" + params;
+                                }
+                                p.format("%sreturn new %s%s(%s);\n", indent, simpleClassName, classSuffix, params);
                             } else {
-                                params = "contextPath" + ", unmappedFields, odataType" + params;
+                                // use _x as identifier so doesn't conflict with any field name
+                                p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
+                                p.format("%s_x.contextPath = contextPath;\n", indent);
+                                if (ofEntity) {
+                                    p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
+                                }
+                                p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
+                                p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
+                                        indent, //
+                                        imports.add(com.github.davidmoten.odata.client.Util.class), //
+                                        fullType);
+                                fields.stream()
+                                        .map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName))
+                                        .forEach(p::print);
+                                p.format("%sreturn _x;\n", indent);
                             }
 
-                            indent.right();
-                            p.format("%sreturn new %s%s(%s);\n", indent, simpleClassName, classSuffix, params);
                             p.format("%s}\n", indent.left());
                         }
                     }
@@ -1016,13 +1094,14 @@ public final class Generator {
 
         // TODO make a wrapper for TProperty that passes propertyName, fieldName,
         // importedType
+        String finalOrBlank = SET_VIA_CONSTRUCTOR ? "final " : "";
         if (!hasBaseType) {
             p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), "@odata.type");
-            p.format("%sprotected final %s %s;\n", indent, imports.add(String.class), "odataType");
+            p.format("%sprotected %s%s %s;\n", indent, finalOrBlank, imports.add(String.class), "odataType");
         }
         properties.stream().forEach(x -> {
             p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-            p.format("%sprotected final %s %s;\n", indent, names.toImportedType(x, imports),
+            p.format("%sprotected %s%s %s;\n", indent, finalOrBlank, names.toImportedType(x, imports),
                     Names.getIdentifier(x.getName()));
             String t = names.getInnerType(names.getType(x));
             if (isCollection(x) && !names.isEntityWithNamespace(t)) {
