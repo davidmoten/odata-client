@@ -331,29 +331,7 @@ public final class Generator {
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
 
             // write toString
-            p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%spublic %s toString() {\n", indent, imports.add(String.class));
-            p.format("%s%s b = new %s();\n", indent.right(), imports.add(StringBuilder.class),
-                    imports.add(StringBuilder.class));
-            p.format("%sb.append(\"%s[\");\n", indent, simpleClassName);
-            boolean[] first = new boolean[1];
-            first[0] = true;
-            t.getFields(imports).stream().forEach(f -> {
-                if (first[0]) {
-                    first[0] = false;
-                } else {
-                    p.format("%sb.append(\", \");\n", indent);
-                }
-                p.format("%sb.append(\"%s=\");\n", indent, f.name);
-                p.format("%sb.append(this.%s);\n", indent, f.fieldName);
-            });
-            p.format("%sb.append(\"]\");\n", indent);
-            p.format("%sb.append(\",unmappedFields=\");\n", indent);
-            p.format("%sb.append(unmappedFields);\n", indent);
-            p.format("%sb.append(\",odataType=\");\n", indent);
-            p.format("%sb.append(odataType);\n", indent);
-            p.format("%sreturn b.toString();\n", indent);
-            p.format("%s}\n", indent.left());
+            writeToString(t, simpleClassName, imports, indent, p);
 
             p.format("%s}\n", indent.left());
 
@@ -361,6 +339,32 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writeToString(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
+        p.format("\n%s@%s\n", indent, imports.add(Override.class));
+        p.format("%spublic %s toString() {\n", indent, imports.add(String.class));
+        p.format("%s%s b = new %s();\n", indent.right(), imports.add(StringBuilder.class),
+                imports.add(StringBuilder.class));
+        p.format("%sb.append(\"%s[\");\n", indent, simpleClassName);
+        boolean[] first = new boolean[1];
+        first[0] = true;
+        t.getFields(imports).stream().forEach(f -> {
+            if (first[0]) {
+                first[0] = false;
+            } else {
+                p.format("%sb.append(\", \");\n", indent);
+            }
+            p.format("%sb.append(\"%s=\");\n", indent, f.name);
+            p.format("%sb.append(this.%s);\n", indent, f.fieldName);
+        });
+        p.format("%sb.append(\"]\");\n", indent);
+        p.format("%sb.append(\",unmappedFields=\");\n", indent);
+        p.format("%sb.append(unmappedFields);\n", indent);
+        p.format("%sb.append(\",odataType=\");\n", indent);
+        p.format("%sb.append(odataType);\n", indent);
+        p.format("%sreturn b.toString();\n", indent);
+        p.format("%s}\n", indent.left());
     }
 
     private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p,
@@ -583,6 +587,9 @@ public final class Generator {
 
             // write copy method
             writeCopyMethod(t, simpleClassName, imports, indent, p, false);
+
+            // write toString
+            writeToString(t, simpleClassName, imports, indent, p);
 
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFile());
