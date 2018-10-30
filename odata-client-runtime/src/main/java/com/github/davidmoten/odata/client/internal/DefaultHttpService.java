@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpResponse;
@@ -20,6 +22,10 @@ public final class DefaultHttpService implements HttpService {
 
     private final Path basePath;
     private final Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier;
+
+    // not thread-safe but is ok if set multiple times from multiple threads (just
+    // means a few extra calls that throw till all threads catch up to the setting
+    private boolean patchSupported = true;
 
     public DefaultHttpService(Path basePath,
             Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
@@ -34,8 +40,22 @@ public final class DefaultHttpService implements HttpService {
 
     @Override
     public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
-        throw new ClientException(
-                "PATCH is not supported by java.net.URLConnection, use PUT instead (or use the HttpService implementation based on Apache HttpClient)");
+        if (patchSupported) {
+            try {
+                return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content);
+            } catch (ProtocolRuntimeException e) {
+                patchSupported = false;
+                return getResponsePatchOverride(url, requestHeaders, content);
+            }
+        } else {
+            return getResponsePatchOverride(url, requestHeaders, content);
+        }
+    }
+
+    private HttpResponse getResponsePatchOverride(String url, List<RequestHeader> requestHeaders, String content) {
+        List<RequestHeader> list = Lists.newArrayList(requestHeaders);
+        list.add(new RequestHeader("X-HTTP-Method-Override", "PATCH"));
+        return getResponse(url, list, HttpMethod.POST, false, content);
     }
 
     @Override
@@ -81,6 +101,8 @@ public final class DefaultHttpService implements HttpService {
                 text = null;
             }
             return new HttpResponse(c.getResponseCode(), text);
+        } catch (ProtocolException e) {
+            throw new ProtocolRuntimeException(e);
         } catch (IOException e) {
             throw new ClientException(e);
         }
@@ -106,6 +128,6 @@ public final class DefaultHttpService implements HttpService {
         } catch (IOException e) {
             throw new ClientException(e);
         }
-        
+
     }
 }
