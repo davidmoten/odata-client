@@ -44,7 +44,6 @@ public final class DefaultHttpService implements HttpService {
             try {
                 return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content);
             } catch (ProtocolRuntimeException e) {
-                patchSupported = false;
                 return getResponsePatchOverride(url, requestHeaders, content);
             }
         } else {
@@ -55,7 +54,10 @@ public final class DefaultHttpService implements HttpService {
     private HttpResponse getResponsePatchOverride(String url, List<RequestHeader> requestHeaders, String content) {
         List<RequestHeader> list = Lists.newArrayList(requestHeaders);
         list.add(new RequestHeader("X-HTTP-Method-Override", "PATCH"));
-        return getResponse(url, list, HttpMethod.POST, false, content);
+        HttpResponse result = getResponse(url, list, HttpMethod.POST, false, content);
+        // only indicate patch not supported if the result is returned ok
+        patchSupported = false;
+        return result;
     }
 
     @Override
