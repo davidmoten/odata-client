@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.oasisopen.odata.csdl.v4.Schema;
+import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
@@ -578,6 +579,15 @@ public final class Names {
                     }
                 });
         return map.get(name);
+    }
+
+    public String getInnerType(TActionFunctionParameter x) {
+        List<String> list = x.getType();
+        if (list.size() != 1) {
+            throw new IllegalArgumentException(
+                    "property " + x.getName() + "must have one and only one type but was: " + x.getType());
+        }
+        return getInnerType(list.get(0));
     }
 
 }
