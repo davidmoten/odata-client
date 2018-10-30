@@ -940,19 +940,22 @@ public final class Generator {
             String fullType = names.getFullTypeFromSimpleType(schema, simpleClassName);
             Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
                     .forEach(a -> {
-                        String type = names
-                                .getInnerType(Util.filter(a.getParameterOrAnnotationOrReturnType(),
-                                        TActionFunctionParameter.class).findFirst().get());
-                        if (fullType.equals(type)) {
-                            // get return parameter
-                            p.format("\n%s%s %s(%s) {\n", indent, imports.add(Object.class),
-                                    Names.getGetterMethod(a.getName()), "");
-                            p.format("%s// ACTION\n",indent.right());
-                            p.format("%sreturn null;\n", indent);
-                            p.format("%s}\n", indent.left());
+                        Optional<TActionFunctionParameter> b = Util
+                                .filter(a.getParameterOrAnnotationOrReturnType(),
+                                        TActionFunctionParameter.class)
+                                .findFirst();
+                        if (b.isPresent()) {
+                            String type = names.getInnerType(b.get());
+                            if (fullType.equals(type)) {
+                                // get return parameter
+                                p.format("\n%s%s %s(%s) {\n", indent, imports.add(Object.class),
+                                        Names.getGetterMethod(a.getName()), "");
+                                p.format("%s// ACTION\n", indent.right());
+                                p.format("%sreturn null;\n", indent);
+                                p.format("%s}\n", indent.left());
+                            }
                         }
                     });
-
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileCollectionRequest());
