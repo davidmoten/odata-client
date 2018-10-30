@@ -60,7 +60,6 @@ import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Generator {
 
-    private static final String CLASS_NAME_PATCHED = "Patched";
     private static final String COLLECTION_PREFIX = "Collection(";
     // private final Schema schema;
     private final Names names;
