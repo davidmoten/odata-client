@@ -31,7 +31,8 @@ public final class EntityType extends Structure<TEntityType> {
 
     @Override
     public List<TProperty> getProperties() {
-        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class).collect(Collectors.toList());
+        return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -126,6 +127,21 @@ public final class EntityType extends Structure<TEntityType> {
 
     public boolean hasStream() {
         return value.isHasStream();
+    }
+
+    @Override
+    public File getDirectoryCollectionRequest() {
+        return names.getDirectoryCollectionEntityRequest(schema());
+    }
+
+    @Override
+    public String getSimpleClassNameCollectionRequest() {
+        return names.getSimpleClassNameCollectionEntityRequest(schema(), value.getName());
+    }
+
+    @Override
+    public String getPackageCollectionRequest() {
+        return names.getPackageCollectionEntityRequest(schema());
     }
 
 }
