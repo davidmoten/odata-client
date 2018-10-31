@@ -105,7 +105,7 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(
+    public <T extends ODataType> CollectionPage<T> deserializeCollectionPageEntity(
             String json, Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
@@ -120,7 +120,7 @@ public final class Serializer {
             // TODO support relative urls using odata.context if present
             Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink"))
                     .map(JsonNode::asText);
-            return new CollectionPageEntity<T>(cls, list, nextLink, contextPath, schemaInfo);
+            return new CollectionPage<T>(cls, list, nextLink, contextPath, schemaInfo);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

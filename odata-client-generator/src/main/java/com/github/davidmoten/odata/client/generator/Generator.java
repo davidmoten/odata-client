@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.odata.client.CollectionPageEntity;
+import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
 import com.github.davidmoten.odata.client.Context;
@@ -1132,7 +1132,7 @@ public final class Generator {
                         boolean isEntity = names.isEntityWithNamespace(inner);
                         Class<?> collectionCls;
                         if (isEntity) {
-                            collectionCls = CollectionPageEntity.class;
+                            collectionCls = CollectionPage.class;
                         } else {
                             collectionCls = CollectionPageNonEntity.class;
                         }
@@ -1142,7 +1142,7 @@ public final class Generator {
                             Schema sch = names.getSchema(names.getInnerType(t));
                             p.format(
                                     "%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE);\n",
-                                    indent.right(), imports.add(CollectionPageEntity.class),
+                                    indent.right(), imports.add(CollectionPage.class),
                                     fieldName, importedInnerType,
                                     imports.add(names.getFullClassNameSchema(sch)));
                         } else {
