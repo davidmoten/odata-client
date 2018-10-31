@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
+import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
@@ -225,11 +226,20 @@ public final class Names {
         return list.get(0);
     }
 
+    public String getType(TActionFunctionParameter x) {
+        List<String> list = x.getType();
+        if (list.size() != 1) {
+            throw new IllegalArgumentException(
+                    "property " + x.getName() + "must have one and only one type but was: " + x.getType());
+        }
+        return list.get(0);
+    }
+
     public boolean isCollection(TProperty x) {
         return isCollection(getType(x));
     }
 
-    private static boolean isCollection(String t) {
+    public static boolean isCollection(String t) {
         return t.startsWith(COLLECTION_PREFIX) && t.endsWith(")");
     }
 
@@ -588,6 +598,22 @@ public final class Names {
                     "property " + x.getName() + "must have one and only one type but was: " + x.getType());
         }
         return getInnerType(list.get(0));
+    }
+
+    public boolean isCollection(TActionFunctionParameter x) {
+        return isCollection(getType(x));
+    }
+
+    public String getType(TActionFunctionReturnType x) {
+        List<String> list = x.getType();
+        if (list.size() != 1) {
+            throw new IllegalArgumentException("object must have one and only one type but was: " + x.getType());
+        }
+        return list.get(0);
+    }
+
+    public boolean isCollection(TActionFunctionReturnType x) {
+        return isCollection(getType(x));
     }
 
 }
