@@ -82,4 +82,28 @@ public final class ComplexType extends Structure<TComplexType> {
     public boolean isAbstract() {
         return value.isAbstract();
     }
+
+    @Override
+    public File getDirectoryCollectionRequest() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getSimpleClassNameCollectionRequest() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getPackageCollectionRequest() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public File getClassFileCollectionRequest() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

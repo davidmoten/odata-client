@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, CollectionPageEntity<T>> {
+public class CollectionPage<T extends ODataType> implements Paged<T, CollectionPage<T>> {
 
     private final Class<T> cls;
     private final List<T> list;
@@ -12,7 +12,7 @@ public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, Col
     private final ContextPath contextPath;
     private final SchemaInfo schemaInfo;
 
-    public CollectionPageEntity(Class<T> cls, List<T> list, Optional<String> nextLink, ContextPath contextPath,
+    public CollectionPage(Class<T> cls, List<T> list, Optional<String> nextLink, ContextPath contextPath,
             SchemaInfo schemaInfo) {
         this.cls = cls;
         this.list = list;
@@ -27,7 +27,7 @@ public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, Col
     }
 
     @Override
-    public Optional<CollectionPageEntity<T>> nextPage() {
+    public Optional<CollectionPage<T>> nextPage() {
         if (nextLink.isPresent()) {
             // TODO add request headers used in initial call?
             // TODO handle relative nextLink?
