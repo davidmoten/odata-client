@@ -23,7 +23,6 @@ public class CollectionPageEntityRequest<T extends ODataEntity, R extends Entity
     CollectionPageEntity<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
-        RequestHelper.get(cp, cls, options, schemaInfo);
         return cp.context().serializer().deserializeCollectionPageEntity(r.getText(), cls, cp, schemaInfo);
     }
 
