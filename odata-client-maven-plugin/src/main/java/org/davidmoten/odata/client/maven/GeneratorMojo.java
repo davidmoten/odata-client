@@ -61,7 +61,8 @@ public class GeneratorMojo extends AbstractMojo {
         }
         List<SchemaOptions> schemaOptionsList = schemas.stream()
                 .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum, s.packageSuffixEntity,
-                        s.packageSuffixComplexType, s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
+                        s.packageSuffixComplexType, s.packageSuffixEntityRequest,
+                        s.packageSuffixEntityCollectionRequest, s.packageSuffixComplexCollectionRequest,
                         s.packageSuffixContainer, s.packageSuffixSchema, s.simpleClassNameSchema,
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix, s.pageComplexTypes))
                 .collect(Collectors.toList());

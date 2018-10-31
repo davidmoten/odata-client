@@ -9,7 +9,8 @@ public class Schema {
     public String packageSuffixEntity = ".entity";
     public String packageSuffixComplexType = ".complex";
     public String packageSuffixEntityRequest = ".entity.request";
-    public String packageSuffixCollectionRequest = ".collection.request";
+    public String packageSuffixEntityCollectionRequest = ".entity.collection.request";
+    public String packageSuffixComplexCollectionRequest = ".complex.collection.request";
     public String packageSuffixContainer = ".container";
     public String packageSuffixSchema = ".schema";
     public String simpleClassNameSchema = "SchemaInfo";
@@ -53,12 +54,20 @@ public class Schema {
         this.packageSuffixEntityRequest = packageSuffixEntityRequest;
     }
 
-    public String getPackageSuffixCollectionRequest() {
-        return packageSuffixCollectionRequest;
+    public String getPackageSuffixEntityCollectionRequest() {
+        return packageSuffixEntityCollectionRequest;
     }
 
-    public void setPackageSuffixCollectionRequest(String packageSuffixCollectionRequest) {
-        this.packageSuffixCollectionRequest = packageSuffixCollectionRequest;
+    public void setPackageSuffixEntityCollectionRequest(String packageSuffixEntityCollectionRequest) {
+        this.packageSuffixEntityCollectionRequest = packageSuffixEntityCollectionRequest;
+    }
+    
+    public String getPackageSuffixComplexCollectionRequest() {
+        return packageSuffixComplexCollectionRequest;
+    }
+
+    public void setPackageSuffixComplexCollectionRequest(String packageSuffixComplexCollectionRequest) {
+        this.packageSuffixComplexCollectionRequest = packageSuffixComplexCollectionRequest;
     }
 
     public String getPackageSuffixContainer() {
