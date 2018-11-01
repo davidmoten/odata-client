@@ -147,7 +147,7 @@ public final class RequestHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ODataType> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
+    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
             Class<T> cls, String json) {
         Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
 

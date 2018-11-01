@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.github.davidmoten.odata.client.CollectionPage;
+import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
@@ -37,7 +37,7 @@ public class GraphServiceTest {
     public void testGetEntityCollectionWithoutNextPage() {
         GraphService client = createClient("/users", "/response-users.json");
         assertNotNull(client.users().get());
-        CollectionPage<User> c = client.users().get();
+        CollectionPageEntity<User> c = client.users().get();
         assertNotNull(c);
         assertEquals(31, c.currentPage().size());
         assertFalse(c.nextPage().isPresent());
@@ -49,7 +49,7 @@ public class GraphServiceTest {
                 .replyWithResource("/me/contacts", "/response-contacts.json") //
                 .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
                 .build();
-        CollectionPage<Contact> c = client.me().contacts().get();
+        CollectionPageEntity<Contact> c = client.me().contacts().get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
         assertTrue(c.nextPage().isPresent());
@@ -103,7 +103,7 @@ public class GraphServiceTest {
                         "/users/fred/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
                         "/request-patch-message-is-read.json", HttpMethod.PATCH) //
                 .build();
-        CollectionPage<Message> messages = client //
+        CollectionPageEntity<Message> messages = client //
                 .users("fred") //
                 .mailFolders("inbox") //
                 .messages() //

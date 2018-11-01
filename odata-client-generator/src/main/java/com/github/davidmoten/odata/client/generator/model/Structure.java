@@ -132,6 +132,4 @@ public abstract class Structure<T> {
     public abstract String getSimpleClassNameCollectionRequest();
 
     public abstract String getPackageCollectionRequest();
-
-    public abstract File getClassFileCollectionRequest(); 
 }
