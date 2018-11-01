@@ -531,34 +531,34 @@ public final class Names {
         return new File(getDirectoryContainer(schema), getSimpleClassNameContainer(schema, name) + ".java");
     }
 
-    public File getDirectoryCollectionEntityRequest(Schema schema) {
+    public File getDirectoryCollectionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return toDirectory(output, o.pkg() + o.packageSuffixEntityCollectionRequest());
+        return toDirectory(output, o.pkg() + o.packageSuffixCollectionRequest());
     }
 
-    public String getSimpleClassNameCollectionEntityRequest(Schema schema, String name) {
+    public String getSimpleClassNameCollectionRequest(Schema schema, String name) {
         SchemaOptions o = getOptions(schema);
         return Names.toSimpleClassName(name + o.collectionRequestClassSuffix());
     }
 
-    public String getPackageCollectionEntityRequest(Schema schema) {
+    public String getPackageCollectionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return o.pkg() + o.packageSuffixEntityCollectionRequest();
+        return o.pkg() + o.packageSuffixCollectionRequest();
     }
 
     public String getFullClassNameEntityRequest(Schema schema, String name) {
         return getPackageEntityRequest(schema) + "." + getSimpleClassNameEntityRequest(schema, name);
     }
 
-    public String getFullClassNameEntityCollectionRequestFromTypeWithNamespace(Schema schema, String name) {
+    public String getFullClassNameCollectionRequestFromTypeWithNamespace(Schema schema, String name) {
         String simple = getLastItemInDotDelimitedString(name);
         SchemaOptions o = getOptions(schema);
-        return getPackageCollectionEntityRequest(schema) + "." + upperFirst(simple) + o.collectionRequestClassSuffix();
+        return getPackageCollectionRequest(schema) + "." + upperFirst(simple) + o.collectionRequestClassSuffix();
     }
 
     public File getClassFileCollectionRequest(Schema schema, String name) {
-        return new File(getDirectoryCollectionEntityRequest(schema),
-                getSimpleClassNameCollectionEntityRequest(schema, name) + ".java");
+        return new File(getDirectoryCollectionRequest(schema),
+                getSimpleClassNameCollectionRequest(schema, name) + ".java");
     }
 
     public EntityType getEntityType(String typeWithNamespace) {

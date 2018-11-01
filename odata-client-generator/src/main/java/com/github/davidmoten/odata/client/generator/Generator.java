@@ -835,14 +835,14 @@ public final class Generator {
 
     private void writeCollectionRequest(Schema schema, TEntityType entityType) {
         EntityType t = new EntityType(entityType, names);
-        names.getDirectoryCollectionEntityRequest(schema).mkdirs();
-        String simpleClassName = names.getSimpleClassNameCollectionEntityRequest(schema, t.getName());
+        names.getDirectoryCollectionRequest(schema).mkdirs();
+        String simpleClassName = names.getSimpleClassNameCollectionRequest(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
-            p.format("package %s;\n\n", names.getPackageCollectionEntityRequest(schema));
+            p.format("package %s;\n\n", names.getPackageCollectionRequest(schema));
             p.format("IMPORTSHERE");
             p.format("public final class %s extends %s<%s, %s>{\n\n", simpleClassName,
                     imports.add(CollectionPageEntityRequest.class),
@@ -872,12 +872,12 @@ public final class Generator {
                             String y = names.getInnerType(names.getType(x));
                             p.format("%spublic %s %s() {\n", //
                                     indent, //
-                                    imports.add(names.getFullClassNameEntityCollectionRequestFromTypeWithNamespace(sch, y)), //
+                                    imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
                                     Names.getIdentifier(x.getName()));
 
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
                                     indent.right(), //
-                                    imports.add(names.getFullClassNameEntityCollectionRequestFromTypeWithNamespace(sch, y)), //
+                                    imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
                                     x.getName());
                             p.format("%s}\n", indent.left());
 
@@ -918,7 +918,7 @@ public final class Generator {
                                         if (names.isCollection(returnParameter.get())) {
                                             p.format("\n%s%s %s(%s) {\n", //
                                                     indent, //
-                                                    names.getFullClassNameEntityCollectionRequestFromTypeWithNamespace(
+                                                    names.getFullClassNameCollectionRequestFromTypeWithNamespace(
                                                             names.getSchema(returnInnerType), returnInnerType),
                                                     Names.getGetterMethod(a.getName()), "");
                                             p.format("%s// ACTION\n", indent.right());

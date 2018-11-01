@@ -7,18 +7,16 @@ public class SchemaOptions {
     public final String packageSuffixEntity;
     public final String packageSuffixComplexType;
     public final String packageSuffixEntityRequest;
-    public final String packageSuffixEntityCollectionRequest;
+    public final String packageSuffixCollectionRequest;
     public final String packageSuffixContainer;
     public final String packageSuffixSchema;
     public final String simpleClassNameSchema;
     public final String collectionRequestClassSuffix;
     public final String entityRequestClassSuffix;
     public final boolean pageComplexTypes;
-    public final String packageSuffixComplexCollectionRequest;
 
     public SchemaOptions(String namespace, String pkg, String packageSuffixEnum, String packageSuffixEntity,
-            String packageSuffixComplexType, String packageSuffixEntityRequest,
-            String packageSuffixEntityCollectionRequest, String packageSuffixComplexCollectionRequest,
+            String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
             String packageSuffixContainer, String packageSuffixSchema, String simpleClassNameSchema,
             String collectionRequestClassSuffix, String entityRequestClassSuffix, boolean pageComplexTypes) {
         this.namespace = namespace;
@@ -27,8 +25,7 @@ public class SchemaOptions {
         this.packageSuffixEntity = packageSuffixEntity;
         this.packageSuffixComplexType = packageSuffixComplexType;
         this.packageSuffixEntityRequest = packageSuffixEntityRequest;
-        this.packageSuffixEntityCollectionRequest = packageSuffixEntityCollectionRequest;
-        this.packageSuffixComplexCollectionRequest = packageSuffixComplexCollectionRequest;
+        this.packageSuffixCollectionRequest = packageSuffixCollectionRequest;
         this.packageSuffixContainer = packageSuffixContainer;
         this.packageSuffixSchema = packageSuffixSchema;
         this.simpleClassNameSchema = simpleClassNameSchema;
@@ -44,8 +41,7 @@ public class SchemaOptions {
         this.packageSuffixEntity = ".entity";
         this.packageSuffixComplexType = ".complex";
         this.packageSuffixEntityRequest = ".entity.request";
-        this.packageSuffixEntityCollectionRequest = ".entity.collection.request";
-        this.packageSuffixComplexCollectionRequest = ".complex.collection.request";
+        this.packageSuffixCollectionRequest = ".collection.request";
         this.packageSuffixContainer = ".container";
         this.packageSuffixSchema = ".schema";
         this.simpleClassNameSchema = "SchemaInfo";
@@ -74,12 +70,8 @@ public class SchemaOptions {
         return packageSuffixEntityRequest;
     }
 
-    public String packageSuffixEntityCollectionRequest() {
-        return packageSuffixEntityCollectionRequest;
-    }
-
-    public String packageSuffixComplexCollectionRequest() {
-        return packageSuffixComplexCollectionRequest;
+    public String packageSuffixCollectionRequest() {
+        return packageSuffixCollectionRequest;
     }
 
     public String packageSuffixContainer() {
