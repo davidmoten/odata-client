@@ -40,8 +40,7 @@ public abstract class Structure<T> {
     public abstract List<TProperty> getProperties();
 
     public final List<Property> getProperties2() {
-        return getProperties().stream().map(x -> new Property(x, names))
-                .collect(Collectors.toList());
+        return getProperties().stream().map(x -> new Property(x, names)).collect(Collectors.toList());
     }
 
     public abstract List<TNavigationProperty> getNavigationProperties();
@@ -56,8 +55,7 @@ public abstract class Structure<T> {
             if (st.getBaseType() == null) {
                 return a;
             } else {
-                String baseTypeSimpleName = names
-                        .getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
+                String baseTypeSimpleName = names.getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
                 st = names.getSchemas() //
                         .stream() //
                         .flatMap(schema -> Util.types(schema, cls)) //
@@ -91,8 +89,8 @@ public abstract class Structure<T> {
         Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
                 names.toImportedType(x, imports));
         if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink",
-                    x.getName() + "@nextLink", imports.add(String.class));
+            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
+                    imports.add(String.class));
             return Stream.of(a, b);
         } else {
             return Stream.of(a);
@@ -112,8 +110,7 @@ public abstract class Structure<T> {
 
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {
-            return " extends "
-                    + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
+            return " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
         } else {
             return "";
         }
@@ -127,9 +124,4 @@ public abstract class Structure<T> {
 
     public abstract String getFullType();
 
-    public abstract File getDirectoryCollectionRequest();
-
-    public abstract String getSimpleClassNameCollectionRequest();
-
-    public abstract String getPackageCollectionRequest();
 }

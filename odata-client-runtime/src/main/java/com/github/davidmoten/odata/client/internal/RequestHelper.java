@@ -14,7 +14,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
-import com.github.davidmoten.odata.client.ODataType;
+import com.github.davidmoten.odata.client.HasUnmappedFields;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntity;
@@ -197,7 +197,7 @@ public final class RequestHelper {
         }
     }
 
-    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath, ODataType item,
+    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath, HasUnmappedFields item,
             String fieldName, String base64) {
         Preconditions.checkNotNull(fieldName);
         String readLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaReadLink");
