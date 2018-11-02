@@ -124,4 +124,6 @@ public abstract class Structure<T> {
 
     public abstract String getFullType();
 
+    public abstract File getClassFileCollectionRequest();
+
 }

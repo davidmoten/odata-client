@@ -531,9 +531,14 @@ public final class Names {
         return new File(getDirectoryContainer(schema), getSimpleClassNameContainer(schema, name) + ".java");
     }
 
-    public File getDirectoryCollectionRequest(Schema schema) {
+    public File getDirectoryEntityCollectionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return toDirectory(output, o.pkg() + o.packageSuffixCollectionRequest());
+        return toDirectory(output, o.pkg() + o.packageSuffixEntityCollectionRequest());
+    }
+
+    public File getDirectoryComplexTypeCollectionRequest(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, o.pkg() + o.packageSuffixComplexTypeCollectionRequest());
     }
 
     public String getSimpleClassNameCollectionRequest(Schema schema, String name) {
@@ -543,7 +548,7 @@ public final class Names {
 
     public String getPackageCollectionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
-        return o.pkg() + o.packageSuffixCollectionRequest();
+        return o.pkg() + o.packageSuffixEntityCollectionRequest();
     }
 
     public String getFullClassNameEntityRequest(Schema schema, String name) {
@@ -556,8 +561,13 @@ public final class Names {
         return getPackageCollectionRequest(schema) + "." + upperFirst(simple) + o.collectionRequestClassSuffix();
     }
 
-    public File getClassFileCollectionRequest(Schema schema, String name) {
-        return new File(getDirectoryCollectionRequest(schema),
+    public File getClassFileEntityCollectionRequest(Schema schema, String name) {
+        return new File(getDirectoryEntityCollectionRequest(schema),
+                getSimpleClassNameCollectionRequest(schema, name) + ".java");
+    }
+
+    public File getClassFileComplexTypeCollectionRequest(Schema schema, String name) {
+        return new File(getDirectoryComplexTypeCollectionRequest(schema),
                 getSimpleClassNameCollectionRequest(schema, name) + ".java");
     }
 

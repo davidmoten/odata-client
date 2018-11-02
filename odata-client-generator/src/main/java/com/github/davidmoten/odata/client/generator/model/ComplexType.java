@@ -36,8 +36,8 @@ public final class ComplexType extends Structure<TComplexType> {
 
     @Override
     public List<TNavigationProperty> getNavigationProperties() {
-        return Util.filter(value.getPropertyOrNavigationPropertyOrAnnotation(),
-                TNavigationProperty.class).collect(Collectors.toList());
+        return Util.filter(value.getPropertyOrNavigationPropertyOrAnnotation(), TNavigationProperty.class)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -81,5 +81,10 @@ public final class ComplexType extends Structure<TComplexType> {
     @Override
     public boolean isAbstract() {
         return value.isAbstract();
+    }
+
+    @Override
+    public File getClassFileCollectionRequest() {
+        return names.getClassFileComplexTypeCollectionRequest(schema(), getName());
     }
 }
