@@ -87,7 +87,7 @@ public class CollectionPageTest {
         assertEquals("Russell", c.currentPage().get(0).firstName);
     }
 
-    static final class Person implements ODataEntity {
+    static final class Person implements ODataEntityType {
 
         @JsonProperty("UserName")
         public String userName;

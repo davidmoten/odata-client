@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public final class EntityRequestOptions<T extends ODataEntity> implements RequestOptions {
+public final class EntityRequestOptions<T extends ODataEntityType> implements RequestOptions {
 
     private final List<RequestHeader> requestHeaders;
     private final Optional<String> select;

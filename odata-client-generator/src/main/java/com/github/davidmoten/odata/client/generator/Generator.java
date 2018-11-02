@@ -45,7 +45,7 @@ import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.NameValue;
-import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
@@ -271,7 +271,7 @@ public final class Generator {
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
-                    imports.add(ODataEntity.class));
+                    imports.add(ODataEntityType.class));
 
             indent.right();
             if (!t.hasBaseType()) {
