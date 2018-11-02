@@ -175,7 +175,7 @@ public final class Generator {
 
                 // add method
                 p.format("%s@%s\n", indent, imports.add(Override.class));
-                p.format("%spublic %s<? extends %s> getEntityClassFromTypeWithNamespace(%s name) {\n", //
+                p.format("%spublic %s<? extends %s> getClassFromTypeWithNamespace(%s name) {\n", //
                         indent, //
                         imports.add(Class.class), //
                         imports.add(ODataType.class), //

@@ -14,10 +14,10 @@ import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
-import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.RequestOptions;
@@ -152,7 +152,7 @@ public final class RequestHelper {
         Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
 
         if (namespacedType.isPresent()) {
-            return (Class<? extends T>) schemaInfo.getEntityClassFromTypeWithNamespace(namespacedType.get());
+            return (Class<? extends T>) schemaInfo.getClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }
