@@ -33,7 +33,7 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T extends ODataEntity> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
+    public static <T extends ODataType> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
             SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
@@ -147,7 +147,7 @@ public final class RequestHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends ODataEntity> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
+    public static <T extends ODataType> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
             Class<T> cls, String json) {
         Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
 

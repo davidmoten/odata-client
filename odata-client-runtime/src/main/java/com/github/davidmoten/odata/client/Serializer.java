@@ -105,22 +105,41 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(
-            String json, Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+    public <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(String json, Class<T> cls,
+            ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
                 String text = m.writeValueAsString(item);
-                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo,
-                        cls, text);
+                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo, cls, text);
                 list.add(deserialize(text, subClass, contextPath));
             }
             // TODO support relative urls using odata.context if present
-            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink"))
-                    .map(JsonNode::asText);
+            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);
             return new CollectionPageEntity<T>(cls, list, nextLink, contextPath, schemaInfo);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T extends ODataType> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json,
+            Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+        try {
+            ObjectMapper m = MAPPER;
+            ObjectNode o = m.readValue(json, ObjectNode.class);
+            List<T> list = new ArrayList<T>();
+            for (JsonNode item : o.get("value")) {
+                String text = m.writeValueAsString(item);
+                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo, cls, text);
+                list.add(deserialize(text, subClass, contextPath));
+            }
+            // TODO support relative urls using odata.context if present
+            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);
+            // return new CollectionPageNonEntity<T>(cls, list, nextLink, contextPath,
+            // schemaInfo);
+            throw new UnsupportedOperationException();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
