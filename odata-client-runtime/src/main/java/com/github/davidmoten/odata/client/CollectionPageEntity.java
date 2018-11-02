@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class CollectionPageEntity<T extends ODataEntity> implements Paged<T, CollectionPageEntity<T>> {
+public class CollectionPageEntity<T extends ODataEntityType> implements Paged<T, CollectionPageEntity<T>> {
 
     private final Class<T> cls;
     private final List<T> list;

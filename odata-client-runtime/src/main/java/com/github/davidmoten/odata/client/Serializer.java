@@ -74,7 +74,7 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntity> String serialize(T entity) {
+    public <T extends ODataEntityType> String serialize(T entity) {
         ObjectMapper m = createObjectMapper();
         try {
             return m.writeValueAsString(entity);
@@ -83,7 +83,7 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntity> String serializeChangesOnly(T entity) {
+    public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
         try {
             ObjectMapper m = createObjectMapper();
             String s = m.writeValueAsString(entity);
@@ -105,7 +105,7 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntity> CollectionPageEntity<T> deserializeCollectionPageEntity(String json, Class<T> cls,
+    public <T extends ODataEntityType> CollectionPageEntity<T> deserializeCollectionPageEntity(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;

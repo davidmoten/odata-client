@@ -16,7 +16,7 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
-import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.RequestHeader;
@@ -50,7 +50,7 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath);
     }
 
-    public static <T extends ODataEntity> T post(T entity, ContextPath contextPath, Class<T> cls,
+    public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath, Class<T> cls,
             RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
@@ -75,12 +75,12 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath);
     }
 
-    public static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, RequestOptions options,
+    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath, RequestOptions options,
             SchemaInfo schemaInfo) {
         return patch(entity, contextPath, options, schemaInfo, false);
     }
 
-    public static <T extends ODataEntity> void delete(ContextPath cp, RequestOptions options) {
+    public static <T extends ODataEntityType> void delete(ContextPath cp, RequestOptions options) {
         String url = cp.toUrl();
         HttpResponse response = cp.context().service().delete(url, options.getRequestHeaders());
         if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
@@ -89,12 +89,12 @@ public final class RequestHelper {
         }
     }
 
-    public static <T extends ODataEntity> T put(T entity, ContextPath contextPath, RequestOptions options,
+    public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath, RequestOptions options,
             SchemaInfo schemaInfo) {
         return patch(entity, contextPath, options, schemaInfo, true);
     }
 
-    private static <T extends ODataEntity> T patch(T entity, ContextPath contextPath, RequestOptions options,
+    private static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath, RequestOptions options,
             SchemaInfo schemaInfo, boolean usePUT) {
 
         String json = Serializer.INSTANCE.serializeChangesOnly(entity);
@@ -177,7 +177,7 @@ public final class RequestHelper {
     }
 
     // for HasStream case (only for entities, not for complexTypes)
-    public static Optional<StreamProvider> createStream(ContextPath contextPath, ODataEntity entity) {
+    public static Optional<StreamProvider> createStream(ContextPath contextPath, ODataEntityType entity) {
         String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         if (editLink == null) {

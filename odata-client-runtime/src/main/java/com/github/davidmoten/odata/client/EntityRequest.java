@@ -2,7 +2,7 @@ package com.github.davidmoten.odata.client;
 
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-public abstract class EntityRequest<T extends ODataEntity> {
+public abstract class EntityRequest<T extends ODataEntityType> {
 
     private final Class<T> cls;
     protected final ContextPath contextPath;
