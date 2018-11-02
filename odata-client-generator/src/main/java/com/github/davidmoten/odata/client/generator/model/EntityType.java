@@ -70,7 +70,7 @@ public final class EntityType extends Structure<TEntityType> {
     }
 
     public File getClassFileCollectionRequest() {
-        return names.getClassFileCollectionRequest(schema(), getName());
+        return names.getClassFileEntityCollectionRequest(schema(), getName());
     }
 
     @Override

@@ -14,6 +14,8 @@ public class SchemaOptions {
     public final String collectionRequestClassSuffix;
     public final String entityRequestClassSuffix;
     public final boolean pageComplexTypes;
+    // TODO make configurable
+    private final String packageSuffixComplexTypeCollectionRequest = ".complex.collection.request";
 
     public SchemaOptions(String namespace, String pkg, String packageSuffixEnum, String packageSuffixEntity,
             String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
@@ -70,7 +72,7 @@ public class SchemaOptions {
         return packageSuffixEntityRequest;
     }
 
-    public String packageSuffixCollectionRequest() {
+    public String packageSuffixEntityCollectionRequest() {
         return packageSuffixCollectionRequest;
     }
 
@@ -96,6 +98,10 @@ public class SchemaOptions {
 
     public boolean pageComplexTypes() {
         return pageComplexTypes;
+    }
+
+    public String packageSuffixComplexTypeCollectionRequest() {
+        return packageSuffixComplexTypeCollectionRequest;
     }
 
 }

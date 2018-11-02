@@ -852,8 +852,8 @@ public final class Generator {
     }
 
     private void writeCollectionRequest(Schema schema, TEntityType entityType) {
-        EntityType t = new EntityType(entityType, names);
-        names.getDirectoryCollectionRequest(schema).mkdirs();
+        Structure<?> t = new EntityType(entityType, names);
+        names.getDirectoryEntityCollectionRequest(schema).mkdirs();
         String simpleClassName = names.getSimpleClassNameCollectionRequest(schema, t.getName());
         Imports imports = new Imports(simpleClassName);
         Indent indent = new Indent();
