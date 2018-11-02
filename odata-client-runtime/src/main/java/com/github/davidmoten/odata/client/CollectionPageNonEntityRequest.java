@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 @JsonIgnoreType
-public class CollectionPageNonEntityRequest<T extends ODataType, R extends NonEntityRequest<T>> {
+public class CollectionPageNonEntityRequest<T, R extends NonEntityRequest<T>> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;

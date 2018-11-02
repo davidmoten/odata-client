@@ -2,7 +2,7 @@ package com.github.davidmoten.odata.client;
 
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-public abstract class NonEntityRequest<T extends ODataType> {
+public abstract class NonEntityRequest<T> {
 
     private final Class<T> cls;
     protected final ContextPath contextPath;

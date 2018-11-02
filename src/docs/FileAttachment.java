@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.Util;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
@@ -22,7 +22,7 @@ import microsoft.graph.generated.schema.SchemaInfo;
     "contentId", 
     "contentLocation", 
     "contentBytes"})
-public class FileAttachment extends Attachment implements ODataEntity {
+public class FileAttachment extends Attachment implements ODataEntityType {
 
     @JsonProperty("contentId")
     protected String contentId;
