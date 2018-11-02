@@ -151,6 +151,7 @@ Developer instructions:
 * support references to other metadata files (imports)
 * support Edm.Stream type
 * auto-rerequest with odata.metadata=full header if Edm.Stream is read
+* support TypeDefinition
 
 ## Usage Notes
 ### Streams
