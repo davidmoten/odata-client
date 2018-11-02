@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class CollectionNonEntityRequestOptionsBuilder<T extends ODataType, R extends NonEntityRequest<T>> {
+public final class CollectionNonEntityRequestOptionsBuilder<T, R extends NonEntityRequest<T>> {
 
     private final CollectionPageNonEntityRequest<T, R> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();

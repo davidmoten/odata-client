@@ -105,8 +105,8 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntityType> CollectionPageEntity<T> deserializeCollectionPageEntity(String json, Class<T> cls,
-            ContextPath contextPath, SchemaInfo schemaInfo) {
+    public <T extends ODataEntityType> CollectionPageEntity<T> deserializeCollectionPageEntity(String json,
+            Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
@@ -124,8 +124,8 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataType> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json,
-            Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+    public <T> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
+            ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
@@ -136,6 +136,7 @@ public final class Serializer {
                 list.add(deserialize(text, subClass, contextPath));
             }
             // TODO support relative urls using odata.context if present
+            // TODO nextLink arrangement is different for non-entities
             Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);
             // return new CollectionPageNonEntity<T>(cls, list, nextLink, contextPath,
             // schemaInfo);
