@@ -44,9 +44,9 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
-import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntity;
+import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
@@ -155,7 +155,7 @@ public final class Generator {
                         .forEach(x -> {
                             Schema sch = names.getSchema(x);
                             p.format("%sentities.put(\"%s\", %s.class);\n", indent,
-                                    names.getFullTypeFromSimpleType(schema, x.getName()),
+                                    names.getFullTypeFromSimpleType(sch, x.getName()),
                                     imports.add(names.getFullClassNameEntity(sch, x.getName())));
                         });
                 indent.left();
