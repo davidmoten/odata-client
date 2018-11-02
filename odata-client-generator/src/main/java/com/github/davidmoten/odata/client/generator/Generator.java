@@ -133,12 +133,12 @@ public final class Generator {
                 p.format("%sINSTANCE;\n\n", indent.right());
 
                 // add fields for entities map
-                p.format("%sprivate final %s<%s,%s<? extends %s>> entities = new %s<>();\n\n", //
+                p.format("%sprivate final %s<%s,%s<? extends %s>> classes = new %s<>();\n\n", //
                         indent, //
                         imports.add(Map.class), //
                         imports.add(String.class), //
                         imports.add(Class.class), //
-                        imports.add(ODataEntity.class), //
+                        imports.add(ODataType.class), //
                         imports.add(HashMap.class));
 
                 // add private constructor
@@ -154,9 +154,20 @@ public final class Generator {
                                 sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)) //
                         .forEach(x -> {
                             Schema sch = names.getSchema(x);
-                            p.format("%sentities.put(\"%s\", %s.class);\n", indent,
+                            p.format("%sclasses.put(\"%s\", %s.class);\n", indent,
                                     names.getFullTypeFromSimpleType(sch, x.getName()),
                                     imports.add(names.getFullClassNameEntity(sch, x.getName())));
+                        });
+                names //
+                        .getSchemas() //
+                        .stream() //
+                        .flatMap(sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(),
+                                TComplexType.class)) //
+                        .forEach(x -> {
+                            Schema sch = names.getSchema(x);
+                            p.format("%sclasses.put(\"%s\", %s.class);\n", indent,
+                                    names.getFullTypeFromSimpleType(sch, x.getName()),
+                                    imports.add(names.getFullClassNameComplexType(sch, x.getName())));
                         });
                 indent.left();
 
@@ -167,9 +178,9 @@ public final class Generator {
                 p.format("%spublic %s<? extends %s> getEntityClassFromTypeWithNamespace(%s name) {\n", //
                         indent, //
                         imports.add(Class.class), //
-                        imports.add(ODataEntity.class), //
+                        imports.add(ODataType.class), //
                         imports.add(String.class));
-                p.format("%sreturn entities.get(name);\n", indent.right());
+                p.format("%sreturn classes.get(name);\n", indent.right());
                 p.format("%s}\n\n", indent.left());
 
                 // close class
