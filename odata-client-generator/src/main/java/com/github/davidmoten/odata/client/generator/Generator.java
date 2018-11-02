@@ -108,6 +108,9 @@ public final class Generator {
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityRequest(schema, x));
 
+            Util.types(schema, TComplexType.class) //
+                    .forEach(x -> writeComplexTypeRequest(schema, x));
+
             // TODO write actions
 
             // TODO write functions
@@ -115,6 +118,10 @@ public final class Generator {
             // TODO consume annotations for documentation
         }
 
+    }
+
+    private void writeComplexTypeRequest(Schema schema, TComplexType x) {
+        // TODO Auto-generated method stub
     }
 
     private void writeSchemaInfo(Schema schema) {
