@@ -897,41 +897,43 @@ public final class Generator {
                     });
 
             // write actions
-            Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
-                    .forEach(a -> {
-                        // get bound parameter (first parameter)
-                        Optional<TActionFunctionParameter> bindingParameter = Util
-                                .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
-                                .findFirst();
-                        Optional<TActionFunctionReturnType> returnParameter = Util
-                                .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class)
-                                .findFirst();
+            if (false) {
+                Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
+                        .forEach(a -> {
+                            // get bound parameter (first parameter)
+                            Optional<TActionFunctionParameter> bindingParameter = Util
+                                    .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
+                                    .findFirst();
+                            Optional<TActionFunctionReturnType> returnParameter = Util
+                                    .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class)
+                                    .findFirst();
 
-                        if (bindingParameter.isPresent()) {
-                            String type = names.getInnerType(bindingParameter.get());
-                            if (names.isCollection(bindingParameter.get())) {
-                                if (t.getFullType().equals(type)) {
-                                    if (returnParameter.isPresent()) {
-                                        // get return parameter
-                                        String returnFullType = names.getType(returnParameter.get());
-                                        String returnInnerType = names.getInnerType(returnFullType);
-                                        if (names.isCollection(returnParameter.get())) {
-                                            p.format("\n%s%s %s(%s) {\n", //
-                                                    indent, //
-                                                    names.getFullClassNameCollectionRequestFromTypeWithNamespace(
-                                                            names.getSchema(returnInnerType), returnInnerType),
-                                                    Names.getGetterMethod(a.getName()), "");
-                                            p.format("%s// ACTION\n", indent.right());
-                                            p.format("%sreturn null;\n", indent);
-                                            p.format("%s}\n", indent.left());
-                                        } else {
-                                            // TODO
+                            if (bindingParameter.isPresent()) {
+                                String type = names.getInnerType(bindingParameter.get());
+                                if (names.isCollection(bindingParameter.get())) {
+                                    if (t.getFullType().equals(type)) {
+                                        if (returnParameter.isPresent()) {
+                                            // get return parameter
+                                            String returnFullType = names.getType(returnParameter.get());
+                                            String returnInnerType = names.getInnerType(returnFullType);
+                                            if (names.isCollection(returnParameter.get())) {
+                                                p.format("\n%s%s %s(%s) {\n", //
+                                                        indent, //
+                                                        names.getFullClassNameCollectionRequestFromTypeWithNamespace(
+                                                                names.getSchema(returnInnerType), returnInnerType),
+                                                        Names.getGetterMethod(a.getName()), "");
+                                                p.format("%s// ACTION\n", indent.right());
+                                                p.format("%sreturn null;\n", indent);
+                                                p.format("%s}\n", indent.left());
+                                            } else {
+                                                // TODO
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+            }
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileCollectionRequest());
