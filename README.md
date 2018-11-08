@@ -1,10 +1,11 @@
 # odata-client
-Generates java client for a service described by OData CSDL 4.0 metadata. 
+Generates java client for a service described by OData 4.01 metadata. 
 
 Status: *pre-alpha* (in development)
 
 ## Features
 * high level of type safety
+* many unit tests (real service calls are made and recorded then used for unit tests)
 * builders and method chaining for conciseness and discoverability
 * Immutability! (generated objects from the model are immutable)
 * OData inheritance supported for serialization and derialization
@@ -16,6 +17,11 @@ Status: *pre-alpha* (in development)
 
 ## How to build
 `mvn clean install`
+
+## Background
+The main actively supported java clients for OData 4 services are [Apache Olingo](https://github.com/apache/olingo-odata4) and the [SDL OData Framework](https://github.com/sdl/odata). However, neither of these projects generate all of the code you might need. Olingo generates some code but you still have to read the metadata xml to know what you can do with the generated classes. This project *odata-client* generates nearly all the code you need so that you just follow auto-complete on the available methods to navigate the data.
+
+Microsoft Graph is an OData 4 service with a Java SDK being developed on  [https://github.com/microsoftgraph/msgraph-sdk-java/](github). Progress is slow and steady (but happening) on this client (8 Nov 2018) and it can do a lot already. My frustrations with the design of this client gave rise to an investigation into generating clients for OData services in general and that investigation turned into this project.
 
 ## How to generate java classes for an OData service
 Add *odata-client-maven-plugin* and *build-helper-maven-plugin* to your `pom.xml` as per [odata-client-msgraph/pom.xml](odata-client-plugin/pom.xml). You'll also need to save a copy of the service metadata (at http://SERVICE_ROOT/$metadata) to a file in your `src/odata` directory. Once everything is in place a build of your maven project will generate the classes and make them available as source (that's what the *build-helper-maven-plugin* does).
@@ -49,7 +55,8 @@ Here's example usage of the *odata-client-msgraph* artifact (model classes gener
 
 ```java
 String mailbox = "me";
-client.users(mailbox) 
+client
+    .users(mailbox) 
     .mailFolders("Inbox") 
     .messages() 
     .filter("isRead eq false") 
@@ -134,24 +141,7 @@ drafts //
 ```
 ### Updating Microsoft Graph metadata
 Developer instructions:
-* Copy latest from https://graph.microsoft.com/v1.0/$metadata and place in `odata-client-generator/src/main/odata/msgraph-metadata.xml` then format it using `xmllint --format <input> <output>`
-
-## TODO
-* support OpenType (arbitrary extra fields get written)
-* support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
-* support precision, scale (maybe)
-* support NavigationPropertyBindings
-* more decoupling of model from presentation in generation
-* use annotations (docs) in javadoc
-* support functions
-* support actions
-* support `count`
-* support `raw`
-* support geographical primitive types (where's the spec?!!)
-* support references to other metadata files (imports)
-* support Edm.Stream type
-* auto-rerequest with odata.metadata=full header if Edm.Stream is read
-* support TypeDefinition
+* Copy latest from https://graph.microsoft.com/v1.0/$metadata and place in `odata-client-generator/src/main/odata/msgraph-metadata.xml` then format it using `xmllint --format <input> <output>`.
 
 ## Usage Notes
 ### Streams
@@ -183,5 +173,21 @@ https://services.odata.org/V4/(S(itwk4e1fqfe4tchtlieb5rhb))/TripPinServiceRW/Pho
 The initial design for setting fields was via constructors with final fields but Msgraph Beta service goes for gold on the number of fields and well exceeds the JVM limit of 256 with the `Windows10GeneralConfiguration` entity. As a consequence we have private theoretically mutable fields and a protected no-arg constructor. In practice though the fields are not mutable as the only creation access is through a `builder()` or `with*(...)` which return new instances. 
 
 ### PATCH support
-If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PATCH` is not supported. However, if using this client and a `ProtocolException` is thrown then the client attempts the call using the special request header `X-HTTP-Override-Method` and the verb `POST`. Future `PATCH` calls will then use the alternative methods (for the runtime life of the application).
+If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PATCH` is not supported. However, if using this client and a `ProtocolException` is thrown then the client attempts the call using the special request header `X-HTTP-Override-Method` and the verb `POST`. The detection of the `ProtocolException` is cached and future `PATCH` calls will then use the alternative methods (for the runtime life of the application).
+
+## TODO
+* support OpenType (arbitrary extra fields get written)
+* support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
+* support precision, scale (maybe)
+* support NavigationPropertyBindings (just a documentation nicety? Looks like it's just to indicate contains relationships)
+* more decoupling of model from presentation in generation
+* use annotations (docs) in javadoc
+* support functions
+* support actions
+* support `count`
+* support `raw`
+* support geographical primitive types (where's the spec?!!)
+* support references to other metadata files (imports)
+* auto-rerequest with odata.metadata=full header if Edm.Stream is read
+* support TypeDefinition
 
