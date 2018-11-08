@@ -9,7 +9,7 @@ Status: *pre-alpha* (in development)
 * Builders and method chaining for conciseness and discoverability
 * Immutability! (generated objects from the model are immutable)
 * OData inheritance supported for serialization and derialization
-* Interschema references supported (Thompson-Reuters uses interschema references)
+* Interschema references supported (Thompson-Reuters Datascope API uses interschema references)
 * Http calls using java.net.URLConnection or using Apache HttpClient
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Generated code is very clean - well formatted, no redundant imports
