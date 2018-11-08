@@ -193,4 +193,4 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * auto-rerequest with odata.metadata=full header if Edm.Stream is read
 * support TypeDefinition
 * only generate classes that are actually used (e.g. Collection classes)
-
+* implement `CollectionPageNonEntity`
