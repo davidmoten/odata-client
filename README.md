@@ -12,8 +12,10 @@ Status: *pre-alpha* (in development)
 * Interschema references supported (Thompson-Reuters uses interschema references)
 * Http calls using java.net.URLConnection or using Apache HttpClient
 * Collections are `Iterable` and streamable (via `.stream()`)
+* Generated code is very clean - well formatted, no redundant imports
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
+* More generated clients can be added, just raise an issue
 
 ## How to build
 `mvn clean install`
@@ -21,7 +23,7 @@ Status: *pre-alpha* (in development)
 ## Background
 The main actively supported java clients for OData 4 services are [Apache Olingo](https://github.com/apache/olingo-odata4) and the [SDL OData Framework](https://github.com/sdl/odata). However, neither of these projects generate all of the code you might need. Olingo generates some code but you still have to read the metadata xml to know what you can do with the generated classes. This project *odata-client* generates nearly all the code you need so that you just follow auto-complete on the available methods to navigate the data.
 
-Microsoft Graph is an OData 4 service with a Java SDK being developed on  [https://github.com/microsoftgraph/msgraph-sdk-java/](github). Progress is slow and steady (but happening) on this client (8 Nov 2018) and it can do a lot already. My frustrations with the design of this client gave rise to an investigation into generating clients for OData services in general and that investigation turned into this project.
+Microsoft Graph is an OData 4 service with a Java SDK being developed on  [https://github.com/microsoftgraph/msgraph-sdk-java/](github). Progress is slow and steady (but happening) on this client (8 Nov 2018) and it can do a lot already. My frustrations with the design of that client gave rise to an investigation into generating clients for OData services in general and that investigation turned into this project.
 
 ## How to generate java classes for an OData service
 Add *odata-client-maven-plugin* and *build-helper-maven-plugin* to your `pom.xml` as per [odata-client-msgraph/pom.xml](odata-client-plugin/pom.xml). You'll also need to save a copy of the service metadata (at http://SERVICE_ROOT/$metadata) to a file in your `src/odata` directory. Once everything is in place a build of your maven project will generate the classes and make them available as source (that's what the *build-helper-maven-plugin* does).
