@@ -1,12 +1,12 @@
 # odata-client
-Generates java client for a service described by OData 4.01 metadata. 
+Generates java client for a service described by OData v4 metadata. 
 
 Status: *pre-alpha* (in development)
 
 ## Features
-* high level of type safety
-* many unit tests (real service calls are made and recorded then used for unit tests)
-* builders and method chaining for conciseness and discoverability
+* High level of type safety in generated code
+* Many unit tests (real service calls are made and recorded then used for unit tests)
+* Builders and method chaining for conciseness and discoverability
 * Immutability! (generated objects from the model are immutable)
 * OData inheritance supported for serialization and derialization
 * Interschema references supported (Thompson-Reuters uses interschema references)
@@ -21,7 +21,7 @@ Status: *pre-alpha* (in development)
 `mvn clean install`
 
 ## Background
-The main actively supported java clients for OData 4 services are [Apache Olingo](https://github.com/apache/olingo-odata4) and the [SDL OData Framework](https://github.com/sdl/odata). However, neither of these projects generate all of the code you might need. Olingo generates some code but you still have to read the metadata xml to know what you can do with the generated classes. This project *odata-client* generates nearly all the code you need so that you just follow auto-complete on the available methods to navigate the data.
+The main actively supported java clients for OData 4 services are [Apache Olingo](https://github.com/apache/olingo-odata4) and the [SDL OData Framework](https://github.com/sdl/odata). However, neither of these projects generate all of the code you might need. Olingo generates some code but you still have to read the metadata xml to know what you can do with the generated classes. This project *odata-client* generates nearly all the code you need so that you just follow auto-complete on the available methods to navigate the service.
 
 Microsoft Graph is an OData 4 service with a Java SDK being developed on  [https://github.com/microsoftgraph/msgraph-sdk-java/](github). Progress is slow and steady (but happening) on this client (8 Nov 2018) and it can do a lot already. My frustrations with the design of that client gave rise to an investigation into generating clients for OData services in general and that investigation turned into this project.
 
