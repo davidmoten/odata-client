@@ -110,6 +110,14 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${release.plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>        
+            <plugin>
                 <groupId>com.github.davidmoten</groupId>
                 <artifactId>odata-client-maven-plugin</artifactId>
                 <version>${project.parent.version}</version>
