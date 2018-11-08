@@ -48,6 +48,14 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${release.plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>        
+            <plugin>
                 <groupId>org.apache.olingo</groupId>
                 <artifactId>pojogen-maven-plugin</artifactId>
                 <version>4.5.0</version>
