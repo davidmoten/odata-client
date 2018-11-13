@@ -1,11 +1,6 @@
 package com.github.davidmoten.odata.client.generator;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +19,8 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
-import com.github.davidmoten.odata.client.edm.GeographyPoint;
-import com.github.davidmoten.odata.client.edm.UnsignedByte;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
+import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Names {
 
@@ -272,44 +266,11 @@ public final class Names {
     }
 
     public String getTypeFromEdm(String t, Imports imports) {
-        if (t.equals("Edm.String")) {
-            return imports.add(String.class);
-        } else if (t.equals("Edm.Boolean")) {
-            return imports.add(Boolean.class);
-        } else if (t.equals("Edm.DateTimeOffset")) {
-            return imports.add(OffsetDateTime.class);
-        } else if (t.equals("Edm.Duration")) {
-            return imports.add(Duration.class);
-        } else if (t.equals("Edm.TimeOfDay")) {
-            return imports.add(LocalTime.class);
-        } else if (t.equals("Edm.Date")) {
-            return imports.add(LocalDate.class);
-        } else if (t.equals("Edm.Int32")) {
-            return imports.add(Integer.class);
-        } else if (t.equals("Edm.Int16")) {
-            return imports.add(Short.class);
-        } else if (t.equals("Edm.Byte")) {
-            return imports.add(UnsignedByte.class);
-        } else if (t.equals("Edm.SByte")) {
-            return byte.class.getCanonicalName();
-        } else if (t.equals("Edm.Single")) {
-            return imports.add(Float.class);
-        } else if (t.equals("Edm.Double")) {
-            return imports.add(Double.class);
-        } else if (t.equals("Edm.Guid")) {
-            return imports.add(String.class);
-        } else if (t.equals("Edm.Int64")) {
-            return imports.add(Long.class);
-        } else if (t.equals("Edm.Binary")) {
+        Class<?> cls = EdmSchemaInfo.INSTANCE.getClassFromTypeWithNamespace(t);
+        if (cls.equals(byte[].class)) {
             return "byte[]";
-        } else if (t.equals("Edm.Stream")) {
-            return imports.add(String.class);
-        } else if (t.equals("Edm.GeographyPoint")) {
-            return imports.add(GeographyPoint.class);
-        } else if (t.equals("Edm.Decimal")) {
-            return imports.add(BigDecimal.class);
         } else {
-            throw new RuntimeException("unhandled type: " + t);
+            return imports.add(cls);
         }
     }
 

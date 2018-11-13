@@ -36,8 +36,8 @@ public enum EdmSchemaInfo implements SchemaInfo {
         map.put("Edm.Int64", Long.class);
         map.put("Edm.Binary", byte[].class);
 
-        // TODO Stream -> String looks wrong
-        // map.put("Edm.Stream", String.class);
+        // if is null then contains Base64 content otherwise another field has the url
+        map.put("Edm.Stream", String.class);
         map.put("Edm.GeographyPoint", GeographyPoint.class);
         map.put("Edm.Decimal", BigDecimal.class);
     }
