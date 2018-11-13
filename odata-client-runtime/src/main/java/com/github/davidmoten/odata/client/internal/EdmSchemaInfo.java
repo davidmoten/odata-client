@@ -49,7 +49,6 @@ public enum EdmSchemaInfo implements SchemaInfo {
             throw new RuntimeException("unhandled type: " + name);
         }
         return cls;
-
     }
 
 }
