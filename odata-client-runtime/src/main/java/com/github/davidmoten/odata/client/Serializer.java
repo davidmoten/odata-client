@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -107,25 +108,18 @@ public final class Serializer {
 
     public <T extends ODataEntityType> CollectionPageEntity<T> deserializeCollectionPageEntity(String json,
             Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
-        try {
-            ObjectMapper m = MAPPER;
-            ObjectNode o = m.readValue(json, ObjectNode.class);
-            List<T> list = new ArrayList<T>();
-            for (JsonNode item : o.get("value")) {
-                String text = m.writeValueAsString(item);
-                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo, cls, text);
-                list.add(deserialize(text, subClass, contextPath));
-            }
-            // TODO support relative urls using odata.context if present
-            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);
-            return new CollectionPageEntity<T>(cls, list, nextLink, contextPath, schemaInfo);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        CollectionInfo<T> c = deserialize(json, cls, contextPath, schemaInfo);
+        return new CollectionPageEntity<T>(cls, c.list, c.nextLink, contextPath, schemaInfo);
     }
 
     public <T> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
+        CollectionInfo<T> c = deserialize(json, cls, contextPath, schemaInfo);
+        return new CollectionPageNonEntity<T>(contextPath, cls, c.list, c.nextLink, schemaInfo);
+    }
+
+    private <T> CollectionInfo<T> deserialize(String json, Class<T> cls, ContextPath contextPath,
+            SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
@@ -136,13 +130,21 @@ public final class Serializer {
                 list.add(deserialize(text, subClass, contextPath));
             }
             // TODO support relative urls using odata.context if present
-            // TODO nextLink arrangement is different for non-entities
             Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);
-            // return new CollectionPageNonEntity<T>(cls, list, nextLink, contextPath,
-            // schemaInfo);
-            throw new UnsupportedOperationException();
+            return new CollectionInfo<T>(list, nextLink);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static final class CollectionInfo<T> {
+
+        final List<T> list;
+        final Optional<String> nextLink;
+
+        CollectionInfo(List<T> list, Optional<String> nextLink) {
+            this.list = list;
+            this.nextLink = nextLink;
         }
     }
 

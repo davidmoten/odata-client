@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,26 +31,18 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
 
     @Override
     public Optional<CollectionPageNonEntity<T>> nextPage() {
-        if (nextLink != null) {
-            // TODO
-            throw new UnsupportedOperationException();
+        if (nextLink.isPresent()) {
+            // TODO add request headers used in initial call?
+            // TODO handle relative nextLink?
+            HttpResponse response = contextPath.context().service().get(nextLink.get(), Collections.emptyList());
+            // odata 4 says the "value" element of the returned json is an array of
+            // serialized T see example at
+            // https://www.odata.org/getting-started/basic-tutorial/#entitySet
+            return Optional.of(contextPath.context().serializer().deserializeCollectionPageNonEntity(response.getText(),
+                    cls, contextPath, schemaInfo));
         } else {
             return Optional.empty();
         }
-        // if (nextLink.isPresent()) {
-        // // TODO add request headers used in initial call?
-        // // TODO handle relative nextLink?
-        // HttpResponse response = contextPath.context().service().get(nextLink.get(),
-        // Collections.emptyList());
-        // // odata 4 says the "value" element of the returned json is an array of
-        // // serialized T see example at
-        // // https://www.odata.org/getting-started/basic-tutorial/#entitySet
-        // return
-        // Optional.of(contextPath.context().serializer().deserializeCollectionPageEntity(response.getText(),
-        // cls, contextPath, schemaInfo));
-        // } else {
-        // return Optional.empty();
-        // }
     }
 
 }
