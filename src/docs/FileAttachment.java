@@ -186,40 +186,16 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
         // pass null for changedFields to reset it
-        FileAttachment _x = new FileAttachment();
-        _x.contextPath = contextPath;
+        FileAttachment _x = _copy();
         _x.changedFields = null;
-        _x.unmappedFields = unmappedFields;
-        _x.odataType = odataType;
-        _x.id = id;
-        _x.lastModifiedDateTime = lastModifiedDateTime;
-        _x.name = name;
-        _x.contentType = contentType;
-        _x.size = size;
-        _x.isInline = isInline;
-        _x.contentId = contentId;
-        _x.contentLocation = contentLocation;
-        _x.contentBytes = contentBytes;
         return _x;
     }
 
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
         // pass null for changedFields to reset it
-        FileAttachment _x = new FileAttachment();
-        _x.contextPath = contextPath;
+        FileAttachment _x = _copy();
         _x.changedFields = null;
-        _x.unmappedFields = unmappedFields;
-        _x.odataType = odataType;
-        _x.id = id;
-        _x.lastModifiedDateTime = lastModifiedDateTime;
-        _x.name = name;
-        _x.contentType = contentType;
-        _x.size = size;
-        _x.isInline = isInline;
-        _x.contentId = contentId;
-        _x.contentLocation = contentLocation;
-        _x.contentBytes = contentBytes;
         return _x;
     }
     private FileAttachment _copy() {
