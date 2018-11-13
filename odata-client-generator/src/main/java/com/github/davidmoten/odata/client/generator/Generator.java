@@ -262,6 +262,7 @@ public final class Generator {
         }
     }
 
+    // TODO remove constructor option
     private static final boolean SET_VIA_CONSTRUCTOR = false;
 
     private void writeEntity(TEntityType entityType) {
