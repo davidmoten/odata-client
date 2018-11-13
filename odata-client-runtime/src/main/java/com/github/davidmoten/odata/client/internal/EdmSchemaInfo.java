@@ -1,0 +1,55 @@
+package com.github.davidmoten.odata.client.internal;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.github.davidmoten.odata.client.SchemaInfo;
+import com.github.davidmoten.odata.client.edm.GeographyPoint;
+import com.github.davidmoten.odata.client.edm.UnsignedByte;
+
+public enum EdmSchemaInfo implements SchemaInfo {
+
+    INSTANCE;
+
+    private final Map<String, Class<?>> map;
+
+    private EdmSchemaInfo() {
+        map = new HashMap<String, Class<?>>();
+        map.put("Edm.String", String.class);
+        map.put("Edm.Boolean", Boolean.class);
+        map.put("Edm.DateTimeOffset", OffsetDateTime.class);
+        map.put("Edm.Duration", Duration.class);
+        map.put("Edm.TimeOfDay", LocalTime.class);
+        map.put("Edm.Date", LocalDate.class);
+        map.put("Edm.Int32", Integer.class);
+        map.put("Edm.Int16", Short.class);
+        map.put("Edm.Byte", UnsignedByte.class);
+        map.put("Edm.SByte", byte.class);
+        map.put("Edm.Single", Float.class);
+        map.put("Edm.Double", Double.class);
+        map.put("Edm.Guid", String.class);
+        map.put("Edm.Int64", Long.class);
+        map.put("Edm.Binary", byte[].class);
+
+        // TODO Stream -> String looks wrong
+        map.put("Edm.Stream", String.class);
+        map.put("Edm.GeographyPoint", GeographyPoint.class);
+        map.put("Edm.Decmal", BigDecimal.class);
+    }
+
+    @Override
+    public Class<?> getClassFromTypeWithNamespace(String name) {
+        Class<?> cls = map.get(name);
+        if (cls == null) {
+            throw new RuntimeException("unhandled type: " + name);
+        }
+        return cls;
+
+    }
+
+}

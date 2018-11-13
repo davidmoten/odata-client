@@ -12,12 +12,15 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
     private final Class<T> cls;
     private final List<T> list;
     private final Optional<String> nextLink;
+    private final SchemaInfo schemaInfo;
 
-    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, Optional<String> nextLink) {
+    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, Optional<String> nextLink,
+            SchemaInfo schemaInfo) {
         this.contextPath = contextPath;
         this.cls = cls;
         this.list = list;
         this.nextLink = nextLink;
+        this.schemaInfo = schemaInfo;
     }
 
     @Override
