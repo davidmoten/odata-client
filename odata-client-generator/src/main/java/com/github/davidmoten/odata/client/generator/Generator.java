@@ -1103,9 +1103,9 @@ public final class Generator {
                                     indent.right(), imports.add(CollectionPageEntity.class), fieldName,
                                     importedInnerType, imports.add(names.getFullClassNameSchema(sch)));
                         } else {
-                            p.format("%sreturn new %s<%s>(contextPath, %s.class, %s, %sNextLink);\n", indent.right(),
-                                    imports.add(CollectionPageNonEntity.class), importedInnerType, importedInnerType,
-                                    fieldName, fieldName);
+                            p.format("%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink));\n",
+                                    indent.right(), imports.add(CollectionPageNonEntity.class), importedInnerType,
+                                    importedInnerType, fieldName, imports.add(Optional.class), fieldName);
                         }
                         p.format("%s}\n", indent.left());
                     } else {

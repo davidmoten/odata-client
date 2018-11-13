@@ -11,9 +11,9 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
     private final ContextPath contextPath;
     private final Class<T> cls;
     private final List<T> list;
-    private final String nextLink;
+    private final Optional<String> nextLink;
 
-    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, String nextLink) {
+    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, Optional<String> nextLink) {
         this.contextPath = contextPath;
         this.cls = cls;
         this.list = list;
@@ -33,6 +33,20 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
         } else {
             return Optional.empty();
         }
+        // if (nextLink.isPresent()) {
+        // // TODO add request headers used in initial call?
+        // // TODO handle relative nextLink?
+        // HttpResponse response = contextPath.context().service().get(nextLink.get(),
+        // Collections.emptyList());
+        // // odata 4 says the "value" element of the returned json is an array of
+        // // serialized T see example at
+        // // https://www.odata.org/getting-started/basic-tutorial/#entitySet
+        // return
+        // Optional.of(contextPath.context().serializer().deserializeCollectionPageEntity(response.getText(),
+        // cls, contextPath, schemaInfo));
+        // } else {
+        // return Optional.empty();
+        // }
     }
 
 }
