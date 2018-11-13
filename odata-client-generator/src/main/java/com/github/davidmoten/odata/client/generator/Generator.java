@@ -444,8 +444,8 @@ public final class Generator {
         p.format("%s%s.%s(this, contextPath, %s.EMPTY,  %s.INSTANCE);\n", indent.right(),
                 imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class),
                 imports.add(t.getFullClassNameSchema()));
-        p.format("%s// pass null for changedFields to reset it\n", indent);
         if (SET_VIA_CONSTRUCTOR) {
+            p.format("%s// pass null for changedFields to reset it\n", indent);
             p.format("%sreturn new %s(contextPath, null, unmappedFields, odataType%s);\n", indent, simpleClassName,
                     params);
         } else {

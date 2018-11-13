@@ -185,7 +185,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
 
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
-        // pass null for changedFields to reset it
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
@@ -193,7 +192,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
 
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
-        // pass null for changedFields to reset it
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
