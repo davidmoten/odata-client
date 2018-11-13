@@ -58,6 +58,7 @@ import com.github.davidmoten.odata.client.generator.model.Field;
 import com.github.davidmoten.odata.client.generator.model.KeyElement;
 import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
@@ -638,7 +639,7 @@ public final class Generator {
             p.format("%ssuper(%s.class, contextPath, %s.INSTANCE);\n", //
                     indent.right(), //
                     imports.add(t.getFullClassNameEntity()), //
-                    imports.add(names.getFullClassNameSchema(schema)));
+                    imports.add(names.getFullClassNameSchemaInfo(schema)));
             p.format("%s}\n", indent.left());
 
             indent.left();
@@ -674,7 +675,7 @@ public final class Generator {
                             p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                     imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                             names.getInnerType(names.getType(x)))),
-                                    imports.add(names.getFullClassNameSchema(sch)));
+                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
                             indent.left().left().left().left();
                         } else {
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", indent.right(), returnClass,
@@ -804,7 +805,7 @@ public final class Generator {
                         p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                 imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                         x.getEntityType())), //
-                                imports.add(names.getFullClassNameSchema(sch)));
+                                imports.add(names.getFullClassNameSchemaInfo(sch)));
                         p.format("%s}\n", indent.left().left().left().left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
@@ -868,7 +869,7 @@ public final class Generator {
             p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp), %s.INSTANCE);\n", indent.right(),
                     imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
                     imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
-                    imports.add(names.getFullClassNameSchema(schema)));
+                    imports.add(names.getFullClassNameSchemaInfo(schema)));
             p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%s}\n", indent.left());
 
@@ -1090,14 +1091,23 @@ public final class Generator {
                         p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls), importedInnerType,
                                 Names.getGetterMethod(x.getName()));
                         if (isEntity) {
-                            Schema sch = names.getSchema(names.getInnerType(t));
+                            Schema sch = names.getSchema(inner);
                             p.format("%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE);\n",
                                     indent.right(), imports.add(CollectionPageEntity.class), fieldName,
-                                    importedInnerType, imports.add(names.getFullClassNameSchema(sch)));
+                                    importedInnerType, imports.add(names.getFullClassNameSchemaInfo(sch)));
                         } else {
-                            p.format("%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink));\n",
+                            final String importedSchemaInfo;
+                            if (inner.startsWith("Edm.")) {
+                                importedSchemaInfo = imports.add(EdmSchemaInfo.class);
+                            } else {
+                                Schema sch = names.getSchema(inner);
+                                importedSchemaInfo = imports.add(names.getFullClassNameSchemaInfo(sch));
+                            }
+                            p.format(
+                                    "%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE);\n",
                                     indent.right(), imports.add(CollectionPageNonEntity.class), importedInnerType,
-                                    importedInnerType, fieldName, imports.add(Optional.class), fieldName);
+                                    importedInnerType, fieldName, imports.add(Optional.class), fieldName,
+                                    importedSchemaInfo);
                         }
                         p.format("%s}\n", indent.left());
                     } else {
@@ -1215,7 +1225,7 @@ public final class Generator {
                             p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
                                     imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                             names.getInnerType(names.getType(x)))), //
-                                    imports.add(names.getFullClassNameSchema(sch)));
+                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
                             indent.left().left().left().left();
                         } else {
                             throw new RuntimeException("unexpected");

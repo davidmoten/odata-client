@@ -254,7 +254,7 @@ public final class Names {
 
     public String toImportedTypeNonCollection(String t, Imports imports) {
         if (t.startsWith("Edm.")) {
-            return toTypeFromEdm(t, imports);
+            return getTypeFromEdm(t, imports);
         } else {
             return imports.add(getFullClassNameFromTypeWithNamespace(t));
         }
@@ -262,7 +262,7 @@ public final class Names {
 
     public String toType(String t, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
-            return toTypeFromEdm(t, imports);
+            return getTypeFromEdm(t, imports);
         } else if (isCollection(t)) {
             String inner = getInnerType(t);
             return wrapCollection(imports, collectionClass, inner);
@@ -271,7 +271,7 @@ public final class Names {
         }
     }
 
-    public String toTypeFromEdm(String t, Imports imports) {
+    public String getTypeFromEdm(String t, Imports imports) {
         if (t.equals("Edm.String")) {
             return imports.add(String.class);
         } else if (t.equals("Edm.Boolean")) {
@@ -435,7 +435,7 @@ public final class Names {
         return schemas;
     }
 
-    public String getFullClassNameSchema(Schema schema) {
+    public String getFullClassNameSchemaInfo(Schema schema) {
         return getPackageSchema(schema) + "." + getSimpleClassNameSchema(schema);
     }
 
@@ -504,9 +504,18 @@ public final class Names {
                                 .map(t -> new SchemaAndType<TComplexType>(s, t))) //
                         .filter(x -> toTypeWithNamespace(x.schema, x.type.getName()).equals(typeWithNamespace)) //
                         .map(x -> x.schema) //
-                        .findFirst().<RuntimeException>orElseThrow(() -> {
-                            throw new RuntimeException("type not found: " + typeWithNamespace);
-                        }));
+                        .findFirst() //
+                        .orElseGet(() -> schemas //
+                                .stream() //
+                                .flatMap(s -> Util
+                                        .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEnumType.class)
+                                        .map(t -> new SchemaAndType<TEnumType>(s, t))) //
+                                .filter(x -> toTypeWithNamespace(x.schema, x.type.getName()).equals(typeWithNamespace)) //
+                                .map(x -> x.schema) //
+                                .findFirst() //
+                                .<RuntimeException>orElseThrow(() -> {
+                                    throw new RuntimeException("type not found: " + typeWithNamespace);
+                                })));
     }
 
     public File getClassFileEntityRequest(Schema schema, String name) {

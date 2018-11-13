@@ -116,7 +116,7 @@ public final class EntityType extends Structure<TEntityType> {
     }
 
     public String getFullClassNameSchema() {
-        return names.getFullClassNameSchema(schema());
+        return names.getFullClassNameSchemaInfo(schema());
     }
 
     @Override
