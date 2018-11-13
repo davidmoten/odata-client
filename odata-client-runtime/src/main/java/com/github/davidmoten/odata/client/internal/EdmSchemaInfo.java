@@ -39,7 +39,7 @@ public enum EdmSchemaInfo implements SchemaInfo {
         // TODO Stream -> String looks wrong
         // map.put("Edm.Stream", String.class);
         map.put("Edm.GeographyPoint", GeographyPoint.class);
-        map.put("Edm.Decmal", BigDecimal.class);
+        map.put("Edm.Decimal", BigDecimal.class);
     }
 
     @Override
