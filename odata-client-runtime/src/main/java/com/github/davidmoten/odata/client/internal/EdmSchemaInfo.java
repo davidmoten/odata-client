@@ -37,7 +37,7 @@ public enum EdmSchemaInfo implements SchemaInfo {
         map.put("Edm.Binary", byte[].class);
 
         // TODO Stream -> String looks wrong
-        map.put("Edm.Stream", String.class);
+        // map.put("Edm.Stream", String.class);
         map.put("Edm.GeographyPoint", GeographyPoint.class);
         map.put("Edm.Decmal", BigDecimal.class);
     }
