@@ -450,16 +450,8 @@ public final class Generator {
                     params);
         } else {
             // use _x as identifier so doesn't conflict with any field name
-            p.format("%s%s _x = new %s();\n", indent, simpleClassName, simpleClassName);
-            p.format("%s_x.contextPath = contextPath;\n", indent);
+            p.format("%s%s _x = _copy();\n", indent, simpleClassName);
             p.format("%s_x.changedFields = null;\n", indent);
-            p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
-            p.format("%s_x.odataType = odataType;\n", //
-                    indent);
-            t.getFields(imports) //
-                    .stream() //
-                    .map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName)) //
-                    .forEach(p::print);
             p.format("%sreturn _x;\n", indent);
         }
         p.format("%s}\n", indent.left());
