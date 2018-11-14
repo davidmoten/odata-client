@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
+//TODO merge CollectionPageNonEntity and CollectionPageEntity into CollectionPage
 @JsonIgnoreType
 public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPageNonEntity<T>> {
 
