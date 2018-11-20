@@ -105,7 +105,8 @@ public final class RequestHelper {
 
         final String url;
         String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
-        if (editLink != null) {
+        // TODO get patch working when editLink present (does not work with MsGraph)
+        if (editLink != null && false) {
             if (editLink.startsWith("https://") || editLink.startsWith("http://")) {
                 url = editLink;
             } else {
