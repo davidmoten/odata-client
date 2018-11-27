@@ -133,10 +133,12 @@
                 <version>${jacoco.plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+<!--
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
@@ -146,6 +148,7 @@
                         <configuration>
                         </configuration>
                     </execution>
+-->
                 </executions>
             </plugin>
             <plugin>
@@ -174,11 +177,6 @@
                 <configuration>
                     <aggregate>true</aggregate>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
