@@ -46,6 +46,7 @@
         <httpclient.version>4.5.6</httpclient.version>
         <slf4j.version>1.7.25</slf4j.version>
         <release.plugin.version>2.5.1</release.plugin.version>
+        <jacoco.plugin.version>0.8.2</jacoco.plugin.version>
     </properties>
 
     <licenses>
@@ -102,6 +103,7 @@
         <module>odata-client-test-datascope</module>
         <module>odata-client-msgraph</module>
         <module>odata-client-msgraph-beta</module>
+        <module>odata-client-test-report</module>
     </modules>
 
     <build>
@@ -121,6 +123,27 @@
                             <server>github</server>
                             <message>Deploy site for ${project.artifactId}-${project.version}</message>
                             <merge>true</merge>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
                         </configuration>
                     </execution>
                 </executions>
