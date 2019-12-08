@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
+import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.Util;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
@@ -181,6 +182,10 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     @Override
     public UnmappedFields getUnmappedFields() {
         return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
+    }
+
+    public Optional<StreamProvider> getStream() {
+        return RequestHelper.createStream(contextPath, this);
     }
 
     public FileAttachment patch() {
