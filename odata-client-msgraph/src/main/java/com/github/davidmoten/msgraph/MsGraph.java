@@ -98,6 +98,8 @@ public final class MsGraph {
                 .tenantName(tenantName) //
                 .clientId(clientId) //
                 .clientSecret(clientSecret) //
+                .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
+                .readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
                 .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
                 .build();
         Path basePath = new Path(MSGRAPH_1_0_BASE_URL, PathStyle.IDENTIFIERS_AS_SEGMENTS);
