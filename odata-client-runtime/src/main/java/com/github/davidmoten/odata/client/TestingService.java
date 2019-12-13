@@ -69,6 +69,7 @@ public final class TestingService {
             return (T) this;
         }
 
+        @SuppressWarnings("unchecked")
         public T expectDelete(String path) {
             requests.put(toKey(HttpMethod.DELETE, baseUrl + path), "DELETE");
             return (T) this;
