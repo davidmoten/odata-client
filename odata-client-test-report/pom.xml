@@ -65,12 +65,6 @@
 
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>odata-client-test-datascope</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
             <artifactId>odata-client-test-sample-server</artifactId>
             <version>${project.parent.version}</version>
             <type>war</type>
