@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.github.davidmoten.odata.client.ClientException;
@@ -36,6 +37,8 @@ public final class MsGraph {
         String clientId;
         String clientSecret;
         long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
+        long connectTimeoutMs;
+        long readTimeoutMs;
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -72,14 +75,25 @@ public final class MsGraph {
             b.refreshBeforeExpiryDurationMs = unit.toMillis(duration);
             return this;
         }
+        
+        public Builder3 connectTimeout(long duration, TimeUnit unit) {
+            b.connectTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
+        
+        public Builder3 readTimeout(long duration, TimeUnit unit) {
+            b.readTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
 
         public GraphService build() {
-            return createService(b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryDurationMs);
+            return createService(b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs);
         }
     }
 
-    private static GraphService createService(String tenantName, String clientId, String clientSecret,
-            long refreshBeforeExpiryDurationMs) {
+    private static GraphService createService(String tenantName, String clientId,
+            String clientSecret, long refreshBeforeExpiryDurationMs, long connectTimeoutMs,
+            long readTimeoutMs) {
         MsGraphAccessTokenProvider accessTokenProvider = MsGraphAccessTokenProvider //
                 .tenantName(tenantName) //
                 .clientId(clientId) //
@@ -89,7 +103,17 @@ public final class MsGraph {
         Path basePath = new Path(MSGRAPH_1_0_BASE_URL, PathStyle.IDENTIFIERS_AS_SEGMENTS);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
-                () -> HttpClientBuilder.create().useSystemProperties().build(), //
+                () -> {
+                    RequestConfig config = RequestConfig.custom() //
+                            .setConnectTimeout((int) connectTimeoutMs) //
+                            .setSocketTimeout((int) readTimeoutMs) //
+                            .build();
+                    return HttpClientBuilder //
+                            .create() //
+                            .useSystemProperties() //
+                            .setDefaultRequestConfig(config) //
+                            .build();
+                }, //
                 m -> authenticate(m, accessTokenProvider));
         return new GraphService(new Context(Serializer.INSTANCE, httpService));
     }
