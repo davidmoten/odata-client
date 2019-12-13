@@ -35,8 +35,7 @@ public final class MsGraph {
         String tenantName;
         String clientId;
         String clientSecret;
-        long duration = 5;
-        TimeUnit unit = TimeUnit.MINUTES;
+        long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -70,23 +69,22 @@ public final class MsGraph {
         }
 
         public Builder3 refreshBeforeExpiry(long duration, TimeUnit unit) {
-            b.duration = duration;
-            b.unit = unit;
+            b.refreshBeforeExpiryDurationMs = unit.toMillis(duration);
             return this;
         }
 
         public GraphService build() {
-            return createService(b.tenantName, b.clientId, b.clientSecret, b.duration, b.unit);
+            return createService(b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryDurationMs);
         }
     }
 
     private static GraphService createService(String tenantName, String clientId, String clientSecret,
-            long refreshBeforeExpiryDuration, TimeUnit refreshBeforeExpiryUnit) {
+            long refreshBeforeExpiryDurationMs) {
         MsGraphAccessTokenProvider accessTokenProvider = MsGraphAccessTokenProvider //
                 .tenantName(tenantName) //
                 .clientId(clientId) //
                 .clientSecret(clientSecret) //
-                .refreshBeforeExpiry(refreshBeforeExpiryDuration, refreshBeforeExpiryUnit) //
+                .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
                 .build();
         Path basePath = new Path(MSGRAPH_1_0_BASE_URL, PathStyle.IDENTIFIERS_AS_SEGMENTS);
         HttpService httpService = new ApacheHttpClientHttpService( //
