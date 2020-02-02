@@ -53,6 +53,16 @@
             <artifactId>odata-server-core</artifactId>
             <version>${olingo.version}</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -65,7 +75,7 @@
             <artifactId>odata-commons-core</artifactId>
             <version>${olingo.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -116,7 +126,7 @@
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-            </plugin>        
+            </plugin>
             <plugin>
                 <groupId>com.github.davidmoten</groupId>
                 <artifactId>odata-client-maven-plugin</artifactId>
