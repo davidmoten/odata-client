@@ -40,10 +40,10 @@
         <m3.site.version>3.4</m3.site.version>
         <changelog.version>2.2</changelog.version>
 
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.10.2</jackson.version>
         <junit.version>4.12</junit.version>
         <olingo.version>4.5.0</olingo.version>
-        <httpclient.version>4.5.6</httpclient.version>
+        <httpclient.version>4.5.11</httpclient.version>
         <slf4j.version>1.7.25</slf4j.version>
         <release.plugin.version>2.5.1</release.plugin.version>
         <jacoco.plugin.version>0.8.2</jacoco.plugin.version>
@@ -68,7 +68,7 @@
         <url>https://github.com/davidmoten/odata-client/issues</url>
     </issueManagement>
 
-    <inceptionYear>2015</inceptionYear>
+    <inceptionYear>2018</inceptionYear>
     <developers>
         <developer>
             <id>dave</id>
@@ -86,7 +86,7 @@
         <connection>${scm.url}</connection>
         <developerConnection>${scm.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>0.1.5</tag>
+        <tag>0.1</tag>
     </scm>
 
 
