@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-
 import org.apache.olingo.server.sample.CarsServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.SessionHandler;

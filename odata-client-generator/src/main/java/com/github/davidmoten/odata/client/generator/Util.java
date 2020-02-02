@@ -16,8 +16,6 @@ import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class Util {
 
     static void deleteDirectory(File directoryToBeDeleted) {
