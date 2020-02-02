@@ -95,7 +95,7 @@ public final class Util {
     }
 
     private static String rewriteAlias(Schema schema, String type) {
-        if (type == null || schema.getAlias() == null) {
+        if (type == null || schema.getAlias() == null|| type.startsWith(schema.getNamespace())) {
             return type;
         } else {
             return type.replaceAll("\\b" + schema.getAlias() + "\\b", schema.getNamespace());
