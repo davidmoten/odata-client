@@ -98,7 +98,8 @@ public class CarsEdmProvider extends CsdlAbstractEdmProvider {
     return null;
   }
 
-  public CsdlComplexType getComplexType(final FullQualifiedName complexTypeName) throws ODataException {
+  @Override
+public CsdlComplexType getComplexType(final FullQualifiedName complexTypeName) throws ODataException {
     if (CT_ADDRESS.equals(complexTypeName)) {
       return new CsdlComplexType().setName(CT_ADDRESS.getName()).setProperties(Arrays.asList(
           new CsdlProperty().setName("Street").setType(EdmPrimitiveTypeKind.String.getFullQualifiedName()),
