@@ -79,6 +79,8 @@ public final class Generator {
         for (Schema schema : schemas) {
 
             System.out.println("generating for namespace=" + schema.getNamespace());
+            
+            Util.rewriteAliases(schema);
 
             writeSchemaInfo(schema);
 
