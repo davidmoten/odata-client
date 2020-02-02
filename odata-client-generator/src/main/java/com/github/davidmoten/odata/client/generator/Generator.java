@@ -80,7 +80,7 @@ public final class Generator {
 
             System.out.println("generating for namespace=" + schema.getNamespace());
             
-            Util.rewriteAliases(schema);
+            Util.replaceAliases(schema);
 
             writeSchemaInfo(schema);
 

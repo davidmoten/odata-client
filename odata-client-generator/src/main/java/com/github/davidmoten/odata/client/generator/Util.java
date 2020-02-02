@@ -38,61 +38,61 @@ public final class Util {
                 .filter(x -> cls.isInstance(x)));
     }
 
-    public static void rewriteAliases(Schema schema) {
+    public static void replaceAliases(Schema schema) {
         types(schema, TEntityType.class) //
-                .forEach(x -> rewriteAlias(schema, x));
+                .forEach(x -> replaceAlias(schema, x));
         types(schema, TComplexType.class) //
-                .forEach(x -> rewriteAlias(schema, x));
+                .forEach(x -> replaceAlias(schema, x));
     }
 
-    private static void rewriteAlias(Schema schema, Object x) {
+    private static void replaceAlias(Schema schema, Object x) {
         if (schema.getAlias() == null) {
             return;
         }
         if (x instanceof TEntityType) {
             TEntityType p = (TEntityType) x;
             // mutate types to use alias
-            p.setBaseType(rewriteAlias(schema, p.getBaseType()));
+            p.setBaseType(replaceAlias(schema, p.getBaseType()));
             p.getKeyOrPropertyOrNavigationProperty() //
                     .stream() //
-                    .forEach(y -> rewriteAlias(schema, y));
+                    .forEach(y -> replaceAlias(schema, y));
         } else if (x instanceof TComplexType) {
             TComplexType p = (TComplexType) x;
             // mutate types to use alias
-            p.setBaseType(rewriteAlias(schema, p.getBaseType()));
+            p.setBaseType(replaceAlias(schema, p.getBaseType()));
             p.getPropertyOrNavigationPropertyOrAnnotation() //
                     .stream() //
-                    .forEach(y -> rewriteAlias(schema, y));
+                    .forEach(y -> replaceAlias(schema, y));
         } else if (x instanceof TProperty) {
             TProperty p = (TProperty) x;
-            rewriteAlias(schema, p.getType());
+            replaceAlias(schema, p.getType());
         } else if (x instanceof TNavigationProperty) {
             TNavigationProperty p = (TNavigationProperty) x;
-            rewriteAlias(schema, p.getType());
+            replaceAlias(schema, p.getType());
         } else if (x instanceof TAction) {
             TAction a = (TAction) x;
-            a.getParameterOrAnnotationOrReturnType().forEach(y -> rewriteAlias(schema, y));
+            a.getParameterOrAnnotationOrReturnType().forEach(y -> replaceAlias(schema, y));
         } else if (x instanceof TActionFunctionParameter) {
             TActionFunctionParameter p = (TActionFunctionParameter) x;
-            rewriteAlias(schema, p.getType());
+            replaceAlias(schema, p.getType());
         } else if (x instanceof TActionFunctionReturnType) {
             TActionFunctionReturnType p = (TActionFunctionReturnType) x;
-            rewriteAlias(schema, p.getType());
+            replaceAlias(schema, p.getType());
         } else if (x instanceof TAnnotations) {
             TAnnotations a = (TAnnotations) x;
-            a.setTarget(rewriteAlias(schema, a.getTarget()));
+            a.setTarget(replaceAlias(schema, a.getTarget()));
         }
     }
 
-    private static void rewriteAlias(Schema schema, List<String> types) {
+    private static void replaceAlias(Schema schema, List<String> types) {
         List<String> list = types.stream() //
-                .map(y -> rewriteAlias(schema, y)) //
+                .map(y -> replaceAlias(schema, y)) //
                 .collect(Collectors.toList());
         types.clear();
         types.addAll(list);
     }
 
-    private static String rewriteAlias(Schema schema, String type) {
+    private static String replaceAlias(Schema schema, String type) {
         if (type == null || schema.getAlias() == null|| type.startsWith(schema.getNamespace())) {
             return type;
         } else {
