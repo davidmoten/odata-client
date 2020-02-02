@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.client.generator;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,16 +17,6 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 
 public final class Util {
 
-    static void deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectory(file);
-            }
-        }
-        directoryToBeDeleted.delete();
-    }
-
     public static <T> Stream<T> types(Schema schema, Class<T> cls) {
         return filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), cls);
     }
@@ -38,7 +27,7 @@ public final class Util {
                 .filter(x -> cls.isInstance(x)));
     }
 
-    public static void replaceAliases(Schema schema) {
+    static void replaceAliases(Schema schema) {
         types(schema, TEntityType.class) //
                 .forEach(x -> replaceAlias(schema, x));
         types(schema, TComplexType.class) //
