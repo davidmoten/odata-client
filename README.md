@@ -12,6 +12,7 @@ Status: *released to Maven Central*
 * Interschema references supported (Thompson-Reuters Datascope API uses interschema references)
 * Http calls using java.net.URLConnection or using Apache HttpClient
 * Collections are `Iterable` and streamable (via `.stream()`)
+* Paging is handled for you automatically when iterating large collections
 * Generated code is very clean - well formatted, no redundant imports
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
