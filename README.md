@@ -143,7 +143,8 @@ drafts //
 ```
 ### Updating Microsoft Graph metadata
 Developer instructions:
-* Copy latest from https://graph.microsoft.com/v1.0/$metadata and place in `odata-client-generator/src/main/odata/msgraph-metadata.xml` then format it using `xmllint --format <input> ><output>`.
+* Copy latest from https://graph.microsoft.com/v1.0/$metadata and place in `odata-client-generator/src/main/odata/msgraph-metadata.xml` then format it using `xmllint --format <input> ><output>`
+* Copy latest from https://graph.microsoft.com/beta/$metadata and place in `odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml` then format it using `xmllint --format <input> ><output>`
 
 ## Usage Notes
 ### Streams
