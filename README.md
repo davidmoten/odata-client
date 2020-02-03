@@ -1,5 +1,5 @@
 # odata-client
-Generates java client for a service described by OData v4 metadata. 
+Generates java client for a service described by OData v4 metadata. Includes client libraries for Microsoft Graph primary and beta APIs.
 
 Status: *released to Maven Central* 
 
