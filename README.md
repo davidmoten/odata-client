@@ -1,7 +1,7 @@
 # odata-client
 Generates java client for a service described by OData v4 metadata. 
 
-Status: *pre-alpha* (in development)
+Status: *released to Maven Central* 
 
 ## Features
 * High level of type safety in generated code
