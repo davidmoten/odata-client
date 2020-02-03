@@ -30,6 +30,7 @@ Add *odata-client-maven-plugin* and *build-helper-maven-plugin* to your `pom.xml
 
 ## Limitations
 * Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation). I've yet to come across a service that uses multiple keys but it is possible.
+* see (#todo)
 
 ## MsGraph Client 
 Use this dependency:
