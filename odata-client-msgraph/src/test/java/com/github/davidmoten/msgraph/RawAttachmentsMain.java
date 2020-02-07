@@ -31,22 +31,23 @@ public final class RawAttachmentsMain {
         inbox //
                 .messages() //
                 .filter("isRead eq false") //
-                .get() //
+                .expand("attachments").get() //
                 .stream() //
-                .peek(x -> System.out.println(x.getSubject().orElse("")))
-                .filter(x -> x.getSubject().orElse("").startsWith("test contact"))
+                .peek(x -> System.out.println(x.getSubject().orElse(""))) //
+                .peek( x-> x.getAttachments().get().stream().count()) //
+                .filter(x -> x.getSubject().orElse("").startsWith("test contact")) //
                 .flatMap(x -> {
                     System.out.println("Subject=" + x.getSubject().orElse(""));
                     return inbox.messages(x.getId().get()) //
                             .attachments().get().stream();
                 }) //
-                .peek(x -> System.out.println(x.getClass().getSimpleName() + " " + x.getName().orElse("?")))
+                .peek(x -> System.out
+                        .println(x.getClass().getSimpleName() + " " + x.getName().orElse("?")))
                 .filter(x -> x instanceof ItemAttachment) //
                 .map(x -> (ItemAttachment) x) //
                 .map(x -> {
-                    InputStream in = x.getStream().get().get();
-                    int count = 0;
-                    try {
+                    try (InputStream in = x.getStream().get().get()) {
+                        int count = 0;
                         while (in.read() != -1) {
                             count++;
                         }
@@ -56,9 +57,10 @@ public final class RawAttachmentsMain {
                     }
                     return x;
                 })
-                .map(x -> x.getClass().getSimpleName() + ": " + x.getName().orElse("?") + " of content type "
-                        + x.getContentType().orElse("?")) //
+                .map(x -> x.getClass().getSimpleName() + ": " + x.getName().orElse("?")
+                        + " of content type " + x.getContentType().orElse("?")) //
                 .forEach(System.out::println);
+
     }
 
 }

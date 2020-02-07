@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
@@ -65,7 +66,7 @@ public class GraphServiceTest {
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
-        assertEquals(4, m.getUnmappedFields().size());
+        assertEquals(Sets.newHashSet("@odata.etag","@odata.context") ,m.getUnmappedFields().keySet());
         assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
                 m.getUnmappedFields().get("@odata.etag"));
         assertEquals(
