@@ -3546,7 +3546,7 @@
         <Property Name="contentLocation" Type="Edm.String"/>
         <Property Name="contentBytes" Type="Edm.Binary"/>
       </EntityType>
-      <EntityType Name="itemAttachment" BaseType="graph.attachment">
+      <EntityType Name="itemAttachment" BaseType="graph.attachment" HasStream="true">
         <NavigationProperty Name="item" Type="graph.outlookItem" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="referenceAttachment" BaseType="graph.attachment"/>
