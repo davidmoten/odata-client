@@ -1,13 +1,17 @@
 package com.github.davidmoten.msgraph;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.ItemAttachment;
+import odata.msgraph.client.entity.request.MailFolderRequest;
 
 public final class RawAttachmentsMain {
-    
+
     public static void main(String[] args) {
-        
+
         String tenantName = System.getProperty("tenantName");
         String clientId = System.getProperty("clientId");
         String clientSecret = System.getProperty("clientSecret");
@@ -20,16 +24,38 @@ public final class RawAttachmentsMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
 
-        
-        client //
+        MailFolderRequest inbox = client //
                 .users(mailbox) //
-                .mailFolders("Inbox") //
-                .messages() 
-                .filter("isRead eq false") 
-                .expand("attachments") 
-                .get() 
-                .stream() 
-                .map(x -> x.getSubject().orElse("")) 
+                .mailFolders("Inbox");
+
+        inbox //
+                .messages() //
+                .filter("isRead eq false") //
+                .get() //
+                .stream() //
+                .filter(x -> x.getSubject().orElse("").equals("test contact"))
+                .flatMap(x -> {
+                    System.out.println("Subject=" + x.getSubject().orElse(""));
+                    return inbox.messages(x.getId().get()) //
+                            .attachments().get().stream();
+                }) //
+                .filter(x -> x instanceof ItemAttachment) //
+                .map(x -> (ItemAttachment) x) //
+                .map(x -> {
+                    InputStream in = x.getStream().get().get();
+                    int count = 0;
+                    try {
+                        while (in.read() != -1) {
+                            count++;
+                        }
+                        System.out.println("read " + count + " bytes");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return x;
+                })
+                .map(x -> x.getClass().getSimpleName() + ": " + x.getName().orElse("?") + " of content type "
+                        + x.getContentType().orElse("?")) //
                 .forEach(System.out::println);
     }
 
