@@ -1217,7 +1217,8 @@ public final class Generator {
                         if (names.isEntityWithNamespace(names.getType(x))) {
                             Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                            p.format("%scontextPath.addSegment(\"%s\"),\n", indent.right().right().right().right(),
+                            p.format("%scontextPath.addSegment(\"%s\"),\n", //
+                                    indent.right().right().right().right(),
                                     x.getName());
                             p.format("%s%s.class,\n", indent, imports.add(
                                     names.getFullClassNameFromTypeWithNamespace(names.getInnerType(names.getType(x)))));
