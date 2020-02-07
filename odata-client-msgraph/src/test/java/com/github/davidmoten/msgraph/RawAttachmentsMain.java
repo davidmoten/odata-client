@@ -33,12 +33,14 @@ public final class RawAttachmentsMain {
                 .filter("isRead eq false") //
                 .get() //
                 .stream() //
-                .filter(x -> x.getSubject().orElse("").equals("test contact"))
+                .peek(x -> System.out.println(x.getSubject().orElse("")))
+                .filter(x -> x.getSubject().orElse("").startsWith("test contact"))
                 .flatMap(x -> {
                     System.out.println("Subject=" + x.getSubject().orElse(""));
                     return inbox.messages(x.getId().get()) //
                             .attachments().get().stream();
                 }) //
+                .peek(x -> System.out.println(x.getClass().getSimpleName() + " " + x.getName().orElse("?")))
                 .filter(x -> x instanceof ItemAttachment) //
                 .map(x -> (ItemAttachment) x) //
                 .map(x -> {
