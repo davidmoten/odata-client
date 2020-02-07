@@ -14,9 +14,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.Schema;
-import org.oasisopen.odata.csdl.v4.TAction;
-import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
-import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityContainer;
 import org.oasisopen.odata.csdl.v4.TEntitySet;
