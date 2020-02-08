@@ -329,8 +329,15 @@ public final class Generator {
 
             writeBuilder(t, simpleClassName, imports, indent, p);
 
-            p.format("\n%spublic %s getChangedFields() {\n", indent, imports.add(ChangedFields.class));
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic %s getChangedFields() {\n", indent, imports.add(ChangedFields.class));
             p.format("%sreturn changedFields;\n", indent.right());
+            p.format("%s}\n", indent.left());
+            
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
+            //TODO
+            p.format("%s// TODO add id field to contextpath as key;\n", indent.right());
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
@@ -598,6 +605,11 @@ public final class Generator {
                     t.getFields(imports), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
+            
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
+            p.format("%s// do nothing;\n", indent.right());
+            p.format("%s}\n", indent.left());
 
             writeBuilder(t, simpleClassName, imports, indent, p);
 

@@ -40,7 +40,7 @@ public final class Serializer {
         ;
     }
 
-    public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath) {
+    public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath, boolean addKeysToContextPath) {
         try {
             if (contextPath != null) {
                 ObjectMapper m = createObjectMapper();
@@ -49,7 +49,11 @@ public final class Serializer {
                         .addValue(ChangedFields.class, ChangedFields.EMPTY) //
                         .addValue(UnmappedFields.class, UnmappedFields.EMPTY);
                 m.setInjectableValues(iv);
-                return m.readValue(text, cls);
+                T t = m.readValue(text, cls);
+                if (t instanceof ODataType) {
+                    ((ODataType) t).postInject(addKeysToContextPath);
+                }
+                return t;
             } else {
                 return MAPPER.readValue(text, cls);
             }
@@ -60,7 +64,7 @@ public final class Serializer {
     }
 
     public <T> T deserialize(String text, Class<T> cls) {
-        return deserialize(text, cls, null);
+        return deserialize(text, cls, null, false);
     }
 
     public Optional<String> getODataType(String text) {
@@ -127,7 +131,7 @@ public final class Serializer {
             for (JsonNode item : o.get("value")) {
                 String text = m.writeValueAsString(item);
                 Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo, cls, text);
-                list.add(deserialize(text, subClass, contextPath));
+                list.add(deserialize(text, subClass, contextPath, true));
             }
             // TODO support relative urls using odata.context if present
             Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);

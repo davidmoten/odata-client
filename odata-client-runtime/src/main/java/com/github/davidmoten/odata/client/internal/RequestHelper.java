@@ -46,7 +46,7 @@ public final class RequestHelper {
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(response.getText(), c, contextPath);
+        return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
 
     public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath, Class<T> cls,
@@ -71,7 +71,7 @@ public final class RequestHelper {
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText(HttpURLConnection.HTTP_CREATED));
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath);
+        return cp.context().serializer().deserialize(response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath, false);
     }
 
     public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath, RequestOptions options,
