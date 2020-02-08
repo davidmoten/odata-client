@@ -410,6 +410,11 @@ public final class Generator {
 
     private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p,
             boolean ofEntity) {
+        List<Field> fields = t.getFields(imports);
+        if (fields.isEmpty()) {
+            // copy method not required if no fields to mutate on
+            return;
+        }
         p.format("%sprivate %s _copy() {\n", indent, simpleClassName);
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
@@ -420,7 +425,7 @@ public final class Generator {
         p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
         p.format("%s_x.odataType = odataType;\n", //
                 indent);
-        t.getFields(imports) //
+        fields
                 .stream() //
                 .map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName)).forEach(p::print);
         p.format("%sreturn _x;\n", indent);
@@ -1003,8 +1008,10 @@ public final class Generator {
                 .forEach(f -> {
                     p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName);
                 });
-        p.format("%sprivate %s changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class),
-                imports.add(ChangedFields.class));
+        if (!fields.isEmpty()) {
+             p.format("%sprivate %s changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class),
+                    imports.add(ChangedFields.class));
+        }
 
         p.format("\n%sBuilder() {\n", indent);
         p.format("%s// prevent instantiation\n", indent.right());
