@@ -131,8 +131,14 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         }
     }
 
+    @Override
     public ChangedFields getChangedFields() {
         return changedFields;
+    }
+
+    @Override
+    public void postInject(boolean addKeysToContextPath) {
+        // TODO add id field to contextpath as key;
     }
 
     public Optional<String> getContentId() {

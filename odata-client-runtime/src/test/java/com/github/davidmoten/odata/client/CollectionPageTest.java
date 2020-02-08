@@ -107,6 +107,11 @@ public class CollectionPageTest {
         public ChangedFields getChangedFields() {
             return ChangedFields.EMPTY;
         }
+
+        @Override
+        public void postInject(boolean addKeysToContextPath) {
+            //do nothing
+        }
     }
 
 }
