@@ -189,6 +189,7 @@ public final class RequestHelper {
             // TODO support relative editLink?
             Context context = contextPath.context();
             if (!editLink.startsWith(HTTPS)) {
+                // TODO should use the base path from @odata.context field?
                 editLink = contextPath.context().service().getBasePath().toUrl() + "/" + editLink;
             }
             Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
