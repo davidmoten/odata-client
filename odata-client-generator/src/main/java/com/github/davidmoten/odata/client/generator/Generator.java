@@ -334,10 +334,20 @@ public final class Generator {
             p.format("%sreturn changedFields;\n", indent.right());
             p.format("%s}\n", indent.left());
             
+            KeyInfo k = getKeyInfo(t, imports);
+            String nullCheck = k //
+                    .fieldNames //
+                    .stream() //
+                    .map(f -> f + " != null") //
+                    .collect(Collectors.joining(" && "));
+            if (!nullCheck.isEmpty()) {
+                 nullCheck = " && " + nullCheck;
+            }
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
-            //TODO
-            p.format("%s// TODO add id field to contextpath as key;\n", indent.right());
+            p.format("%sif (addKeysToContextPath%s) {\n", indent.right(), nullCheck);
+            p.format("%scontextPath = contextPath%s;\n", indent.right(), k.addKeys);
+            p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
@@ -723,10 +733,12 @@ public final class Generator {
     }
 
     private static final class KeyInfo {
+        final List<String> fieldNames;
         final String typedParams;
         final String addKeys;
 
-        KeyInfo(String typedParams, String addKeys) {
+        KeyInfo(List<String> fields, String typedParams, String addKeys) {
+            this.fieldNames = fields;
             this.typedParams = typedParams;
             this.addKeys = addKeys;
         }
@@ -734,6 +746,12 @@ public final class Generator {
 
     private KeyInfo getKeyInfo(EntityType et, Imports imports) {
         KeyElement key = et.getFirstKey();
+        
+        List<String> fields = key //
+                .getPropertyRefs() //
+                .stream() //
+                .map(z -> z.getReferredProperty().getFieldName()) //
+                .collect(Collectors.toList()); 
 
         String typedParams = key //
                 .getPropertyRefs() //
@@ -756,7 +774,7 @@ public final class Generator {
                 }) //
                 .collect(Collectors.joining(", "));
         addKeys = ".addKeys(" + addKeys + ")";
-        return new KeyInfo(typedParams, addKeys);
+        return new KeyInfo(fields, typedParams, addKeys);
     }
 
     private void writeContainer(Schema schema, TEntityContainer t) {
