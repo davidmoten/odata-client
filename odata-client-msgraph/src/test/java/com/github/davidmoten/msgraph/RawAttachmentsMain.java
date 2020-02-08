@@ -46,11 +46,7 @@ public final class RawAttachmentsMain {
                 .map(x -> (ItemAttachment) x) //
                 .map(x -> {
                     try (InputStream in = x.getStream().get().get()) {
-                        int count = 0;
-                        while (in.read() != -1) {
-                            count++;
-                        }
-                        System.out.println("read " + count + " bytes");
+                        System.out.println(new String(Util.read(in)));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

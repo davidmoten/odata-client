@@ -189,7 +189,7 @@ public final class RequestHelper {
             // TODO support relative editLink?
             Context context = contextPath.context();
             if (!editLink.startsWith(HTTPS)) {
-                editLink = contextPath.context().service().getBasePath().toUrl() + editLink;
+                editLink = contextPath.context().service().getBasePath().toUrl() + "/" + editLink;
             }
             Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
             return Optional.of(new StreamProvider( //

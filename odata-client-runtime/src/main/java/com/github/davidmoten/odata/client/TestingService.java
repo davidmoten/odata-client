@@ -84,6 +84,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
+                    responses.entrySet().forEach(System.out::println);
                     String resourceName = responses.get(BuilderBase.toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url);
