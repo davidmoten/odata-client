@@ -346,7 +346,7 @@ public final class Generator {
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
             p.format("%sif (addKeysToContextPath%s) {\n", indent.right(), nullCheck);
-            p.format("%scontextPath = contextPath%s;\n", indent.right(), k.addKeys);
+            p.format("%scontextPath = contextPath.clearQueries()%s;\n", indent.right(), k.addKeys);
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 

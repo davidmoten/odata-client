@@ -5,7 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -91,6 +93,28 @@ public class GraphServiceTest {
         FileAttachment f = (FileAttachment) m;
         assertEquals(6762, f.getContentBytes().get().length);
         assertEquals("lamp_thin.png", f.getContentId().get());
+    }
+    
+    @Test
+    public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
+        GraphService client = serviceBuilder() //
+                .replyWithResource(
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
+                        "/response-messages-expand-attachments-minimal-metadata.json") //
+                .replyWithResource(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
+                        "/response-message-attachments.json") //
+                .build();
+        CollectionPageEntity<Message> messages = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .orderBy("createdDateTime") //
+                .metadataMinimal() //
+                .get();
+        Message m = messages.iterator().next();
+        assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().get().stream().map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
 
     @Test
