@@ -1,0 +1,19 @@
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/fred/mailFolders/Inbox/messages/86/attachments",
+	"value": [
+		{
+			"@odata.type": "#microsoft.graph.itemAttachment",
+			"@odata.id": "users/fred/mailFolders/Inbox/messages/86/attachments/123",
+			"@odata.editLink": "/users/fred/mailFolders/Inbox/messages/86/attachments/123/microsoft.graph.itemAttachment",
+			"id": "123",
+			"lastModifiedDateTime@odata.type": "#DateTimeOffset",
+			"lastModifiedDateTime": "2020-02-07T05:25:37Z",
+			"name": "Fred Nurk - Somewhere",
+			"contentType": null,
+			"size": 18697,
+			"isInline": false,
+			"item@odata.associationLink": "https://graph.microsoft.com/v1.0/users/fred/mailFolders/Inbox/messages86/attachments/123/microsoft.graph.itemAttachment/item/$ref",
+			"item@odata.navigationLink": "/users/fred/mailFolders/Inbox/messages/86/attachments/123/microsoft.graph.itemAttachment/item"
+		}
+	]
+}

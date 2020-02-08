@@ -5,6 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.FileAttachment;
+import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
@@ -116,7 +120,39 @@ public class GraphServiceTest {
         Message m = messages.iterator().next();
         assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().get().stream().map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
-
+    
+    @Test
+    public void testGetStreamOnItemAttachment() throws IOException {
+        GraphService client = serviceBuilder() //
+                .replyWithResource(
+                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
+                        "/response-messages-with-item-attachment.json") //
+                .replyWithResource("/users/fred/mailFolders/Inbox/messages/86/attachments",
+                        "/response-attachments.json") //
+                .replyWithResource(
+                        "/users/fred/mailFolders/Inbox/messages/86/attachments/123/microsoft.graph.ItemAttachment/%24value",
+                        "/response-item-attachment-raw.txt") //
+                .build();
+        CollectionPageEntity<Message> messages = client //
+                .users("fred") //
+                .mailFolders("Inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .orderBy("createdDateTime") //
+                .metadataMinimal() //
+                .get();
+        Message m = messages.iterator().next();
+        ItemAttachment a = (ItemAttachment) m //
+                .getAttachments() //
+                .metadataFull() //
+                .get() //
+                .stream() //
+                .findFirst() //
+                .get();
+        String s = new String(Util.read(a.getStream().get().get()));
+        assertEquals(53, s.length());
+    }
+    
     @Test
     public void testMailRead() {
 
