@@ -113,6 +113,9 @@ public final class EntityType extends Structure<TEntityType> {
     }
 
     public KeyElement getFirstKey() {
+        if (getKeys().isEmpty()) {
+            throw new IllegalStateException("Entity "+ getName() + " has no keys!");
+        }
         return getKeys().get(0);
     }
 

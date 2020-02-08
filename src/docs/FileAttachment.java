@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.StreamProvider;
@@ -138,7 +139,9 @@ public class FileAttachment extends Attachment implements ODataEntityType {
 
     @Override
     public void postInject(boolean addKeysToContextPath) {
-        // TODO add id field to contextpath as key;
+        if (addKeysToContextPath && id != null) {
+            contextPath = contextPath.addKeys(new NameValue(id.toString()));
+        }
     }
 
     public Optional<String> getContentId() {
