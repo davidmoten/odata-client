@@ -88,6 +88,10 @@ public class Path {
         map.put(key, value);
         return new Path(url, map, style);
     }
+    
+    public Path clearQueries() {
+        return new Path(url, Collections.emptyMap(), style);
+    }
 
     public String toUrl() {
         StringBuilder b = new StringBuilder();
