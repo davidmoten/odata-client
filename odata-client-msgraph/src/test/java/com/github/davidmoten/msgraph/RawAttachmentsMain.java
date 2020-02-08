@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 
@@ -30,16 +31,14 @@ public final class RawAttachmentsMain {
 
         inbox //
                 .messages() //
-                .filter("isRead eq false") //
-                .expand("attachments").get() //
+                .filter("isRead eq false and startsWith(subject, 'test contact')") //
+                // .expand("attachments")//
+                .get() //
                 .stream() //
                 .peek(x -> System.out.println(x.getSubject().orElse(""))) //
-                .peek( x-> x.getAttachments().get().stream().count()) //
-                .filter(x -> x.getSubject().orElse("").startsWith("test contact")) //
                 .flatMap(x -> {
                     System.out.println("Subject=" + x.getSubject().orElse(""));
-                    return inbox.messages(x.getId().get()) //
-                            .attachments().get().stream();
+                    return x.getAttachments().metadataFull().get().stream();
                 }) //
                 .peek(x -> System.out
                         .println(x.getClass().getSimpleName() + " " + x.getName().orElse("?")))
@@ -59,7 +58,7 @@ public final class RawAttachmentsMain {
                 })
                 .map(x -> x.getClass().getSimpleName() + ": " + x.getName().orElse("?")
                         + " of content type " + x.getContentType().orElse("?")) //
-                .forEach(System.out::println);
+                .findFirst();
 
     }
 

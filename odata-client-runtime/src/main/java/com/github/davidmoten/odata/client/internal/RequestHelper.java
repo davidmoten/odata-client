@@ -27,6 +27,7 @@ import com.github.davidmoten.odata.client.StreamProvider;
 
 public final class RequestHelper {
 
+    private static final String HTTPS = "https://";
     private static final String CONTENT_TYPE_APPLICATION_OCTET_STREAM = "application/octet-stream";
 
     private RequestHelper() {
@@ -107,7 +108,7 @@ public final class RequestHelper {
         String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         // TODO get patch working when editLink present (does not work with MsGraph)
         if (editLink != null && false) {
-            if (editLink.startsWith("https://") || editLink.startsWith("http://")) {
+            if (editLink.startsWith(HTTPS) || editLink.startsWith("http://")) {
                 url = editLink;
             } else {
                 // TOOD unit test relative url in editLink
@@ -187,6 +188,9 @@ public final class RequestHelper {
             }
             // TODO support relative editLink?
             Context context = contextPath.context();
+            if (!editLink.startsWith(HTTPS)) {
+                editLink = contextPath.context().service().getBasePath().toUrl() + editLink;
+            }
             Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
             return Optional.of(new StreamProvider( //
                     new ContextPath(context, path), //
