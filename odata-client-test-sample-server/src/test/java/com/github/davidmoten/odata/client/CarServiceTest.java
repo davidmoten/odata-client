@@ -51,29 +51,29 @@ public class CarServiceTest {
 
             // test patch
             // TODO HttpUrlConnection does not support PATCH verb
-            if (false) {
-                car.withPrice(BigDecimal.valueOf(123456)).patch();
-                car = c.cars().id("1").get();
-                assertEquals(123456, car.getPrice().get());
-            }
+//            if (false) {
+//                car.withPrice(BigDecimal.valueOf(123456)).patch();
+//                car = c.cars().id("1").get();
+//                assertEquals(123456, car.getPrice().get());
+//            }
 
             // test put
             // TODO implement update in CarServlet
-            if (false) {
-                car.withPrice(BigDecimal.valueOf(123)).put();
-                car = c.cars().id("1").get();
-                assertEquals(123, car.getPrice().get());
-            }
+//            if (false) {
+//                car.withPrice(BigDecimal.valueOf(123)).put();
+//                car = c.cars().id("1").get();
+//                assertEquals(123, car.getPrice().get());
+//            }
         }
 
         // create (post)
         // TODO support create in servlet
-        if (false) {
-            Car car2 = Car.builder().model("Tesla").modelYear("2018").price(BigDecimal.valueOf(50000)).currency("AUD")
-                    .build();
-            Car car = c.cars().post(car2);
-            System.out.println("newId = " + car.getId().get());
-        }
+//        if (false) {
+//            Car car2 = Car.builder().model("Tesla").modelYear("2018").price(BigDecimal.valueOf(50000)).currency("AUD")
+//                    .build();
+//            Car car = c.cars().post(car2);
+//            System.out.println("newId = " + car.getId().get());
+//        }
         return server;
     }
 
