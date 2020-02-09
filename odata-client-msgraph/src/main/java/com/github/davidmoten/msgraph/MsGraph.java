@@ -1,7 +1,9 @@
 package com.github.davidmoten.msgraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.config.RequestConfig;
@@ -117,7 +119,9 @@ public final class MsGraph {
                             .build();
                 }, //
                 m -> authenticate(m, accessTokenProvider));
-        return new GraphService(new Context(Serializer.INSTANCE, httpService));
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("modify.stream.edit.link", "true");
+        return new GraphService(new Context(Serializer.INSTANCE, httpService, properties));
     }
 
     public static List<RequestHeader> authenticate(List<RequestHeader> m,

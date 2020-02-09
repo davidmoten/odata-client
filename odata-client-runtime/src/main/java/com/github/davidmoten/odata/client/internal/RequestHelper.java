@@ -207,7 +207,7 @@ public final class RequestHelper {
                 editLink = contextPath.context().service().getBasePath().toUrl() + "/" + editLink;
             }
             if ("true".equals(
-                    contextPath.context().getProperty("microsoft.graph.modify.stream.edit.link"))) {
+                    contextPath.context().getProperty("modify.stream.edit.link"))) {
                 // Bug fix for Microsoft Graph only?
                 // When a collection is returned the editLink is terminated with the subclass if
                 // the collection type has subclasses. For example when a collection of
