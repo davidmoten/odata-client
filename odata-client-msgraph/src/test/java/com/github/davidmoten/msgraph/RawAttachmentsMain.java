@@ -31,14 +31,11 @@ public final class RawAttachmentsMain {
 //            System.exit(0);
 //        }
 
-        MailFolderRequest inbox = client //
+        client //
                 .users(mailbox) //
-                .mailFolders("Inbox");
-
-        inbox //
+                .mailFolders("Inbox") //
                 .messages() //
                 .filter("isRead eq false and startsWith(subject, 'test contact')") //
-                // .expand("attachments")//
                 .get() //
                 .stream() //
                 .peek(x -> System.out.println(x.getSubject().orElse(""))) //
@@ -48,6 +45,19 @@ public final class RawAttachmentsMain {
                 .map(x -> x.getStream().get().getStringUtf8()) //
                 .peek(System.out::println) //
                 .findFirst();
+
+        client //
+                .users(mailbox) //
+                .mailFolders("Inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .get() //
+                .stream() //
+                .filter(x -> x.getHasAttachments().orElse(false)) //
+                .peek(x -> System.out.println("Subject: " + x.getSubject().orElse(""))) //
+                .flatMap(x -> x.getAttachments().get().stream()) //
+                .peek(x -> System.out.println("  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
+                .count();
 
     }
 
