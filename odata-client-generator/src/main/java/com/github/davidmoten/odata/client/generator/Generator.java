@@ -41,6 +41,7 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
+import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
@@ -811,7 +812,16 @@ public final class Generator {
             p.format("%sthis.contextPath = new %s(context, context.service().getBasePath());\n", indent.right(),
                     imports.add(ContextPath.class));
             p.format("%s}\n", indent.left());
+            
+            p.format("\n%spublic %s _context() {\n", indent, imports.add(Context.class));
+            p.format("%sreturn contextPath.context();\n", indent.right());
+            p.format("%s}\n", indent.left());
 
+            p.format("\n%spublic %s _service() {\n", indent, imports.add(HttpService.class));
+            p.format("%sreturn contextPath.context().service();\n", indent.right());
+            p.format("%s}\n", indent.left());
+
+            
             // write static testing method
             p.format("\n%sstatic final class ContainerBuilderImpl extends %s<%s> {\n", indent,
                     imports.add(ContainerBuilder.class), simpleClassName);
