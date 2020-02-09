@@ -112,6 +112,11 @@ public class CollectionPageTest {
         public void postInject(boolean addKeysToContextPath) {
             //do nothing
         }
+
+        @Override
+        public String odataTypeName() {
+            return "person";
+        }
     }
 
 }

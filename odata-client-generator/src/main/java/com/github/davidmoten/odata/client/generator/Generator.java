@@ -288,7 +288,12 @@ public final class Generator {
                 addUnmappedFieldsField(imports, indent, p);
                 addChangedFieldsField(imports, indent, p);
             }
-
+            
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic String odataTypeName() {\n", indent);
+            p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
+            p.format("%s}\n", indent.left());
+            
             // add other fields
             printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
 
@@ -558,6 +563,12 @@ public final class Generator {
             }
 
             addUnmappedFieldsField(imports, indent, p);
+            
+
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic String odataTypeName() {\n", indent);
+            p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
+            p.format("%s}\n", indent.left());
 
             // write fields from properties
             printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
