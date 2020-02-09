@@ -204,7 +204,7 @@ public final class RequestHelper {
             Context context = contextPath.context();
             if (!editLink.startsWith(HTTPS)) {
                 // TODO should use the base path from @odata.context field?
-                editLink = contextPath.context().service().getBasePath().toUrl() + "/" + editLink;
+                editLink = contextPath.context().service().getBasePath().toUrl() + editLink;
             }
             if ("true".equals(
                     contextPath.context().getProperty("modify.stream.edit.link"))) {

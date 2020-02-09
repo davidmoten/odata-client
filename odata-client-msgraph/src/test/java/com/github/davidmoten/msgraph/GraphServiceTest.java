@@ -130,7 +130,7 @@ public class GraphServiceTest {
                 .replyWithResource("/users/fred/mailFolders/Inbox/messages/86/attachments",
                         "/response-attachments.json") //
                 .replyWithResource(
-                        "/users/fred/mailFolders/Inbox/messages/86/attachments/123/microsoft.graph.ItemAttachment/%24value",
+                        "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
                 .build();
         CollectionPageEntity<Message> messages = client //
@@ -150,7 +150,7 @@ public class GraphServiceTest {
                 .findFirst() //
                 .get();
         String s = new String(Util.read(a.getStream().get().get()));
-        assertEquals(53, s.length());
+        assertEquals(60, s.length());
     }
 
     @Test
@@ -239,7 +239,8 @@ public class GraphServiceTest {
         return GraphService //
                 .test() //
                 .baseUrl("https://graph.microsoft.com/v1.0") //
-                .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS);
+                .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
+                .addProperty("modify.stream.edit.link", "true");
     }
 
     private static GraphService createClient(String path, String resource) {
