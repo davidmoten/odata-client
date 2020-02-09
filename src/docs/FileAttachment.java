@@ -198,6 +198,16 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return unmappedFields == null ? new UnmappedFields() : unmappedFields;
     }
 
+    /**
+     * If suitable metadata found a StreamProvider is returned otherwise returns
+     * {@code Optional.empty()}. Normally for a stream to be available this entity
+     * needs to have been hydrated with full metadata. Consider calling the builder
+     * method {@code .metadataFull()} when getting this instance (either directly or
+     * as part of a collection).
+     *
+     * @return StreamProvider if suitable metadata found otherwise returns
+     *         {@code Optional.empty()}
+     */
     public Optional<StreamProvider> getStream() {
         return RequestHelper.createStream(contextPath, this);
     }
