@@ -204,7 +204,7 @@ public final class RequestHelper {
             Context context = contextPath.context();
             if (!editLink.startsWith(HTTPS)) {
                 // TODO should use the base path from @odata.context field?
-                editLink = contextPath.context().service().getBasePath().toUrl() + editLink;
+                editLink = concatenate(contextPath.context().service().getBasePath().toUrl(), editLink);
             }
             if ("true".equals(
                     contextPath.context().getProperty("modify.stream.edit.link"))) {
@@ -226,6 +226,25 @@ public final class RequestHelper {
                     contentType, //
                     null));
         }
+    }
+
+    // concatenate two url parts making sure there is a / delimiter
+    private static String concatenate(String a, String b) {
+        StringBuilder s = new StringBuilder();
+        s.append(a);
+        if (a.endsWith("/")) {
+            if (b.startsWith("/")) {
+                s.append(b, 1, b.length());
+            } else {
+                s.append(b);
+            }
+        } else {
+            if (!b.startsWith("/")) {
+                s.append('/');
+            }
+            s.append(b);
+        }
+        return s.toString();
     }
 
     public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath,
