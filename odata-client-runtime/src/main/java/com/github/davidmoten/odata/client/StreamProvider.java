@@ -1,6 +1,9 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
@@ -33,6 +36,19 @@ public final class StreamProvider {
     public InputStream get() {
         return RequestHelper.getStream(contextPath, options, base64);
     }
+    
+    public byte[] getBytes() {
+        try (InputStream in = get()) {
+            return Util.toByteArray(in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+    
+    public String getStringUtf8() {
+        return new String(getBytes(), StandardCharsets.UTF_8);
+    }
+    
 
     /**
      * Returns the HTTP <i>ContentType</i> for the content delivered by
