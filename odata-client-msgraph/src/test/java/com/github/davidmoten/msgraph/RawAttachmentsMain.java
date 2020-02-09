@@ -1,7 +1,9 @@
 package com.github.davidmoten.msgraph;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 
 import odata.msgraph.client.container.GraphService;
@@ -25,10 +27,9 @@ public final class RawAttachmentsMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
 
-        if (true) {
+        if (false) {
             String url = "https://graph.microsoft.com/v1.0/users('dnex001%40amsa.gov.au')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAJiKY2F6di02zkDDZ7TpVag%3D%3D')/$value";
-            String s = new String(client._service().getBytes(url));
-            System.out.println(url + "\n->\n" + s);
+            System.out.println(url + "\n->\n" + client._service().getStringUtf8(url));
             System.exit(0);
         }
 
@@ -53,7 +54,8 @@ public final class RawAttachmentsMain {
                 .map(x -> (ItemAttachment) x) //
                 .map(x -> {
                     try (InputStream in = x.getStream().get().get()) {
-                        System.out.println(new String(Util.read(in)));
+                        byte[] b = Util.read(in);
+                        System.out.println(new String(b));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

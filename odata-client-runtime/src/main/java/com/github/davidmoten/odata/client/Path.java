@@ -42,7 +42,7 @@ public class Path {
         u = append(u, segment);
         return new Path(u, queries, style);
     }
-
+    
     private static String addSegmentDelimiter(String url) {
         if (url.charAt(url.length() - 1) != '/') {
             return url + '/';
