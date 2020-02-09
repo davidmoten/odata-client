@@ -177,8 +177,9 @@ public final class RequestHelper {
     }
 
     // for HasStream case (only for entities, not for complexTypes)
-    public static Optional<StreamProvider> createStream(ContextPath contextPath, ODataEntityType entity) {
-        String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
+    public static Optional<StreamProvider> createStream(ContextPath contextPath,
+            ODataEntityType entity) {
+        String editLink = (String) entity.getUnmappedFields().get("@odata.mediaEditLink");
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         if (editLink == null) {
             return Optional.empty();
@@ -191,6 +192,16 @@ public final class RequestHelper {
             if (!editLink.startsWith(HTTPS)) {
                 // TODO should use the base path from @odata.context field?
                 editLink = contextPath.context().service().getBasePath().toUrl() + "/" + editLink;
+            }
+            // Bug fix for Microsoft Graph only?
+            // When a collection is returned the editLink is terminated with the subclass if
+            // the collection type has subclasses. For example when a collection of
+            // Attachment (with full metadata) is requested the editLink of an individual
+            // attachment may end in /itemAttachment to indicate the type of the attachment.
+            // To get the $value download working we need to remove that typing.
+            if (editLink.endsWith("/" + entity.odataTypeName())) {
+                editLink = editLink.substring(0,
+                        editLink.length() - entity.odataTypeName().length() - 1);
             }
             Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
             return Optional.of(new StreamProvider( //

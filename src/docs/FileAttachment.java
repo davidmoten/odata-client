@@ -26,6 +26,11 @@ import microsoft.graph.generated.schema.SchemaInfo;
     "contentBytes"})
 public class FileAttachment extends Attachment implements ODataEntityType {
 
+    @Override
+    public String odataTypeName() {
+        return "microsoft.graph.fileAttachment";
+    }
+
     @JsonProperty("contentId")
     protected String contentId;
 

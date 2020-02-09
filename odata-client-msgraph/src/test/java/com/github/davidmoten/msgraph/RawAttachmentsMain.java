@@ -24,9 +24,13 @@ public final class RawAttachmentsMain {
                 .clientSecret(clientSecret) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
-        
-        String url = "https://graph.microsoft.com/v1.0/users('dnex001%40amsa.gov.au')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAw4bD-4zlQU6w6BfPB2GjFQ%3D%3D')/microsoft.graph.fileAttachment/%24value";
-        
+
+        if (true) {
+            String url = "https://graph.microsoft.com/v1.0/users('dnex001%40amsa.gov.au')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAJiKY2F6di02zkDDZ7TpVag%3D%3D')/$value";
+            String s = new String(client._service().getBytes(url));
+            System.out.println(url + "\n->\n" + s);
+            System.exit(0);
+        }
 
         MailFolderRequest inbox = client //
                 .users(mailbox) //

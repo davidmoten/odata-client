@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -21,6 +22,18 @@ public interface HttpService extends AutoCloseable {
     InputStream getStream(String url, List<RequestHeader> requestHeaders);
 
     Path getBasePath();
+    
+    default HttpResponse get(String url) {
+        return get(url, Collections.emptyList());
+    }
+    
+    default InputStream getStream(String url) {
+        return getStream(url, Collections.emptyList());
+    }
+    
+    default byte[] getBytes(String url) {
+        return Util.toByteArray(getStream(url));
+    }
 
     public static HttpService createDefaultService(Path path,
             Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
