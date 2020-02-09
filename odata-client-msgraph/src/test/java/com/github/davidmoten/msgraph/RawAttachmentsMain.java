@@ -2,6 +2,7 @@ package com.github.davidmoten.msgraph;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import odata.msgraph.client.container.GraphService;
@@ -44,15 +45,8 @@ public final class RawAttachmentsMain {
                 .flatMap(x -> x.getAttachments().metadataFull().get().stream()) //
                 .filter(x -> x instanceof ItemAttachment) //
                 .map(x -> (ItemAttachment) x) //
-                .map(x -> {
-                    try (InputStream in = x.getStream().get().get()) {
-                        byte[] b = Util.read(in);
-                        System.out.println(new String(b));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return x;
-                })
+                .map(x -> x.getStream().get().getStringUtf8()) //
+                .peek(System.out::println) //
                 .findFirst();
 
     }
