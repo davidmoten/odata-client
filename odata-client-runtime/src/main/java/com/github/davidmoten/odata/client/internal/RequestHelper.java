@@ -34,7 +34,8 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T> T get(ContextPath contextPath, Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
+    public static <T> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
+            SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -50,8 +51,8 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
 
-    public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath, Class<T> cls,
-            RequestOptions options, SchemaInfo schemaInfo) {
+    public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath,
+            Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -64,19 +65,21 @@ public final class RequestHelper {
 
         // deserialize
         if (response.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-            throw new RuntimeException("Returned response code " + response.getResponseCode() + " from url="
-                    + cp.toUrl() + ", expected 204 (NO_CONTENT)");
+            throw new RuntimeException("Returned response code " + response.getResponseCode()
+                    + " from url=" + cp.toUrl() + ", expected 204 (NO_CONTENT)");
         }
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText(HttpURLConnection.HTTP_CREATED));
+        Class<? extends T> c = getSubClass(cp, schemaInfo, cls,
+                response.getText(HttpURLConnection.HTTP_CREATED));
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath, false);
+        return cp.context().serializer().deserialize(
+                response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath, false);
     }
 
-    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath, RequestOptions options,
-            SchemaInfo schemaInfo) {
+    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
+            RequestOptions options, SchemaInfo schemaInfo) {
         return patch(entity, contextPath, options, schemaInfo, false);
     }
 
@@ -84,18 +87,18 @@ public final class RequestHelper {
         String url = cp.toUrl();
         HttpResponse response = cp.context().service().delete(url, options.getRequestHeaders());
         if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
-            throw new ClientException("Returned response code " + response.getResponseCode() + " from DELETE to url="
-                    + url + ", expected 204 (NO_CONTENT)");
+            throw new ClientException("Returned response code " + response.getResponseCode()
+                    + " from DELETE to url=" + url + ", expected 204 (NO_CONTENT)");
         }
     }
 
-    public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath, RequestOptions options,
-            SchemaInfo schemaInfo) {
+    public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath,
+            RequestOptions options, SchemaInfo schemaInfo) {
         return patch(entity, contextPath, options, schemaInfo, true);
     }
 
-    private static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath, RequestOptions options,
-            SchemaInfo schemaInfo, boolean usePUT) {
+    private static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
+            RequestOptions options, SchemaInfo schemaInfo, boolean usePUT) {
 
         String json = Serializer.INSTANCE.serializeChangesOnly(entity);
 
@@ -148,31 +151,38 @@ public final class RequestHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo, Class<T> cls, String json) {
-        Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
+    public static <T> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
+            Class<T> cls, String json) {
+        Optional<String> namespacedType = cp.context().serializer().getODataType(json)
+                .map(x -> x.substring(1));
 
         if (namespacedType.isPresent()) {
-            return (Class<? extends T>) schemaInfo.getClassFromTypeWithNamespace(namespacedType.get());
+            return (Class<? extends T>) schemaInfo
+                    .getClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }
     }
 
-    private static List<RequestHeader> supplementRequestHeaders(RequestOptions options, String odataMetadataValue) {
+    private static List<RequestHeader> supplementRequestHeaders(RequestOptions options,
+            String odataMetadataValue) {
         List<RequestHeader> h = new ArrayList<>();
         h.add(new RequestHeader("OData-Version", "4.0"));
-        h.add(new RequestHeader("Content-Type", "application/json;odata.metadata=" + odataMetadataValue));
+        h.add(new RequestHeader("Content-Type",
+                "application/json;odata.metadata=" + odataMetadataValue));
         h.add(new RequestHeader("Accept", "application/json"));
         h.addAll(options.getRequestHeaders());
         return h;
     }
 
-    public static InputStream getStream(ContextPath contextPath, RequestOptions options, String base64) {
+    public static InputStream getStream(ContextPath contextPath, RequestOptions options,
+            String base64) {
         if (base64 != null) {
             return new ByteArrayInputStream(Base64.getDecoder().decode(base64));
         } else {
             ContextPath cp = contextPath.addQueries(options.getQueries());
-            return contextPath.context().service().getStream(cp.toUrl(), options.getRequestHeaders());
+            return contextPath.context().service().getStream(cp.toUrl(),
+                    options.getRequestHeaders());
         }
     }
 
@@ -180,6 +190,9 @@ public final class RequestHelper {
     public static Optional<StreamProvider> createStream(ContextPath contextPath,
             ODataEntityType entity) {
         String editLink = (String) entity.getUnmappedFields().get("@odata.mediaEditLink");
+        if (editLink == null) {
+            editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
+        }
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         if (editLink == null) {
             return Optional.empty();
@@ -193,15 +206,18 @@ public final class RequestHelper {
                 // TODO should use the base path from @odata.context field?
                 editLink = contextPath.context().service().getBasePath().toUrl() + "/" + editLink;
             }
-            // Bug fix for Microsoft Graph only?
-            // When a collection is returned the editLink is terminated with the subclass if
-            // the collection type has subclasses. For example when a collection of
-            // Attachment (with full metadata) is requested the editLink of an individual
-            // attachment may end in /itemAttachment to indicate the type of the attachment.
-            // To get the $value download working we need to remove that typing.
-            if (editLink.endsWith("/" + entity.odataTypeName())) {
-                editLink = editLink.substring(0,
-                        editLink.length() - entity.odataTypeName().length() - 1);
+            if ("true".equals(
+                    contextPath.context().getProperty("microsoft.graph.modify.stream.edit.link"))) {
+                // Bug fix for Microsoft Graph only?
+                // When a collection is returned the editLink is terminated with the subclass if
+                // the collection type has subclasses. For example when a collection of
+                // Attachment (with full metadata) is requested the editLink of an individual
+                // attachment may end in /itemAttachment to indicate the type of the attachment.
+                // To get the $value download working we need to remove that typing.
+                if (editLink.endsWith("/" + entity.odataTypeName())) {
+                    editLink = editLink.substring(0,
+                            editLink.length() - entity.odataTypeName().length() - 1);
+                }
             }
             Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
             return Optional.of(new StreamProvider( //
@@ -212,11 +228,12 @@ public final class RequestHelper {
         }
     }
 
-    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath, ODataType item,
-            String fieldName, String base64) {
+    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath,
+            ODataType item, String fieldName, String base64) {
         Preconditions.checkNotNull(fieldName);
         String readLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaReadLink");
-        String contentType = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaContentType");
+        String contentType = (String) item.getUnmappedFields()
+                .get(fieldName + "@odata.mediaContentType");
         if (readLink == null && base64 != null) {
             return Optional.empty();
         } else {
