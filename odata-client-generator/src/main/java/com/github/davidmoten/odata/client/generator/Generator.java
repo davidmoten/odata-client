@@ -1030,7 +1030,7 @@ public final class Generator {
                     p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName);
                 });
         if (!fields.isEmpty()) {
-             p.format("%sprivate %s changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class),
+             p.format("%sprivate %s changedFields = new %s();\n", indent, imports.add(ChangedFields.class),
                     imports.add(ChangedFields.class));
         }
 
@@ -1055,14 +1055,14 @@ public final class Generator {
                     .map(f -> ", " + f.fieldName) //
                     .collect(Collectors.joining());
             if (t instanceof EntityType) {
-                p.format("%sreturn new %s(null, changedFields, %s.EMPTY, \"%s\"%s);\n", //
+                p.format("%sreturn new %s(null, changedFields, new %s(), \"%s\"%s);\n", //
                         indent.right(), //
                         simpleClassName, //
                         imports.add(UnmappedFields.class), //
                         t.getFullType(), //
                         builderProps);
             } else {
-                p.format("%sreturn new %s(null, %s.EMPTY, \"%s\"%s);\n", //
+                p.format("%sreturn new %s(null, new %s(), \"%s\"%s);\n", //
                         indent.right(), //
                         simpleClassName, //
                         imports.add(UnmappedFields.class), //
@@ -1076,7 +1076,7 @@ public final class Generator {
             if (t instanceof EntityType) {
                 p.format("%s_x.changedFields = changedFields;\n", indent);
             }
-            p.format("%s_x.unmappedFields = %s.EMPTY;\n", indent, imports.add(UnmappedFields.class));
+            p.format("%s_x.unmappedFields = new %s();\n", indent, imports.add(UnmappedFields.class));
             p.format("%s_x.odataType = \"%s\";\n", indent, t.getFullType());
             fields.stream().map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName))
                     .forEach(p::print);
@@ -1107,7 +1107,7 @@ public final class Generator {
 
         p.format("\n%s@%s\n", indent, imports.add(Override.class));
         p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
-        p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
+        p.format("%sreturn unmappedFields == null ? new %s() : unmappedFields;\n", indent.right(),
                 imports.add(UnmappedFields.class));
         p.format("%s}\n", indent.left());
     }

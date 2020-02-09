@@ -12,8 +12,6 @@ import java.util.stream.StreamSupport;
  */
 public final class ChangedFields implements Iterable<String> {
 
-    public static final ChangedFields EMPTY = new ChangedFields();
-
     private final Set<String> set;
 
     private ChangedFields(Set<String> set) {

@@ -58,7 +58,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         private String contentId;
         private String contentLocation;
         private byte[] contentBytes;
-        private ChangedFields changedFields = ChangedFields.EMPTY;
+        private ChangedFields changedFields = new ChangedFields();
 
         Builder() {
             // prevent instantiation
@@ -122,7 +122,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
             FileAttachment _x = new FileAttachment();
             _x.contextPath = null;
             _x.changedFields = changedFields;
-            _x.unmappedFields = UnmappedFields.EMPTY;
+            _x.unmappedFields = new UnmappedFields();
             _x.odataType = "microsoft.graph.fileAttachment";
             _x.id = id;
             _x.lastModifiedDateTime = lastModifiedDateTime;
@@ -195,7 +195,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
 
     @Override
     public UnmappedFields getUnmappedFields() {
-        return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
+        return unmappedFields == null ? new UnmappedFields() : unmappedFields;
     }
 
     public Optional<StreamProvider> getStream() {

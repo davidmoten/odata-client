@@ -5,9 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +70,8 @@ public class GraphServiceTest {
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
-        assertEquals(Sets.newHashSet("@odata.etag","@odata.context") ,m.getUnmappedFields().keySet());
+        assertEquals(Sets.newHashSet("@odata.etag", "@odata.context"),
+                m.getUnmappedFields().keySet());
         assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
                 m.getUnmappedFields().get("@odata.etag"));
         assertEquals(
@@ -98,7 +97,7 @@ public class GraphServiceTest {
         assertEquals(6762, f.getContentBytes().get().length);
         assertEquals("lamp_thin.png", f.getContentId().get());
     }
-    
+
     @Test
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
         GraphService client = serviceBuilder() //
@@ -118,9 +117,10 @@ public class GraphServiceTest {
                 .metadataMinimal() //
                 .get();
         Message m = messages.iterator().next();
-        assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().get().stream().map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
+        assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().get().stream()
+                .map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
-    
+
     @Test
     public void testGetStreamOnItemAttachment() throws IOException {
         GraphService client = serviceBuilder() //
@@ -152,7 +152,30 @@ public class GraphServiceTest {
         String s = new String(Util.read(a.getStream().get().get()));
         assertEquals(53, s.length());
     }
-    
+
+    @Test
+    public void testUnmappedFields() {
+        GraphService client = serviceBuilder() //
+                .replyWithResource("/users/fred/mailFolders/inbox/messages/1",
+                        "/response-message-has-item-attachment.json") //
+                .replyWithResource("/users/fred/mailFolders/inbox/messages/1/attachments",
+                        "/response-attachments-includes-item.json") //
+                .build();
+        Attachment a = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages("1") //
+                .metadataFull() //
+                .get() //
+                .getAttachments() //
+                .get() //
+                .stream() //
+                .findFirst() //
+                .get();
+        String editLink = a.getUnmappedFields().get("@odata.editLink").toString();
+        assertEquals("editLink1", editLink);
+    }
+
     @Test
     public void testMailRead() {
 

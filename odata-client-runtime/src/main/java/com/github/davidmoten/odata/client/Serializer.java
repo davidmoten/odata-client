@@ -46,8 +46,8 @@ public final class Serializer {
                 ObjectMapper m = createObjectMapper();
                 Std iv = new InjectableValues.Std() //
                         .addValue(ContextPath.class, contextPath) //
-                        .addValue(ChangedFields.class, ChangedFields.EMPTY) //
-                        .addValue(UnmappedFields.class, UnmappedFields.EMPTY);
+                        .addValue(ChangedFields.class, new ChangedFields()) //
+                        .addValue(UnmappedFields.class, new UnmappedFields());
                 m.setInjectableValues(iv);
                 T t = m.readValue(text, cls);
                 if (t instanceof ODataType) {

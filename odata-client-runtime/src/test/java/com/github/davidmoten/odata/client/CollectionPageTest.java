@@ -105,7 +105,7 @@ public class CollectionPageTest {
 
         @Override
         public ChangedFields getChangedFields() {
-            return ChangedFields.EMPTY;
+            return new ChangedFields();
         }
 
         @Override
