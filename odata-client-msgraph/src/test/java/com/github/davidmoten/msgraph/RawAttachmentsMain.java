@@ -1,13 +1,9 @@
 package com.github.davidmoten.msgraph;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.ItemAttachment;
-import odata.msgraph.client.entity.request.MailFolderRequest;
 
 public final class RawAttachmentsMain {
 
