@@ -183,9 +183,10 @@ public final class MsGraphAccessTokenProvider {
          * the access token will be performed. If this value is not set then the access
          * token is refreshed on every call of {@code get()}.
          * 
-         * @param duration
-         * @param unit
-         * @return
+         * @param duration duration before expiry time after which point a refresh will
+         *                 be run (on next authentication attempt)
+         * @param unit     time unit for the duration
+         * @return builder
          */
         public Builder3 refreshBeforeExpiry(long duration, TimeUnit unit) {
             b.refreshBeforeExpiryMs = unit.toMillis(duration);
