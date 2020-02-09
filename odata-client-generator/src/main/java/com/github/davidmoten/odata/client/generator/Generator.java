@@ -327,7 +327,17 @@ public final class Generator {
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             if (t.hasStream()) {
-                p.format("\n%spublic %s<%s> getStream() {\n", indent, imports.add(Optional.class),
+                p.format("\n%s/**\n", indent);
+                p.format("%s * If suitable metadata found a StreamProvider is returned otherwise returns\n", indent);
+                p.format("%s * {@code Optional.empty()}. Normally for a stream to be available this entity\n", indent);
+                p.format("%s * needs to have been hydrated with full metadata. Consider calling the builder\n", indent);
+                p.format("%s * method {@code .metadataFull()} when getting this instance (either directly or\n", indent);
+                p.format("%s * as part of a collection).\n", indent);
+                p.format("%s *\n", indent); 
+                p.format("%s * @return StreamProvider if suitable metadata found otherwise returns\n", indent);
+                p.format("%s *         {@code Optional.empty()}\n", indent);
+                p.format("%s */\n", indent);
+                p.format("%spublic %s<%s> getStream() {\n", indent, imports.add(Optional.class),
                         imports.add(StreamProvider.class));
                 p.format("%sreturn %s.createStream(contextPath, this);\n", indent.right(),
                         imports.add(RequestHelper.class));

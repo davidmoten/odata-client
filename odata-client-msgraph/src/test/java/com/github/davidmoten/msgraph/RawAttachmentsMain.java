@@ -41,12 +41,7 @@ public final class RawAttachmentsMain {
                 .get() //
                 .stream() //
                 .peek(x -> System.out.println(x.getSubject().orElse(""))) //
-                .flatMap(x -> {
-                    System.out.println("Subject=" + x.getSubject().orElse(""));
-                    return x.getAttachments().metadataFull().get().stream();
-                }) //
-                .peek(x -> System.out
-                        .println(x.getClass().getSimpleName() + " " + x.getName().orElse("?")))
+                .flatMap(x -> x.getAttachments().metadataFull().get().stream()) //
                 .filter(x -> x instanceof ItemAttachment) //
                 .map(x -> (ItemAttachment) x) //
                 .map(x -> {
@@ -58,8 +53,6 @@ public final class RawAttachmentsMain {
                     }
                     return x;
                 })
-                .map(x -> x.getClass().getSimpleName() + ": " + x.getName().orElse("?")
-                        + " of content type " + x.getContentType().orElse("?")) //
                 .findFirst();
 
     }
