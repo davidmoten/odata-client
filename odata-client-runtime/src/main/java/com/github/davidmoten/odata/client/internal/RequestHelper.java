@@ -204,10 +204,10 @@ public final class RequestHelper {
             Context context = contextPath.context();
             if (!editLink.startsWith(HTTPS)) {
                 // TODO should use the base path from @odata.context field?
-                editLink = concatenate(contextPath.context().service().getBasePath().toUrl(), editLink);
+                editLink = concatenate(contextPath.context().service().getBasePath().toUrl(),
+                        editLink);
             }
-            if ("true".equals(
-                    contextPath.context().getProperty("modify.stream.edit.link"))) {
+            if ("true".equals(contextPath.context().getProperty("modify.stream.edit.link"))) {
                 // Bug fix for Microsoft Graph only?
                 // When a collection is returned the editLink is terminated with the subclass if
                 // the collection type has subclasses. For example when a collection of
@@ -219,7 +219,10 @@ public final class RequestHelper {
                             editLink.length() - entity.odataTypeName().length() - 1);
                 }
             }
-            Path path = new Path(editLink, contextPath.path().style()).addSegment("$value");
+            Path path = new Path(editLink, contextPath.path().style());
+            if (!path.toUrl().endsWith("/$value")) {
+                path = path.addSegment("$value");
+            }
             return Optional.of(new StreamProvider( //
                     new ContextPath(context, path), //
                     RequestOptions.EMPTY, //
