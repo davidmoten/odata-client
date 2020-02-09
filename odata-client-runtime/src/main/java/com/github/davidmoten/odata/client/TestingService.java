@@ -185,10 +185,17 @@ public final class TestingService {
     public static abstract class ContainerBuilder<T> extends BuilderBase<ContainerBuilder<T>, T> {
 
         public abstract T _create(Context context);
+        
+        private Map<String, Object> properties= new HashMap<>();
 
         @Override
         public T build() {
-            return _create(new Context(Serializer.INSTANCE, createService()));
+            return _create(new Context(Serializer.INSTANCE, createService(), properties));
+        }
+
+        public ContainerBuilder<T> addProperty(String name, Object value) {
+            properties.put(name, value);
+            return this;
         }
 
     }
