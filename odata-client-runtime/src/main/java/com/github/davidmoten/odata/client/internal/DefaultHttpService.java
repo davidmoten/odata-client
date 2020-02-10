@@ -128,6 +128,7 @@ public final class DefaultHttpService implements HttpService {
             }
             c.setDoInput(true);
             c.setDoOutput(false);
+            // TODO check error code and throw message read from input stream
             return c.getInputStream();
         } catch (IOException e) {
             throw new ClientException(e);
