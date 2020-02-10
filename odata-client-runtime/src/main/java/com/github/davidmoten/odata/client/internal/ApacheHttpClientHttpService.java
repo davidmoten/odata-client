@@ -143,7 +143,7 @@ public class ApacheHttpClientHttpService implements HttpService {
             };
             if (statusCode < 400) {
                 String msg = Util.readString(in, StandardCharsets.UTF_8);
-                throw new ClientException(msg);
+                throw new ClientException("getStream returned HTTP " + statusCode + "\n" + msg);
             } else {
                 return in;
             }
