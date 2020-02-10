@@ -115,6 +115,7 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     @Override
     public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+        // note follow redirects by default
         HttpGet request = new HttpGet(url);
         log.debug("{} from url {}", request.getMethod(), request.getURI());
         for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
@@ -141,7 +142,7 @@ public class ApacheHttpClientHttpService implements HttpService {
                     }
                 }
             };
-            if (statusCode < 400) {
+            if (!isOk(statusCode)) {
                 String msg = Util.readString(in, StandardCharsets.UTF_8);
                 throw new ClientException("getStream returned HTTP " + statusCode + "\n" + msg);
             } else {
@@ -150,6 +151,10 @@ public class ApacheHttpClientHttpService implements HttpService {
         } catch (IOException e) {
             throw new ClientException(e);
         }
+    }
+    
+    private static boolean isOk(int statusCode) {
+        return statusCode >= 200 && statusCode < 300;
     }
 
 }
