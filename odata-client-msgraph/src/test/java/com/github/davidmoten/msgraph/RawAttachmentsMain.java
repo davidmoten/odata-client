@@ -27,6 +27,24 @@ public final class RawAttachmentsMain {
 //            System.exit(0);
 //        }
 
+        System.out.println(client.sites("root").get().getDisplayName());
+
+        System.exit(0);
+        // test raw value of service
+//        String s = client.users(mailbox) //
+//                .mailFolders("Inbox") //
+//                .messages() //
+//                .filter("isRead eq false") //
+//                .metadataFull() //
+//                .get() //
+//                .stream() //
+//                .findFirst() //
+//                .get() //
+//                .getStream() //
+//                .get() //
+//                .getStringUtf8();
+//        System.out.println(s);
+
         client //
                 .users(mailbox) //
                 .mailFolders("Inbox") //
@@ -41,7 +59,6 @@ public final class RawAttachmentsMain {
                 .map(x -> x.getStream().get().getStringUtf8()) //
                 .peek(System.out::println) //
                 .findFirst();
-
         client //
                 .users(mailbox) //
                 .mailFolders("Inbox") //
@@ -52,7 +69,8 @@ public final class RawAttachmentsMain {
                 .filter(x -> x.getHasAttachments().orElse(false)) //
                 .peek(x -> System.out.println("Subject: " + x.getSubject().orElse(""))) //
                 .flatMap(x -> x.getAttachments().get().stream()) //
-                .peek(x -> System.out.println("  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
+                .peek(x -> System.out.println(
+                        "  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
                 .count();
 
     }
