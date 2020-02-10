@@ -202,3 +202,4 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support TypeDefinition
 * only generate classes that are actually used (e.g. Collection classes)
 * implement `CollectionPageNonEntity`
+* remove context property "modify.stream.edit.link" from MsGraph client once they support their own @odata.mediaEditLink!
