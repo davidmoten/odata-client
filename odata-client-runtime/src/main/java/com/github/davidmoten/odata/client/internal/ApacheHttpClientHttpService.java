@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
@@ -122,9 +123,10 @@ public class ApacheHttpClientHttpService implements HttpService {
         try {
             log.debug("executing request");
             final CloseableHttpResponse response = client.execute(request);
+            int statusCode = response.getStatusLine().getStatusCode();
             log.debug("executed request, code={}", response.getStatusLine().getStatusCode());
             InputStream is = response.getEntity().getContent();
-            return new InputStream() {
+            InputStream in = new InputStream() {
                 @Override
                 public int read() throws IOException {
                     return is.read();
@@ -139,6 +141,12 @@ public class ApacheHttpClientHttpService implements HttpService {
                     }
                 }
             };
+            if (statusCode < 400) {
+                String msg = Util.readString(in, StandardCharsets.UTF_8);
+                throw new ClientException(msg);
+            } else {
+                return in;
+            }
         } catch (IOException e) {
             throw new ClientException(e);
         }
