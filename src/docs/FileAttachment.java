@@ -10,6 +10,7 @@ import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.Util;
+import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
@@ -149,6 +150,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         }
     }
 
+    @Property(name="contentId")
     public Optional<String> getContentId() {
         return Optional.ofNullable(contentId);
     }
@@ -161,6 +163,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
+    @Property(name="contentLocation")
     public Optional<String> getContentLocation() {
         return Optional.ofNullable(contentLocation);
     }
@@ -173,6 +176,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
+    @Property(name="contentBytes")
     public Optional<byte[]> getContentBytes() {
         return Optional.ofNullable(contentBytes);
     }
