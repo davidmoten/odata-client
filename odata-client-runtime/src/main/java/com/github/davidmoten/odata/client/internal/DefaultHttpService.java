@@ -85,6 +85,7 @@ public final class DefaultHttpService implements HttpService {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            c.setInstanceFollowRedirects(true);
             c.setRequestMethod(method.toString());
             for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
                 c.setRequestProperty(header.name(), header.value());
@@ -120,6 +121,7 @@ public final class DefaultHttpService implements HttpService {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            c.setInstanceFollowRedirects(true);
             c.setRequestMethod(HttpMethod.GET.toString());
             for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
                 c.setRequestProperty(header.name(), header.value());
