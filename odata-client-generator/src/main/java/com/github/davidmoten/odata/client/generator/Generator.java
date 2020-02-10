@@ -49,6 +49,7 @@ import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
+import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
@@ -1056,11 +1057,14 @@ public final class Generator {
                     }
 
                 });
-
     }
 
     private void addPropertyAnnotation(Imports imports, Indent indent, PrintWriter p, String name) {
         p.format("\n%s@%s(name=\"%s\")", indent, imports.add(Property.class), name);
+    }
+    
+    private void addNavigationPropertyAnnotation(Imports imports, Indent indent, PrintWriter p, String name) {
+        p.format("\n%s@%s(name=\"%s\")", indent, imports.add(NavigationProperty.class), name);
     }
 
     private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties) {
@@ -1100,7 +1104,7 @@ public final class Generator {
                 .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
-                    addPropertyAnnotation(imports, indent, p, x.getName());
+                    addNavigationPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
