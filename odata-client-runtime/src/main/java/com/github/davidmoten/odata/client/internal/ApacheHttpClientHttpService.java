@@ -143,8 +143,12 @@ public class ApacheHttpClientHttpService implements HttpService {
                 }
             };
             if (!isOk(statusCode)) {
-                String msg = Util.readString(in, StandardCharsets.UTF_8);
-                throw new ClientException("getStream returned HTTP " + statusCode + "\n" + msg);
+                try {
+                    String msg = Util.readString(in, StandardCharsets.UTF_8);
+                    throw new ClientException("getStream returned HTTP " + statusCode + "\n" + msg);
+                } finally {
+                    in.close();
+                }
             } else {
                 return in;
             }
@@ -152,7 +156,7 @@ public class ApacheHttpClientHttpService implements HttpService {
             throw new ClientException(e);
         }
     }
-    
+
     private static boolean isOk(int statusCode) {
         return statusCode >= 200 && statusCode < 300;
     }
