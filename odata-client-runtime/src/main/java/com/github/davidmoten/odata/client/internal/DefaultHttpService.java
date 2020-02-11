@@ -8,6 +8,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.github.davidmoten.guavamini.Lists;
@@ -26,11 +27,13 @@ public final class DefaultHttpService implements HttpService {
     // not thread-safe but is ok if set multiple times from multiple threads (just
     // means a few extra calls that throw till all threads catch up to the setting
     private boolean patchSupported = true;
+    private final Consumer<HttpURLConnection> consumer;
 
     public DefaultHttpService(Path basePath,
-            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
+            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier, Consumer<HttpURLConnection> consumer) {
         this.basePath = basePath;
         this.requestHeadersModifier = requestHeadersModifier;
+        this.consumer = consumer;
     }
 
     @Override
@@ -92,6 +95,9 @@ public final class DefaultHttpService implements HttpService {
             }
             c.setDoInput(doInput);
             c.setDoOutput(content != null);
+            // apply just before connection established so further configuration can take place
+            // like timeouts
+            consumer.accept(c);
             if (content != null) {
                 try (OutputStream out = c.getOutputStream()) {
                     out.write(content.getBytes(StandardCharsets.UTF_8));
@@ -128,7 +134,11 @@ public final class DefaultHttpService implements HttpService {
             }
             c.setDoInput(true);
             c.setDoOutput(false);
+            // apply just before connection established so further configuration can take
+            // place like timeouts
+            consumer.accept(c);
             // TODO check error code and throw message read from input stream
+
             return c.getInputStream();
         } catch (IOException e) {
             throw new ClientException(e);

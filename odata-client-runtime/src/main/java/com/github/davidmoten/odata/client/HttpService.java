@@ -1,9 +1,11 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.github.davidmoten.odata.client.internal.DefaultHttpService;
@@ -48,8 +50,8 @@ public interface HttpService extends AutoCloseable {
     }
 
     public static HttpService createDefaultService(Path path,
-            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
-        return new DefaultHttpService(path, requestHeadersModifier);
+            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier, Consumer<HttpURLConnection> consumer) {
+        return new DefaultHttpService(path, requestHeadersModifier, consumer);
     }
 
 }
