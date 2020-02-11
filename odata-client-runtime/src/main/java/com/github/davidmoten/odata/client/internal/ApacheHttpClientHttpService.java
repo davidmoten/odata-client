@@ -145,7 +145,11 @@ public class ApacheHttpClientHttpService implements HttpService {
             if (!isOk(statusCode)) {
                 try {
                     String msg = Util.readString(in, StandardCharsets.UTF_8);
-                    throw new ClientException("getStream returned HTTP " + statusCode + "\n" + msg);
+                    throw new ClientException("getStream returned HTTP " + statusCode + "\n"  //
+                            + "url=" + url + "\n" //
+                            + "headers=" + requestHeaders + "\n"
+                            + "response:\n" //
+                            + msg);
                 } finally {
                     in.close();
                 }
