@@ -10,6 +10,10 @@ public final class RequestHeader {
         this.value = value;
     }
 
+    public static RequestHeader create(String name, String value) {
+        return new RequestHeader(name, value);
+    }
+
     public String name() {
         return name;
     }

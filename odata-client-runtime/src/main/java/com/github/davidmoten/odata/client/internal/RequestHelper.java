@@ -214,10 +214,16 @@ public final class RequestHelper {
                 // Attachment (with full metadata) is requested the editLink of an individual
                 // attachment may end in /itemAttachment to indicate the type of the attachment.
                 // To get the $value download working we need to remove that typing.
-                if (editLink.endsWith("/" + entity.odataTypeName())) {
-                    editLink = editLink.substring(0,
-                            editLink.length() - entity.odataTypeName().length() - 1);
+                int i = endsWith(editLink, "/" + entity.odataTypeName());
+                if (i == -1) {
+                    i = endsWith(editLink, "/" + entity.odataTypeName() + "/$value");
                 }
+                if (i == -1) {
+                    i = endsWith(editLink, "/" + entity.odataTypeName() + "/%24value");
+                }
+                if (i != -1) {
+                    editLink = editLink.substring(0, i);
+                } 
             }
             Path path = new Path(editLink, contextPath.path().style());
             if (!path.toUrl().endsWith("/$value")) {
@@ -228,6 +234,14 @@ public final class RequestHelper {
                     RequestOptions.EMPTY, //
                     contentType, //
                     null));
+        }
+    }
+
+    private static int endsWith(String a, String b) {
+        if (a.endsWith(b)) {
+            return a.length() - b.length();
+        } else {
+            return -1;
         }
     }
 

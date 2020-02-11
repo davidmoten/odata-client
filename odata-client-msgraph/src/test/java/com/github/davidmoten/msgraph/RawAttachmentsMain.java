@@ -1,6 +1,9 @@
 package com.github.davidmoten.msgraph;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import com.github.davidmoten.odata.client.RequestHeader;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.ItemAttachment;
@@ -21,11 +24,11 @@ public final class RawAttachmentsMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
 
-//        if (false) {
-//            String url = "";
-//            System.out.println(url + "\n->\n" + client._service().getStringUtf8(url));
-//            System.exit(0);
-//        }
+        if (true) {
+            String url = "https://graph.microsoft.com/v1.0/users('dnex001%40amsa.gov.au')/mailFolders('inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvGHoMgAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvGHoMgAAAAESABAAEk3MvTWvlkaZoyGmFgr4ag%3D%3D')";
+            System.out.println(url + "\n->\n" + client._service().getStringUtf8(url, Arrays.asList(new RequestHeader("Accept", "application/json;odata.metadata=full"))));
+            System.exit(0);
+        }
 
         System.out.println(client.sites("root").get().getDisplayName());
 

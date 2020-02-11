@@ -33,11 +33,18 @@ public interface HttpService extends AutoCloseable {
     }
     
     default byte[] getBytes(String url) {
-        return Util.toByteArray(getStream(url));
+        return getBytes(url, Collections.emptyList());
+    }
+    default byte[] getBytes(String url, List<RequestHeader> requestHeaders) {
+        return Util.toByteArray(getStream(url, requestHeaders));
     }
     
     default String getStringUtf8(String url) {
-        return new String(getBytes(url), StandardCharsets.UTF_8);
+        return getStringUtf8(url, Collections.emptyList());
+    }
+    
+    default String getStringUtf8(String url, List<RequestHeader> requestHeaders) {
+        return new String(getBytes(url, requestHeaders), StandardCharsets.UTF_8);
     }
 
     public static HttpService createDefaultService(Path path,
