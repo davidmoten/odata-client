@@ -120,7 +120,6 @@ public final class Generator {
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
             
-            System.out.println("generating action requests with return type");
             Util.types(schema, TAction.class) //
                     .forEach(x -> writeActionRequestWithReturnType(schema, x));
 
@@ -893,6 +892,7 @@ public final class Generator {
 
             // write actions
             // TODO write actions
+            if (false) {
             Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
                     .forEach(a -> {
                         // get bound parameter (first parameter)
@@ -919,7 +919,7 @@ public final class Generator {
                                                     names.toImportedTypeNonCollection(returnInnerType, imports),
                                                     Names.getGetterMethod(a.getName()), "");
                                             p.format("%s// TODO implement action\n", indent.right());
-                                            p.format("%sreturn null;\n", indent);
+                                            p.format("%sthrow new %s() ;\n", indent, imports.add(UnsupportedOperationException.class));
                                             p.format("%s}\n", indent.left());
                                         } else {
                                             // TODO
@@ -931,6 +931,7 @@ public final class Generator {
                             } 
                         }
                     });
+            }
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileCollectionRequest());
