@@ -19,7 +19,7 @@
                 <Parameter Name="strength" Type="Edm.Int32"
                     Nullable="false" />
                 <ReturnType
-                    Type="Collection(Test6.A.Product)" Nullable="false" />
+                    Type="Edm.String" Nullable="false" />
             </Action>
         </Schema>
         <Schema Namespace="Test6.B"
