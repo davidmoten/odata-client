@@ -87,4 +87,8 @@ public final class ComplexType extends Structure<TComplexType> {
     public File getClassFileCollectionRequest() {
         return names.getClassFileComplexTypeCollectionRequest(schema(), getName());
     }
+
+    public String getFullClassName() {
+        return getPackage() + "." + getSimpleClassName();
+    }
 }

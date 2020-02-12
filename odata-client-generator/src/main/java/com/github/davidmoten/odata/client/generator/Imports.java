@@ -6,39 +6,38 @@ import java.util.stream.Collectors;
 
 public final class Imports {
 
-    private final String simpleClassName;
-
-    Imports(String simpleClassName) {
-        this.simpleClassName = simpleClassName;
+    Imports(String fullClassName) {
+        add(fullClassName);
     }
 
     private final Map<String, String> map = new HashMap<>();
 
     public String add(Class<?> cls) {
-        return add(cls.getName().replace("$", "."));
+        return add(cls.getCanonicalName().replace("$", "."));
     }
 
     public String add(String className) {
+        final String simpleName = simpleName(className);
+        String c = map.get(simpleName);
+        if (c == null) {
+            map.put(simpleName, className);
+            return simpleName;
+        } else if (c.equals(className)) {
+            return simpleName;
+        } else {
+            return className;
+        }
+    }
+
+    private static String simpleName(String className) {
+        final String simpleName;
         int i = className.lastIndexOf('.');
-        String simpleName;
         if (i == -1) {
             simpleName = className;
         } else {
             simpleName = className.substring(i + 1, className.length());
         }
-        if (simpleName.equals(simpleClassName)) {
-            return className;
-        } else {
-            String c = map.get(simpleName);
-            if (c == null) {
-                map.put(simpleName, className);
-                return simpleName;
-            } else if (c.equals(className)) {
-                return simpleName;
-            } else {
-                return className;
-            }
-        }
+        return simpleName;
     }
 
     @Override
