@@ -119,7 +119,8 @@ public final class Generator {
 
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
-
+            
+            System.out.println("generating action requests with return type");
             Util.types(schema, TAction.class) //
                     .forEach(x -> writeActionRequestWithReturnType(schema, x));
 
