@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.oasisopen.odata.csdl.v4.Schema;
+import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TComplexType;
@@ -377,6 +378,10 @@ public final class Names {
     public Schema getSchema(TEntityType entityType) {
         return getSchemaFromType(entityType, TEntityType.class);
     }
+    
+    public Schema getSchema(TAction action) {
+        return getSchemaFromType(action, TAction.class);
+    }
 
     private <T> Schema getSchemaFromType(Object type, Class<T> typeClass) {
         return schemas.stream()
@@ -606,6 +611,24 @@ public final class Names {
 
     public String getFullClassNameContainer(Schema schema, String name) {
         return getPackageContainer(schema) + "." +  getSimpleClassNameContainer(name);
+    }
+
+    public File getDirectoryActionRequest(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, o.pkg() + o.packageSuffixActionRequest());
+    }
+
+    public String getSimpleClassNameActionRequest(Schema schema, String name) {
+        return Names.toSimpleClassName(name + getOptions(schema).actionRequestClassSuffix());
+    }
+
+    public String getFullClassNameActionRequest(Schema schema, String name) {
+        return getPackageActionRequest(schema) + "." + getSimpleClassNameActionRequest(schema, name);
+    }
+
+    public String getPackageActionRequest(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return o.pkg() + o.packageSuffixActionRequest();
     }
 
 }
