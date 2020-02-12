@@ -119,9 +119,9 @@ public final class Generator {
 
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
-            
+
             Util.types(schema, TAction.class) //
-            .forEach(x -> writeActionRequestWithReturnType(schema, x));
+                    .forEach(x -> writeActionRequestWithReturnType(schema, x));
 
             // TODO write actions
 
@@ -915,7 +915,7 @@ public final class Generator {
                                         if (names.isCollection(returnParameter.get())) {
                                             p.format("\n%s%s %s(%s) {\n", //
                                                     indent, //
-                                                    names.toImportedTypeNonCollection(returnInnerType, imports), 
+                                                    names.toImportedTypeNonCollection(returnInnerType, imports),
                                                     Names.getGetterMethod(a.getName()), "");
                                             p.format("%s// TODO implement action\n", indent.right());
                                             p.format("%sreturn null;\n", indent);
@@ -924,7 +924,7 @@ public final class Generator {
                                             // TODO
                                         }
                                     } else {
-
+                                        // TODO
                                     }
                                 }
                             } 
