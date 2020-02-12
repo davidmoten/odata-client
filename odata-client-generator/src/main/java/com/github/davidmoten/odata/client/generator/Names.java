@@ -596,4 +596,16 @@ public final class Names {
         return isCollection(getType(x));
     }
 
+    public String getFullClassNameSchema(Schema schema) {
+        return getPackageSchema(schema) + "." + getSimpleClassNameSchema(schema);
+    }
+
+    public String getFullClassNameCollectionRequest(Schema schema, String name) {
+        return getPackageCollectionRequest(schema) + "." + getSimpleClassNameCollectionRequest(schema, name);
+    }
+
+    public String getFullClassNameContainer(Schema schema, String name) {
+        return getPackageContainer(schema) + "." +  getSimpleClassNameContainer(name);
+    }
+
 }

@@ -112,6 +112,16 @@
                             <metadata>src/main/odata/metadata5.xml</metadata>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>test6</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/main/odata/metadata6.xml</metadata>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

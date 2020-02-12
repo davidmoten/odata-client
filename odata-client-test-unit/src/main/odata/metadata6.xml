@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Test6.A"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Product">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32"
+                    Nullable="false" />
+                <Property Name="Name" Type="Edm.String" />
+            </EntityType>
+            <Action Name="relatedProducts" IsBound="true"
+                EntitySetPath="bindingParameter">
+                <Parameter Name="bindingParameter"
+                    Type="Collection(Test6.A.Product)" Nullable="false" />
+                <Parameter Name="strength" Type="Edm.Int32"
+                    Nullable="false" />
+                <ReturnType
+                    Type="Collection(Test6.A.Product)" Nullable="false" />
+            </Action>
+        </Schema>
+        <Schema Namespace="Test6.B"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="Test6Service">
+                <EntitySet Name="Products"
+                    EntityType="Test6.A.Product">
+                </EntitySet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

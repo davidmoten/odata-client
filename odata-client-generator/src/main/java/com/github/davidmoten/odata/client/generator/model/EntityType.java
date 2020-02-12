@@ -132,4 +132,8 @@ public final class EntityType extends Structure<TEntityType> {
         return value.isHasStream();
     }
 
+    public String getFullClassNameEntityRequest() {
+        return getPackageEntityRequest() + "." + getSimpleClassNameEntityRequest();
+    }
+
 }
