@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.odata.client.ActionRequest;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
@@ -86,6 +87,8 @@ public final class Generator {
 
             Util.replaceAliases(schema);
 
+            Map<String, List<TAction>> typeActions = createTypeActions(schema);
+
             writeSchemaInfo(schema);
 
             // write enums
@@ -94,7 +97,7 @@ public final class Generator {
 
             // write entityTypes
             Util.types(schema, TEntityType.class) //
-                    .forEach(x -> writeEntity(x));
+                    .forEach(x -> writeEntity(x, typeActions));
 
             // write complexTypes
             Util.types(schema, TComplexType.class) //
@@ -117,9 +120,6 @@ public final class Generator {
 
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
-            
-            Util.types(schema, TAction.class) //
-                    .forEach(x -> writeActionRequestWithReturnType(schema, x));
 
             // TODO write actions
 
@@ -128,6 +128,24 @@ public final class Generator {
             // TODO consume annotations for documentation
         }
 
+    }
+
+    private Map<String, List<TAction>> createTypeActions(Schema schema) {
+        Map<String, List<TAction>> typeActions = new HashMap<>();
+        Util.types(schema, TAction.class) //
+                .forEach(action -> {
+                    Action a = new Action(action, names);
+                    a.getBoundTypeWithNamespace() //
+                            .ifPresent(x -> {
+                                List<TAction> list = typeActions.get(x);
+                                if (list == null) {
+                                    typeActions.put(x, Lists.newArrayList(action));
+                                } else {
+                                    list.add(action);
+                                }
+                            });
+                });
+        return typeActions;
     }
 
     private void writeComplexTypeRequest(Schema schema, TComplexType x) {
@@ -271,7 +289,7 @@ public final class Generator {
         }
     }
 
-    private void writeEntity(TEntityType entityType) {
+    private void writeEntity(TEntityType entityType, Map<String, List<TAction>> typeActions) {
         EntityType t = new EntityType(entityType, names);
         t.getDirectoryEntity().mkdirs();
         String simpleClassName = t.getSimpleClassName();
@@ -358,6 +376,8 @@ public final class Generator {
             // write Patched class
             writePatchAndPutMethods(t, simpleClassName, imports, indent, p);
 
+            writeBoundActionMethods(t, typeActions, imports, indent, p);
+
             // write copy method
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
 
@@ -370,6 +390,15 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void writeBoundActionMethods(EntityType t, Map<String, List<TAction>> typeActions, Imports imports,
+            Indent indent, PrintWriter p) {
+        typeActions //
+                .getOrDefault(t.getFullType(), Collections.emptyList()) //
+                .forEach(action -> {
+                    p.format("%s// Action %s\n", indent, action.getName());
+                });
     }
 
     private void writeToString(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
@@ -570,7 +599,9 @@ public final class Generator {
                     .filter(x -> {
                         boolean isEntity = names.isEntityWithNamespace(names.getInnerType(names.getType(x)));
                         if (!isEntity) {
-                            System.out.println("Unexpected entity with non-entity navigation property type: " + simpleClassName + "." +  x.getName() + ". If you get this message then raise an issue on the github project for odata-client.");
+                            System.out.println("Unexpected entity with non-entity navigation property type: "
+                                    + simpleClassName + "." + x.getName()
+                                    + ". If you get this message then raise an issue on the github project for odata-client.");
                         }
                         return isEntity;
                     }) //
@@ -631,45 +662,6 @@ public final class Generator {
                     });
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileEntityRequest());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    private void writeActionRequestWithReturnType(Schema schema, TAction action) {
-        names.getDirectoryActionRequest(schema).mkdirs();
-        Action t = new Action(action, names);
-        if (!t.getActionReturnType().isPresent()) {
-            return;
-        }
-        String simpleClassName = t.getSimpleClassNameActionRequest();
-        Imports imports = new Imports(t.getFullClassNameActionRequest());
-        Indent indent = new Indent();
-
-        StringWriter w = new StringWriter();
-        try (PrintWriter p = new PrintWriter(w)) {
-            String returnClassName = t.getActionReturnType().map(x -> names.toImportedTypeNonCollection(x, imports)).orElse(imports.add(Void.class));
-            p.format("package %s;\n\n", t.getPackageActionRequest());
-            p.format("IMPORTSHERE");
-
-            p.format("@%s\n", imports.add(JsonIgnoreType.class));
-            p.format("public final class %s extends %s {\n\n", simpleClassName,
-                    imports.add(ActionRequest.class) + "<" + returnClassName + ">");
-
-            indent.right();
-
-            // add constructor
-            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
-//            p.format("%ssuper(%s.class, contextPath, %s.INSTANCE);\n", //
-//                    indent.right(), //
-//                    imports.add(t.getFullClassNameEntity()), //
-//                    imports.add(names.getFullClassNameSchemaInfo(schema)));
-            p.format("%s// TODO\n", indent.right());
-            p.format("%s}\n", indent.left());
-
-            indent.left();
-            p.format("\n}\n");
-            writeToFile(imports, w, t.getClassFileActionRequest());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -891,44 +883,47 @@ public final class Generator {
             // write actions
             // TODO write actions
             if (false) {
-            Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
-                    .forEach(a -> {
-                        // get bound parameter (first parameter)
-                        Optional<TActionFunctionParameter> bindingParameter = Util
-                                .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
-                                .findFirst();
-                        Optional<TActionFunctionReturnType> returnParameter = Util
-                                .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class)
-                                .findFirst();
-//                        System.out.println("action=" + a.getName() + ", bindingParameter=" + bindingParameter
-//                                + ", returnParameter=" + returnParameter.map(x -> x.getType().toString()).orElse(""));
-                        if (bindingParameter.isPresent()) {
-                            // proceed if action to be bound to current entityType
-                            String type = names.getInnerType(bindingParameter.get());
-                            if (t.getFullType().equals(type)) {
-                                if (names.isCollection(bindingParameter.get())) {
-                                    if (returnParameter.isPresent()) {
-                                        // get return parameter
-                                        String returnFullType = names.getType(returnParameter.get());
-                                        String returnInnerType = names.getInnerType(returnFullType);
-                                        if (names.isCollection(returnParameter.get())) {
-                                            p.format("\n%s%s %s(%s) {\n", //
-                                                    indent, //
-                                                    names.toImportedTypeNonCollection(returnInnerType, imports),
-                                                    Names.getGetterMethod(a.getName()), "");
-                                            p.format("%s// TODO implement action\n", indent.right());
-                                            p.format("%sthrow new %s() ;\n", indent, imports.add(UnsupportedOperationException.class));
-                                            p.format("%s}\n", indent.left());
+                Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
+                        .forEach(a -> {
+                            // get bound parameter (first parameter)
+                            Optional<TActionFunctionParameter> bindingParameter = Util
+                                    .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
+                                    .findFirst();
+                            Optional<TActionFunctionReturnType> returnParameter = Util
+                                    .filter(a.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class)
+                                    .findFirst();
+                            // System.out.println("action=" + a.getName() + ", bindingParameter=" +
+                            // bindingParameter
+                            // + ", returnParameter=" + returnParameter.map(x ->
+                            // x.getType().toString()).orElse(""));
+                            if (bindingParameter.isPresent()) {
+                                // proceed if action to be bound to current entityType
+                                String type = names.getInnerType(bindingParameter.get());
+                                if (t.getFullType().equals(type)) {
+                                    if (names.isCollection(bindingParameter.get())) {
+                                        if (returnParameter.isPresent()) {
+                                            // get return parameter
+                                            String returnFullType = names.getType(returnParameter.get());
+                                            String returnInnerType = names.getInnerType(returnFullType);
+                                            if (names.isCollection(returnParameter.get())) {
+                                                p.format("\n%s%s %s(%s) {\n", //
+                                                        indent, //
+                                                        names.toImportedTypeNonCollection(returnInnerType, imports),
+                                                        Names.getGetterMethod(a.getName()), "");
+                                                p.format("%s// TODO implement action\n", indent.right());
+                                                p.format("%sthrow new %s() ;\n", indent,
+                                                        imports.add(UnsupportedOperationException.class));
+                                                p.format("%s}\n", indent.left());
+                                            } else {
+                                                // TODO
+                                            }
                                         } else {
                                             // TODO
                                         }
-                                    } else {
-                                        // TODO
                                     }
                                 }
-                            } 
-                        }
-                    });
+                            }
+                        });
             }
             indent.left();
             p.format("\n}\n");
