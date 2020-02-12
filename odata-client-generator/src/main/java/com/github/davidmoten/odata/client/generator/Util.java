@@ -32,6 +32,8 @@ public final class Util {
                 .forEach(x -> replaceAlias(schema, x));
         types(schema, TComplexType.class) //
                 .forEach(x -> replaceAlias(schema, x));
+        types(schema, TAction.class) //
+                .forEach(x -> replaceAlias(schema, x));
     }
 
     private static void replaceAlias(Schema schema, Object x) {
@@ -52,6 +54,16 @@ public final class Util {
             p.getPropertyOrNavigationPropertyOrAnnotation() //
                     .stream() //
                     .forEach(y -> replaceAlias(schema, y));
+        } else if (x instanceof TAction) {
+            TAction a = (TAction) x;
+            a.getParameterOrAnnotationOrReturnType().stream() //
+                    .forEach(y -> replaceAlias(schema, y));
+        } else if (x instanceof TActionFunctionParameter) {
+            TActionFunctionParameter p = (TActionFunctionParameter) x;
+            replaceAlias(schema, p.getType());
+        } else if (x instanceof TActionFunctionReturnType) {
+            TActionFunctionReturnType p = (TActionFunctionReturnType) x;
+            replaceAlias(schema, p.getType());
         } else if (x instanceof TProperty) {
             TProperty p = (TProperty) x;
             replaceAlias(schema, p.getType());
@@ -82,7 +94,7 @@ public final class Util {
     }
 
     private static String replaceAlias(Schema schema, String type) {
-        if (type == null || schema.getAlias() == null|| type.startsWith(schema.getNamespace())) {
+        if (type == null || schema.getAlias() == null || type.startsWith(schema.getNamespace())) {
             return type;
         } else {
             return type.replaceAll("\\b" + schema.getAlias() + "\\b", schema.getNamespace());

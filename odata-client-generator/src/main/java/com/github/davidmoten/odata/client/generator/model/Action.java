@@ -1,11 +1,15 @@
 package com.github.davidmoten.odata.client.generator.model;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
+import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
+import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.github.davidmoten.odata.client.generator.Names;
+import com.github.davidmoten.odata.client.generator.Util;
 
 public final class Action {
 
@@ -20,7 +24,7 @@ public final class Action {
     public String getSimpleClassNameActionRequest() {
         return names.getSimpleClassNameActionRequest(schema(), action.getName());
     }
-    
+
     public Schema schema() {
         return names.getSchema(action);
     }
@@ -33,13 +37,24 @@ public final class Action {
         return names.getPackageActionRequest(schema());
     }
 
-    public Class<?> getFullClassNameActionReturnType() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getFullClassNameActionReturnType() {
+        Optional<TActionFunctionReturnType> returnParameter = Util
+                .filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class).findFirst();
+        if (!returnParameter.isPresent()) {
+            return Void.class.getName();
+        } else {
+            return names.getFullClassNameFromTypeWithNamespace(names.getInnerType(returnParameter.get()));
+        }
     }
 
     public File getClassFileActionRequest() {
-        return names.getClassFileEntity(schema(), action.getName());
+        return names.getClassFileActionRequest(schema(), action.getName());
+    }
+
+    public Optional<String> getActionReturnType() {
+        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+                .map(x -> names.getInnerType(x)) //
+                .findFirst();
     }
 
 }

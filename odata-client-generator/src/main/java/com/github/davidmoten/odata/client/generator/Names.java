@@ -596,7 +596,7 @@ public final class Names {
         }
         return list.get(0);
     }
-
+    
     public boolean isCollection(TActionFunctionReturnType x) {
         return isCollection(getType(x));
     }
@@ -629,6 +629,19 @@ public final class Names {
     public String getPackageActionRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixActionRequest();
+    }
+
+    public String getInnerType(TActionFunctionReturnType x) {
+        List<String> list = x.getType();
+        if (list.size() != 1) {
+            throw new IllegalArgumentException(
+                    "function return type must have one and only one type but was: " + x.getType());
+        }
+        return getInnerType(list.get(0));
+    }
+
+    public File getClassFileActionRequest(Schema schema, String name) {
+        return new File(getDirectoryActionRequest(schema), getSimpleClassNameActionRequest(schema, name) + ".java");        
     }
 
 }

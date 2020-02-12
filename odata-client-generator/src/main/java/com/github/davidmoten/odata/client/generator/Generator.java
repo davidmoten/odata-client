@@ -120,8 +120,8 @@ public final class Generator {
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
             
-//            Util.types(schema, TAction.class) //
-//            .forEach(x -> writeActionRequest(schema, x));
+            Util.types(schema, TAction.class) //
+            .forEach(x -> writeActionRequestWithReturnType(schema, x));
 
             // TODO write actions
 
@@ -638,32 +638,35 @@ public final class Generator {
         }
     }
     
-    private void writeActionRequest(Schema schema, TAction action) {
+    private void writeActionRequestWithReturnType(Schema schema, TAction action) {
         names.getDirectoryActionRequest(schema).mkdirs();
-        // TODO only write out those requests needed
         Action t = new Action(action, names);
+        if (!t.getActionReturnType().isPresent()) {
+            return;
+        }
         String simpleClassName = t.getSimpleClassNameActionRequest();
         Imports imports = new Imports(t.getFullClassNameActionRequest());
         Indent indent = new Indent();
 
         StringWriter w = new StringWriter();
         try (PrintWriter p = new PrintWriter(w)) {
+            String returnClassName = t.getActionReturnType().map(x -> names.toImportedTypeNonCollection(x, imports)).orElse(imports.add(Void.class));
             p.format("package %s;\n\n", t.getPackageActionRequest());
             p.format("IMPORTSHERE");
 
             p.format("@%s\n", imports.add(JsonIgnoreType.class));
             p.format("public final class %s extends %s {\n\n", simpleClassName,
-                    imports.add(ActionRequest.class) + "<" + imports.add(t.getFullClassNameActionReturnType()) + ">");
+                    imports.add(ActionRequest.class) + "<" + returnClassName + ">");
 
             indent.right();
 
             // add constructor
-            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
-                    imports.add(String.class));
+            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
 //            p.format("%ssuper(%s.class, contextPath, %s.INSTANCE);\n", //
 //                    indent.right(), //
 //                    imports.add(t.getFullClassNameEntity()), //
 //                    imports.add(names.getFullClassNameSchemaInfo(schema)));
+            p.format("%s// TODO\n", indent.right());
             p.format("%s}\n", indent.left());
 
             indent.left();
@@ -901,9 +904,10 @@ public final class Generator {
 //                        System.out.println("action=" + a.getName() + ", bindingParameter=" + bindingParameter
 //                                + ", returnParameter=" + returnParameter.map(x -> x.getType().toString()).orElse(""));
                         if (bindingParameter.isPresent()) {
+                            // proceed if action to be bound to current entityType
                             String type = names.getInnerType(bindingParameter.get());
-                            if (names.isCollection(bindingParameter.get())) {
-                                if (t.getFullType().equals(type)) {
+                            if (t.getFullType().equals(type)) {
+                                if (names.isCollection(bindingParameter.get())) {
                                     if (returnParameter.isPresent()) {
                                         // get return parameter
                                         String returnFullType = names.getType(returnParameter.get());
@@ -911,9 +915,7 @@ public final class Generator {
                                         if (names.isCollection(returnParameter.get())) {
                                             p.format("\n%s%s %s(%s) {\n", //
                                                     indent, //
-                                                    imports.add(names
-                                                            .getFullClassNameCollectionRequestFromTypeWithNamespace(
-                                                                    names.getSchema(returnInnerType), returnInnerType)),
+                                                    names.toImportedTypeNonCollection(returnInnerType, imports), 
                                                     Names.getGetterMethod(a.getName()), "");
                                             p.format("%s// TODO implement action\n", indent.right());
                                             p.format("%sreturn null;\n", indent);
@@ -922,13 +924,10 @@ public final class Generator {
                                             // TODO
                                         }
                                     } else {
-                                        
+
                                     }
                                 }
-                            } else {
-                                // binding parameter not a collection
-
-                            }
+                            } 
                         }
                     });
             indent.left();
