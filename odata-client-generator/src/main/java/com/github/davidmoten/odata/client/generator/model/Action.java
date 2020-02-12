@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
+import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
@@ -55,6 +56,17 @@ public final class Action {
         return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
                 .map(x -> names.getInnerType(x)) //
                 .findFirst();
+    }
+
+    public Optional<String> getBoundTypeWithNamespace() {
+        if (!action.isIsBound()) {
+            return Optional.empty();
+        } else {
+            return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
+                    .filter(x -> x.getName().equals(action.getEntitySetPath())) // s
+                    .map(x -> names.getInnerType(x)) //
+                    .findFirst();
+        }
     }
 
 }
