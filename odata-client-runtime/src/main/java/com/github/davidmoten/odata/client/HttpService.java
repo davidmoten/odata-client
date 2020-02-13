@@ -19,12 +19,24 @@ public interface HttpService extends AutoCloseable {
     HttpResponse put(String url, List<RequestHeader> requestHeaders, String content);
 
     HttpResponse post(String url, List<RequestHeader> requestHeaders, String content);
-
+    
     HttpResponse delete(String url, List<RequestHeader> requestHeaders);
 
     InputStream getStream(String url, List<RequestHeader> requestHeaders);
 
     Path getBasePath();
+
+    default HttpResponse submitWithContent(HttpMethod method, String url , List<RequestHeader> requestHeaders, String content) {
+        if (method == HttpMethod.PATCH) {
+            return patch(url, requestHeaders, content);
+        } else if (method == HttpMethod.PUT) {
+            return put(url, requestHeaders, content) ;
+        } else if (method == HttpMethod.POST) {
+            return put(url, requestHeaders, content) ;
+        } else {
+            throw new IllegalArgumentException(method + " not permitted for a submission with content");
+        }
+    }
     
     default HttpResponse get(String url) {
         return get(url, Collections.emptyList());

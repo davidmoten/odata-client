@@ -23,11 +23,11 @@ public abstract class EntityRequest<T extends ODataEntityType> {
     }
 
     T patch(EntityRequestOptions<T> options, T entity) {
-        return RequestHelper.patch(entity, contextPath, options, schemaInfo);
+        return RequestHelper.patch(entity, contextPath, options);
     }
 
     T put(EntityRequestOptions<T> options, T entity) {
-        return RequestHelper.put(entity, contextPath, options, schemaInfo);
+        return RequestHelper.put(entity, contextPath, options);
     }
 
     public T get() {

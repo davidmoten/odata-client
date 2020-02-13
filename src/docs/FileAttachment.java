@@ -18,7 +18,6 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import microsoft.graph.generated.entity.Attachment;
 import microsoft.graph.generated.entity.FileAttachment;
-import microsoft.graph.generated.schema.SchemaInfo;
 
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({
@@ -218,14 +217,14 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     public FileAttachment patch() {
-        RequestHelper.patch(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
+        RequestHelper.patch(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
     }
 
     public FileAttachment put() {
-        RequestHelper.put(this, contextPath, RequestOptions.EMPTY,  SchemaInfo.INSTANCE);
+        RequestHelper.put(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
