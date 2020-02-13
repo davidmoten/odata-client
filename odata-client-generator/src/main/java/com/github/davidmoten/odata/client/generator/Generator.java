@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,8 +40,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
-import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
+import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
@@ -69,6 +70,7 @@ import com.github.davidmoten.odata.client.generator.model.KeyElement;
 import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
+import com.github.davidmoten.odata.client.internal.Maps;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
@@ -425,45 +427,62 @@ public final class Generator {
                             .stream() //
                             .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava)) //
                             .collect(Collectors.joining(", "));
-                    String params = parameters.isEmpty() ? ""
-                            : ", " + parameters //
-                                    .stream() //
-                                    .map(x -> x.nameJava) //
-                                    .collect(Collectors.joining(", "));
                     if (action.hasReturnType()) {
                         ReturnType returnType = action.getReturnType(imports);
                         p.format("%spublic %s<%s> %s(%s) {\n", //
                                 indent, //
-                                returnType.isCollection? imports.add(ActionRequestReturningCollection.class): imports.add(ActionRequestReturningNonCollection.class), //
+                                returnType.isCollection
+                                        ? imports.add(ActionRequestReturningCollection.class)
+                                        : imports.add(ActionRequestReturningNonCollection.class), //
                                 action.getReturnType(imports).innerImportedFullClassName,
                                 action.getActionMethodName(), paramsDeclaration);
+                        writeParameterMap(imports, indent, p, parameters);
                         if (returnType.isCollection) {
-                            p.format("%sreturn new %s<%s>(this.contextPath, %s.class%s);\n", //
-                                    indent.right(), //
+                            p.format(
+                                    "%sreturn new %s<%s>(this.contextPath, %s.class, _parameters);\n", //
+                                    indent, //
                                     imports.add(ActionRequestReturningCollection.class), //
                                     returnType.innerImportedFullClassName, //
-                                    returnType.innerImportedFullClassName,
-                                    params);
+                                    returnType.innerImportedFullClassName);
                         } else {
-                            p.format("%sreturn new %s<%s>(this.contextPath, %s.class%s);\n", //
-                                    indent.right(), //
+                            p.format(
+                                    "%sreturn new %s<%s>(this.contextPath, %s.class, _parameters);\n", //
+                                    indent, //
                                     imports.add(ActionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
-                                    returnType.innerImportedFullClassName,
-                                    params);
+                                    returnType.innerImportedFullClassName);
                         }
                     } else {
                         p.format("%spublic %s %s(%s) {\n", //
                                 indent, //
                                 imports.add(ActionRequestNoReturn.class), //
                                 action.getActionMethodName(), paramsDeclaration);
-                        p.format("%sreturn new %s(this.contextPath%s);\n", //
-                                indent.right(), //
-                                imports.add(ActionRequestNoReturn.class), //
-                                params);
+                        writeParameterMap(imports, indent, p, parameters);
+                        p.format("%sreturn new %s(this.contextPath, _parameters);\n", //
+                                indent, //
+                                imports.add(ActionRequestNoReturn.class));
                     }
                     p.format("%s}\n", indent.left());
                 });
+    }
+
+    private void writeParameterMap(Imports imports, Indent indent, PrintWriter p,
+            List<Parameter> parameters) {
+        AtomicBoolean first = new AtomicBoolean(true);
+        p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
+                indent.right(), //
+                imports.add(Map.class), //
+                imports.add(String.class), //
+                imports.add(Object.class), //
+                imports.add(Maps.class), //
+                parameters //
+                .stream() //
+                .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                        indent.copy().right(),
+                        first.getAndSet(false) ? String.format("<%s, %s>",
+                                imports.add(String.class), imports.add(Object.class)) : "", //
+                        par.name, par.nameJava)) //
+                .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
     private void writeToString(Structure<?> t, String simpleClassName, Imports imports,

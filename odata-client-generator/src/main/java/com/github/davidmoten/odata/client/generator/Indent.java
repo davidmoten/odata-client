@@ -2,8 +2,17 @@ package com.github.davidmoten.odata.client.generator;
 
 final class Indent {
 
-    private String value = "";
     public static final String INDENT = "    ";
+
+    private String value;
+
+    Indent() {
+        this("");
+    }
+
+    Indent(String value) {
+        this.value = value;
+    }
 
     Indent left() {
         if (value.length() < INDENT.length()) {
@@ -22,6 +31,10 @@ final class Indent {
     @Override
     public String toString() {
         return value;
+    }
+
+    Indent copy() {
+        return new Indent(value);
     }
 
 }

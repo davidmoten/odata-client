@@ -1,14 +1,18 @@
 package com.github.davidmoten.odata.client;
 
-public final class ActionRequestReturningNonCollection<T> extends ActionRequestBase<ActionRequestReturningNonCollection<T>> {
-    
-    public ActionRequestReturningNonCollection(ContextPath contextPath, Class<T> returnClass, Object... parameters) {
+import java.util.Map;
+
+public final class ActionRequestReturningNonCollection<T>
+        extends ActionRequestBase<ActionRequestReturningNonCollection<T>> {
+
+    public ActionRequestReturningNonCollection(ContextPath contextPath, Class<T> returnClass,
+            Map<String, Object> parameters) {
         super();
     }
-    
+
     public T get() {
-        //TODO 
+        // TODO
         throw new UnsupportedOperationException();
     }
-    
+
 }
