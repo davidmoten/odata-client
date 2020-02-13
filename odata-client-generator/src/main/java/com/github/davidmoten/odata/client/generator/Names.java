@@ -184,16 +184,16 @@ public final class Names {
                 "class name not found for " + type);
     }
 
-    public String getInnerType(String name) {
-        if (name.startsWith("Collection(")) {
-            return name.substring("Collection(".length(), name.length() - 1);
+    public String getInnerType(String type) {
+        if (type.startsWith("Collection(")) {
+            return type.substring("Collection(".length(), type.length() - 1);
         } else {
-            return name;
+            return type;
         }
     }
 
-    public boolean isEntityWithNamespace(String name) {
-        return entityClassNamesFromNamespacedType.keySet().contains(getInnerType(name));
+    public boolean isEntityWithNamespace(String type) {
+        return entityClassNamesFromNamespacedType.keySet().contains(getInnerType(type));
     }
 
     public static String getGetterMethodWithoutGet(String name) {
