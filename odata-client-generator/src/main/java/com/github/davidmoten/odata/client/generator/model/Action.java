@@ -100,14 +100,16 @@ public final class Action {
             this.isCollection = names.isCollection(p);
         }
     }
-    
+
     public static final class ReturnType {
         public final String importedFullClassName;
+        public final String innerImportedFullClassName;
         public final boolean isCollection;
 
-        public ReturnType(String importedFullClassName, boolean isCollection) {
+        public ReturnType(String importedFullClassName, boolean isCollection, String innerImportedFullClassName) {
             this.importedFullClassName = importedFullClassName;
             this.isCollection = isCollection;
+            this.innerImportedFullClassName = innerImportedFullClassName;
         }
     }
 
@@ -117,10 +119,13 @@ public final class Action {
                 .isPresent();
     }
 
-    public ReturnType getReturnImportedFullClassName(Imports imports) {
+    public ReturnType getReturnType(Imports imports) {
         return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
                 .findFirst() //
-                .map(x -> new ReturnType(names.toImportedFullClassName(x, imports), names.isCollection(x))) //
+                .map(x -> new ReturnType( //
+                        names.toImportedFullClassName(x, imports), //
+                        names.isCollection(x), //
+                        names.toImportedTypeNonCollection(names.getInnerType(x), imports))) //
                 .get();
     }
 }

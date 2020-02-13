@@ -58,6 +58,8 @@ import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.model.Action;
+import com.github.davidmoten.odata.client.generator.model.Action.Parameter;
+import com.github.davidmoten.odata.client.generator.model.Action.ReturnType;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.generator.model.Field;
@@ -378,7 +380,7 @@ public final class Generator {
             writePatchAndPutMethods(t, simpleClassName, imports, indent, p);
 
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
-            
+
             writeBoundActionMethods(t, typeActions, imports, indent, p);
 
             // write toString
@@ -401,16 +403,34 @@ public final class Generator {
                             indent, //
                             imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
                             action.getName());
+                    List<Parameter> parameters = action.getParameters(imports);
                     p.format("%spublic %s<%s> %s(%s) {\n", //
                             indent, //
                             imports.add(ActionRequest.class), //
-                            action.hasReturnType()? action.getReturnImportedFullClassName(imports).importedFullClassName: imports.add(Void.class), //
+                            action.hasReturnType() ? action.getReturnType(imports).importedFullClassName
+                                    : imports.add(Void.class), //
                             action.getActionMethodName(), //
-                            action.getParameters(imports) //
+                            parameters //
                                     .stream() //
                                     .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava)) //
                                     .collect(Collectors.joining(", ")));
-                    p.format("%sthrow new %s();\n", indent.right(), imports.add(UnsupportedOperationException.class));
+                    if (action.hasReturnType()) {
+                        ReturnType returnType = action.getReturnType(imports);
+                        p.format("%sreturn new %s<%s>(%s, %s.class%s);\n", //
+                                indent.right(), //
+                                imports.add(ActionRequest.class), //
+                                returnType.importedFullClassName, //
+                                returnType.isCollection?"true":"false", //
+                                        returnType.innerImportedFullClassName, //
+                                parameters.isEmpty() ? ""
+                                        : ", " + parameters //
+                                                .stream() //
+                                                .map(x -> x.nameJava) //
+                                                .collect(Collectors.joining(", ")));
+                    } else {
+                        p.format("%sthrow new %s();\n", indent.right(),
+                                imports.add(UnsupportedOperationException.class));
+                    }
                     p.format("%s}\n", indent.left());
                 });
     }
