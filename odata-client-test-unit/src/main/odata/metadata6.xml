@@ -12,6 +12,8 @@
                     Nullable="false" />
                 <Property Name="Name" Type="Edm.String" />
             </EntityType>
+
+            <!-- returns collection -->
             <Action Name="relatedProducts" IsBound="true"
                 EntitySetPath="bindingParameter">
                 <Parameter Name="bindingParameter"
@@ -20,9 +22,33 @@
                     Nullable="false" />
                 <Parameter Name="thresholds"
                     Type="Collection(Edm.Int32)" Nullable="false" />
-                <ReturnType Type="Edm.String"
+                <ReturnType Type="Collection(Edm.String)"
                     Nullable="false" />
             </Action>
+            
+            <!-- returns simple type -->
+            <Action Name="countRelatedProducts" IsBound="true"
+                EntitySetPath="bindingParameter">
+                <Parameter Name="bindingParameter"
+                    Type="Collection(Test6.A.Product)" Nullable="false" />
+                <Parameter Name="strength" Type="Edm.Int32"
+                    Nullable="false" />
+                <Parameter Name="thresholds"
+                    Type="Collection(Edm.Int32)" Nullable="false" />
+                <ReturnType Type="Edm.Int32" Nullable="false" />
+            </Action>
+            
+            <!-- action without return type -->
+            <Action Name="removeRelatedProducts" IsBound="true"
+                EntitySetPath="bindingParameter">
+                <Parameter Name="bindingParameter"
+                    Type="Collection(Test6.A.Product)" Nullable="false" />
+                <Parameter Name="strength" Type="Edm.Int32"
+                    Nullable="false" />
+                <Parameter Name="thresholds"
+                    Type="Collection(Edm.Int32)" Nullable="false" />
+            </Action>
+            
         </Schema>
         <Schema Namespace="Test6.B"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">
