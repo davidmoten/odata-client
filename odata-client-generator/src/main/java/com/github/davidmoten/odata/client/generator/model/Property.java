@@ -20,7 +20,7 @@ public final class Property {
     }
 
     public String getImportedType(Imports imports) {
-        return names.toImportedType(p, imports);
+        return names.toImportedFullClassName(p, imports);
     }
 
     public String getFieldName() {

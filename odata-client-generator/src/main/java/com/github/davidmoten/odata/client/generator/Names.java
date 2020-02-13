@@ -238,8 +238,12 @@ public final class Names {
         return t.startsWith(COLLECTION_PREFIX) && t.endsWith(")");
     }
 
-    public String toImportedType(TProperty x, Imports imports) {
-        return toType(getType(x), imports, List.class);
+    public String toImportedFullClassName(TProperty x, Imports imports) {
+        return toImportedFullClassName(getType(x), imports, List.class);
+    }
+    
+    public String toImportedFullClassName(TActionFunctionParameter x, Imports imports) {
+        return toImportedFullClassName(getType(x), imports, List.class);
     }
 
     public String toImportedTypeNonCollection(TProperty x, Imports imports) {
@@ -249,15 +253,15 @@ public final class Names {
 
     public String toImportedTypeNonCollection(String t, Imports imports) {
         if (t.startsWith("Edm.")) {
-            return getTypeFromEdm(t, imports);
+            return getImportedFullClassNameFromEdm(t, imports);
         } else {
             return imports.add(getFullClassNameFromTypeWithNamespace(t));
         }
     }
 
-    public String toType(String t, Imports imports, Class<?> collectionClass) {
+    public String toImportedFullClassName(String t, Imports imports, Class<?> collectionClass) {
         if (t.startsWith("Edm.")) {
-            return getTypeFromEdm(t, imports);
+            return getImportedFullClassNameFromEdm(t, imports);
         } else if (isCollection(t)) {
             String inner = getInnerType(t);
             return wrapCollection(imports, collectionClass, inner);
@@ -266,7 +270,7 @@ public final class Names {
         }
     }
 
-    public String getTypeFromEdm(String t, Imports imports) {
+    public String getImportedFullClassNameFromEdm(String t, Imports imports) {
         Class<?> cls = EdmSchemaInfo.INSTANCE.getClassFromTypeWithNamespace(t);
         if (cls.equals(byte[].class)) {
             return "byte[]";
@@ -280,10 +284,10 @@ public final class Names {
             Schema sch = getSchema(inner);
             // get the type without namespace
             String entityRequestClass = getFullClassNameEntityRequestFromTypeWithNamespace(sch, inner);
-            String a = toType(inner, imports, collectionClass);
+            String a = toImportedFullClassName(inner, imports, collectionClass);
             return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass) + ">";
         } else {
-            return imports.add(collectionClass) + "<" + toType(inner, imports, collectionClass) + ">";
+            return imports.add(collectionClass) + "<" + toImportedFullClassName(inner, imports, collectionClass) + ">";
         }
     }
 

@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.odata.client.ActionRequest;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
@@ -149,7 +150,7 @@ public final class Generator {
     }
 
     private void writeComplexTypeRequest(Schema schema, TComplexType x) {
-        // TODO Auto-generated method stub
+        // TODO are these used?
     }
 
     private void writeSchemaInfo(Schema schema) {
@@ -376,10 +377,9 @@ public final class Generator {
             // write Patched class
             writePatchAndPutMethods(t, simpleClassName, imports, indent, p);
 
-            writeBoundActionMethods(t, typeActions, imports, indent, p);
-
-            // write copy method
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
+            
+            writeBoundActionMethods(t, typeActions, imports, indent, p);
 
             // write toString
             writeToString(t, simpleClassName, imports, indent, p);
@@ -401,7 +401,15 @@ public final class Generator {
                             indent, //
                             imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
                             action.getName());
-                    p.format("%spublic void %s() {\n", indent, action.getActionMethodName());
+                    p.format("%spublic %s<%s> %s(%s) {\n", //
+                            indent, //
+                            imports.add(ActionRequest.class), //
+                            imports.add(Void.class), //
+                            action.getActionMethodName(), //
+                            action.getParameters(imports) //
+                                    .stream() //
+                                    .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava)) //
+                                    .collect(Collectors.joining(", ")));
                     p.format("%sthrow new %s();\n", indent.right(), imports.add(UnsupportedOperationException.class));
                     p.format("%s}\n", indent.left());
                 });
@@ -1142,7 +1150,7 @@ public final class Generator {
         }
         properties.stream().forEach(x -> {
             p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
-            p.format("%sprotected %s %s;\n", indent, names.toImportedType(x, imports),
+            p.format("%sprotected %s %s;\n", indent, names.toImportedFullClassName(x, imports),
                     Names.getIdentifier(x.getName()));
             String t = names.getInnerType(names.getType(x));
             if (isCollection(x) && !names.isEntityWithNamespace(t)) {
@@ -1199,7 +1207,7 @@ public final class Generator {
         String t = x.getType().get(0);
         if (!isCollection(x)) {
             if (x.isNullable() != null && x.isNullable()) {
-                String r = names.toType(t, imports, List.class);
+                String r = names.toImportedFullClassName(t, imports, List.class);
                 return imports.add(Optional.class) + "<" + r + ">";
             } else {
                 // is navigation property so must be an entity and is a single request
@@ -1207,7 +1215,7 @@ public final class Generator {
                 return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, t));
             }
         } else {
-            return names.toType(t, imports, CollectionPageEntityRequest.class);
+            return names.toImportedFullClassName(t, imports, CollectionPageEntityRequest.class);
         }
     }
 
@@ -1217,7 +1225,7 @@ public final class Generator {
             Schema sch = names.getSchema(names.getInnerType(t));
             return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, t));
         } else {
-            return names.toType(t, imports, CollectionPageEntityRequest.class);
+            return names.toImportedFullClassName(t, imports, CollectionPageEntityRequest.class);
         }
     }
 

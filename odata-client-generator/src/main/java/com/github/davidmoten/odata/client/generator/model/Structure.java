@@ -87,7 +87,7 @@ public abstract class Structure<T> {
 
     private final Stream<Field> toFields(TProperty x, Imports imports) {
         Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
-                names.toImportedType(x, imports));
+                names.toImportedFullClassName(x, imports));
         if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
             Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
                     imports.add(String.class));
