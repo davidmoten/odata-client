@@ -1,7 +1,8 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -9,13 +10,11 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class ActionRequest<T> {
     
     private final List<RequestHeader> requestHeaders;
-    private String metadata;
-    private boolean useCaches;
-    private Optional<String> expand;
-    private Optional<String> select;
+    private final Map<String, String> queries;
     
     public ActionRequest(boolean isCollection, Class<?> innerReturnClass, Object... parameters) {
         this.requestHeaders = Lists.newArrayList();
+        this.queries = new HashMap<>();
     }
     
     public T call() {
@@ -30,40 +29,33 @@ public final class ActionRequest<T> {
 
     public ActionRequest<T> select(String clause) {
         Preconditions.checkNotNull(clause);
-        this.select = Optional.of(clause);
+        queries.put("$select", clause);
         return this;
     }
 
     public ActionRequest<T> expand(String clause) {
         Preconditions.checkNotNull(clause);
-        this.expand = Optional.of(clause);
-        return this;
-    }
-
-    public ActionRequest<T> useCaches(boolean value) {
-        // TODO implement useCaches
-        this.useCaches = value;
+        queries.put("$expand", clause);
         return this;
     }
 
     public ActionRequest<T> useCaches() {
-        return useCaches(true);
+        //TODO support useCaches
+        throw new UnsupportedOperationException();
     }
 
     public ActionRequest<T> metadataNone() {
-        this.metadata = "none";
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata("none"));
         return this;
     }
 
     public ActionRequest<T> metadataMinimal() {
-        this.metadata = "minimal";
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata("minimal"));
         return this;
     }
 
     public ActionRequest<T> metadataFull() {
-        this.metadata = "full";
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata("full"));
         return this;
     }
-
-    
 }

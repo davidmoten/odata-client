@@ -168,8 +168,7 @@ public final class RequestHelper {
             String odataMetadataValue) {
         List<RequestHeader> h = new ArrayList<>();
         h.add(new RequestHeader("OData-Version", "4.0"));
-        h.add(new RequestHeader("Content-Type",
-                "application/json;odata.metadata=" + odataMetadataValue));
+        h.add(RequestHeader.contentTypeJsonWithMetadata(odataMetadataValue));
         h.add(new RequestHeader("Accept", "application/json"));
         h.addAll(options.getRequestHeaders());
         return h;

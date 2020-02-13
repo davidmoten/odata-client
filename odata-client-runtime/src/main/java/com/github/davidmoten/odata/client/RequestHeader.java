@@ -22,4 +22,13 @@ public final class RequestHeader {
         return value;
     }
 
+    public static RequestHeader acceptJsonWithMetadata(String metadata) {
+        return new RequestHeader("Accept", "application/json;odata.metadata=" + metadata);
+    }
+
+    public static RequestHeader contentTypeJsonWithMetadata(String metadata) {
+        return new RequestHeader("Content-Type",
+                "application/json;odata.metadata=" + metadata);
+    }
+
 }
