@@ -245,6 +245,10 @@ public final class Names {
     public String toImportedFullClassName(TActionFunctionParameter x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);
     }
+    
+    public String toImportedFullClassName(TActionFunctionReturnType x, Imports imports) {
+        return toImportedFullClassName(getType(x), imports, List.class);
+    }
 
     public String toImportedTypeNonCollection(TProperty x, Imports imports) {
         Preconditions.checkArgument(!isCollection(x));
@@ -647,5 +651,6 @@ public final class Names {
     public File getClassFileActionRequest(Schema schema, String name) {
         return new File(getDirectoryActionRequest(schema), getSimpleClassNameActionRequest(schema, name) + ".java");        
     }
+
 
 }
