@@ -87,7 +87,7 @@ public final class Generator {
 
             Util.replaceAliases(schema);
 
-            Map<String, List<TAction>> typeActions = createTypeActions(schema);
+            Map<String, List<Action>> typeActions = createTypeActions(schema, names);
 
             writeSchemaInfo(schema);
 
@@ -130,18 +130,18 @@ public final class Generator {
 
     }
 
-    private Map<String, List<TAction>> createTypeActions(Schema schema) {
-        Map<String, List<TAction>> typeActions = new HashMap<>();
+    private Map<String, List<Action>> createTypeActions(Schema schema, Names names) {
+        Map<String, List<Action>> typeActions = new HashMap<>();
         Util.types(schema, TAction.class) //
                 .forEach(action -> {
                     Action a = new Action(action, names);
                     a.getBoundTypeWithNamespace() //
                             .ifPresent(x -> {
-                                List<TAction> list = typeActions.get(x);
+                                List<Action> list = typeActions.get(x);
                                 if (list == null) {
-                                    typeActions.put(x, Lists.newArrayList(action));
+                                    typeActions.put(x, Lists.newArrayList(a));
                                 } else {
-                                    list.add(action);
+                                    list.add(a);
                                 }
                             });
                 });
@@ -289,7 +289,7 @@ public final class Generator {
         }
     }
 
-    private void writeEntity(TEntityType entityType, Map<String, List<TAction>> typeActions) {
+    private void writeEntity(TEntityType entityType, Map<String, List<Action>> typeActions) {
         EntityType t = new EntityType(entityType, names);
         t.getDirectoryEntity().mkdirs();
         String simpleClassName = t.getSimpleClassName();
@@ -392,12 +392,18 @@ public final class Generator {
         }
     }
 
-    private void writeBoundActionMethods(EntityType t, Map<String, List<TAction>> typeActions, Imports imports,
+    private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions, Imports imports,
             Indent indent, PrintWriter p) {
         typeActions //
                 .getOrDefault(t.getFullType(), Collections.emptyList()) //
                 .forEach(action -> {
-                    p.format("%s// Action %s\n", indent, action.getName());
+                    p.format("\n%s@%s(name = \"%s\")\n", //
+                            indent, //
+                            imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
+                            action.getName());
+                    p.format("%spublic void %s() {\n", indent, action.getActionMethodName());
+                    p.format("%sthrow new %s();\n", indent.right(), imports.add(UnsupportedOperationException.class));
+                    p.format("%s}\n", indent.left());
                 });
     }
 
@@ -434,7 +440,7 @@ public final class Generator {
             // copy method not required if no fields to mutate on
             return;
         }
-        p.format("%sprivate %s _copy() {\n", indent, simpleClassName);
+        p.format("\n%sprivate %s _copy() {\n", indent, simpleClassName);
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
         p.format("%s_x.contextPath = contextPath;\n", indent);

@@ -230,6 +230,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         _x.changedFields = null;
         return _x;
     }
+
     private FileAttachment _copy() {
         FileAttachment _x = new FileAttachment();
         _x.contextPath = contextPath;

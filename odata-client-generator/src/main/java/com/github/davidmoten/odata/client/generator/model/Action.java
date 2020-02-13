@@ -69,4 +69,12 @@ public final class Action {
         }
     }
 
+    public String getName() {
+        return action.getName();
+    }
+
+    public String getActionMethodName() {
+        return Names.getIdentifier(action.getName());
+    }
+
 }
