@@ -7,7 +7,7 @@ public final class ActionRequestReturningNonCollection<T>
 
     public ActionRequestReturningNonCollection(ContextPath contextPath, Class<T> returnClass,
             Map<String, Object> parameters) {
-        super();
+        super(parameters, contextPath);
     }
 
     public T get() {

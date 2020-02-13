@@ -9,9 +9,18 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 public abstract class ActionRequestBase<T extends ActionRequestBase<T>> {
     
+    protected final ContextPath contextPath;
+    
+    protected final Map<String, Object> parameters;
+    
     protected final List<RequestHeader> requestHeaders = new ArrayList<>();
     protected final Map<String,String> queries = new HashMap<>();
 
+    public ActionRequestBase(Map<String, Object> parameters, ContextPath contextPath) {
+        this.parameters = parameters;
+        this.contextPath = contextPath;
+    }
+    
     @SuppressWarnings("unchecked")
     public T requestHeader(String key, String value) {
         requestHeaders.add(new RequestHeader(key, value));
