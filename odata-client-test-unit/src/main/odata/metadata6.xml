@@ -18,8 +18,10 @@
                     Type="Collection(Test6.A.Product)" Nullable="false" />
                 <Parameter Name="strength" Type="Edm.Int32"
                     Nullable="false" />
-                <ReturnType
-                    Type="Edm.String" Nullable="false" />
+                <Parameter Name="thresholds"
+                    Type="Collection(Edm.Int32)" Nullable="false" />
+                <ReturnType Type="Edm.String"
+                    Nullable="false" />
             </Action>
         </Schema>
         <Schema Namespace="Test6.B"

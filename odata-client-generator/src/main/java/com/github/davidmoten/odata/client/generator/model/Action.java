@@ -1,14 +1,16 @@
 package com.github.davidmoten.odata.client.generator.model;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
-import org.oasisopen.odata.csdl.v4.TProperty;
 
+import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
 
@@ -77,4 +79,25 @@ public final class Action {
         return Names.getIdentifier(action.getName());
     }
 
+    public List<Parameter> getParameters(Imports imports) {
+        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class) //
+        .filter(x -> !action.isIsBound() || !x.getName().equals(action.getEntitySetPath())) //
+        .map(x -> new Parameter(x, names, imports)) //
+        .collect(Collectors.toList());
+    }
+    
+    public static final class Parameter {
+        public final String name;
+        public final String nameJava;
+        public final String importedFullClassName;
+        
+        public final boolean isCollection;
+        
+        public Parameter(TActionFunctionParameter p, Names names, Imports imports) {
+            this.name = p.getName();
+            this.nameJava = Names.getIdentifier(p.getName());
+            this.importedFullClassName = names.toImportedFullClassName(p, imports);
+            this.isCollection = names.isCollection(p);
+        }
+    }
 }
