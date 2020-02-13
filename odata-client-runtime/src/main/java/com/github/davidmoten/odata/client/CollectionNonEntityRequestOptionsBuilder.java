@@ -86,7 +86,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T, R extends NonEnti
     }
 
     CollectionNonEntityRequestOptions build() {
-        requestHeaders.add(new RequestHeader("Accept", "application/json;odata.metadata=" + metadata));
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionNonEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select,
                 expand);
     }

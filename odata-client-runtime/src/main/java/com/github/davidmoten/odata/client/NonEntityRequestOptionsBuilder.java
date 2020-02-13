@@ -70,7 +70,7 @@ public final class NonEntityRequestOptionsBuilder<T> {
     }
 
     private NonEntityRequestOptions<T> build() {
-        requestHeaders.add(new RequestHeader("Accept", "application/json;odata.metadata=" + metadata));
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new NonEntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
     }
 

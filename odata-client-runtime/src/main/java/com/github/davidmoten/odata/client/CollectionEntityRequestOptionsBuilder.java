@@ -86,7 +86,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     }
 
     CollectionEntityRequestOptions build() {
-        requestHeaders.add(new RequestHeader("Accept", "application/json;odata.metadata=" + metadata));
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select, expand);
     }
 

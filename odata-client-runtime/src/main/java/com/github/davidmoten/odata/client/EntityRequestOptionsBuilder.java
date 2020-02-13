@@ -82,7 +82,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
     }
 
     private EntityRequestOptions<T> build() {
-        requestHeaders.add(new RequestHeader("Accept", "application/json;odata.metadata=" + metadata));
+        requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
     }
 
