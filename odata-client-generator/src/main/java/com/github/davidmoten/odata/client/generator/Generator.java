@@ -404,7 +404,7 @@ public final class Generator {
                     p.format("%spublic %s<%s> %s(%s) {\n", //
                             indent, //
                             imports.add(ActionRequest.class), //
-                            imports.add(Void.class), //
+                            action.hasReturnType()? action.getReturnImportedFullClassName(imports).importedFullClassName: imports.add(Void.class), //
                             action.getActionMethodName(), //
                             action.getParameters(imports) //
                                     .stream() //

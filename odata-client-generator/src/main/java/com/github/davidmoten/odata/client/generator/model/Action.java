@@ -81,23 +81,46 @@ public final class Action {
 
     public List<Parameter> getParameters(Imports imports) {
         return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class) //
-        .filter(x -> !action.isIsBound() || !x.getName().equals(action.getEntitySetPath())) //
-        .map(x -> new Parameter(x, names, imports)) //
-        .collect(Collectors.toList());
+                .filter(x -> !action.isIsBound() || !x.getName().equals(action.getEntitySetPath())) //
+                .map(x -> new Parameter(x, names, imports)) //
+                .collect(Collectors.toList());
     }
-    
+
     public static final class Parameter {
         public final String name;
         public final String nameJava;
         public final String importedFullClassName;
-        
+
         public final boolean isCollection;
-        
+
         public Parameter(TActionFunctionParameter p, Names names, Imports imports) {
             this.name = p.getName();
             this.nameJava = Names.getIdentifier(p.getName());
             this.importedFullClassName = names.toImportedFullClassName(p, imports);
             this.isCollection = names.isCollection(p);
         }
+    }
+    
+    public static final class ReturnType {
+        public final String importedFullClassName;
+        public final boolean isCollection;
+
+        public ReturnType(String importedFullClassName, boolean isCollection) {
+            this.importedFullClassName = importedFullClassName;
+            this.isCollection = isCollection;
+        }
+    }
+
+    public boolean hasReturnType() {
+        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+                .findFirst() //
+                .isPresent();
+    }
+
+    public ReturnType getReturnImportedFullClassName(Imports imports) {
+        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+                .findFirst() //
+                .map(x -> new ReturnType(names.toImportedFullClassName(x, imports), names.isCollection(x))) //
+                .get();
     }
 }
