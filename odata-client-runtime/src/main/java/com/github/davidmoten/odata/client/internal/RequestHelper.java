@@ -82,7 +82,7 @@ public final class RequestHelper {
 
     public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
             RequestOptions options) {
-        return submit(entity, contextPath, options, HttpMethod.PATCH);
+        return patchOrPut(entity, contextPath, options, HttpMethod.PATCH);
     }
 
     public static <T extends ODataEntityType> void delete(ContextPath cp, RequestOptions options) {
@@ -96,12 +96,12 @@ public final class RequestHelper {
 
     public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath,
             RequestOptions options) {
-        return submit(entity, contextPath, options, HttpMethod.PUT);
+        return patchOrPut(entity, contextPath, options, HttpMethod.PUT);
     }
 
-    private static <T extends ODataEntityType> T submit(T entity, ContextPath contextPath,
+    private static <T extends ODataEntityType> T patchOrPut(T entity, ContextPath contextPath,
             RequestOptions options, HttpMethod method) {
-
+        Preconditions.checkArgument(method == HttpMethod.PUT || method == HttpMethod.PATCH);
         String json = Serializer.INSTANCE.serializeChangesOnly(entity);
 
         // build the url
@@ -285,9 +285,25 @@ public final class RequestHelper {
     }
 
     public static void post(Map<String, Object> parameters, ContextPath contextPath,
-            RequestOptions requestOptions, SchemaInfo schemaInfo) {
-        // TODO Auto-generated method stub
+            RequestOptions options) {
         
+        String json = Serializer.INSTANCE.serializeAny(parameters);
+
+        // build the url
+        ContextPath cp = contextPath.addQueries(options.getQueries());
+        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        final String url = cp.toUrl();
+
+        // get the response
+        HttpService service = cp.context().service();
+        final HttpResponse response = service.post(url, h, json);
+        
+        // deserialize
+        if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+            //TODO 204 code would not apply to a POST
+            throw new RuntimeException("Returned response code " + response.getResponseCode()
+                    + " from PATCH/PUT at url=" + url + ", expected 204 (NO_CONTENT)");
+        }
     }
 
 }

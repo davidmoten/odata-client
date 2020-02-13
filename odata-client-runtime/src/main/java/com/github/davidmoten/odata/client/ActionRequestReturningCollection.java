@@ -8,7 +8,7 @@ public final class ActionRequestReturningCollection<T>
 
     public ActionRequestReturningCollection(ContextPath contextPath, Class<T> returnClass,
             Map<String, Object> parameters) {
-        super();
+        super(parameters, contextPath);
     }
 
     public Collection<T> get() {

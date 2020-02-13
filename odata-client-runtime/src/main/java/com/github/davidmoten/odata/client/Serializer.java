@@ -87,6 +87,18 @@ public final class Serializer {
             throw new RuntimeException(e);
         }
     }
+    
+    public <T> String serializeAny(T object) {
+        try {
+            ObjectMapper m = createObjectMapper();
+            String s = m.writeValueAsString(object);
+            JsonNode tree = m.readTree(s);
+            ObjectNode o = (ObjectNode) tree;
+            return o.toString();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
         try {
@@ -106,7 +118,7 @@ public final class Serializer {
             o.remove(list);
             return o.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
