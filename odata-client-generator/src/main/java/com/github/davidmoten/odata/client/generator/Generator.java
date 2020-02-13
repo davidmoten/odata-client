@@ -564,9 +564,8 @@ public final class Generator {
             Indent indent, PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
         p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
-        p.format("%s%s.%s(this, contextPath, %s.EMPTY,  %s.INSTANCE);\n", indent.right(),
-                imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class),
-                imports.add(t.getFullClassNameSchema()));
+        p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(), imports.add(RequestHelper.class),
+                methodName, imports.add(RequestOptions.class));
 
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = _copy();\n", indent, simpleClassName);

@@ -15,6 +15,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
+import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntityType;
@@ -80,8 +81,8 @@ public final class RequestHelper {
     }
 
     public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
-            RequestOptions options, SchemaInfo schemaInfo) {
-        return patch(entity, contextPath, options, schemaInfo, false);
+            RequestOptions options) {
+        return submit(entity, contextPath, options, HttpMethod.PATCH);
     }
 
     public static <T extends ODataEntityType> void delete(ContextPath cp, RequestOptions options) {
@@ -94,12 +95,12 @@ public final class RequestHelper {
     }
 
     public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath,
-            RequestOptions options, SchemaInfo schemaInfo) {
-        return patch(entity, contextPath, options, schemaInfo, true);
+            RequestOptions options) {
+        return submit(entity, contextPath, options, HttpMethod.PUT);
     }
 
-    private static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
-            RequestOptions options, SchemaInfo schemaInfo, boolean usePUT) {
+    private static <T extends ODataEntityType> T submit(T entity, ContextPath contextPath,
+            RequestOptions options, HttpMethod method) {
 
         String json = Serializer.INSTANCE.serializeChangesOnly(entity);
 
@@ -137,14 +138,10 @@ public final class RequestHelper {
         }
         // get the response
         HttpService service = cp.context().service();
-        final HttpResponse response;
-        if (usePUT) {
-            response = service.put(url, h, json);
-        } else {
-            response = service.patch(url, h, json);
-        }
+        final HttpResponse response = service.submitWithContent(method, url, h, json);
         // deserialize
         if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+            //TODO 204 code would not apply to a POST
             throw new RuntimeException("Returned response code " + response.getResponseCode()
                     + " from PATCH/PUT at url=" + url + ", expected 204 (NO_CONTENT)");
         }
