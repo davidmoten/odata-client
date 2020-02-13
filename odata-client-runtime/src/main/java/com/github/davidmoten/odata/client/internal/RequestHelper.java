@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -284,6 +285,12 @@ public final class RequestHelper {
                     contentType, //
                     base64));
         }
+    }
+
+    public static void post(Map<String, Object> parameters, ContextPath contextPath,
+            RequestOptions requestOptions, SchemaInfo schemaInfo) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
