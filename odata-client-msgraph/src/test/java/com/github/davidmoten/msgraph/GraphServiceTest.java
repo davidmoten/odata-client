@@ -185,7 +185,7 @@ public class GraphServiceTest {
                         "/response-messages-expand-attachments-minimal-metadata.json") //
                 .expectRequest(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
-                        "/request-patch-message-is-read.json", HttpMethod.PATCH) //
+                        "/request-post-action-move.json", HttpMethod.POST) //
                 .build();
         Message m = client //
                 .users("fred") //
