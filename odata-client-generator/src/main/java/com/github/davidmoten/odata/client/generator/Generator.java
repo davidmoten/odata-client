@@ -92,39 +92,51 @@ public final class Generator {
 
             System.out.println("generating for namespace=" + schema.getNamespace());
 
+            System.out.println("  replacing aliases");
             Util.replaceAliases(schema);
 
+            System.out.println("  creating type actions");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names);
 
+            
+            System.out.println("  writing schema info");
             writeSchemaInfo(schema);
 
             // write enums
+            System.out.println("  writing enums");
             Util.types(schema, TEnumType.class) //
                     .forEach(x -> writeEnum(schema, x));
 
             // write entityTypes
+            System.out.println("  writing entities");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntity(x, typeActions));
 
             // write complexTypes
+            System.out.println("  writing complex types");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexType(schema, x));
 
             // write entity collection requests
+            System.out.println("  writing entity collection requests");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeCollectionRequest(schema, x));
 
+            System.out.println("  writing complex type collection requests");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeCollectionRequest(schema, x));
 
             // write containers
+            System.out.println("  writing container");
             Util.types(schema, TEntityContainer.class) //
                     .forEach(x -> writeContainer(schema, x));
 
             // write single requests
+            System.out.println("  writing entity requests");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityRequest(schema, x));
 
+            System.out.println("  writing complex type requests");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
 
