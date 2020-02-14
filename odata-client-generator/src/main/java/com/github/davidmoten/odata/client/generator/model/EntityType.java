@@ -15,6 +15,8 @@ import com.github.davidmoten.odata.client.generator.Util;
 
 public final class EntityType extends Structure<TEntityType> {
 
+    private Schema schema;
+
     public EntityType(TEntityType c, Names names) {
         super(c, TEntityType.class, names);
     }
@@ -80,7 +82,10 @@ public final class EntityType extends Structure<TEntityType> {
     }
 
     private Schema schema() {
-        return names.getSchema(value);
+        if (schema == null) {
+            schema = names.getSchema(value);
+        }
+        return schema;
     }
 
     public String getFullClassNameEntity() {
