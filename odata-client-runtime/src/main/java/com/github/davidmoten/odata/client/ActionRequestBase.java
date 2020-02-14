@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public abstract class ActionRequestBase<T extends ActionRequestBase<T>> {
+public abstract class ActionRequestBase<T extends ActionRequestBase<T>> implements RequestOptions {
     
     protected final ContextPath contextPath;
     
@@ -63,4 +63,16 @@ public abstract class ActionRequestBase<T extends ActionRequestBase<T>> {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata("full"));
         return (T) this;
     }
+
+    @Override
+    public List<RequestHeader> getRequestHeaders() {
+        return requestHeaders;
+    }
+
+    @Override
+    public Map<String, String> getQueries() {
+        return queries;
+    }
+    
+    
 }
