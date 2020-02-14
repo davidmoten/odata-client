@@ -176,16 +176,19 @@ public class GraphServiceTest {
         String editLink = a.getUnmappedFields().get("@odata.editLink").toString();
         assertEquals("editLink1", editLink);
     }
-    
+
     @Test
     public void testMailMove() {
+        // TODO get real json to use for this test
         GraphService client = serviceBuilder() //
                 .replyWithResource(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
                         "/response-messages-expand-attachments-minimal-metadata.json") //
-                .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
-                        "/request-post-action-move.json", HttpMethod.POST) //
+                .expectRequestAndReply(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D", //
+                        "/request-post-action-move.json", //
+                        "/response-message.json", //
+                        HttpMethod.POST) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -195,7 +198,7 @@ public class GraphServiceTest {
                 .expand("attachments") //
                 .orderBy("createdDateTime") //
                 .metadataMinimal() //
-                .get() //;
+                .get() // ;
                 .iterator() //
                 .next();
         Message m2 = m.move("Archive").metadataFull().get();
@@ -220,7 +223,7 @@ public class GraphServiceTest {
                 .expand("attachments") //
                 .orderBy("createdDateTime") //
                 .metadataMinimal() //
-                .get() //;
+                .get() // ;
                 .iterator() //
                 .next();
 
