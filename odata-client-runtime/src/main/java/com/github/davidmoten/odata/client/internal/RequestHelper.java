@@ -53,12 +53,18 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
 
+    //designed for saving a new entity and returning that entity
     public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath,
+            Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
+        return postAny(entity, contextPath, cls, options, schemaInfo);
+    }
+    
+    public static <T> T postAny(Object object, ContextPath contextPath,
             Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        String json = Serializer.INSTANCE.serialize(entity);
+        String json = Serializer.INSTANCE.serialize(object);
 
         List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
 
@@ -287,7 +293,7 @@ public final class RequestHelper {
     public static void post(Map<String, Object> parameters, ContextPath contextPath,
             RequestOptions options) {
         
-        String json = Serializer.INSTANCE.serializeAny(parameters);
+        String json = Serializer.INSTANCE.serialize(parameters);
 
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
