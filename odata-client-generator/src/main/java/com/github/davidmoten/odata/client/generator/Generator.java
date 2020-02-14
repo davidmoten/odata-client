@@ -455,7 +455,7 @@ public final class Generator {
                                     indent, //
                                     imports.add(ActionRequestReturningCollection.class), //
                                     returnType.innerImportedFullClassName, //
-                                    action.getName(), //
+                                    action.getFullType(), //
                                     returnType.innerImportedFullClassName);
                         } else {
                             p.format(
@@ -463,7 +463,7 @@ public final class Generator {
                                     indent, //
                                     imports.add(ActionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
-                                    action.getName(), //
+                                    action.getFullType(), //
                                     returnType.innerImportedFullClassName, 
                                     imports.add(action.getReturnTypeFullClassNameSchemaInfo()));
                         }
@@ -476,7 +476,7 @@ public final class Generator {
                         p.format("%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
                                 indent, //
                                 imports.add(ActionRequestNoReturn.class), //
-                                action.getName());
+                                action.getFullType());
                     }
                     p.format("%s}\n", indent.left());
                 });

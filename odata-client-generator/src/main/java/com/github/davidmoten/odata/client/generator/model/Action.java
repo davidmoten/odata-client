@@ -144,4 +144,8 @@ public final class Action {
     public String getReturnTypeFullClassNameSchemaInfo() {
         return names.getFullClassNameSchemaInfo(schema());
     }
+
+    public String getFullType() {
+        return names.getFullTypeFromSimpleType(schema(), action.getName());
+    }
 }
