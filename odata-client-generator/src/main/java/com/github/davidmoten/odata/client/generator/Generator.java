@@ -176,7 +176,7 @@ public final class Generator {
                 p.format("%sINSTANCE;\n\n", indent.right());
 
                 // add fields for entities map
-                p.format("%sprivate final %s<%s,%s<? extends %s>> classes = new %s<>();\n\n", //
+                p.format("%sprivate final %s<%s, %s<? extends %s>> classes = new %s<>();\n\n", //
                         indent, //
                         imports.add(Map.class), //
                         imports.add(String.class), //
@@ -446,11 +446,12 @@ public final class Generator {
                                     returnType.innerImportedFullClassName);
                         } else {
                             p.format(
-                                    "%sreturn new %s<%s>(this.contextPath, %s.class, _parameters);\n", //
+                                    "%sreturn new %s<%s>(this.contextPath, %s.class, _parameters, %s.INSTANCE);\n", //
                                     indent, //
                                     imports.add(ActionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
-                                    returnType.innerImportedFullClassName);
+                                    returnType.innerImportedFullClassName, 
+                                    imports.add(action.getReturnTypeFullClassNameSchemaInfo()));
                         }
                     } else {
                         p.format("%spublic %s %s(%s) {\n", //

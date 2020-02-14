@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
@@ -175,6 +176,31 @@ public class GraphServiceTest {
         String editLink = a.getUnmappedFields().get("@odata.editLink").toString();
         assertEquals("editLink1", editLink);
     }
+    
+    @Test
+    @Ignore
+    public void testMailMove() {
+        GraphService client = serviceBuilder() //
+                .replyWithResource(
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
+                        "/response-messages-expand-attachments-minimal-metadata.json") //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
+                        "/request-patch-message-is-read.json", HttpMethod.PATCH) //
+                .build();
+        Message m = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .expand("attachments") //
+                .orderBy("createdDateTime") //
+                .metadataMinimal() //
+                .get() //;
+                .iterator() //
+                .next();
+        Message m2 = m.move("Archive").metadataFull().get();
+    }
 
     @Test
     public void testMailRead() {
@@ -187,7 +213,7 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
                         "/request-patch-message-is-read.json", HttpMethod.PATCH) //
                 .build();
-        CollectionPageEntity<Message> messages = client //
+        Message m = client //
                 .users("fred") //
                 .mailFolders("inbox") //
                 .messages() //
@@ -195,9 +221,10 @@ public class GraphServiceTest {
                 .expand("attachments") //
                 .orderBy("createdDateTime") //
                 .metadataMinimal() //
-                .get();
-        // iterable implementation handles paging for you!
-        Message m = messages.iterator().next();
+                .get() //;
+                .iterator() //
+                .next();
+
         System.out.println(m.getSubject());
         // mark as read
         m.withIsRead(true).patch();
