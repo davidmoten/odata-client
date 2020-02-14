@@ -178,7 +178,6 @@ public class GraphServiceTest {
     }
     
     @Test
-    @Ignore
     public void testMailMove() {
         GraphService client = serviceBuilder() //
                 .replyWithResource(
