@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -11,6 +13,9 @@
     <artifactId>odata-client-msgraph</artifactId>
     <name>${project.artifactId}</name>
     <description>OData client generator</description>
+    <properties>
+        <log4j.version>2.13.0</log4j.version>
+    </properties>
 
     <dependencies>
 
@@ -28,9 +33,21 @@
 
         <!-- Test Dependencies -->
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.11.1</version>
+            <version>${log4j.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -74,25 +91,25 @@
                     </execution>
                 </executions>
             </plugin>
-<!--             <plugin> -->
-<!--                 <groupId>org.apache.olingo</groupId> -->
-<!--                 <artifactId>pojogen-maven-plugin</artifactId> -->
-<!--                 <version>4.5.0</version> -->
-<!--                 <configuration> -->
-<!--                     <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory> -->
-<!--                     <localEdm>${basedir}/../odata-client-generator/src/test/resources/msgraph-1.0-20180905-formatted.xml</localEdm> -->
-<!--                     <basePackage>odata.msgraph.olingo.client</basePackage> -->
-<!--                 </configuration> -->
-<!--                 <executions> -->
-<!--                     <execution> -->
-<!--                         <id>v4pojoGen</id> -->
-<!--                         <phase>generate-sources</phase> -->
-<!--                         <goals> -->
-<!--                             <goal>v4pojoGen</goal> -->
-<!--                         </goals> -->
-<!--                     </execution> -->
-<!--                 </executions> -->
-<!--             </plugin> -->
+            <!-- <plugin> -->
+            <!-- <groupId>org.apache.olingo</groupId> -->
+            <!-- <artifactId>pojogen-maven-plugin</artifactId> -->
+            <!-- <version>4.5.0</version> -->
+            <!-- <configuration> -->
+            <!-- <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory> -->
+            <!-- <localEdm>${basedir}/../odata-client-generator/src/test/resources/msgraph-1.0-20180905-formatted.xml</localEdm> -->
+            <!-- <basePackage>odata.msgraph.olingo.client</basePackage> -->
+            <!-- </configuration> -->
+            <!-- <executions> -->
+            <!-- <execution> -->
+            <!-- <id>v4pojoGen</id> -->
+            <!-- <phase>generate-sources</phase> -->
+            <!-- <goals> -->
+            <!-- <goal>v4pojoGen</goal> -->
+            <!-- </goals> -->
+            <!-- </execution> -->
+            <!-- </executions> -->
+            <!-- </plugin> -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -143,25 +160,25 @@
                                         <ignore />
                                     </action>
                                 </pluginExecution>
-<!--                                 <pluginExecution> -->
-<!--                                     <pluginExecutionFilter> -->
-<!--                                         <groupId> -->
-<!--                                             org.apache.olingo -->
-<!--                                         </groupId> -->
-<!--                                         <artifactId> -->
-<!--                                             pojogen-maven-plugin -->
-<!--                                         </artifactId> -->
-<!--                                         <versionRange> -->
-<!--                                             [4.5.0,) -->
-<!--                                         </versionRange> -->
-<!--                                         <goals> -->
-<!--                                             <goal>v4pojoGen</goal> -->
-<!--                                         </goals> -->
-<!--                                     </pluginExecutionFilter> -->
-<!--                                     <action> -->
-<!--                                         <ignore></ignore> -->
-<!--                                     </action> -->
-<!--                                 </pluginExecution> -->
+                                <!-- <pluginExecution> -->
+                                <!-- <pluginExecutionFilter> -->
+                                <!-- <groupId> -->
+                                <!-- org.apache.olingo -->
+                                <!-- </groupId> -->
+                                <!-- <artifactId> -->
+                                <!-- pojogen-maven-plugin -->
+                                <!-- </artifactId> -->
+                                <!-- <versionRange> -->
+                                <!-- [4.5.0,) -->
+                                <!-- </versionRange> -->
+                                <!-- <goals> -->
+                                <!-- <goal>v4pojoGen</goal> -->
+                                <!-- </goals> -->
+                                <!-- </pluginExecutionFilter> -->
+                                <!-- <action> -->
+                                <!-- <ignore></ignore> -->
+                                <!-- </action> -->
+                                <!-- </pluginExecution> -->
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
