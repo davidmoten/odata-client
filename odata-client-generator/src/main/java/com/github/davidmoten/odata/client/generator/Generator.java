@@ -451,17 +451,19 @@ public final class Generator {
                         writeParameterMap(imports, indent, p, parameters);
                         if (returnType.isCollection) {
                             p.format(
-                                    "%sreturn new %s<%s>(this.contextPath, %s.class, _parameters);\n", //
+                                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
                                     indent, //
                                     imports.add(ActionRequestReturningCollection.class), //
                                     returnType.innerImportedFullClassName, //
+                                    action.getName(), //
                                     returnType.innerImportedFullClassName);
                         } else {
                             p.format(
-                                    "%sreturn new %s<%s>(this.contextPath, %s.class, _parameters, %s.INSTANCE);\n", //
+                                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                     indent, //
                                     imports.add(ActionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
+                                    action.getName(), //
                                     returnType.innerImportedFullClassName, 
                                     imports.add(action.getReturnTypeFullClassNameSchemaInfo()));
                         }
@@ -471,9 +473,10 @@ public final class Generator {
                                 imports.add(ActionRequestNoReturn.class), //
                                 action.getActionMethodName(), paramsDeclaration);
                         writeParameterMap(imports, indent, p, parameters);
-                        p.format("%sreturn new %s(this.contextPath, _parameters);\n", //
+                        p.format("%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
                                 indent, //
-                                imports.add(ActionRequestNoReturn.class));
+                                imports.add(ActionRequestNoReturn.class), //
+                                action.getName());
                     }
                     p.format("%s}\n", indent.left());
                 });
