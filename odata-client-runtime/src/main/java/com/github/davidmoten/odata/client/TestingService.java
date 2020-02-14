@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class TestingService {
-
+    
     public static Builder replyWithResource(String path, String resourceName) {
         return new Builder().replyWithResource(path, resourceName);
     }
@@ -78,13 +78,17 @@ public final class TestingService {
         private static String toKey(HttpMethod method, String url) {
             return method + "_" + url;
         }
+        
+        private static final void log(Object o) {
+            System.out.println(String.valueOf(o));
+        }
 
         protected HttpService createService() {
             return new HttpService() {
 
                 @Override
                 public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
-                    responses.entrySet().forEach(System.out::println);
+                    responses.entrySet().forEach(r -> log(r));
                     String resourceName = responses.get(BuilderBase.toKey(HttpMethod.GET, url));
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url);
@@ -103,8 +107,8 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String text) {
-                    System.out.println("PATCH called at " + url);
-                    System.out.println(text);
+                    log("PATCH called at" + url);
+                    log(text);
                     String resourceName = requests.get(BuilderBase.toKey(HttpMethod.PATCH, url));
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url);
@@ -131,8 +135,8 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse post(String url, List<RequestHeader> requestHeaders, String text) {
-                    System.out.println("POST called at " + url);
-                    System.out.println(text);
+                    log("POST called at" + url);
+                    log(text);
                     String requestResourceName = requests.get(BuilderBase.toKey(HttpMethod.POST, url));
 
                     try {
@@ -152,7 +156,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
-                    System.out.println("DELETE called at " + url);
+                    log("DELETE called at\n" + url);
                     String resourceName = requests.get(BuilderBase.toKey(HttpMethod.DELETE, url));
                     if (resourceName == null) {
                         throw new RuntimeException("DELETE request not expected for url=" + url);
