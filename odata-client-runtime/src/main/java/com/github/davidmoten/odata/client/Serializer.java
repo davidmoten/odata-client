@@ -79,7 +79,7 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntityType> String serialize(T entity) {
+    public String serialize(Object entity) {
         ObjectMapper m = createObjectMapper();
         try {
             return m.writeValueAsString(entity);
@@ -88,18 +88,6 @@ public final class Serializer {
         }
     }
     
-    public <T> String serializeAny(T object) {
-        try {
-            ObjectMapper m = createObjectMapper();
-            String s = m.writeValueAsString(object);
-            JsonNode tree = m.readTree(s);
-            ObjectNode o = (ObjectNode) tree;
-            return o.toString();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
     public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
         try {
             ObjectMapper m = createObjectMapper();

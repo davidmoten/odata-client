@@ -18,7 +18,7 @@ public final class ActionRequestReturningNonCollection<T>
     }
 
     public T get() {
-        return RequestHelper.get(contextPath, returnClass, this, schemaInfo);
+        return RequestHelper.postAny(parameters,contextPath, returnClass, this, schemaInfo);
     }
 
 }
