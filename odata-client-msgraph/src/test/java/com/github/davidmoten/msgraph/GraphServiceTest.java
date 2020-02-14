@@ -187,7 +187,7 @@ public class GraphServiceTest {
                 .expectRequestAndReply(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D", //
                         "/request-post-action-move.json", //
-                        "/response-message.json", //
+                        "/response-message-move.json", //
                         HttpMethod.POST) //
                 .build();
         Message m = client //
@@ -202,6 +202,7 @@ public class GraphServiceTest {
                 .iterator() //
                 .next();
         Message m2 = m.move("Archive").metadataFull().get();
+        assertEquals(m.getId(), m2.getId());
     }
 
     @Test
