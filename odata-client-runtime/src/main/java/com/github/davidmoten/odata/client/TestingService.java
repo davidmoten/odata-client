@@ -68,6 +68,13 @@ public final class TestingService {
             requests.put(toKey(method, baseUrl + path), resourceName);
             return (T) this;
         }
+        
+        @SuppressWarnings("unchecked")
+        public T expectRequestAndReply(String path, String resourceName, String replyResourceName, HttpMethod method) {
+            requests.put(toKey(method, baseUrl + path), resourceName);
+            responses.put(toKey(method, baseUrl+ path), replyResourceName);
+            return (T) this;
+        }
 
         @SuppressWarnings("unchecked")
         public T expectDelete(String path) {
@@ -135,7 +142,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse post(String url, List<RequestHeader> requestHeaders, String text) {
-                    log("POST called at" + url);
+                    log("POST called at " + url);
                     log(text);
                     String requestResourceName = requests.get(BuilderBase.toKey(HttpMethod.POST, url));
 
