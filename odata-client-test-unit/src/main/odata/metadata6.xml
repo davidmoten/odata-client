@@ -25,7 +25,7 @@
                 <ReturnType Type="Collection(Edm.String)"
                     Nullable="false" />
             </Action>
-            
+
             <!-- returns simple type -->
             <Action Name="countRelatedProducts" IsBound="true"
                 EntitySetPath="bindingParameter">
@@ -37,7 +37,7 @@
                     Type="Collection(Edm.Int32)" Nullable="false" />
                 <ReturnType Type="Edm.Int32" Nullable="false" />
             </Action>
-            
+
             <!-- action without return type -->
             <Action Name="removeRelatedProducts" IsBound="true"
                 EntitySetPath="bindingParameter">
@@ -48,7 +48,13 @@
                 <Parameter Name="thresholds"
                     Type="Collection(Edm.Int32)" Nullable="false" />
             </Action>
-            
+
+            <Action Name="revokeSessions" IsBound="true">
+                <Parameter Name="bindingParameter"
+                    Type="Test6.A.Product" Nullable="false" />
+                <ReturnType Type="Edm.Boolean" />
+            </Action>
+
         </Schema>
         <Schema Namespace="Test6.B"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">

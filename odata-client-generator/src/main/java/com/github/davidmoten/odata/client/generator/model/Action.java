@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client.generator.model;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
@@ -43,11 +44,14 @@ public final class Action {
 
     public String getFullClassNameActionReturnType() {
         Optional<TActionFunctionReturnType> returnParameter = Util
-                .filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class).findFirst();
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class)
+                .findFirst();
         if (!returnParameter.isPresent()) {
             return Void.class.getName();
         } else {
-            return names.getFullClassNameFromTypeWithNamespace(names.getInnerType(returnParameter.get()));
+            return names.getFullClassNameFromTypeWithNamespace(
+                    names.getInnerType(returnParameter.get()));
         }
     }
 
@@ -56,7 +60,9 @@ public final class Action {
     }
 
     public Optional<String> getActionReturnType() {
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class) //
                 .map(x -> names.getInnerType(x)) //
                 .findFirst();
     }
@@ -65,8 +71,10 @@ public final class Action {
         if (!action.isIsBound()) {
             return Optional.empty();
         } else {
-            //TODO what does EntitySetPath mean?
-            return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
+            // TODO what does EntitySetPath mean?
+            return Util
+                    .filter(action.getParameterOrAnnotationOrReturnType(),
+                            TActionFunctionParameter.class)
                     .map(x -> names.getInnerType(x)) //
                     .findFirst();
         }
@@ -81,8 +89,10 @@ public final class Action {
     }
 
     public List<Parameter> getParameters(Imports imports) {
+        AtomicBoolean first = new AtomicBoolean(true);
         return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class) //
-                .filter(x -> !action.isIsBound() || !x.getName().equals(action.getEntitySetPath())) //
+                .filter(x ->
+                    !action.isIsBound() || !first.getAndSet(false)) //
                 .map(x -> new Parameter(x, names, imports)) //
                 .collect(Collectors.toList());
     }
@@ -108,7 +118,8 @@ public final class Action {
 
         public final String schemaInfoFullClassName;
 
-        public ReturnType(boolean isCollection, String innerImportedFullClassName, String schemaInfoFullClassName) {
+        public ReturnType(boolean isCollection, String innerImportedFullClassName,
+                String schemaInfoFullClassName) {
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
             this.schemaInfoFullClassName = schemaInfoFullClassName;
@@ -116,13 +127,17 @@ public final class Action {
     }
 
     public boolean hasReturnType() {
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class) //
                 .findFirst() //
                 .isPresent();
     }
 
     public ReturnType getReturnType(Imports imports) {
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class) //
                 .findFirst() //
                 .map(x -> {
                     String innerType = names.getInnerType(x);
@@ -130,7 +145,8 @@ public final class Action {
                     if (innerType.startsWith("Edm.")) {
                         schemaInfoClassName = EdmSchemaInfo.INSTANCE.getClass().getCanonicalName();
                     } else {
-                        schemaInfoClassName = names.getFullClassNameSchemaInfo(names.getSchema(innerType));
+                        schemaInfoClassName = names
+                                .getFullClassNameSchemaInfo(names.getSchema(innerType));
                     }
 
                     return new ReturnType( //

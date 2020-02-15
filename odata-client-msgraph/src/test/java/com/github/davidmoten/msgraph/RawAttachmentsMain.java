@@ -39,7 +39,9 @@ public final class RawAttachmentsMain {
         .move("Inbox") //
         
         .get();
-
+        
+//      client.users(mailbox).get().revokeSignInSessions(null) 
+      
         System.exit(0);
         // test raw value of service
 //        String s = client.users(mailbox) //
