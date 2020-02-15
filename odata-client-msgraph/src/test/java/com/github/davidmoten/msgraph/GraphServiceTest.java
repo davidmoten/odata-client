@@ -230,7 +230,6 @@ public class GraphServiceTest {
         System.out.println(m.getSubject());
         // mark as read
         m.withIsRead(true).patch();
-        client.users("fred").outlook().metadataFull().get().getMasterCategories().get();
 //        client.users("fred") //
 //                .messages(m.getId().get()) //
 //                .patch(m.withIsRead(true));
