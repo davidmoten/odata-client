@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
@@ -118,7 +117,7 @@ public class GraphServiceTest {
                 .metadataMinimal() //
                 .get();
         Message m = messages.iterator().next();
-        assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().get().stream()
+        assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().stream()
                 .map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
 
@@ -146,7 +145,6 @@ public class GraphServiceTest {
         ItemAttachment a = (ItemAttachment) m //
                 .getAttachments() //
                 .metadataFull() //
-                .get() //
                 .stream() //
                 .findFirst() //
                 .get();
@@ -169,7 +167,6 @@ public class GraphServiceTest {
                 .metadataFull() //
                 .get() //
                 .getAttachments() //
-                .get() //
                 .stream() //
                 .findFirst() //
                 .get();
@@ -216,6 +213,7 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
                         "/request-patch-message-is-read.json", HttpMethod.PATCH) //
                 .build();
+        
         Message m = client //
                 .users("fred") //
                 .mailFolders("inbox") //
@@ -227,10 +225,12 @@ public class GraphServiceTest {
                 .get() // ;
                 .iterator() //
                 .next();
+        
 
         System.out.println(m.getSubject());
         // mark as read
         m.withIsRead(true).patch();
+        client.users("fred").outlook().metadataFull().get().getMasterCategories().get();
 //        client.users("fred") //
 //                .messages(m.getId().get()) //
 //                .patch(m.withIsRead(true));

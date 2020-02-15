@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
@@ -39,6 +41,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     public CollectionPageEntity<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
+    }
+    
+    public Stream<T> stream() {
+        return get().stream();
     }
 
     public T post(T entity) {
