@@ -37,5 +37,18 @@ public class Test6ServiceTest {
                 .metadataFull() //
                 .get();
     }
+    
+    @Test
+    @Ignore
+    public void testActionJustABindingParameterApiCompiles() {
+        // just has to compile, is not run!
+        Product p = Mockito.mock(Product.class);
+        @SuppressWarnings("unused")
+        Boolean answer = p.revokeSessions()
+                .select("id") //
+                .expand("attachments") //
+                .metadataFull() //
+                .get();
+    }
 
 }
