@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -92,6 +93,10 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     public CollectionPageEntity<T> get() {
         return request.get(build());
+    }
+    
+    public Stream<T> stream() {
+        return get().stream();
     }
 
     public T post(T entity) {
