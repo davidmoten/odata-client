@@ -65,8 +65,8 @@ public final class Action {
         if (!action.isIsBound()) {
             return Optional.empty();
         } else {
+            //TODO what does EntitySetPath mean?
             return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
-                    .filter(x -> x.getName().equals(action.getEntitySetPath())) // s
                     .map(x -> names.getInnerType(x)) //
                     .findFirst();
         }
