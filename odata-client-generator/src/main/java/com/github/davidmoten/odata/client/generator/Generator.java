@@ -434,7 +434,7 @@ public final class Generator {
                             indent, //
                             imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
                             action.getName());
-                    List<Parameter> parameters = action.getParameters(imports);
+                    List<Parameter> parameters = action.getParametersUnbound(imports);
                     String paramsDeclaration = parameters //
                             .stream() //
                             .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava)) //

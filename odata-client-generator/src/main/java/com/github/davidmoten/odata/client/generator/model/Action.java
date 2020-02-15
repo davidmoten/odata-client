@@ -88,7 +88,7 @@ public final class Action {
         return Names.getIdentifier(action.getName());
     }
 
-    public List<Parameter> getParameters(Imports imports) {
+    public List<Parameter> getParametersUnbound(Imports imports) {
         AtomicBoolean first = new AtomicBoolean(true);
         return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class) //
                 .filter(x ->
