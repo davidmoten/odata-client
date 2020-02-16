@@ -75,7 +75,7 @@ public final class Serializer {
             ObjectNode node = new ObjectMapper().readValue(text, ObjectNode.class);
             return Optional.ofNullable(node.get("@odata.type")).map(JsonNode::asText);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return Optional.empty();
         }
     }
 

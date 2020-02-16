@@ -1,0 +1,9 @@
+{
+	"@odata.context": "https://testing.com/$metadata#Products/$entity",
+	"@odata.id": "https://testing.com/Products(1)",
+	"@odata.editLink": "https://testing.com/Photos(123)",
+	"@odata.mediaContentType": "image/jpeg",
+	"@odata.mediaEtag": "W/\"08D6394B7BA10B11\"",
+	"Id": 1,
+	"Name": "My Photo 2"
+}
