@@ -137,14 +137,11 @@ public final class Generator {
             // write single requests
             System.out.println("  writing entity requests");
             Util.types(schema, TEntityType.class) //
-                    .forEach(x -> writeEntityRequest(schema, x));
+                    .forEach(x -> writeEntityRequest(schema, x, typeActions));
 
             System.out.println("  writing complex type requests");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
-
-            System.out.println("  unprocessed type actions:");
-            typeActions.keySet().forEach(x -> System.out.println("    " + x));
 
             // TODO write actions
 
@@ -441,7 +438,6 @@ public final class Generator {
         typeActions //
                 .getOrDefault(t.getFullType(), Collections.emptyList()) //
                 .forEach(action -> {
-                    typeActions.remove(t.getFullType());
                     p.format("\n%s@%s(name = \"%s\")\n", //
                             indent, //
                             imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
@@ -677,7 +673,7 @@ public final class Generator {
         }
     }
 
-    private void writeEntityRequest(Schema schema, TEntityType entityType) {
+    private void writeEntityRequest(Schema schema, TEntityType entityType, Map<String, List<Action>> typeActions) {
         EntityType t = new EntityType(entityType, names);
         names.getDirectoryEntityRequest(schema).mkdirs();
         // TODO only write out those requests needed
@@ -788,6 +784,7 @@ public final class Generator {
                         }
                         indent.left();
                     });
+            writeBoundActionMethods(t, typeActions, imports, indent, p);
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileEntityRequest());
         } catch (IOException e) {
