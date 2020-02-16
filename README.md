@@ -17,6 +17,7 @@ Status: *in development*
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
 * More generated clients can be added, just raise an issue
+* Actions bound to single entities are supported (action and function support under active development) 
 
 ## How to build
 `mvn clean install`
@@ -192,8 +193,8 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support NavigationPropertyBindings (just a documentation nicety? Looks like it's just to indicate contains relationships)
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
-* support functions
-* support actions
+* support functions (*in progress*)
+* support actions (*in progress*)
 * support `count`
 * support `raw`
 * support geographical primitive types (where's the spec?!!)
