@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
-import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TFunction;
@@ -15,8 +14,6 @@ import org.oasisopen.odata.csdl.v4.TFunction;
 import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
-import com.github.davidmoten.odata.client.generator.model.Function.Parameter;
-import com.github.davidmoten.odata.client.generator.model.Function.ReturnType;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Function {

@@ -97,11 +97,13 @@ public final class Generator {
             System.out.println("  replacing aliases");
             Util.replaceAliases(schema);
 
-            System.out.println("  creating type actions");
+            System.out.println("  creating type actions map");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names);
             System.out.println("  type actions count = " + typeActions.size());
-            System.out.println(
-                    "Functions not implemented = " + Util.types(schema, TFunction.class).count());
+
+            System.out.println("  creating entity bound functions map");
+            Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names);
+            System.out.println("  type functions count = " + typeFunctions.size());
 
             System.out.println("  writing schema info");
             writeSchemaInfo(schema);
@@ -114,7 +116,7 @@ public final class Generator {
             // write entityTypes
             System.out.println("  writing entities");
             Util.types(schema, TEntityType.class) //
-                    .forEach(x -> writeEntity(x, typeActions));
+                    .forEach(x -> writeEntity(x, typeActions, typeFunctions));
 
             // write complexTypes
             System.out.println("  writing complex types");
@@ -175,7 +177,7 @@ public final class Generator {
                 });
         return map;
     }
-    
+
     private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names) {
         Map<String, List<Function>> map = new HashMap<>();
         Util.types(schema, TFunction.class) //
@@ -345,7 +347,8 @@ public final class Generator {
         }
     }
 
-    private void writeEntity(TEntityType entityType, Map<String, List<Action>> typeActions) {
+    private void writeEntity(TEntityType entityType, Map<String, List<Action>> typeActions,
+            Map<String, List<Function>> typeFunctions) {
         EntityType t = new EntityType(entityType, names);
         t.getDirectoryEntity().mkdirs();
         String simpleClassName = t.getSimpleClassName();
@@ -445,6 +448,7 @@ public final class Generator {
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
 
             writeBoundActionMethods(t, typeActions, imports, indent, p);
+            writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
 
             // write toString
             writeToString(t, simpleClassName, imports, indent, p);
@@ -480,7 +484,7 @@ public final class Generator {
                                         : imports.add(ActionRequestReturningNonCollection.class), //
                                 action.getReturnType(imports).innerImportedFullClassName,
                                 action.getActionMethodName(), paramsDeclaration);
-                        writeParameterMap(imports, indent, p, parameters);
+                        writeActionParameterMap(imports, indent, p, parameters);
                         if (returnType.isCollection) {
                             p.format(
                                     "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
@@ -504,7 +508,7 @@ public final class Generator {
                                 indent, //
                                 imports.add(ActionRequestNoReturn.class), //
                                 action.getActionMethodName(), paramsDeclaration);
-                        writeParameterMap(imports, indent, p, parameters);
+                        writeActionParameterMap(imports, indent, p, parameters);
                         p.format(
                                 "%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
                                 indent, //
@@ -515,8 +519,73 @@ public final class Generator {
                 });
     }
 
-    private void writeParameterMap(Imports imports, Indent indent, PrintWriter p,
+    private void writeBoundFunctionMethods(EntityType t, Map<String, List<Function>> typeFunctions,
+            Imports imports, Indent indent, PrintWriter p) {
+        typeFunctions //
+                .getOrDefault(t.getFullType(), Collections.emptyList()) //
+                .forEach(function -> {
+                    p.format("\n%s@%s(name = \"%s\")\n", //
+                            indent, //
+                            imports.add(
+                                    com.github.davidmoten.odata.client.annotation.Function.class), //
+                            function.getName());
+                    List<Function.Parameter> parameters = function.getParametersUnbound(imports);
+                    String paramsDeclaration = parameters //
+                            .stream() //
+                            .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava)) //
+                            .collect(Collectors.joining(", "));
+                    Function.ReturnType returnType = function.getReturnType(imports);
+                    p.format("%spublic %s<%s> %s(%s) {\n", //
+                            indent, //
+                            returnType.isCollection
+                                    ? imports.add(ActionRequestReturningCollection.class)
+                                    : imports.add(ActionRequestReturningNonCollection.class), //
+                            function.getReturnType(imports).innerImportedFullClassName,
+                            function.getActionMethodName(), paramsDeclaration);
+                    writeFunctionParameterMap(imports, indent, p, parameters);
+                    if (returnType.isCollection) {
+                        p.format(
+                                "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
+                                indent, //
+                                imports.add(ActionRequestReturningCollection.class), //
+                                returnType.innerImportedFullClassName, //
+                                function.getFullType(), //
+                                returnType.innerImportedFullClassName);
+                    } else {
+                        p.format(
+                                "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                                indent, //
+                                imports.add(ActionRequestReturningNonCollection.class), //
+                                returnType.innerImportedFullClassName, //
+                                function.getFullType(), //
+                                returnType.innerImportedFullClassName,
+                                imports.add(function.getReturnTypeFullClassNameSchemaInfo()));
+                    }
+                    p.format("%s}\n", indent.left());
+                });
+    }
+
+    private void writeActionParameterMap(Imports imports, Indent indent, PrintWriter p,
             List<Parameter> parameters) {
+        AtomicBoolean first = new AtomicBoolean(true);
+        p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
+                indent.right(), //
+                imports.add(Map.class), //
+                imports.add(String.class), //
+                imports.add(Object.class), //
+                imports.add(Maps.class), //
+                parameters //
+                        .stream() //
+                        .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                                indent.copy().right(),
+                                first.getAndSet(false) ? String.format("<%s, %s>",
+                                        imports.add(String.class), imports.add(Object.class)) : "", //
+                                par.name, par.nameJava)) //
+                        .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
+    }
+
+    private void writeFunctionParameterMap(Imports imports, Indent indent, PrintWriter p,
+            List<Function.Parameter> parameters) {
         AtomicBoolean first = new AtomicBoolean(true);
         p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
                 indent.right(), //
@@ -1051,57 +1120,8 @@ public final class Generator {
                         }
                     });
 
-            // write actions
             // TODO write actions
-            if (false) {
-                Util.filter(schema.getComplexTypeOrEntityTypeOrTypeDefinition(), TAction.class) //
-                        .forEach(a -> {
-                            // get bound parameter (first parameter)
-                            Optional<TActionFunctionParameter> bindingParameter = Util
-                                    .filter(a.getParameterOrAnnotationOrReturnType(),
-                                            TActionFunctionParameter.class)
-                                    .findFirst();
-                            Optional<TActionFunctionReturnType> returnParameter = Util
-                                    .filter(a.getParameterOrAnnotationOrReturnType(),
-                                            TActionFunctionReturnType.class)
-                                    .findFirst();
-                            // System.out.println("action=" + a.getName() + ", bindingParameter=" +
-                            // bindingParameter
-                            // + ", returnParameter=" + returnParameter.map(x ->
-                            // x.getType().toString()).orElse(""));
-                            if (bindingParameter.isPresent()) {
-                                // proceed if action to be bound to current entityType
-                                String type = names.getInnerType(bindingParameter.get());
-                                if (t.getFullType().equals(type)) {
-                                    if (names.isCollection(bindingParameter.get())) {
-                                        if (returnParameter.isPresent()) {
-                                            // get return parameter
-                                            String returnFullType = names
-                                                    .getType(returnParameter.get());
-                                            String returnInnerType = names
-                                                    .getInnerType(returnFullType);
-                                            if (names.isCollection(returnParameter.get())) {
-                                                p.format("\n%s%s %s(%s) {\n", //
-                                                        indent, //
-                                                        names.toImportedTypeNonCollection(
-                                                                returnInnerType, imports),
-                                                        Names.getGetterMethod(a.getName()), "");
-                                                p.format("%s// TODO implement action\n",
-                                                        indent.right());
-                                                p.format("%sthrow new %s() ;\n", indent, imports
-                                                        .add(UnsupportedOperationException.class));
-                                                p.format("%s}\n", indent.left());
-                                            } else {
-                                                // TODO
-                                            }
-                                        } else {
-                                            // TODO
-                                        }
-                                    }
-                                }
-                            }
-                        });
-            }
+ 
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileCollectionRequest());
