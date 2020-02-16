@@ -43,7 +43,7 @@ public class Test6ServiceTest {
 //    }
 
     @Test
-    public void testActionJustABindingParameterApiCompiles() {
+    public void testEntityActionReturningBoolean() {
         // just has to compile, is not run!
         Test6Service client = Test6Service.test() //
                 .replyWithResource("/Products/1", "/response-product-1.json")
@@ -51,6 +51,16 @@ public class Test6ServiceTest {
                         "/request-revoke-sessions.json", "/response-revoke-sessions.json", HttpMethod.POST) //
                 .build();
         assertTrue(client.products(1).get().revokeSessions().get());
+    }
+    
+    @Test
+    public void testEntityRequestActionReturningBoolean() {
+        // just has to compile, is not run!
+        Test6Service client = Test6Service.test() //
+                .expectRequestAndReply("/Products/1/Test6.A.revokeSessions",
+                        "/request-revoke-sessions.json", "/response-revoke-sessions.json", HttpMethod.POST) //
+                .build();
+        assertTrue(client.products(1).revokeSessions().get());
     }
 
 }
