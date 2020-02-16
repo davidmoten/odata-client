@@ -17,7 +17,7 @@ Status: *in development*
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
 * More generated clients can be added, just raise an issue
-* Actions bound to single entities are supported (action and function support under active development) 
+* Actions bound to single entities are supported both for a hydrated entity and for an entity request (all action and function support under active development) 
 
 ## How to build
 `mvn clean install`
