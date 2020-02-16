@@ -139,6 +139,9 @@ public final class Generator {
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
 
+            System.out.println("  unprocessed type actions:");
+            typeActions.keySet().forEach(x -> System.out.println("    "+ x));
+            
             // TODO write actions
 
             // TODO write functions
@@ -434,6 +437,7 @@ public final class Generator {
         typeActions //
                 .getOrDefault(t.getFullType(), Collections.emptyList()) //
                 .forEach(action -> {
+                    typeActions.remove(t.getFullType());
                     p.format("\n%s@%s(name = \"%s\")\n", //
                             indent, //
                             imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
