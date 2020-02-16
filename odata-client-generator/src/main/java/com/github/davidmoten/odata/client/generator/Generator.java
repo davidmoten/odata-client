@@ -98,7 +98,6 @@ public final class Generator {
             System.out.println("  creating type actions");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names);
 
-            
             System.out.println("  writing schema info");
             writeSchemaInfo(schema);
 
@@ -164,6 +163,9 @@ public final class Generator {
                                         list.add(a);
                                     }
                                 });
+                    } else {
+                        System.out.println("    action " + a.getName() + " bound to "
+                                + a.getBoundType().orElse("?") + " and not implemented");
                     }
                 });
         return typeActions;
@@ -466,7 +468,7 @@ public final class Generator {
                                     imports.add(ActionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
                                     action.getFullType(), //
-                                    returnType.innerImportedFullClassName, 
+                                    returnType.innerImportedFullClassName,
                                     imports.add(action.getReturnTypeFullClassNameSchemaInfo()));
                         }
                     } else {
@@ -475,7 +477,8 @@ public final class Generator {
                                 imports.add(ActionRequestNoReturn.class), //
                                 action.getActionMethodName(), paramsDeclaration);
                         writeParameterMap(imports, indent, p, parameters);
-                        p.format("%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
+                        p.format(
+                                "%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
                                 indent, //
                                 imports.add(ActionRequestNoReturn.class), //
                                 action.getFullType());
@@ -494,13 +497,13 @@ public final class Generator {
                 imports.add(Object.class), //
                 imports.add(Maps.class), //
                 parameters //
-                .stream() //
-                .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
-                        indent.copy().right(),
-                        first.getAndSet(false) ? String.format("<%s, %s>",
-                                imports.add(String.class), imports.add(Object.class)) : "", //
-                        par.name, par.nameJava)) //
-                .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
+                        .stream() //
+                        .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                                indent.copy().right(),
+                                first.getAndSet(false) ? String.format("<%s, %s>",
+                                        imports.add(String.class), imports.add(Object.class)) : "", //
+                                par.name, par.nameJava)) //
+                        .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
     private void writeToString(Structure<?> t, String simpleClassName, Imports imports,
@@ -582,8 +585,8 @@ public final class Generator {
             Indent indent, PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
         p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
-        p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(), imports.add(RequestHelper.class),
-                methodName, imports.add(RequestOptions.class));
+        p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(),
+                imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class));
 
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = _copy();\n", indent, simpleClassName);

@@ -167,12 +167,16 @@ public final class Action {
     }
 
     public boolean isBoundToCollection() {
+        return getBoundType().map(x -> Names.isCollection(x)).orElse(false);
+    }
+
+    public Optional<String> getBoundType() {
         if (!action.isIsBound()) {
-            return false;
+            return Optional.empty();
         } else {
-            TActionFunctionParameter p = Util.filter(action
-                    .getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class).findFirst().get();
-            return Names.isCollection(p.getType().get(0));
+            TActionFunctionParameter p = Util.filter(action.getParameterOrAnnotationOrReturnType(),
+                    TActionFunctionParameter.class).findFirst().get();
+            return Optional.of(p.getType().get(0));
         }
     }
 }
