@@ -97,6 +97,7 @@ public final class Generator {
 
             System.out.println("  creating type actions");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names);
+            System.out.println("  type actions count = " + typeActions.size());
 
             System.out.println("  writing schema info");
             writeSchemaInfo(schema);
