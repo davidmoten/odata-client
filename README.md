@@ -194,7 +194,8 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
 * support functions (*in progress*)
-* support actions (*in progress*)
+* support actions bound to Collections (*in progress*)
+* support unbound actions
 * support `count`
 * support `raw`
 * support geographical primitive types (where's the spec?!!)
