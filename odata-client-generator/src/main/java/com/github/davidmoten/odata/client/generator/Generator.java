@@ -25,6 +25,7 @@ import org.oasisopen.odata.csdl.v4.TEntitySet;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
+import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
@@ -98,6 +99,8 @@ public final class Generator {
             System.out.println("  creating type actions");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names);
             System.out.println("  type actions count = " + typeActions.size());
+            System.out.println(
+                    "Functions not implemented = " + Util.types(schema, TFunction.class).count());
 
             System.out.println("  writing schema info");
             writeSchemaInfo(schema);
@@ -141,8 +144,8 @@ public final class Generator {
                     .forEach(x -> writeComplexTypeRequest(schema, x));
 
             System.out.println("  unprocessed type actions:");
-            typeActions.keySet().forEach(x -> System.out.println("    "+ x));
-            
+            typeActions.keySet().forEach(x -> System.out.println("    " + x));
+
             // TODO write actions
 
             // TODO write functions
