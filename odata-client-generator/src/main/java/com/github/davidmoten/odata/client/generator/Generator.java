@@ -673,7 +673,8 @@ public final class Generator {
         }
     }
 
-    private void writeEntityRequest(Schema schema, TEntityType entityType, Map<String, List<Action>> typeActions) {
+    private void writeEntityRequest(Schema schema, TEntityType entityType,
+            Map<String, List<Action>> typeActions) {
         EntityType t = new EntityType(entityType, names);
         names.getDirectoryEntityRequest(schema).mkdirs();
         // TODO only write out those requests needed
