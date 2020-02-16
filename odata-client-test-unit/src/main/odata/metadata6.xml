@@ -17,7 +17,7 @@
             <Action Name="relatedProducts" IsBound="true"
                 EntitySetPath="bindingParameter">
                 <Parameter Name="bindingParameter"
-                    Type="Collection(Test6.A.Product)" Nullable="false" />
+                    Type="Test6.A.Product" Nullable="false" />
                 <Parameter Name="strength" Type="Edm.Int32"
                     Nullable="false" />
                 <Parameter Name="thresholds"

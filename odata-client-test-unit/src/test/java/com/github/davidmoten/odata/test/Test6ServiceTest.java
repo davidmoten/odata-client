@@ -25,18 +25,18 @@ public class Test6ServiceTest {
                 .get();
     }
 
-    @Test
-    @Ignore
-    public void testActionReturningNonCollectionApiCompiles() {
-        // just has to compile, is not run!
-        Product p = Mockito.mock(Product.class);
-        @SuppressWarnings("unused")
-        Integer answer = p.countRelatedProducts(123, Lists.newArrayList(10, 20, 30)) //
-                .select("id") //
-                .expand("attachments") //
-                .metadataFull() //
-                .get();
-    }
+//    @Test
+//    @Ignore
+//    public void testActionReturningNonCollectionApiCompiles() {
+//        // just has to compile, is not run!
+//        Product p = Mockito.mock(Product.class);
+//        @SuppressWarnings("unused")
+//        Integer answer = p.countRelatedProducts(123, Lists.newArrayList(10, 20, 30)) //
+//                .select("id") //
+//                .expand("attachments") //
+//                .metadataFull() //
+//                .get();
+//    }
     
     @Test
     @Ignore

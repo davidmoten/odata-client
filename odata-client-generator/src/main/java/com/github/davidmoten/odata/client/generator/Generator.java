@@ -154,15 +154,17 @@ public final class Generator {
         Util.types(schema, TAction.class) //
                 .forEach(action -> {
                     Action a = new Action(action, names);
-                    a.getBoundTypeWithNamespace() //
-                            .ifPresent(x -> {
-                                List<Action> list = typeActions.get(x);
-                                if (list == null) {
-                                    typeActions.put(x, Lists.newArrayList(a));
-                                } else {
-                                    list.add(a);
-                                }
-                            });
+                    if (!a.isBoundToCollection()) {
+                        a.getBoundTypeWithNamespace() //
+                                .ifPresent(x -> {
+                                    List<Action> list = typeActions.get(x);
+                                    if (list == null) {
+                                        typeActions.put(x, Lists.newArrayList(a));
+                                    } else {
+                                        list.add(a);
+                                    }
+                                });
+                    }
                 });
         return typeActions;
     }

@@ -90,9 +90,10 @@ public final class Action {
 
     public List<Parameter> getParametersUnbound(Imports imports) {
         AtomicBoolean first = new AtomicBoolean(true);
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class) //
-                .filter(x ->
-                    !action.isIsBound() || !first.getAndSet(false)) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionParameter.class) //
+                .filter(x -> !action.isIsBound() || !first.getAndSet(false)) //
                 .map(x -> new Parameter(x, names, imports)) //
                 .collect(Collectors.toList());
     }
@@ -163,5 +164,15 @@ public final class Action {
 
     public String getFullType() {
         return names.getFullTypeFromSimpleType(schema(), action.getName());
+    }
+
+    public boolean isBoundToCollection() {
+        if (!action.isIsBound()) {
+            return false;
+        } else {
+            TActionFunctionParameter p = Util.filter(action
+                    .getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class).findFirst().get();
+            return Names.isCollection(p.getType().get(0));
+        }
     }
 }
