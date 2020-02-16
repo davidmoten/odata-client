@@ -67,6 +67,7 @@ import com.github.davidmoten.odata.client.generator.model.Action.ReturnType;
 import com.github.davidmoten.odata.client.generator.model.ComplexType;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.generator.model.Field;
+import com.github.davidmoten.odata.client.generator.model.Function;
 import com.github.davidmoten.odata.client.generator.model.KeyElement;
 import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
@@ -153,16 +154,16 @@ public final class Generator {
     }
 
     private Map<String, List<Action>> createTypeActions(Schema schema, Names names) {
-        Map<String, List<Action>> typeActions = new HashMap<>();
+        Map<String, List<Action>> map = new HashMap<>();
         Util.types(schema, TAction.class) //
                 .forEach(action -> {
                     Action a = new Action(action, names);
                     if (!a.isBoundToCollection()) {
                         a.getBoundTypeWithNamespace() //
                                 .ifPresent(x -> {
-                                    List<Action> list = typeActions.get(x);
+                                    List<Action> list = map.get(x);
                                     if (list == null) {
-                                        typeActions.put(x, Lists.newArrayList(a));
+                                        map.put(x, Lists.newArrayList(a));
                                     } else {
                                         list.add(a);
                                     }
@@ -172,7 +173,30 @@ public final class Generator {
                                 + a.getBoundType().orElse("?") + " and not implemented");
                     }
                 });
-        return typeActions;
+        return map;
+    }
+    
+    private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names) {
+        Map<String, List<Function>> map = new HashMap<>();
+        Util.types(schema, TFunction.class) //
+                .forEach(function -> {
+                    Function a = new Function(function, names);
+                    if (!a.isBoundToCollection()) {
+                        a.getBoundTypeWithNamespace() //
+                                .ifPresent(x -> {
+                                    List<Function> list = map.get(x);
+                                    if (list == null) {
+                                        map.put(x, Lists.newArrayList(a));
+                                    } else {
+                                        list.add(a);
+                                    }
+                                });
+                    } else {
+                        System.out.println("    function " + a.getName() + " bound to "
+                                + a.getBoundType().orElse("?") + " and not implemented");
+                    }
+                });
+        return map;
     }
 
     private void writeComplexTypeRequest(Schema schema, TComplexType x) {

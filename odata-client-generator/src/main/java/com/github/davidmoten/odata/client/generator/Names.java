@@ -14,6 +14,7 @@ import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
+import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
@@ -390,6 +391,10 @@ public final class Names {
     public Schema getSchema(TAction action) {
         return getSchemaFromType(action, TAction.class);
     }
+    
+    public Schema getSchema(TFunction function) {
+        return getSchemaFromType(function, TFunction.class);
+    }
 
     private <T> Schema getSchemaFromType(Object type, Class<T> typeClass) {
         return schemas.stream()
@@ -651,6 +656,5 @@ public final class Names {
     public File getClassFileActionRequest(Schema schema, String name) {
         return new File(getDirectoryActionRequest(schema), getSimpleClassNameActionRequest(schema, name) + ".java");        
     }
-
 
 }
