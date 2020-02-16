@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 
 import org.junit.Ignore;
@@ -7,8 +9,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.github.davidmoten.guavamini.Lists;
+import com.github.davidmoten.odata.client.HttpMethod;
 
 import test6.a.entity.Product;
+import test6.b.container.Test6Service;
 
 public class Test6ServiceTest {
 
@@ -37,18 +41,16 @@ public class Test6ServiceTest {
 //                .metadataFull() //
 //                .get();
 //    }
-    
+
     @Test
-    @Ignore
     public void testActionJustABindingParameterApiCompiles() {
         // just has to compile, is not run!
-        Product p = Mockito.mock(Product.class);
-        @SuppressWarnings("unused")
-        Boolean answer = p.revokeSessions()
-                .select("id") //
-                .expand("attachments") //
-                .metadataFull() //
-                .get();
+        Test6Service client = Test6Service.test() //
+                .replyWithResource("/Products/1", "/response-product-1.json")
+                .expectRequestAndReply("/Products/1/Test6.A.revokeSessions",
+                        "/request-revoke-sessions.json", "/response-revoke-sessions.json", HttpMethod.POST) //
+                .build();
+        assertTrue(client.products(1).get().revokeSessions().get());
     }
 
 }
