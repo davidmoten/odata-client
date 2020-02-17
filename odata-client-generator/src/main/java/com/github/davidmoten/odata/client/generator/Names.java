@@ -399,23 +399,23 @@ public final class Names {
     }
 
     public Schema getSchema(TEntityType entityType) {
-        return getSchemaFromType(entityType, TEntityType.class);
+        return getSchemaFromType(entityType);
     }
 
     public Schema getSchema(TAction action) {
-        return getSchemaFromType(action, TAction.class);
+        return getSchemaFromType(action);
     }
 
     public Schema getSchema(TFunction function) {
-        return getSchemaFromType(function, TFunction.class);
+        return getSchemaFromType(function);
     }
 
-    private <T> Schema getSchemaFromType(Object type, Class<T> typeClass) {
+    private <T> Schema getSchemaFromType(Object type) {
         return objectToSchema.get(type);
     }
 
     public Schema getSchema(TComplexType complexType) {
-        return getSchemaFromType(complexType, TComplexType.class);
+        return getSchemaFromType(complexType);
     }
 
     public List<Schema> getSchemas() {
