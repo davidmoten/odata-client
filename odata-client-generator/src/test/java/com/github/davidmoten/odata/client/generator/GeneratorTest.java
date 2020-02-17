@@ -52,4 +52,10 @@ public class GeneratorTest {
         g.generate();
     }
 
+    
+    public static void main(String[] args) throws JAXBException, IOException {
+        while (true) {
+            new GeneratorTest().testGenerateMsgraph();
+        }
+    }
 }
