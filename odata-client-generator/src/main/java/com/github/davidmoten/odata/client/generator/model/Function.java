@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.client.generator.model;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,7 +15,7 @@ import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
-public final class Function {
+public final class Function implements Method {
 
     private TFunction function;
     private Names names;
