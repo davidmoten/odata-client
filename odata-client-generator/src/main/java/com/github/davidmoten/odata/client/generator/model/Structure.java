@@ -56,6 +56,7 @@ public abstract class Structure<T> {
                 return a;
             } else {
                 String baseTypeSimpleName = names.getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
+                // TODO make a map for lookup to increase perf
                 st = names.getSchemas() //
                         .stream() //
                         .flatMap(schema -> Util.types(schema, cls)) //
