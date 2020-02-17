@@ -138,7 +138,7 @@ public final class Generator {
             // write single requests
             System.out.println("  writing entity requests");
             Util.types(schema, TEntityType.class) //
-                    .forEach(x -> writeEntityRequest(schema, x, typeActions));
+                    .forEach(x -> writeEntityRequest(schema, x, typeActions, typeFunctions));
 
             System.out.println("  writing complex type requests");
             Util.types(schema, TComplexType.class) //
@@ -765,7 +765,7 @@ public final class Generator {
     }
 
     private void writeEntityRequest(Schema schema, TEntityType entityType,
-            Map<String, List<Action>> typeActions) {
+            Map<String, List<Action>> typeActions, Map<String, List<Function>> typeFunctions) {
         EntityType t = new EntityType(entityType, names);
         names.getDirectoryEntityRequest(schema).mkdirs();
         // TODO only write out those requests needed
@@ -877,6 +877,7 @@ public final class Generator {
                         indent.left();
                     });
             writeBoundActionMethods(t, typeActions, imports, indent, p);
+            writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileEntityRequest());
         } catch (IOException e) {

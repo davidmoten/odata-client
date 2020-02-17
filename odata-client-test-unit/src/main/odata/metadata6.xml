@@ -54,6 +54,12 @@
                     Type="Test6.A.Product" Nullable="false" />
                 <ReturnType Type="Edm.Boolean" />
             </Action>
+            
+            <Function Name="countSessions" IsBound="true">
+                <Parameter Name="bindingParameter"
+                    Type="Test6.A.Product" Nullable="false" />
+                <ReturnType Type="Edm.Boolean" />
+            </Function>
 
         </Schema>
         <Schema Namespace="Test6.B"
