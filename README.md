@@ -68,7 +68,6 @@ client
     .messages() 
     .filter("isRead eq false") 
     .expand("attachments") 
-    .get() 
     .stream() 
     .map(x -> x.getSubject().orElse("")) 
     .forEach(System.out::println);
@@ -93,7 +92,6 @@ MailFolderRequest drafts = client //
 // count number of messages in Drafts
 long count = drafts.messages() //
     .metadataNone() //
-    .get() //
     .stream() //
     .count(); //
 
@@ -134,7 +132,6 @@ if (!("new subject " + id).equals(amendedSubject)) {
 long count2 = drafts //
     .messages() //
     .metadataNone() //
-    .get() //
     .stream() //
     .count(); //
 if (count2 != count + 1) {
