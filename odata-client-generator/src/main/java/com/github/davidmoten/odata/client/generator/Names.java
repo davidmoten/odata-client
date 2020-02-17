@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
@@ -26,12 +27,13 @@ import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Names {
 
-    private static final Set<String> javaReservedWords = Sets.newHashSet("abstract", "assert", "boolean", "break",
-            "byte", "case", "catch", "char", "class", "const", "continue", "default", "do", "double", "else", "extends",
-            "false", "final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof", "int",
-            "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return",
-            "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
-            "true", "try", "void", "volatile", "while", "var");
+    private static final Set<String> javaReservedWords = Sets.newHashSet("abstract", "assert",
+            "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue",
+            "default", "do", "double", "else", "extends", "false", "final", "finally", "float",
+            "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
+            "native", "new", "null", "package", "private", "protected", "public", "return", "short",
+            "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws",
+            "transient", "true", "try", "void", "volatile", "while", "var");
 
     private static final String COLLECTION_PREFIX = "Collection(";
 
@@ -45,6 +47,8 @@ public final class Names {
 
     private final Options opts;
 
+    private final Map<Object, Schema> objectToSchema;
+
     private Names(List<Schema> schemas, Options opts) {
         this.schemas = schemas;
         this.opts = opts;
@@ -52,6 +56,10 @@ public final class Names {
         this.classNamesFromNamespacedType = createMap(schemas, opts);
         this.entityClassNamesFromNamespacedType = createEntityMap(schemas, opts);
         this.entityTypesFromNamespacedType = createEntityTypesMap(schemas, opts);
+        this.objectToSchema = schemas.stream()
+                .flatMap(s -> s.getComplexTypeOrEntityTypeOrTypeDefinition().stream()
+                        .map(t -> new SchemaAndType<Object>(s, t))) //
+                .collect(Collectors.toMap(st -> st.type, st -> st.schema));
     }
 
     // factory method
@@ -143,7 +151,8 @@ public final class Names {
     }
 
     private static File toDirectory(File base, String pkg) {
-        String path = base.getAbsolutePath() + File.separatorChar + pkg.replace('.', File.separatorChar);
+        String path = base.getAbsolutePath() + File.separatorChar
+                + pkg.replace('.', File.separatorChar);
         return new File(path);
     }
 
@@ -177,11 +186,13 @@ public final class Names {
     }
 
     public String getFullClassNameFromTypeWithNamespace(String type) {
-        return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type), "class name not found for " + type);
+        return Preconditions.checkNotNull(classNamesFromNamespacedType.get(type),
+                "class name not found for " + type);
     }
 
     public String getFullClassNameFromTypeWithoutNamespace(Schema schema, String type) {
-        return Preconditions.checkNotNull(classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
+        return Preconditions.checkNotNull(
+                classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
 
@@ -207,8 +218,8 @@ public final class Names {
     public String getType(TProperty x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
-            throw new IllegalArgumentException(
-                    "property " + x.getName() + "must have one and only one type but was: " + x.getType());
+            throw new IllegalArgumentException("property " + x.getName()
+                    + "must have one and only one type but was: " + x.getType());
         }
         return list.get(0);
     }
@@ -216,8 +227,8 @@ public final class Names {
     public String getType(TNavigationProperty x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
-            throw new IllegalArgumentException(
-                    "property " + x.getName() + "must have one and only one type but was: " + x.getType());
+            throw new IllegalArgumentException("property " + x.getName()
+                    + "must have one and only one type but was: " + x.getType());
         }
         return list.get(0);
     }
@@ -225,8 +236,8 @@ public final class Names {
     public String getType(TActionFunctionParameter x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
-            throw new IllegalArgumentException(
-                    "property " + x.getName() + "must have one and only one type but was: " + x.getType());
+            throw new IllegalArgumentException("property " + x.getName()
+                    + "must have one and only one type but was: " + x.getType());
         }
         return list.get(0);
     }
@@ -242,11 +253,11 @@ public final class Names {
     public String toImportedFullClassName(TProperty x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);
     }
-    
+
     public String toImportedFullClassName(TActionFunctionParameter x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);
     }
-    
+
     public String toImportedFullClassName(TActionFunctionReturnType x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);
     }
@@ -288,11 +299,14 @@ public final class Names {
         if (collectionClass.equals(CollectionPageEntityRequest.class)) {
             Schema sch = getSchema(inner);
             // get the type without namespace
-            String entityRequestClass = getFullClassNameEntityRequestFromTypeWithNamespace(sch, inner);
+            String entityRequestClass = getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                    inner);
             String a = toImportedFullClassName(inner, imports, collectionClass);
-            return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass) + ">";
+            return imports.add(collectionClass) + "<" + a + ", " + imports.add(entityRequestClass)
+                    + ">";
         } else {
-            return imports.add(collectionClass) + "<" + toImportedFullClassName(inner, imports, collectionClass) + ">";
+            return imports.add(collectionClass) + "<"
+                    + toImportedFullClassName(inner, imports, collectionClass) + ">";
         }
     }
 
@@ -387,23 +401,17 @@ public final class Names {
     public Schema getSchema(TEntityType entityType) {
         return getSchemaFromType(entityType, TEntityType.class);
     }
-    
+
     public Schema getSchema(TAction action) {
         return getSchemaFromType(action, TAction.class);
     }
-    
+
     public Schema getSchema(TFunction function) {
         return getSchemaFromType(function, TFunction.class);
     }
 
     private <T> Schema getSchemaFromType(Object type, Class<T> typeClass) {
-        return schemas.stream()
-                .flatMap(s -> Util.filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), typeClass)
-                        .map(t -> new SchemaAndType<T>(s, t))) //
-                .filter(x -> x.type == type) //
-                .map(x -> x.schema) //
-                .findFirst() //
-                .get();
+        return objectToSchema.get(type);
     }
 
     public Schema getSchema(TComplexType complexType) {
@@ -423,9 +431,11 @@ public final class Names {
         return getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, simple);
     }
 
-    public String getFullClassNameEntityRequestFromTypeWithoutNamespace(Schema schema, String name) {
+    public String getFullClassNameEntityRequestFromTypeWithoutNamespace(Schema schema,
+            String name) {
         SchemaOptions o = getOptions(schema);
-        return getPackageEntityRequest(schema) + "." + upperFirst(name) + o.entityRequestClassSuffix();
+        return getPackageEntityRequest(schema) + "." + upperFirst(name)
+                + o.entityRequestClassSuffix();
     }
 
     public String getPackageEntityRequest(Schema schema) {
@@ -434,7 +444,8 @@ public final class Names {
     }
 
     public File getClassFileComplexType(Schema schema, String name) {
-        return new File(getDirectoryComplexType(schema), getSimpleClassNameComplexType(schema, name) + ".java");
+        return new File(getDirectoryComplexType(schema),
+                getSimpleClassNameComplexType(schema, name) + ".java");
     }
 
     public String getSimpleClassNameComplexType(Schema schema, String name) {
@@ -447,7 +458,8 @@ public final class Names {
     }
 
     public File getClassFileEntity(Schema schema, String name) {
-        return new File(getDirectoryEntity(schema), getSimpleClassNameEntity(schema, name) + ".java");
+        return new File(getDirectoryEntity(schema),
+                getSimpleClassNameEntity(schema, name) + ".java");
     }
 
     public String getPackageComplexType(Schema schema) {
@@ -472,33 +484,42 @@ public final class Names {
     public Schema getSchema(String typeWithNamespace) {
         return schemas //
                 .stream() //
-                .flatMap(s -> Util.filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
+                .flatMap(s -> Util
+                        .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
                         .map(t -> new SchemaAndType<TEntityType>(s, t))) //
-                .filter(x -> toTypeWithNamespace(x.schema, x.type.getName()).equals(typeWithNamespace)) //
+                .filter(x -> toTypeWithNamespace(x.schema, x.type.getName())
+                        .equals(typeWithNamespace)) //
                 .map(x -> x.schema) //
                 .findFirst() //
                 .orElseGet(() -> schemas //
                         .stream() //
-                        .flatMap(s -> Util.filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TComplexType.class)
+                        .flatMap(s -> Util
+                                .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(),
+                                        TComplexType.class)
                                 .map(t -> new SchemaAndType<TComplexType>(s, t))) //
-                        .filter(x -> toTypeWithNamespace(x.schema, x.type.getName()).equals(typeWithNamespace)) //
+                        .filter(x -> toTypeWithNamespace(x.schema, x.type.getName())
+                                .equals(typeWithNamespace)) //
                         .map(x -> x.schema) //
                         .findFirst() //
                         .orElseGet(() -> schemas //
                                 .stream() //
                                 .flatMap(s -> Util
-                                        .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEnumType.class)
+                                        .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(),
+                                                TEnumType.class)
                                         .map(t -> new SchemaAndType<TEnumType>(s, t))) //
-                                .filter(x -> toTypeWithNamespace(x.schema, x.type.getName()).equals(typeWithNamespace)) //
+                                .filter(x -> toTypeWithNamespace(x.schema, x.type.getName())
+                                        .equals(typeWithNamespace)) //
                                 .map(x -> x.schema) //
                                 .findFirst() //
                                 .<RuntimeException>orElseThrow(() -> {
-                                    throw new RuntimeException("type not found: " + typeWithNamespace);
+                                    throw new RuntimeException(
+                                            "type not found: " + typeWithNamespace);
                                 })));
     }
 
     public File getClassFileEntityRequest(Schema schema, String name) {
-        return new File(getDirectoryEntityRequest(schema), getSimpleClassNameEntityRequest(schema, name) + ".java");
+        return new File(getDirectoryEntityRequest(schema),
+                getSimpleClassNameEntityRequest(schema, name) + ".java");
     }
 
     public File getDirectoryContainer(Schema schema) {
@@ -516,7 +537,8 @@ public final class Names {
     }
 
     public File getClassFileContainer(Schema schema, String name) {
-        return new File(getDirectoryContainer(schema), getSimpleClassNameContainer(schema, name) + ".java");
+        return new File(getDirectoryContainer(schema),
+                getSimpleClassNameContainer(schema, name) + ".java");
     }
 
     public File getDirectoryEntityCollectionRequest(Schema schema) {
@@ -540,13 +562,16 @@ public final class Names {
     }
 
     public String getFullClassNameEntityRequest(Schema schema, String name) {
-        return getPackageEntityRequest(schema) + "." + getSimpleClassNameEntityRequest(schema, name);
+        return getPackageEntityRequest(schema) + "."
+                + getSimpleClassNameEntityRequest(schema, name);
     }
 
-    public String getFullClassNameCollectionRequestFromTypeWithNamespace(Schema schema, String name) {
+    public String getFullClassNameCollectionRequestFromTypeWithNamespace(Schema schema,
+            String name) {
         String simple = getLastItemInDotDelimitedString(name);
         SchemaOptions o = getOptions(schema);
-        return getPackageCollectionRequest(schema) + "." + upperFirst(simple) + o.collectionRequestClassSuffix();
+        return getPackageCollectionRequest(schema) + "." + upperFirst(simple)
+                + o.collectionRequestClassSuffix();
     }
 
     public File getClassFileEntityCollectionRequest(Schema schema, String name) {
@@ -592,8 +617,8 @@ public final class Names {
     public String getInnerType(TActionFunctionParameter x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
-            throw new IllegalArgumentException(
-                    "property " + x.getName() + "must have one and only one type but was: " + x.getType());
+            throw new IllegalArgumentException("property " + x.getName()
+                    + "must have one and only one type but was: " + x.getType());
         }
         return getInnerType(list.get(0));
     }
@@ -605,11 +630,12 @@ public final class Names {
     public String getType(TActionFunctionReturnType x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
-            throw new IllegalArgumentException("object must have one and only one type but was: " + x.getType());
+            throw new IllegalArgumentException(
+                    "object must have one and only one type but was: " + x.getType());
         }
         return list.get(0);
     }
-    
+
     public boolean isCollection(TActionFunctionReturnType x) {
         return isCollection(getType(x));
     }
@@ -619,11 +645,12 @@ public final class Names {
     }
 
     public String getFullClassNameCollectionRequest(Schema schema, String name) {
-        return getPackageCollectionRequest(schema) + "." + getSimpleClassNameCollectionRequest(schema, name);
+        return getPackageCollectionRequest(schema) + "."
+                + getSimpleClassNameCollectionRequest(schema, name);
     }
 
     public String getFullClassNameContainer(Schema schema, String name) {
-        return getPackageContainer(schema) + "." +  getSimpleClassNameContainer(name);
+        return getPackageContainer(schema) + "." + getSimpleClassNameContainer(name);
     }
 
     public File getDirectoryActionRequest(Schema schema) {
@@ -636,7 +663,8 @@ public final class Names {
     }
 
     public String getFullClassNameActionRequest(Schema schema, String name) {
-        return getPackageActionRequest(schema) + "." + getSimpleClassNameActionRequest(schema, name);
+        return getPackageActionRequest(schema) + "."
+                + getSimpleClassNameActionRequest(schema, name);
     }
 
     public String getPackageActionRequest(Schema schema) {
@@ -654,7 +682,8 @@ public final class Names {
     }
 
     public File getClassFileActionRequest(Schema schema, String name) {
-        return new File(getDirectoryActionRequest(schema), getSimpleClassNameActionRequest(schema, name) + ".java");        
+        return new File(getDirectoryActionRequest(schema),
+                getSimpleClassNameActionRequest(schema, name) + ".java");
     }
 
 }
