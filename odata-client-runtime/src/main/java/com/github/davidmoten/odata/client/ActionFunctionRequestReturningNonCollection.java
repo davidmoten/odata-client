@@ -5,7 +5,7 @@ import java.util.Map;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public final class ActionFunctionRequestReturningNonCollection<T>
-        extends ActionRequestBase<ActionFunctionRequestReturningNonCollection<T>> {
+        extends ActionFunctionRequestBase<ActionFunctionRequestReturningNonCollection<T>> {
 
     private final Class<T> returnClass;
     private final SchemaInfo schemaInfo;
