@@ -173,6 +173,31 @@ public class GraphServiceTest {
         String editLink = a.getUnmappedFields().get("@odata.editLink").toString();
         assertEquals("editLink1", editLink);
     }
+    
+    @Test
+    public void testFunctionBoundToCollection() {
+        GraphService client = serviceBuilder() //
+                .replyWithResource(
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
+                        "/response-messages-expand-attachments-minimal-metadata.json") //
+                .expectRequestAndReply(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
+                        "/request-post-action-move.json", //
+                        "/response-message-move.json", //
+                        HttpMethod.POST) //
+                .build();
+        Message m = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .expand("attachments") //
+                .orderBy("createdDateTime") //
+                .metadataMinimal() //
+                .get() // ;
+                .iterator() //
+                .next();
+    }
 
     @Test
     public void testMailMove() {
