@@ -67,6 +67,7 @@ import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.generator.model.Field;
 import com.github.davidmoten.odata.client.generator.model.Function;
 import com.github.davidmoten.odata.client.generator.model.KeyElement;
+import com.github.davidmoten.odata.client.generator.model.Method;
 import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
@@ -154,37 +155,24 @@ public final class Generator {
     }
 
     private Map<String, List<Action>> createTypeActions(Schema schema, Names names) {
-        Map<String, List<Action>> map = new HashMap<>();
-        Util.types(schema, TAction.class) //
-                .forEach(action -> {
-                    Action a = new Action(action, names);
-                    if (!a.isBoundToCollection()) {
-                        a.getBoundTypeWithNamespace() //
-                                .ifPresent(x -> {
-                                    List<Action> list = map.get(x);
-                                    if (list == null) {
-                                        map.put(x, Lists.newArrayList(a));
-                                    } else {
-                                        list.add(a);
-                                    }
-                                });
-                    } else {
-                        System.out.println("    action " + a.getName() + " bound to "
-                                + a.getBoundType().orElse("?") + " and not implemented");
-                    }
-                });
-        return map;
+        return createMap(TAction.class, schema, names, action -> new Action(action, names));
     }
 
     private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names) {
-        Map<String, List<Function>> map = new HashMap<>();
-        Util.types(schema, TFunction.class) //
-                .forEach(function -> {
-                    Function a = new Function(function, names);
+        return createMap(TFunction.class, schema, names, function -> new Function(function, names));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T, S extends Method> Map<String, List<S>> createMap(Class<T> cls, Schema schema,
+            Names names, java.util.function.Function<T, S> mapper) {
+        Map<String, List<S>> map = new HashMap<>();
+        Util.types(schema, cls) //
+                .forEach(method -> {
+                    S a = mapper.apply(method);
                     if (!a.isBoundToCollection()) {
                         a.getBoundTypeWithNamespace() //
                                 .ifPresent(x -> {
-                                    List<Function> list = map.get(x);
+                                    List<S> list = map.get(x);
                                     if (list == null) {
                                         map.put(x, Lists.newArrayList(a));
                                     } else {
@@ -192,7 +180,7 @@ public final class Generator {
                                     }
                                 });
                     } else {
-                        System.out.println("    function " + a.getName() + " bound to "
+                        System.out.println("    method " + a.getName() + " bound to "
                                 + a.getBoundType().orElse("?") + " and not implemented");
                     }
                 });
@@ -446,7 +434,7 @@ public final class Generator {
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
 
             writeBoundActionMethods(t, typeActions, imports, indent, p);
-            
+
             writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
 
             // write toString
@@ -1121,7 +1109,7 @@ public final class Generator {
                     });
 
             // TODO write actions
- 
+
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileCollectionRequest());

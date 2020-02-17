@@ -16,7 +16,7 @@ import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
-public final class Action {
+public final class Action implements Method {
 
     private TAction action;
     private Names names;
