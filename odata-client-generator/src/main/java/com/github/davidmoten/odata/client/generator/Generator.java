@@ -39,8 +39,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
-import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
-import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.ActionFunctionRequestReturningCollection;
+import com.github.davidmoten.odata.client.ActionFunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
@@ -96,13 +96,18 @@ public final class Generator {
             System.out.println("  replacing aliases");
             Util.replaceAliases(schema);
 
-            System.out.println("  creating type actions map");
-            Map<String, List<Action>> typeActions = createTypeActions(schema, names);
-            System.out.println("  type actions count = " + typeActions.size());
+            System.out.println("  creating maps");
+            Map<String, List<Action>> typeActions = createTypeActions(schema, names, false);
+            System.out.println("    actions count = " + typeActions.size());
 
-            System.out.println("  creating type functions map");
-            Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names);
-            System.out.println("  type functions count = " + typeFunctions.size());
+            Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names, false);
+            System.out.println("    functions count = " + typeFunctions.size());
+            
+            Map<String, List<Action>> collectionTypeActions = createTypeActions(schema, names, true);
+            System.out.println("    collection actions count = " + collectionTypeActions.size());
+
+            Map<String, List<Function>> collectionTypeFunctions = createTypeFunctions(schema, names, true);
+            System.out.println("    collection functions count = " + collectionTypeFunctions.size());
 
             System.out.println("  writing schema info");
             writeSchemaInfo(schema);
@@ -125,11 +130,7 @@ public final class Generator {
             // write entity collection requests
             System.out.println("  writing entity collection requests");
             Util.types(schema, TEntityType.class) //
-                    .forEach(x -> writeCollectionRequest(schema, x));
-
-            System.out.println("  writing complex type collection requests");
-            Util.types(schema, TComplexType.class) //
-                    .forEach(x -> writeCollectionRequest(schema, x));
+                    .forEach(x -> writeEntityCollectionRequest(schema, x, collectionTypeActions, collectionTypeFunctions));
 
             // write containers
             System.out.println("  writing container");
@@ -154,22 +155,22 @@ public final class Generator {
 
     }
 
-    private Map<String, List<Action>> createTypeActions(Schema schema, Names names) {
-        return createMap(TAction.class, schema, names, action -> new Action(action, names));
+    private Map<String, List<Action>> createTypeActions(Schema schema, Names names, boolean collectionsOnly) {
+        return createMap(TAction.class, schema, names, action -> new Action(action, names), collectionsOnly);
     }
 
-    private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names) {
-        return createMap(TFunction.class, schema, names, function -> new Function(function, names));
+    private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names, boolean collectionsOnly) {
+        return createMap(TFunction.class, schema, names, function -> new Function(function, names), collectionsOnly);
     }
 
     @SuppressWarnings("unchecked")
     private <T, S extends Method> Map<String, List<S>> createMap(Class<T> cls, Schema schema,
-            Names names, java.util.function.Function<T, S> mapper) {
+            Names names, java.util.function.Function<T, S> mapper, boolean collectionsOnly) {
         Map<String, List<S>> map = new HashMap<>();
         Util.types(schema, cls) //
                 .forEach(method -> {
                     S a = mapper.apply(method);
-                    if (!a.isBoundToCollection()) {
+                    if ((!collectionsOnly && !a.isBoundToCollection()) || (collectionsOnly && a.isBoundToCollection())) {
                         a.getBoundTypeWithNamespace() //
                                 .ifPresent(x -> {
                                     List<S> list = map.get(x);
@@ -179,10 +180,7 @@ public final class Generator {
                                         list.add(a);
                                     }
                                 });
-                    } else {
-                        System.out.println("    method " + a.getName() + " bound to "
-                                + a.getBoundType().orElse("?") + " and not implemented");
-                    }
+                    } 
                 });
         return map;
     }
@@ -467,8 +465,8 @@ public final class Generator {
                         p.format("%spublic %s<%s> %s(%s) {\n", //
                                 indent, //
                                 returnType.isCollection
-                                        ? imports.add(ActionRequestReturningCollection.class)
-                                        : imports.add(ActionRequestReturningNonCollection.class), //
+                                        ? imports.add(ActionFunctionRequestReturningCollection.class)
+                                        : imports.add(ActionFunctionRequestReturningNonCollection.class), //
                                 action.getReturnType(imports).innerImportedFullClassName,
                                 action.getActionMethodName(), paramsDeclaration);
                         writeActionParameterMap(imports, indent, p, parameters);
@@ -476,7 +474,7 @@ public final class Generator {
                             p.format(
                                     "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
                                     indent, //
-                                    imports.add(ActionRequestReturningCollection.class), //
+                                    imports.add(ActionFunctionRequestReturningCollection.class), //
                                     returnType.innerImportedFullClassName, //
                                     action.getFullType(), //
                                     returnType.innerImportedFullClassName);
@@ -484,7 +482,7 @@ public final class Generator {
                             p.format(
                                     "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                     indent, //
-                                    imports.add(ActionRequestReturningNonCollection.class), //
+                                    imports.add(ActionFunctionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
                                     action.getFullType(), //
                                     returnType.innerImportedFullClassName,
@@ -525,8 +523,8 @@ public final class Generator {
                     p.format("%spublic %s<%s> %s(%s) {\n", //
                             indent, //
                             returnType.isCollection
-                                    ? imports.add(ActionRequestReturningCollection.class)
-                                    : imports.add(ActionRequestReturningNonCollection.class), //
+                                    ? imports.add(ActionFunctionRequestReturningCollection.class)
+                                    : imports.add(ActionFunctionRequestReturningNonCollection.class), //
                             function.getReturnType(imports).innerImportedFullClassName,
                             function.getActionMethodName(), paramsDeclaration);
                     writeFunctionParameterMap(imports, indent, p, parameters);
@@ -534,7 +532,7 @@ public final class Generator {
                         p.format(
                                 "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
                                 indent, //
-                                imports.add(ActionRequestReturningCollection.class), //
+                                imports.add(ActionFunctionRequestReturningCollection.class), //
                                 returnType.innerImportedFullClassName, //
                                 function.getFullType(), //
                                 returnType.innerImportedFullClassName);
@@ -542,7 +540,7 @@ public final class Generator {
                         p.format(
                                 "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                 indent, //
-                                imports.add(ActionRequestReturningNonCollection.class), //
+                                imports.add(ActionFunctionRequestReturningNonCollection.class), //
                                 returnType.innerImportedFullClassName, //
                                 function.getFullType(), //
                                 returnType.innerImportedFullClassName,
@@ -1031,12 +1029,8 @@ public final class Generator {
         }
     }
 
-    private void writeCollectionRequest(Schema schema, TComplexType x) {
-        // TODO
-    }
-
-    private void writeCollectionRequest(Schema schema, TEntityType entityType) {
-        Structure<?> t = new EntityType(entityType, names);
+    private void writeEntityCollectionRequest(Schema schema, TEntityType entityType, Map<String, List<Action>> collectionTypeActions, Map<String, List<Function>> collectionTypeFunctions) {
+        EntityType t = new EntityType(entityType, names);
         names.getDirectoryEntityCollectionRequest(schema).mkdirs();
         String simpleClassName = names.getSimpleClassNameCollectionRequest(schema, t.getName());
         Imports imports = new Imports(names.getFullClassNameCollectionRequest(schema, t.getName()));
@@ -1107,9 +1101,10 @@ public final class Generator {
                             }
                         }
                     });
-
-            // TODO write actions
-
+            
+            writeBoundActionMethods(t, collectionTypeActions, imports, indent, p);
+            writeBoundFunctionMethods(t, collectionTypeFunctions, imports, indent, p);
+            
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileCollectionRequest());
