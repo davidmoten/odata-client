@@ -12,6 +12,7 @@ import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TAnnotations;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityType;
+import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
@@ -33,6 +34,8 @@ public final class Util {
         types(schema, TComplexType.class) //
                 .forEach(x -> replaceAlias(schema, x));
         types(schema, TAction.class) //
+                .forEach(x -> replaceAlias(schema, x));
+        types(schema, TFunction.class) //
                 .forEach(x -> replaceAlias(schema, x));
     }
 
@@ -58,6 +61,11 @@ public final class Util {
             TAction a = (TAction) x;
             a.getParameterOrAnnotationOrReturnType().stream() //
                     .forEach(y -> replaceAlias(schema, y));
+        } else if (x instanceof TFunction) {
+            TFunction a = (TFunction) x;
+            a.getParameterOrAnnotation().stream() //
+                    .forEach(y -> replaceAlias(schema, y));
+            replaceAlias(schema, a.getReturnType());
         } else if (x instanceof TActionFunctionParameter) {
             TActionFunctionParameter p = (TActionFunctionParameter) x;
             replaceAlias(schema, p.getType());
