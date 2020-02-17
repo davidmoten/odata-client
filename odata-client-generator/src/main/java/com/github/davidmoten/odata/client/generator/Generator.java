@@ -99,7 +99,7 @@ public final class Generator {
             Map<String, List<Action>> typeActions = createTypeActions(schema, names);
             System.out.println("  type actions count = " + typeActions.size());
 
-            System.out.println("  creating entity bound functions map");
+            System.out.println("  creating type functions map");
             Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names);
             System.out.println("  type functions count = " + typeFunctions.size());
 
@@ -446,6 +446,7 @@ public final class Generator {
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
 
             writeBoundActionMethods(t, typeActions, imports, indent, p);
+            
             writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
 
             // write toString
