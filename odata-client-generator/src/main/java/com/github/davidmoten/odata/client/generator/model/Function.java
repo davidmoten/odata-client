@@ -26,20 +26,8 @@ public final class Function {
         this.names = names;
     }
 
-    public String getSimpleClassNameActionRequest() {
-        return names.getSimpleClassNameActionRequest(schema(), function.getName());
-    }
-
     public Schema schema() {
         return names.getSchema(function);
-    }
-
-    public String getFullClassNameActionRequest() {
-        return names.getFullClassNameActionRequest(schema(), function.getName());
-    }
-
-    public Object getPackageActionRequest() {
-        return names.getPackageActionRequest(schema());
     }
 
     public String getFullClassNameActionReturnType() {
@@ -54,11 +42,7 @@ public final class Function {
         }
     }
 
-    public File getClassFileActionRequest() {
-        return names.getClassFileActionRequest(schema(), function.getName());
-    }
-
-    public String getActionReturnType() {
+    public String getFunctionReturnType() {
         return names.getInnerType(function.getReturnType());
     }
 
@@ -116,10 +100,6 @@ public final class Function {
             this.innerImportedFullClassName = innerImportedFullClassName;
             this.schemaInfoFullClassName = schemaInfoFullClassName;
         }
-    }
-
-    public boolean hasReturnType() {
-        return true;
     }
 
     public ReturnType getReturnType(Imports imports) {
