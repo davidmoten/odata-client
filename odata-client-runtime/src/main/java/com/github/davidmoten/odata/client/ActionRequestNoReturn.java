@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-public final class ActionRequestNoReturn extends ActionRequestBase<ActionRequestNoReturn> {
+public final class ActionRequestNoReturn extends ActionFunctionRequestBase<ActionRequestNoReturn> {
     
     public ActionRequestNoReturn(ContextPath contextPath, Map<String, Object> parameters) {
         super(parameters, contextPath);

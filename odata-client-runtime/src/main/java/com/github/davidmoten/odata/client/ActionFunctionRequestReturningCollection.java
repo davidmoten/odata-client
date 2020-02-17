@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public final class ActionFunctionRequestReturningCollection<T>
-        extends ActionRequestBase<ActionFunctionRequestReturningCollection<T>> {
+        extends ActionFunctionRequestBase<ActionFunctionRequestReturningCollection<T>> {
 
     public ActionFunctionRequestReturningCollection(ContextPath contextPath, Class<T> returnClass,
             Map<String, Object> parameters) {

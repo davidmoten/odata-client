@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public abstract class ActionRequestBase<T extends ActionRequestBase<T>> implements RequestOptions {
+public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>> implements RequestOptions {
     
     protected final ContextPath contextPath;
     
@@ -16,7 +16,7 @@ public abstract class ActionRequestBase<T extends ActionRequestBase<T>> implemen
     protected final List<RequestHeader> requestHeaders = new ArrayList<>();
     protected final Map<String,String> queries = new HashMap<>();
 
-    public ActionRequestBase(Map<String, Object> parameters, ContextPath contextPath) {
+    public ActionFunctionRequestBase(Map<String, Object> parameters, ContextPath contextPath) {
         this.parameters = parameters;
         this.contextPath = contextPath;
     }
