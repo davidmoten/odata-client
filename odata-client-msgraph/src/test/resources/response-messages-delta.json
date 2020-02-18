@@ -1,0 +1,59 @@
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('fred')/mailFolders('Inbox')/messages",
+	"value": [
+		{
+			"@odata.etag": "W/\"CQAAABYAAADc0RUkpd9gS4SNgTuazIdfAAK5kT/5\"",
+			"id": "86",
+			"createdDateTime": "2020-02-07T05:25:38Z",
+			"lastModifiedDateTime": "2020-02-07T05:25:40Z",
+			"changeKey": "CQAAABYAAADc0RUkpd9gS4SNgTuazIdfAAK5kT/5",
+			"categories": [],
+			"receivedDateTime": "2020-02-07T05:25:38Z",
+			"sentDateTime": "2020-02-07T05:25:37Z",
+			"hasAttachments": true,
+			"internetMessageId": "<SY4P282MB13060FBD3056D70B2977C7E9A31C0@SY4P282MB1306.AUSP282.PROD.OUTLOOK.COM>",
+			"subject": "test contact",
+			"bodyPreview": "Hi there",
+			"importance": "normal",
+			"parentFolderId": "AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgAuAAAD4Rwe0e6XOE6Ck412HUUUTwEAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA",
+			"conversationId": "AAQkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgAQAPnYmYw_xE4eracSSE67TMk=",
+			"conversationIndex": "AdXddwaG+diZjD7ETh6tpxJITrtMyQ==",
+			"isDeliveryReceiptRequested": false,
+			"isReadReceiptRequested": false,
+			"isRead": false,
+			"isDraft": false,
+			"webLink": "https://outlook.office365.com/owa/?ItemID=AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D&exvsurl=1&viewmodel=ReadMessageItem",
+			"inferenceClassification": "focused",
+			"body": {
+				"contentType": "html",
+				"content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta content=\"text/html; charset=us-ascii\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0cm;\r\n\tmargin-bottom:.0001pt;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\na:link, span.MsoHyperlink\r\n\t{color:#0563C1;\r\n\ttext-decoration:underline}\r\na:visited, span.MsoHyperlinkFollowed\r\n\t{color:#954F72;\r\n\ttext-decoration:underline}\r\nspan.EmailStyle17\r\n\t{font-family:\"Arial\",sans-serif;\r\n\tcolor:windowtext;\r\n\tfont-weight:normal;\r\n\tfont-style:normal}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:72.0pt 72.0pt 72.0pt 72.0pt}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-AU\" link=\"#0563C1\" vlink=\"#954F72\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\"><span style=\"font-family:&quot;Arial&quot;,sans-serif\">&nbsp;</span></p>\r\n<p class=\"MsoNormal\"><span style=\"font-family:&quot;Arial&quot;,sans-serif\">&nbsp;</span></p>\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:12.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\">David Moten</span></b><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\">\r\n</span></p>\r\n<div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:7.5pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">SOFTWARE DEVELOPER</span></p>\r\n</div>\r\n<div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:7.5pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">INFORMATION TECHNOLOGY SERVICES</span></p>\r\n</div>\r\n<div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:7.5pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">CORPORATE SERVICES</span></p>\r\n</div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\">&nbsp;</span></p>\r\n<div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\">82 Northbourne Avenue, Braddon ACT 2612</span></p>\r\n</div>\r\n<div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\">GPO BOX 2181, Canberra ACT 2601</span></p>\r\n</div>\r\n<table class=\"MsoNormalTable\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding:0cm 0cm 0cm 0cm\">\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">p\r\n</span></b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\">&#43;61 2 6279 5629\r\n</span><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</td>\r\n<td style=\"padding:0cm 0cm 0cm 16.5pt\">\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">f\r\n</span></b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\">&#43;61 2 6279 5076\r\n</span><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</td>\r\n<td style=\"padding:0cm 0cm 0cm 16.5pt\">\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">m\r\n</span></b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\">&#43;61 421 405 109\r\n</span><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style=\"padding:0cm 0cm 0cm 0cm\">\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">e\r\n</span></b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\"><a href=\"mailto:david.moten@amsa.gov.au\"><span style=\"color:#4DB4CA; text-decoration:none\">david.moten@amsa.gov.au</span></a>\r\n</span><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</td>\r\n<td colspan=\"2\" style=\"padding:0cm 0cm 0cm 16.5pt\">\r\n<p class=\"MsoNormal\"><b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#3D6384\">w\r\n</span></b><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:#4DB4CA\"><a href=\"http://www.amsa.gov.au/\"><span style=\"color:#4DB4CA; text-decoration:none\">www.</span><span style=\"color:#3D6384; text-decoration:none\">amsa</span><span style=\"color:#4DB4CA; text-decoration:none\">.gov.au</span></a>\r\n</span><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<p class=\"MsoNormal\" style=\"margin-bottom:12.0pt\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"><br>\r\n</span><a href=\"https://twitter.com/AMSA_News\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif; color:blue; text-decoration:none\"><img border=\"0\" width=\"149\" height=\"20\" id=\"_x0000_i1028\" src=\"cid:image001.jpg@01D5DDD3.37F99880\" alt=\"image\" style=\"width:1.552in; height:.2083in\"></span></a><a href=\"https://www.facebook.com/AustralianMaritimeSafetyAuthority\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif; color:blue; text-decoration:none\"><img border=\"0\" width=\"107\" height=\"27\" id=\"_x0000_i1027\" src=\"cid:image002.jpg@01D5DDD3.37F99880\" alt=\"image\" style=\"width:1.1145in; height:.2812in\"></span></a><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n<div>\r\n<p class=\"MsoNormal\"><a href=\"http://www.amsa.gov.au/\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif; color:blue; text-decoration:none\"><img border=\"0\" width=\"295\" height=\"61\" id=\"_x0000_i1026\" src=\"cid:image003.jpg@01D5DDD3.37F99880\" alt=\"image\" style=\"width:3.0729in; height:.6354in\"></span></a><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\">&nbsp;</span></p>\r\n<div>\r\n<p class=\"MsoNormal\"><a href=\"http://www.amsa.gov.au/about-amsa/corporate-information/mission-and-vision/\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif; color:blue; text-decoration:none\"><img border=\"0\" width=\"374\" height=\"42\" id=\"_x0000_i1025\" src=\"cid:image004.jpg@01D5DDD3.37F99880\" alt=\"image\" style=\"width:3.8958in; height:.4375in\"></span></a><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\"></span></p>\r\n</div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif\">&nbsp;</span></p>\r\n<div>\r\n<p class=\"MsoNormal\"><span style=\"font-size:8.0pt; font-family:&quot;Arial&quot;,sans-serif; color:green\">Please consider the environment before printing this email\r\n</span></p>\r\n</div>\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n"
+			},
+			"sender": {
+				"emailAddress": {
+					"name": "Moten, David",
+					"address": "david.moten@amsa.gov.au"
+				}
+			},
+			"from": {
+				"emailAddress": {
+					"name": "Moten, David",
+					"address": "david.moten@amsa.gov.au"
+				}
+			},
+			"toRecipients": [
+				{
+					"emailAddress": {
+						"name": "fred",
+						"address": "fred@me.com"
+					}
+				}
+			],
+			"ccRecipients": [],
+			"bccRecipients": [],
+			"replyTo": [],
+			"flag": {
+				"flagStatus": "notFlagged"
+			}
+		}
+	]
+}
