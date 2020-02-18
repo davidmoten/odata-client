@@ -41,7 +41,7 @@ import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
 import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
-import com.github.davidmoten.odata.client.CollectionPageNonEntity;
+import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
@@ -1228,9 +1228,9 @@ public final class Generator {
                         boolean isEntity = names.isEntityWithNamespace(inner);
                         Class<?> collectionCls;
                         if (isEntity) {
-                            collectionCls = CollectionPageNonEntity.class;
+                            collectionCls = CollectionPage.class;
                         } else {
-                            collectionCls = CollectionPageNonEntity.class;
+                            collectionCls = CollectionPage.class;
                         }
                         p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls),
                                 importedInnerType, Names.getGetterMethod(x.getName()));
@@ -1238,7 +1238,7 @@ public final class Generator {
                             Schema sch = names.getSchema(inner);
                             p.format(
                                     "%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE);\n",
-                                    indent.right(), imports.add(CollectionPageNonEntity.class),
+                                    indent.right(), imports.add(CollectionPage.class),
                                     fieldName, importedInnerType,
                                     imports.add(names.getFullClassNameSchemaInfo(sch)));
                         } else {
@@ -1252,7 +1252,7 @@ public final class Generator {
                             }
                             p.format(
                                     "%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE);\n",
-                                    indent.right(), imports.add(CollectionPageNonEntity.class),
+                                    indent.right(), imports.add(CollectionPage.class),
                                     importedInnerType, importedInnerType, fieldName,
                                     imports.add(Optional.class), fieldName, importedSchemaInfo);
                         }

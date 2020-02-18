@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 //TODO merge CollectionPageNonEntity and CollectionPageEntity into CollectionPage
 @JsonIgnoreType
-public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPageNonEntity<T>> {
+public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
@@ -16,7 +16,7 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
     private final Optional<String> nextLink;
     private final SchemaInfo schemaInfo;
 
-    public CollectionPageNonEntity(ContextPath contextPath, Class<T> cls, List<T> list, Optional<String> nextLink,
+    public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list, Optional<String> nextLink,
             SchemaInfo schemaInfo) {
         this.contextPath = contextPath;
         this.cls = cls;
@@ -31,7 +31,7 @@ public final class CollectionPageNonEntity<T> implements Paged<T, CollectionPage
     }
 
     @Override
-    public Optional<CollectionPageNonEntity<T>> nextPage() {
+    public Optional<CollectionPage<T>> nextPage() {
         if (nextLink.isPresent()) {
             // TODO add request headers used in initial call?
             // TODO handle relative nextLink?

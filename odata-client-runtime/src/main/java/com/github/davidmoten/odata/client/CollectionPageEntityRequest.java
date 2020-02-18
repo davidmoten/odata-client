@@ -22,7 +22,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         this.schemaInfo = schemaInfo;
     }
 
-    CollectionPageNonEntity<T> get(CollectionEntityRequestOptions options) {
+    CollectionPage<T> get(CollectionEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp,
@@ -37,7 +37,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         return entityRequestFactory.create(contextPath.addKeys(new NameValue(id)));
     }
 
-    public CollectionPageNonEntity<T> get() {
+    public CollectionPage<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
     }
     

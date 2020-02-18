@@ -16,13 +16,13 @@ public class CollectionPageNonEntityRequest<T, R extends NonEntityRequest<T>> {
         this.schemaInfo = schemaInfo;
     }
 
-    CollectionPageNonEntity<T> get(CollectionNonEntityRequestOptions options) {
+    CollectionPage<T> get(CollectionNonEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp, schemaInfo);
     }
 
-    public CollectionPageNonEntity<T> get() {
+    public CollectionPage<T> get() {
         return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).get();
     }
 
