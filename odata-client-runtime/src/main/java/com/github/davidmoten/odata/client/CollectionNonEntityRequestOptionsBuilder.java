@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class CollectionNonEntityRequestOptionsBuilder<T, R extends NonEntityRequest<T>> {
+public final class CollectionNonEntityRequestOptionsBuilder<T> {
 
-    private final CollectionPageNonEntityRequest<T, R> request;
+    private final CollectionPageNonEntityRequest<T> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
     private Optional<String> search = Optional.empty();
     private Optional<String> filter = Optional.empty();
@@ -19,68 +19,68 @@ public final class CollectionNonEntityRequestOptionsBuilder<T, R extends NonEnti
     private Optional<String> expand = Optional.empty();
     private String metadata = "minimal";
 
-    CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T, R> request) {
+    CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request) {
         this.request = request;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> requestHeader(String name, String value) {
+    public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String name, String value) {
         requestHeaders.add(new RequestHeader(name, value));
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> search(String clause) {
+    public CollectionNonEntityRequestOptionsBuilder<T> search(String clause) {
         Preconditions.checkNotNull(clause);
         this.search = Optional.of(clause);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> expand(String clause) {
+    public CollectionNonEntityRequestOptionsBuilder<T> expand(String clause) {
         Preconditions.checkNotNull(clause);
         this.expand = Optional.of(clause);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> filter(String clause) {
+    public CollectionNonEntityRequestOptionsBuilder<T> filter(String clause) {
         Preconditions.checkNotNull(clause);
         this.filter = Optional.of(clause);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> orderBy(String clause) {
+    public CollectionNonEntityRequestOptionsBuilder<T> orderBy(String clause) {
         Preconditions.checkNotNull(clause);
         this.orderBy = Optional.of(clause);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> skip(long n) {
+    public CollectionNonEntityRequestOptionsBuilder<T> skip(long n) {
         Preconditions.checkArgument(n > 0);
         this.skip = Optional.of(n);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> top(long n) {
+    public CollectionNonEntityRequestOptionsBuilder<T> top(long n) {
         Preconditions.checkArgument(n > 0);
         this.top = Optional.of(n);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> select(String clause) {
+    public CollectionNonEntityRequestOptionsBuilder<T> select(String clause) {
         Preconditions.checkNotNull(clause);
         this.select = Optional.of(clause);
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> metadataFull() {
+    public CollectionNonEntityRequestOptionsBuilder<T> metadataFull() {
         this.metadata = "full";
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> metadataMinimal() {
+    public CollectionNonEntityRequestOptionsBuilder<T> metadataMinimal() {
         this.metadata = "minimal";
         return this;
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> metadataNone() {
+    public CollectionNonEntityRequestOptionsBuilder<T> metadataNone() {
         this.metadata = "none";
         return this;
     }
