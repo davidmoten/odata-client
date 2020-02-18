@@ -174,13 +174,15 @@ public class GraphServiceTest {
         String editLink = a.getUnmappedFields().get("@odata.editLink").toString();
         assertEquals("editLink1", editLink);
     }
-    
+
     @Test
     public void testFunctionBoundToCollection() {
         GraphService client = serviceBuilder() //
-                .replyWithResource(
+                .expectRequestAndReply(
                         "/users/fred/mailFolders/inbox/messages/microsoft.graph.delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
-                        "/response-messages-delta.json") //
+                        "/request-messages-delta.json", //
+                        "/response-messages-delta.json", //
+                        HttpMethod.POST) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -233,7 +235,7 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
                         "/request-patch-message-is-read.json", HttpMethod.PATCH) //
                 .build();
-        
+
         Message m = client //
                 .users("fred") //
                 .mailFolders("inbox") //
@@ -245,7 +247,6 @@ public class GraphServiceTest {
                 .get() // ;
                 .iterator() //
                 .next();
-        
 
         System.out.println(m.getSubject());
         // mark as read
