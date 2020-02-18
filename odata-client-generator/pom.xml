@@ -66,30 +66,30 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>replacer</artifactId>
-                <version>1.5.3</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <filesToInclude>
-                        ${project.build.directory}/generated-sources/jaxb/org/oasisopen/odata/csdl/v4/TAction.java,${project.build.directory}/generated-sources/jaxb/org/oasisopen/odata/csdl/v4/TFunction.java
-                    </filesToInclude>
-                    <replacements>
-                        <replacement>
-                            <token>(public class T.*ction)</token>
-                            <value>$1 implements com.github.davidmoten.odata.csdl.v4.extras.ActionOrFunction</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
-            </plugin>
+<!--             <plugin> -->
+<!--                 <groupId>com.google.code.maven-replacer-plugin</groupId> -->
+<!--                 <artifactId>replacer</artifactId> -->
+<!--                 <version>1.5.3</version> -->
+<!--                 <executions> -->
+<!--                     <execution> -->
+<!--                         <phase>generate-sources</phase> -->
+<!--                         <goals> -->
+<!--                             <goal>replace</goal> -->
+<!--                         </goals> -->
+<!--                     </execution> -->
+<!--                 </executions> -->
+<!--                 <configuration> -->
+<!--                     <filesToInclude> -->
+<!--                         ${project.build.directory}/generated-sources/jaxb/org/oasisopen/odata/csdl/v4/TAction.java,${project.build.directory}/generated-sources/jaxb/org/oasisopen/odata/csdl/v4/TFunction.java -->
+<!--                     </filesToInclude> -->
+<!--                     <replacements> -->
+<!--                         <replacement> -->
+<!--                             <token>(public class T.*ction)</token> -->
+<!--                             <value>$1 implements com.github.davidmoten.odata.csdl.v4.extras.ActionOrFunction</value> -->
+<!--                         </replacement> -->
+<!--                     </replacements> -->
+<!--                 </configuration> -->
+<!--             </plugin> -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
