@@ -1,69 +1,89 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.github.davidmoten.guavamini.Preconditions;
 
 @JsonIgnoreType
-public class CollectionPageNonEntityRequest<T, R extends NonEntityRequest<T>> {
+public class CollectionPageNonEntityRequest<T> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
     private final SchemaInfo schemaInfo;
 
+    // initial call made with this method, further pages use HttpMethod.GET
+    private final HttpMethod method;
+    private final Optional<String> content;
+
     // should not be public api
-    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls, SchemaInfo schemaInfo) {
+    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls, SchemaInfo schemaInfo,
+            HttpMethod method, Optional<String> content) {
+        Preconditions.checkArgument(method != HttpMethod.POST || content.isPresent());
         this.contextPath = contextPath;
         this.cls = cls;
         this.schemaInfo = schemaInfo;
+        this.method = method;
+        this.content = content;
+    }
+
+    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls, SchemaInfo schemaInfo) {
+        this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty());
     }
 
     CollectionPage<T> get(CollectionRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
-        HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
+        final HttpResponse r;
+        if (method == HttpMethod.GET) {
+            r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
+        } else {
+            r = cp.context().service().post(cp.toUrl(), options.getRequestHeaders(), content.get());
+        }
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp, schemaInfo);
     }
 
     public CollectionPage<T> get() {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).get();
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).get();
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
+    public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> search(String clause) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).search(clause);
+    public CollectionNonEntityRequestOptionsBuilder<T> search(String clause) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).search(clause);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> filter(String clause) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).filter(clause);
+    public CollectionNonEntityRequestOptionsBuilder<T> filter(String clause) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).filter(clause);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> orderBy(String clause) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).orderBy(clause);
+    public CollectionNonEntityRequestOptionsBuilder<T> orderBy(String clause) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).orderBy(clause);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> skip(long n) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).skip(n);
+    public CollectionNonEntityRequestOptionsBuilder<T> skip(long n) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).skip(n);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> top(long n) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).top(n);
+    public CollectionNonEntityRequestOptionsBuilder<T> top(long n) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).top(n);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> select(String clause) {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).select(clause);
+    public CollectionNonEntityRequestOptionsBuilder<T> select(String clause) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).select(clause);
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> metadataFull() {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).metadataFull();
+    public CollectionNonEntityRequestOptionsBuilder<T> metadataFull() {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).metadataFull();
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> metadataMinimal() {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).metadataMinimal();
+    public CollectionNonEntityRequestOptionsBuilder<T> metadataMinimal() {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).metadataMinimal();
     }
 
-    public CollectionNonEntityRequestOptionsBuilder<T, R> metadataNone() {
-        return new CollectionNonEntityRequestOptionsBuilder<T, R>(this).metadataNone();
+    public CollectionNonEntityRequestOptionsBuilder<T> metadataNone() {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).metadataNone();
     }
 
 }

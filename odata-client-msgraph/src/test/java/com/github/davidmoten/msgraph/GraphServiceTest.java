@@ -191,7 +191,7 @@ public class GraphServiceTest {
                 .filter("receivedDateTime+ge+12345") //
                 .orderBy("receivedDateTime+desc") //
                 .metadataMinimal() //
-                .get() // ;
+                .stream() //
                 .iterator() //
                 .next();
     }

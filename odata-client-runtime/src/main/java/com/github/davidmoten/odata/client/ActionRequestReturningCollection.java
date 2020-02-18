@@ -1,25 +1,38 @@
 package com.github.davidmoten.odata.client;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-
-import com.github.davidmoten.odata.client.internal.RequestHelper;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public final class ActionRequestReturningCollection<T>
-        extends ActionFunctionRequestBase<ActionRequestReturningCollection<T>> {
+        extends ActionFunctionRequestBase<ActionRequestReturningCollection<T>> implements Iterable<T> {
 
     private final SchemaInfo returnTypeSchemaInfo;
+    private final Class<T> returnClass;
+    private final Map<String, Object> parameters;
 
     public ActionRequestReturningCollection(ContextPath contextPath, Class<T> returnClass,
             Map<String, Object> parameters, SchemaInfo returnTypeSchemaInfo) {
         super(parameters, contextPath);
+        this.returnClass = returnClass;
         this.returnTypeSchemaInfo = returnTypeSchemaInfo;
+        this.parameters = parameters;
     }
 
-    @SuppressWarnings("unchecked")
-    public Collection<T> get() {
-        return RequestHelper.postAny(parameters,contextPath, List.class, this, returnTypeSchemaInfo);
+    public CollectionPageNonEntityRequest<T> get() {
+        String json = Serializer.INSTANCE.serialize(parameters);
+        return new CollectionPageNonEntityRequest<T>(contextPath, returnClass, returnTypeSchemaInfo, HttpMethod.POST,
+                Optional.of(json));
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return get().get().iterator();
+    }
+    
+    public Stream<T> stream() {
+        return get().get().stream();
     }
 
 }
