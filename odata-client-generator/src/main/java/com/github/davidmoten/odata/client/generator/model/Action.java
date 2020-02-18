@@ -158,10 +158,6 @@ public final class Action implements Method {
                 .get();
     }
 
-    public String getReturnTypeFullClassNameSchemaInfo() {
-        return names.getFullClassNameSchemaInfo(schema());
-    }
-
     public String getFullType() {
         return names.getFullTypeFromSimpleType(schema(), action.getName());
     }
