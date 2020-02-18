@@ -190,9 +190,9 @@ public class GraphServiceTest {
                 .users("fred") //
                 .mailFolders("inbox") //
                 .messages() //
-                .filter("isRead eq false") //
-                .expand("attachments") //
-                .orderBy("createdDateTime") //
+                .delta() //
+                .filter("receivedDateTime+ge+12345") //
+                .orderBy("receivedDateTime+desc") //
                 .metadataMinimal() //
                 .get() // ;
                 .iterator() //
