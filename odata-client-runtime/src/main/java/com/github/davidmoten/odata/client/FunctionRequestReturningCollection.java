@@ -17,6 +17,7 @@ public final class FunctionRequestReturningCollection<T>
         this.schemaInfo = schemaInfo;
     }
 
+    @SuppressWarnings("unchecked")
     public Collection<T> get() {
         return RequestHelper.get(contextPath, List.class, this, schemaInfo);
     }

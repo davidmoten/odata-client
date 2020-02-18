@@ -112,17 +112,17 @@ public final class Serializer {
 
     public <T extends ODataEntityType> CollectionPageEntity<T> deserializeCollectionPageEntity(String json,
             Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
-        CollectionInfo<T> c = deserialize(json, cls, contextPath, schemaInfo);
+        CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
         return new CollectionPageEntity<T>(cls, c.list, c.nextLink, contextPath, schemaInfo);
     }
 
     public <T> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
-        CollectionInfo<T> c = deserialize(json, cls, contextPath, schemaInfo);
+        CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
         return new CollectionPageNonEntity<T>(contextPath, cls, c.list, c.nextLink, schemaInfo);
     }
 
-    private <T> CollectionInfo<T> deserialize(String json, Class<T> cls, ContextPath contextPath,
+    private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls, ContextPath contextPath,
             SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
