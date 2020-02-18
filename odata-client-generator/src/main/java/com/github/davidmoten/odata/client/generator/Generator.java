@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,9 +37,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.ActionFunctionRequestReturningCollection;
 import com.github.davidmoten.odata.client.ActionFunctionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
