@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
@@ -175,16 +176,12 @@ public class GraphServiceTest {
     }
     
     @Test
+    @Ignore
     public void testFunctionBoundToCollection() {
         GraphService client = serviceBuilder() //
                 .replyWithResource(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json") //
-                .expectRequestAndReply(
-                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
-                        "/request-post-action-move.json", //
-                        "/response-message-move.json", //
-                        HttpMethod.POST) //
+                        "/users/fred/mailFolders/inbox/messages/microsoft.graph.delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
+                        "/response-messages-delta.json") //
                 .build();
         Message m = client //
                 .users("fred") //
