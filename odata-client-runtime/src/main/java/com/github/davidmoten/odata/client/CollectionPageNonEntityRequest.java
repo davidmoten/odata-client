@@ -1,7 +1,6 @@
 package com.github.davidmoten.odata.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 @JsonIgnoreType
 public class CollectionPageNonEntityRequest<T, R extends NonEntityRequest<T>> {
@@ -20,7 +19,6 @@ public class CollectionPageNonEntityRequest<T, R extends NonEntityRequest<T>> {
     CollectionPageNonEntity<T> get(CollectionNonEntityRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
-        // RequestHelper.get(cp, cls, options, schemaInfo);
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp, schemaInfo);
     }
 
