@@ -559,14 +559,15 @@ public final class Generator {
                 imports.add(String.class), //
                 imports.add(Object.class), //
                 imports.add(Maps.class), //
-                parameters //
-                        .stream() //
-                        .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
-                                indent.copy().right(),
-                                first.getAndSet(false) ? String.format("<%s, %s>",
-                                        imports.add(String.class), imports.add(Object.class)) : "", //
-                                par.name, par.nameJava)) //
-                        .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
+                parameters.isEmpty() ? String.format(".empty()")
+                        : parameters //
+                                .stream() //
+                                .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                                        indent.copy().right(),
+                                        first.getAndSet(false) ? String.format("<%s, %s>", imports.add(String.class),
+                                                imports.add(Object.class)) : "", //
+                                        par.name, par.nameJava)) //
+                                .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
     private void writeFunctionParameterMap(Imports imports, Indent indent, PrintWriter p,
@@ -578,14 +579,15 @@ public final class Generator {
                 imports.add(String.class), //
                 imports.add(Object.class), //
                 imports.add(Maps.class), //
-                parameters //
-                        .stream() //
-                        .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
-                                indent.copy().right(),
-                                first.getAndSet(false) ? String.format("<%s, %s>",
-                                        imports.add(String.class), imports.add(Object.class)) : "", //
-                                par.name, par.nameJava)) //
-                        .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
+                parameters.isEmpty() ? String.format(".empty()")
+                        : parameters //
+                                .stream() //
+                                .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                                        indent.copy().right(),
+                                        first.getAndSet(false) ? String.format("<%s, %s>", imports.add(String.class),
+                                                imports.add(Object.class)) : "", //
+                                        par.name, par.nameJava)) //
+                                .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
     private void writeToString(Structure<?> t, String simpleClassName, Imports imports,
