@@ -106,7 +106,7 @@ public final class TestingService {
                             throw new RuntimeException("resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
-                        return new HttpResponse(200, text);
+                        return new HttpResponse(HttpURLConnection.HTTP_OK, text);
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
@@ -145,13 +145,14 @@ public final class TestingService {
                     log("POST called at " + url);
                     log(text);
                     String requestResourceName = requests.get(BuilderBase.toKey(HttpMethod.POST, url));
-
                     try {
                         String requestExpected = readResource(url, requestResourceName);
                         if (Serializer.INSTANCE.matches(requestExpected, text)) {
                             String responseResourceName = responses.get(BuilderBase.toKey(HttpMethod.POST, url));
                             String responseExpected = readResource(url, responseResourceName);
-                            return new HttpResponse(HttpURLConnection.HTTP_CREATED, responseExpected);
+                            int responseCode = url.contains("delta")? 
+                                HttpURLConnection.HTTP_OK : HttpURLConnection.HTTP_CREATED;
+                            return new HttpResponse(responseCode, responseExpected);
                         } else {
                             throw new RuntimeException("request does not match expected.\n==== Received ====\n" + text
                                     + "\n==== Expected =====\n" + requestExpected);

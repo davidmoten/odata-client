@@ -1,12 +1,13 @@
 package com.github.davidmoten.odata.client;
 
+import java.net.HttpURLConnection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class FunctionRequestReturningCollection<T>
-        extends ActionFunctionRequestBase<FunctionRequestReturningCollection<T>> implements Iterable<T> {
+public final class FunctionRequestReturningCollection<T> extends
+        ActionFunctionRequestBase<FunctionRequestReturningCollection<T>> implements Iterable<T> {
 
     private final SchemaInfo returnTypeSchemaInfo;
     private final Class<T> returnClass;
@@ -22,8 +23,13 @@ public final class FunctionRequestReturningCollection<T>
 
     public CollectionPageNonEntityRequest<T> get() {
         String json = Serializer.INSTANCE.serialize(parameters);
-        return new CollectionPageNonEntityRequest<T>(contextPath, returnClass, returnTypeSchemaInfo, HttpMethod.GET,
-                Optional.of(json));
+        return new CollectionPageNonEntityRequest<T>( //
+                contextPath, //
+                returnClass, //
+                returnTypeSchemaInfo, //
+                HttpMethod.POST, //
+                Optional.of(json), //
+                HttpURLConnection.HTTP_OK);
     }
 
     @Override

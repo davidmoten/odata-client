@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.net.HttpURLConnection;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -15,20 +16,25 @@ public class CollectionPageNonEntityRequest<T> {
     // initial call made with this method, further pages use HttpMethod.GET
     private final HttpMethod method;
     private final Optional<String> content;
+    private final int expectedResponseCode;
 
     // should not be public api
-    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls, SchemaInfo schemaInfo,
-            HttpMethod method, Optional<String> content) {
+    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls,
+            SchemaInfo schemaInfo, HttpMethod method, Optional<String> content,
+            int expectedResponseCode) {
         Preconditions.checkArgument(method != HttpMethod.POST || content.isPresent());
         this.contextPath = contextPath;
         this.cls = cls;
         this.schemaInfo = schemaInfo;
         this.method = method;
         this.content = content;
+        this.expectedResponseCode = expectedResponseCode;
     }
 
-    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls, SchemaInfo schemaInfo) {
-        this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty());
+    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls,
+            SchemaInfo schemaInfo) {
+        this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty(),
+                HttpURLConnection.HTTP_CREATED);
     }
 
     CollectionPage<T> get(RequestOptions options) {
@@ -39,7 +45,14 @@ public class CollectionPageNonEntityRequest<T> {
         } else {
             r = cp.context().service().post(cp.toUrl(), options.getRequestHeaders(), content.get());
         }
-        return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp, schemaInfo);
+        return cp //
+                .context() //
+                .serializer() //
+                .deserializeCollectionPageNonEntity( //
+                        r.getText(expectedResponseCode), //
+                        cls, //
+                        cp, //
+                        schemaInfo);
     }
 
     public CollectionPage<T> get() {
