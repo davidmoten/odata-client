@@ -982,15 +982,15 @@ public final class Generator {
                         p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
                         p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                        p.format("%scontextPath.addSegment(\"%s\"),\n",
+                        p.format("%scontextPath.addSegment(\"%s\"));\n",
                                 indent.right().right().right().right(), x.getName());
-                        p.format("%s%s.class,\n", indent, imports.add(
-                                names.getFullClassNameFromTypeWithNamespace(x.getEntityType())));
-                        p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
-                                imports.add(
-                                        names.getFullClassNameEntityRequestFromTypeWithNamespace(
-                                                sch, x.getEntityType())), //
-                                imports.add(names.getFullClassNameSchemaInfo(sch)));
+//                        p.format("%s%s.class,\n", indent, imports.add(
+//                                names.getFullClassNameFromTypeWithNamespace(x.getEntityType())));
+//                        p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
+//                                imports.add(
+//                                        names.getFullClassNameEntityRequestFromTypeWithNamespace(
+//                                                sch, x.getEntityType())), //
+//                                imports.add(names.getFullClassNameSchemaInfo(sch)));
                         p.format("%s}\n", indent.left().left().left().left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
@@ -1426,7 +1426,9 @@ public final class Generator {
     private String toType(TEntitySet x, Imports imports) {
         String t = x.getEntityType();
         // an entity set is always a collection
-        return names.wrapCollection(imports, CollectionPageEntityRequest.class, t);
+        Schema schema = names.getSchema(t);
+        return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, t));
+//        return names.wrapCollection(imports, CollectionPageEntityRequest.class, t);
     }
 
     private boolean isCollection(TProperty x) {
