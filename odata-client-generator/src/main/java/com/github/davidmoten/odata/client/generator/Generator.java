@@ -799,16 +799,17 @@ public final class Generator {
                         final String returnClass;
                         String y = x.getType().get(0);
                         Schema sch = names.getSchema(names.getInnerType(y));
-                        if (y.startsWith(COLLECTION_PREFIX)) {
-                            String inner = names.getInnerType(y);
-                            returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
-                                    + imports
-                                            .add(names.getFullClassNameFromTypeWithNamespace(inner))
-                                    + ", "
-                                    + imports.add(names
-                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                                    inner))
-                                    + ">";
+                        if (Names.isCollection(y)) {
+//                            String inner = names.getInnerType(y);
+//                            returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
+//                                    + imports
+//                                            .add(names.getFullClassNameFromTypeWithNamespace(inner))
+//                                    + ", "
+//                                    + imports.add(names
+//                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+//                                                    inner))
+//                                    + ">";
+                            returnClass = toType(x, imports);
                         } else {
                             returnClass = imports.add(names
                                     .getFullClassNameEntityRequestFromTypeWithNamespace(sch, y));
@@ -819,17 +820,17 @@ public final class Generator {
                                 Names.getGetterMethodWithoutGet(x.getName()));
                         if (isCollection(x)) {
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                            p.format("%scontextPath.addSegment(\"%s\"),\n",
+                            p.format("%scontextPath.addSegment(\"%s\"));\n",
                                     indent.right().right().right().right(), x.getName());
-                            p.format("%s%s.class,\n", indent,
-                                    imports.add(names.getFullClassNameFromTypeWithNamespace(
-                                            names.getInnerType(names.getType(x)))));
-                            p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n",
-                                    indent,
-                                    imports.add(names
-                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                                    names.getInnerType(names.getType(x)))),
-                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
+//                            p.format("%s%s.class,\n", indent,
+//                                    imports.add(names.getFullClassNameFromTypeWithNamespace(
+//                                            names.getInnerType(names.getType(x)))));
+//                            p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n",
+//                                    indent,
+//                                    imports.add(names
+//                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+//                                                    names.getInnerType(names.getType(x)))),
+//                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
                             indent.left().left().left().left();
                         } else {
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n",
@@ -1357,19 +1358,18 @@ public final class Generator {
                             Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
-                            Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                            p.format("%scontextPath.addSegment(\"%s\"),\n", //
+                            p.format("%scontextPath.addSegment(\"%s\"));\n", //
                                     indent.right().right().right().right(), x.getName());
-                            p.format("%s%s.class,\n", indent,
-                                    imports.add(names.getFullClassNameFromTypeWithNamespace(
-                                            names.getInnerType(names.getType(x)))));
-                            p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n",
-                                    indent,
-                                    imports.add(names
-                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                                    names.getInnerType(names.getType(x)))), //
-                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
+//                            p.format("%s%s.class,\n", indent,
+//                                    imports.add(names.getFullClassNameFromTypeWithNamespace(
+//                                            names.getInnerType(names.getType(x)))));
+//                            p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n",
+//                                    indent,
+//                                    imports.add(names
+//                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+//                                                    names.getInnerType(names.getType(x)))), //
+//                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
                             indent.left().left().left().left();
                         } else {
                             throw new RuntimeException("unexpected");
@@ -1405,7 +1405,10 @@ public final class Generator {
                         .add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, t));
             }
         } else {
-            return names.toImportedFullClassName(t, imports, CollectionPageEntityRequest.class);
+            String inner = names.getInnerType(t);
+            Schema schema = names.getSchema(inner);
+            return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, inner));
+            //return names.toImportedFullClassName(t, imports, CollectionPageEntityRequest.class);
         }
     }
 
