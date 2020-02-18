@@ -37,8 +37,9 @@ public class CollectionPageNonEntityRequest<T> {
         this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty(),
                 HttpURLConnection.HTTP_CREATED);
     }
-    
-    public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath, Class<T> returnClass, SchemaInfo returnTypeSchemaInfo, Map<String,Object> parameters) {
+
+    public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath,
+            Class<T> returnClass, Map<String, Object> parameters, SchemaInfo returnTypeSchemaInfo) {
         String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
