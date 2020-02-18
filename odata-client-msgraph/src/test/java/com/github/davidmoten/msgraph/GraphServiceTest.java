@@ -109,15 +109,15 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
                         "/response-message-attachments.json") //
                 .build();
-        CollectionPage<Message> messages = client //
+        Message m = client //
                 .users("fred") //
                 .mailFolders("inbox") //
                 .messages() //
                 .filter("isRead eq false") //
                 .orderBy("createdDateTime") //
                 .metadataMinimal() //
-                .get();
-        Message m = messages.iterator().next();
+                .iterator() //
+                .next();
         assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().stream()
                 .map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
@@ -134,15 +134,15 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
                 .build();
-        CollectionPage<Message> messages = client //
+        Message m = client //
                 .users("fred") //
                 .mailFolders("Inbox") //
                 .messages() //
                 .filter("isRead eq false") //
                 .orderBy("createdDateTime") //
                 .metadataMinimal() //
-                .get();
-        Message m = messages.iterator().next();
+                .iterator() //
+                .next();
         ItemAttachment a = (ItemAttachment) m //
                 .getAttachments() //
                 .metadataFull() //
@@ -176,6 +176,7 @@ public class GraphServiceTest {
     }
     
     @Test
+    //TODO resolve failure
     @Ignore
     public void testFunctionBoundToCollection() {
         GraphService client = serviceBuilder() //

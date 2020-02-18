@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public final class FunctionRequestReturningCollection<T>
         extends ActionFunctionRequestBase<FunctionRequestReturningCollection<T>> implements Iterable<T> {
@@ -22,8 +21,9 @@ public final class FunctionRequestReturningCollection<T>
     }
 
     public CollectionPageNonEntityRequest<T> get() {
+        // TODO add request headers
         String json = Serializer.INSTANCE.serialize(parameters);
-        return new CollectionPageNonEntityRequest<T>(contextPath, returnClass, returnTypeSchemaInfo, HttpMethod.POST,
+        return new CollectionPageNonEntityRequest<T>(contextPath.addQueries(this.queries), returnClass, returnTypeSchemaInfo, HttpMethod.POST,
                 Optional.of(json));
     }
 
