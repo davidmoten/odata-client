@@ -85,9 +85,9 @@ public final class CollectionNonEntityRequestOptionsBuilder<T, R extends NonEnti
         return this;
     }
 
-    CollectionNonEntityRequestOptions build() {
+    CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
-        return new CollectionNonEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select,
+        return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select,
                 expand);
     }
 
