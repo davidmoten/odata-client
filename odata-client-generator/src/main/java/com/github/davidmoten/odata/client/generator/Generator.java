@@ -552,7 +552,6 @@ public final class Generator {
 
     private void writeActionParameterMap(Imports imports, Indent indent, PrintWriter p,
             List<Parameter> parameters) {
-        AtomicBoolean first = new AtomicBoolean(true);
         p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
                 indent.right(), //
                 imports.add(Map.class), //
@@ -571,7 +570,6 @@ public final class Generator {
 
     private void writeFunctionParameterMap(Imports imports, Indent indent, PrintWriter p,
             List<Function.Parameter> parameters) {
-        AtomicBoolean first = new AtomicBoolean(true);
         p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
                 indent.right(), //
                 imports.add(Map.class), //
