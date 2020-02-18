@@ -110,12 +110,6 @@ public final class Serializer {
         }
     }
 
-    public <T extends ODataEntityType> CollectionPageEntity<T> deserializeCollectionPageEntity(String json,
-            Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
-        CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPageEntity<T>(cls, c.list, c.nextLink, contextPath, schemaInfo);
-    }
-
     public <T> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);

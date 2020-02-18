@@ -91,7 +91,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         return new CollectionEntityRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select, expand);
     }
 
-    public CollectionPageEntity<T> get() {
+    public CollectionPageNonEntity<T> get() {
         return request.get(build());
     }
     

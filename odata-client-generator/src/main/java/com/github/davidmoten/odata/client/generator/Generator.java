@@ -40,7 +40,6 @@ import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
 import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
-import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
 import com.github.davidmoten.odata.client.Context;
@@ -1229,7 +1228,7 @@ public final class Generator {
                         boolean isEntity = names.isEntityWithNamespace(inner);
                         Class<?> collectionCls;
                         if (isEntity) {
-                            collectionCls = CollectionPageEntity.class;
+                            collectionCls = CollectionPageNonEntity.class;
                         } else {
                             collectionCls = CollectionPageNonEntity.class;
                         }
@@ -1239,7 +1238,7 @@ public final class Generator {
                             Schema sch = names.getSchema(inner);
                             p.format(
                                     "%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE);\n",
-                                    indent.right(), imports.add(CollectionPageEntity.class),
+                                    indent.right(), imports.add(CollectionPageNonEntity.class),
                                     fieldName, importedInnerType,
                                     imports.add(names.getFullClassNameSchemaInfo(sch)));
                         } else {

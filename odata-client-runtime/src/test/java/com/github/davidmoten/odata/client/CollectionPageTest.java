@@ -81,7 +81,7 @@ public class CollectionPageTest {
         };
 
         Context context = new Context(serializer, service);
-        CollectionPageEntity<Person> c = serializer.deserializeCollectionPageEntity(json, Person.class,
+        CollectionPageNonEntity<Person> c = serializer.deserializeCollectionPageNonEntity(json, Person.class,
                 new ContextPath(context, service.getBasePath()), schemaInfo);
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
