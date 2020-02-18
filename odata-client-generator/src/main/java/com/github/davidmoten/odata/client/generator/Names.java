@@ -12,6 +12,7 @@ import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TComplexType;
+import org.oasisopen.odata.csdl.v4.TEntitySet;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
@@ -685,5 +686,7 @@ public final class Names {
         return new File(getDirectoryActionRequest(schema),
                 getSimpleClassNameActionRequest(schema, name) + ".java");
     }
+
+    
 
 }
