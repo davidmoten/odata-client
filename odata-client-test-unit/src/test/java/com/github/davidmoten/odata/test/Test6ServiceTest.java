@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.github.davidmoten.guavamini.Lists;
-import com.github.davidmoten.odata.client.CollectionPageNonEntityRequest;
+import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 
 import test6.a.entity.Product;
@@ -21,7 +21,7 @@ public class Test6ServiceTest {
         // just has to compile, is not run!
         Product p = Mockito.mock(Product.class);
         @SuppressWarnings("unused")
-        CollectionPageNonEntityRequest<String> rel = p.relatedProducts(123, Lists.newArrayList(10, 20, 30)) //
+        CollectionPage<String> rel = p.relatedProducts(123, Lists.newArrayList(10, 20, 30)) //
                 .select("id") //
                 .expand("attachments") //
                 .metadataFull() //

@@ -20,7 +20,8 @@ public final class ActionRequestReturningCollection<T> extends
     }
 
     public CollectionPageNonEntityRequest<T> get() {
-        return CollectionPageNonEntityRequest.forAction(contextPath, returnClass, returnTypeSchemaInfo, parameters);
+        return CollectionPageNonEntityRequest.forAction(contextPath, returnClass, parameters,
+                returnTypeSchemaInfo);
     }
 
     @Override

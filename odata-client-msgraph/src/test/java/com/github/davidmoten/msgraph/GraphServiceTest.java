@@ -189,7 +189,6 @@ public class GraphServiceTest {
                 .mailFolders("inbox") //
                 .messages() //
                 .delta() //
-                .get() //
                 .filter("receivedDateTime+ge+12345") //
                 .orderBy("receivedDateTime+desc") //
                 .metadataMinimal() //

@@ -41,6 +41,7 @@ import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
 import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
+import com.github.davidmoten.odata.client.CollectionPageNonEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
@@ -465,17 +466,16 @@ public final class Generator {
                         p.format("%spublic %s<%s> %s(%s) {\n", //
                                 indent, //
                                 returnType.isCollection
-                                        ? imports.add(ActionRequestReturningCollection.class)
+                                        ? imports.add(CollectionPageNonEntityRequest.class)
                                         : imports.add(ActionRequestReturningNonCollection.class), //
                                 action.getReturnType(imports).innerImportedFullClassName,
                                 action.getActionMethodName(), paramsDeclaration);
                         writeActionParameterMap(imports, indent, p, parameters);
                         if (returnType.isCollection) {
                             p.format(
-                                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                                    "%sreturn %s.forAction(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                     indent, //
-                                    imports.add(ActionRequestReturningCollection.class), //
-                                    returnType.innerImportedFullClassName, //
+                                    imports.add(CollectionPageNonEntityRequest.class), //
                                     action.getFullType(), //
                                     returnType.innerImportedFullClassName, //
                                     returnType.schemaInfoFullClassName);
@@ -524,17 +524,16 @@ public final class Generator {
                     p.format("%spublic %s<%s> %s(%s) {\n", //
                             indent, //
                             returnType.isCollection
-                                    ? imports.add(FunctionRequestReturningCollection.class)
+                                    ? imports.add(CollectionPageNonEntityRequest.class)
                                     : imports.add(FunctionRequestReturningNonCollection.class), //
                             function.getReturnType(imports).innerImportedFullClassName,
                             function.getActionMethodName(), paramsDeclaration);
                     writeFunctionParameterMap(imports, indent, p, parameters);
                     if (returnType.isCollection) {
                         p.format(
-                                "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                                "%sreturn %s.forAction(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                 indent, //
-                                imports.add(FunctionRequestReturningCollection.class), //
-                                returnType.innerImportedFullClassName, //
+                                imports.add(CollectionPageNonEntityRequest.class), //
                                 function.getFullType(), //
                                 returnType.innerImportedFullClassName, //
                                 returnType.schemaInfoFullClassName);
