@@ -37,9 +37,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.odata.client.ActionFunctionRequestReturningCollection;
-import com.github.davidmoten.odata.client.ActionFunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
+import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
+import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.CollectionPageEntity;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntity;
@@ -47,6 +47,8 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
+import com.github.davidmoten.odata.client.FunctionRequestReturningCollection;
+import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
@@ -464,28 +466,29 @@ public final class Generator {
                         p.format("%spublic %s<%s> %s(%s) {\n", //
                                 indent, //
                                 returnType.isCollection
-                                        ? imports.add(ActionFunctionRequestReturningCollection.class)
-                                        : imports.add(ActionFunctionRequestReturningNonCollection.class), //
+                                        ? imports.add(ActionRequestReturningCollection.class)
+                                        : imports.add(ActionRequestReturningNonCollection.class), //
                                 action.getReturnType(imports).innerImportedFullClassName,
                                 action.getActionMethodName(), paramsDeclaration);
                         writeActionParameterMap(imports, indent, p, parameters);
                         if (returnType.isCollection) {
                             p.format(
-                                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
+                                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                     indent, //
-                                    imports.add(ActionFunctionRequestReturningCollection.class), //
+                                    imports.add(ActionRequestReturningCollection.class), //
                                     returnType.innerImportedFullClassName, //
                                     action.getFullType(), //
-                                    returnType.innerImportedFullClassName);
+                                    returnType.innerImportedFullClassName, //
+                                    returnType.schemaInfoFullClassName);
                         } else {
                             p.format(
                                     "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                     indent, //
-                                    imports.add(ActionFunctionRequestReturningNonCollection.class), //
+                                    imports.add(ActionRequestReturningNonCollection.class), //
                                     returnType.innerImportedFullClassName, //
                                     action.getFullType(), //
-                                    returnType.innerImportedFullClassName,
-                                    imports.add(action.getReturnTypeFullClassNameSchemaInfo()));
+                                    returnType.innerImportedFullClassName, //
+                                    returnType.schemaInfoFullClassName);
                         }
                     } else {
                         p.format("%spublic %s %s(%s) {\n", //
@@ -522,28 +525,29 @@ public final class Generator {
                     p.format("%spublic %s<%s> %s(%s) {\n", //
                             indent, //
                             returnType.isCollection
-                                    ? imports.add(ActionFunctionRequestReturningCollection.class)
-                                    : imports.add(ActionFunctionRequestReturningNonCollection.class), //
+                                    ? imports.add(FunctionRequestReturningCollection.class)
+                                    : imports.add(FunctionRequestReturningNonCollection.class), //
                             function.getReturnType(imports).innerImportedFullClassName,
                             function.getActionMethodName(), paramsDeclaration);
                     writeFunctionParameterMap(imports, indent, p, parameters);
                     if (returnType.isCollection) {
                         p.format(
-                                "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters);\n", //
+                                "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                 indent, //
-                                imports.add(ActionFunctionRequestReturningCollection.class), //
+                                imports.add(FunctionRequestReturningCollection.class), //
                                 returnType.innerImportedFullClassName, //
                                 function.getFullType(), //
-                                returnType.innerImportedFullClassName);
+                                returnType.innerImportedFullClassName, //
+                                returnType.schemaInfoFullClassName);
                     } else {
                         p.format(
                                 "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                                 indent, //
-                                imports.add(ActionFunctionRequestReturningNonCollection.class), //
+                                imports.add(FunctionRequestReturningNonCollection.class), //
                                 returnType.innerImportedFullClassName, //
                                 function.getFullType(), //
                                 returnType.innerImportedFullClassName,
-                                imports.add(function.getReturnTypeFullClassNameSchemaInfo()));
+                                returnType.schemaInfoFullClassName);
                     }
                     p.format("%s}\n", indent.left());
                 });
@@ -1057,6 +1061,7 @@ public final class Generator {
                     imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema,
                             t.getName())), //
                     imports.add(names.getFullClassNameSchemaInfo(schema)));
+            p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%s}\n", indent.left());
 
             // write fields from properties

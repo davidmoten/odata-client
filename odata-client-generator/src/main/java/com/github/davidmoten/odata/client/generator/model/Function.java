@@ -118,7 +118,7 @@ public final class Function implements Method {
     }
 
     public String getReturnTypeFullClassNameSchemaInfo() {
-        return names.getFullClassNameSchemaInfo(schema());
+        return names.getFullClassNameSchemaInfo(names.getSchema(names.getInnerType(function.getReturnType())));
     }
 
     public String getFullType() {

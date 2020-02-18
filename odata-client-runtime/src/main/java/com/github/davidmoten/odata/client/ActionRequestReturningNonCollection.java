@@ -4,13 +4,13 @@ import java.util.Map;
 
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-public final class ActionFunctionRequestReturningNonCollection<T>
-        extends ActionFunctionRequestBase<ActionFunctionRequestReturningNonCollection<T>> {
+public final class ActionRequestReturningNonCollection<T>
+        extends ActionFunctionRequestBase<ActionRequestReturningNonCollection<T>> {
 
     private final Class<T> returnClass;
     private final SchemaInfo schemaInfo;
 
-    public ActionFunctionRequestReturningNonCollection(ContextPath contextPath, Class<T> returnClass,
+    public ActionRequestReturningNonCollection(ContextPath contextPath, Class<T> returnClass,
             Map<String, Object> parameters, SchemaInfo schemaInfo) {
         super(parameters, contextPath);
         this.returnClass = returnClass;
