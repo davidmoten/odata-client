@@ -71,7 +71,7 @@ import com.github.davidmoten.odata.client.generator.model.Method;
 import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
-import com.github.davidmoten.odata.client.internal.Maps;
+import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
@@ -558,15 +558,14 @@ public final class Generator {
                 imports.add(Map.class), //
                 imports.add(String.class), //
                 imports.add(Object.class), //
-                imports.add(Maps.class), //
+                imports.add(ParameterMap.class), //
                 parameters.isEmpty() ? String.format(".empty()")
                         : parameters //
                                 .stream() //
-                                .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                                .map(par -> String.format("\n%s.put(\"%s\", %s)", //
                                         indent.copy().right(),
-                                        first.getAndSet(false) ? String.format("<%s, %s>", imports.add(String.class),
-                                                imports.add(Object.class)) : "", //
-                                        par.name, par.nameJava)) //
+                                        par.name, //
+                                        par.nameJava)) //
                                 .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
@@ -578,15 +577,14 @@ public final class Generator {
                 imports.add(Map.class), //
                 imports.add(String.class), //
                 imports.add(Object.class), //
-                imports.add(Maps.class), //
+                imports.add(ParameterMap.class), //
                 parameters.isEmpty() ? String.format(".empty()")
                         : parameters //
                                 .stream() //
-                                .map(par -> String.format("\n%s.%sput(\"%s\", %s)", //
+                                .map(par -> String.format("\n%s.put(\"%s\", %s)", //
                                         indent.copy().right(),
-                                        first.getAndSet(false) ? String.format("<%s, %s>", imports.add(String.class),
-                                                imports.add(Object.class)) : "", //
-                                        par.name, par.nameJava)) //
+                                        par.name, //
+                                        par.nameJava)) //
                                 .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
