@@ -16,7 +16,7 @@ public class CollectionPageNonEntityRequest<T, R extends NonEntityRequest<T>> {
         this.schemaInfo = schemaInfo;
     }
 
-    CollectionPage<T> get(CollectionNonEntityRequestOptions options) {
+    CollectionPage<T> get(CollectionRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp, schemaInfo);

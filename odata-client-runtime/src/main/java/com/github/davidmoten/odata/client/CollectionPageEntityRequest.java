@@ -22,14 +22,14 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         this.schemaInfo = schemaInfo;
     }
 
-    CollectionPage<T> get(CollectionEntityRequestOptions options) {
+    CollectionPage<T> get(CollectionRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp,
                 schemaInfo);
     }
 
-    T post(CollectionEntityRequestOptions options, T entity) {
+    T post(CollectionRequestOptions options, T entity) {
         return RequestHelper.post(entity, contextPath, cls, options, schemaInfo);
     }
 
