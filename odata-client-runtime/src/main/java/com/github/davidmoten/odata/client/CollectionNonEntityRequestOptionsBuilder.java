@@ -91,7 +91,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T, R extends NonEnti
                 expand);
     }
 
-    public CollectionPageNonEntity<T> get() {
+    public CollectionPage<T> get() {
         return request.get(build());
     }
 

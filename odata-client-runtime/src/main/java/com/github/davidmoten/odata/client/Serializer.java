@@ -110,10 +110,10 @@ public final class Serializer {
         }
     }
 
-    public <T> CollectionPageNonEntity<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
+    public <T> CollectionPage<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPageNonEntity<T>(contextPath, cls, c.list, c.nextLink, schemaInfo);
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo);
     }
 
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls, ContextPath contextPath,

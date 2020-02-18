@@ -14,7 +14,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
-import com.github.davidmoten.odata.client.CollectionPageNonEntity;
+import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
@@ -43,7 +43,7 @@ public class GraphServiceTest {
     public void testGetEntityCollectionWithoutNextPage() {
         GraphService client = createClient("/users", "/response-users.json");
         assertNotNull(client.users().get());
-        CollectionPageNonEntity<User> c = client.users().get();
+        CollectionPage<User> c = client.users().get();
         assertNotNull(c);
         assertEquals(31, c.currentPage().size());
         assertFalse(c.nextPage().isPresent());
@@ -55,7 +55,7 @@ public class GraphServiceTest {
                 .replyWithResource("/me/contacts", "/response-contacts.json") //
                 .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
                 .build();
-        CollectionPageNonEntity<Contact> c = client.me().contacts().get();
+        CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
         assertTrue(c.nextPage().isPresent());
@@ -109,7 +109,7 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
                         "/response-message-attachments.json") //
                 .build();
-        CollectionPageNonEntity<Message> messages = client //
+        CollectionPage<Message> messages = client //
                 .users("fred") //
                 .mailFolders("inbox") //
                 .messages() //
@@ -134,7 +134,7 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
                 .build();
-        CollectionPageNonEntity<Message> messages = client //
+        CollectionPage<Message> messages = client //
                 .users("fred") //
                 .mailFolders("Inbox") //
                 .messages() //
