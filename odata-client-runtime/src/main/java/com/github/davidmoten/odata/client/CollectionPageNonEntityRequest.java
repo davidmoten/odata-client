@@ -31,7 +31,7 @@ public class CollectionPageNonEntityRequest<T> {
         this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty());
     }
 
-    CollectionPage<T> get(CollectionRequestOptions options) {
+    CollectionPage<T> get(RequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;
         if (method == HttpMethod.GET) {

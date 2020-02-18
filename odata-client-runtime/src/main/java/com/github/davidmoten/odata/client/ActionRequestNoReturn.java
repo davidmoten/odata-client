@@ -11,8 +11,7 @@ public final class ActionRequestNoReturn extends ActionFunctionRequestBase<Actio
     }
 
     public void call() {
-        RequestOptions requestOptions = RequestOptions.EMPTY;
-        RequestHelper.post(parameters, contextPath, requestOptions);
+        RequestHelper.post(parameters, contextPath, this);
     }
 
 }

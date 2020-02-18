@@ -21,9 +21,8 @@ public final class ActionRequestReturningCollection<T>
     }
 
     public CollectionPageNonEntityRequest<T> get() {
-        // TODO add request headers
         String json = Serializer.INSTANCE.serialize(parameters);
-        return new CollectionPageNonEntityRequest<T>(contextPath.addQueries(queries), returnClass, returnTypeSchemaInfo, HttpMethod.POST,
+        return new CollectionPageNonEntityRequest<T>(contextPath, returnClass, returnTypeSchemaInfo, HttpMethod.POST,
                 Optional.of(json));
     }
 

@@ -21,19 +21,18 @@ public final class FunctionRequestReturningCollection<T>
     }
 
     public CollectionPageNonEntityRequest<T> get() {
-        // TODO add request headers
         String json = Serializer.INSTANCE.serialize(parameters);
-        return new CollectionPageNonEntityRequest<T>(contextPath.addQueries(this.queries), returnClass, returnTypeSchemaInfo, HttpMethod.POST,
+        return new CollectionPageNonEntityRequest<T>(contextPath, returnClass, returnTypeSchemaInfo, HttpMethod.GET,
                 Optional.of(json));
     }
 
     @Override
     public Iterator<T> iterator() {
-        return get().get().iterator();
+        return get().get(this).iterator();
     }
 
     public Stream<T> stream() {
-        return get().get().stream();
+        return get().get(this).stream();
     }
 
 }
