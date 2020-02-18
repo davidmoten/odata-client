@@ -1,9 +1,7 @@
 package com.github.davidmoten.odata.client;
 
-import java.net.HttpURLConnection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public final class ActionRequestReturningCollection<T> extends
@@ -22,14 +20,7 @@ public final class ActionRequestReturningCollection<T> extends
     }
 
     public CollectionPageNonEntityRequest<T> get() {
-        String json = Serializer.INSTANCE.serialize(parameters);
-        return new CollectionPageNonEntityRequest<T>( //
-                contextPath, //
-                returnClass, //
-                returnTypeSchemaInfo, //
-                HttpMethod.POST, //
-                Optional.of(json), //
-                HttpURLConnection.HTTP_OK);
+        return CollectionPageNonEntityRequest.forAction(contextPath, returnClass, returnTypeSchemaInfo, parameters);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.net.HttpURLConnection;
+import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -35,6 +36,17 @@ public class CollectionPageNonEntityRequest<T> {
             SchemaInfo schemaInfo) {
         this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty(),
                 HttpURLConnection.HTTP_CREATED);
+    }
+    
+    public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath, Class<T> returnClass, SchemaInfo returnTypeSchemaInfo, Map<String,Object> parameters) {
+        String json = contextPath.context().serializer().serialize(parameters);
+        return new CollectionPageNonEntityRequest<T>( //
+                contextPath, //
+                returnClass, //
+                returnTypeSchemaInfo, //
+                HttpMethod.POST, //
+                Optional.of(json), //
+                HttpURLConnection.HTTP_OK);
     }
 
     CollectionPage<T> get(RequestOptions options) {
