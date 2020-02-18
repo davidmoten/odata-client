@@ -67,7 +67,6 @@ public final class RawAttachmentsMain {
                 .mailFolders("Inbox") //
                 .messages() //
                 .filter("isRead eq false and startsWith(subject, 'test contact')") //
-                .get() //
                 .stream() //
                 .peek(x -> System.out.println(x.getSubject().orElse(""))) //
                 .flatMap(x -> x.getAttachments().metadataFull().get().stream()) //
@@ -82,7 +81,6 @@ public final class RawAttachmentsMain {
                 .mailFolders("Inbox") //
                 .messages() //
                 .filter("isRead eq false") //
-                .get() //
                 .stream() //
                 .filter(x -> x.getHasAttachments().orElse(false)) //
                 .peek(x -> System.out.println("Subject: " + x.getSubject().orElse(""))) //
