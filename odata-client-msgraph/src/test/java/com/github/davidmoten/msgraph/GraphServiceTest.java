@@ -176,8 +176,6 @@ public class GraphServiceTest {
     }
     
     @Test
-    //TODO resolve failure
-    @Ignore
     public void testFunctionBoundToCollection() {
         GraphService client = serviceBuilder() //
                 .replyWithResource(
@@ -189,10 +187,10 @@ public class GraphServiceTest {
                 .mailFolders("inbox") //
                 .messages() //
                 .delta() //
+                .get() //
                 .filter("receivedDateTime+ge+12345") //
                 .orderBy("receivedDateTime+desc") //
                 .metadataMinimal() //
-                .stream() //
                 .iterator() //
                 .next();
     }
@@ -218,7 +216,6 @@ public class GraphServiceTest {
                 .expand("attachments") //
                 .orderBy("createdDateTime") //
                 .metadataMinimal() //
-                .get() // ;
                 .iterator() //
                 .next();
         Message m2 = m.move("Archive").metadataFull().get();

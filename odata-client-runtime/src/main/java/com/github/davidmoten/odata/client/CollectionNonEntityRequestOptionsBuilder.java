@@ -1,8 +1,10 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -93,6 +95,14 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
 
     public CollectionPage<T> get() {
         return request.get(build());
+    }
+    
+    public Iterator<T> iterator() {
+        return get().iterator();
+    }
+    
+    public Stream<T> stream() {
+        return get().stream();
     }
 
 }
