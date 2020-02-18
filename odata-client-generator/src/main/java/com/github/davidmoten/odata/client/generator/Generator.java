@@ -1056,7 +1056,6 @@ public final class Generator {
                     imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema,
                             t.getName())), //
                     imports.add(names.getFullClassNameSchemaInfo(schema)));
-            p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%s}\n", indent.left());
 
             // write fields from properties
