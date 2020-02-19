@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -44,7 +45,8 @@ public final class Serializer {
                 .setDateFormat(new StdDateFormat().withColonInTimeZone(true));
     }
 
-    public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath, boolean addKeysToContextPath) {
+    public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath,
+            boolean addKeysToContextPath) {
         try {
             if (contextPath != null) {
                 ObjectMapper m = createObjectMapper();
@@ -60,6 +62,31 @@ public final class Serializer {
                 return t;
             } else {
                 return MAPPER.readValue(text, cls);
+            }
+        } catch (IOException e) {
+            System.out.println(text);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T, S> T deserializeWithParametricType(String text, Class<? extends T> cls,
+            Class<? extends S> parametricTypeClass, ContextPath contextPath, boolean addKeysToContextPath) {
+        try {
+            JavaType type = MAPPER.getTypeFactory().constructParametricType(cls, parametricTypeClass);
+            if (contextPath != null) {
+                ObjectMapper m = createObjectMapper();
+                Std iv = new InjectableValues.Std() //
+                        .addValue(ContextPath.class, contextPath) //
+                        .addValue(ChangedFields.class, new ChangedFields()) //
+                        .addValue(UnmappedFields.class, new UnmappedFields());
+                m.setInjectableValues(iv);
+                T t = m.readValue(text, type);
+                if (t instanceof ODataType) {
+                    ((ODataType) t).postInject(addKeysToContextPath);
+                }
+                return t;
+            } else {
+                return MAPPER.readValue(text, type);
             }
         } catch (IOException e) {
             System.out.println(text);
@@ -91,7 +118,7 @@ public final class Serializer {
             throw new RuntimeException(e);
         }
     }
-    
+
     public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
         try {
             ObjectMapper m = createObjectMapper();
@@ -114,8 +141,8 @@ public final class Serializer {
         }
     }
 
-    public <T> CollectionPage<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
-            ContextPath contextPath, SchemaInfo schemaInfo) {
+    public <T> CollectionPage<T> deserializeCollectionPageNonEntity(String json, Class<T> cls, ContextPath contextPath,
+            SchemaInfo schemaInfo) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
         return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo);
     }

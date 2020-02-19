@@ -18,10 +18,12 @@ public final class FunctionRequestReturningNonCollection<T>
         this.schemaInfo = schemaInfo;
     }
 
-    public T get() {
+    @SuppressWarnings("unchecked")
+    public ODataValue<T> get() {
         Serializer serializer = contextPath.context().serializer();
-        return RequestHelper.get( //
+        return RequestHelper.getWithParametricType( //
                 contextPath.addSegment(InlineParameterSyntax.encode(serializer, parameters)), //
+                ODataValue.class, //
                 returnClass, //
                 this, //
                 schemaInfo);
