@@ -53,7 +53,7 @@ public class Test6ServiceTest {
                 .expectRequestAndReply("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
                         "/response-revoke-sessions.json", HttpMethod.POST) //
                 .build();
-        assertTrue(client.products(1).get().revokeSessions().get());
+        assertTrue(client.products(1).get().revokeSessions().get().value());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class Test6ServiceTest {
                 .expectRequestAndReply("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
                         "/response-revoke-sessions.json", HttpMethod.POST) //
                 .build();
-        assertTrue(client.products(1).revokeSessions().get());
+        assertTrue(client.products(1).revokeSessions().get().value());
     }
     
     @Test
