@@ -219,7 +219,7 @@ public class GraphServiceTest {
                 .metadataMinimal() //
                 .iterator() //
                 .next();
-        Message m2 = m.move("Archive").metadataFull().get();
+        Message m2 = m.move("Archive").metadataFull().get().value();
         assertEquals(m.getId(), m2.getId());
     }
 
