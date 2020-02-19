@@ -1,1 +1,4 @@
-true
+{
+	"@odata.context": "https://testing.com/blah", 
+    "value": true
+}
