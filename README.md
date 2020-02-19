@@ -17,11 +17,11 @@ Status: *in development*
 * Http calls using java.net.URLConnection or using Apache HttpClient
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Paging is handled for you automatically when iterating large collections
+* Bound actions and functions are supported (unbound in the [TODO] list)
 * Generated code is very clean - well formatted, no redundant imports
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
 * More generated clients can be added, just raise an issue
-* Actions bound to single entities are supported both for a hydrated entity and for an entity request (all action and function support under active development) 
 
 ## How to build
 `mvn clean install`
@@ -104,14 +104,18 @@ String id = UUID.randomUUID().toString().substring(0, 6);
 Message m = Message
     .builderMessage() //
     .subject("hi there " + id) //
-    .body(ItemBody.builder() //
-            .content("hello there how are you") //
-            .contentType(BodyType.TEXT).build()) //
-    .from(Recipient.builder() //
-            .emailAddress(EmailAddress.builder() //
-                    .address(mailbox) //
-                    .build())
-            .build())
+    .body(ItemBody
+        .builder() //
+        .content("hello there how are you") //
+        .contentType(BodyType.TEXT) 
+        .build()) //
+    .from(Recipient
+         .builder() //
+         .emailAddress(EmailAddress
+             .builder() //
+             .address(mailbox) //
+             .build())
+         .build())
     .build();
 
 // Create the draft message
@@ -158,7 +162,7 @@ To find the read url for a property that is of type `Edm.Stream` you generally n
 
 ## Implementation Notes
 ### Generator
-Some of the metadata access patterns are O(N<sup>2</sup>) in the generator but does not appear to be significant. If you think it is then can start using maps for lookups.
+Some of the metadata access patterns are O(N<sup>2</sup>) in the generator but does not appear to be significant. If you think it is then the library can start using maps for lookups.
 
 ### HasStream
 Suppose Person has a Navigation Property of Photo then using the TripPin service example, calling HTTP GET of 
@@ -194,9 +198,8 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support NavigationPropertyBindings (just a documentation nicety? Looks like it's just to indicate contains relationships)
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
-* support functions (*in progress*)
-* support actions bound to Collections (*in progress*)
 * support unbound actions
+* support unbound functions
 * support `count`
 * support `raw`
 * support geographical primitive types (where's the spec?!!)
