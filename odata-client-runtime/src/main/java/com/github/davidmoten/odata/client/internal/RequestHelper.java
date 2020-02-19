@@ -76,7 +76,7 @@ public final class RequestHelper {
         return postAny(entity, contextPath, cls, options, schemaInfo);
     }
     
-    public static <T> T postAny(Object object, ContextPath contextPath,
+    private static <T> T postAny(Object object, ContextPath contextPath,
             Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
@@ -101,6 +101,33 @@ public final class RequestHelper {
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(
                 response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath, false);
+    }
+    
+    public static <T, S> T postAnyWithParametricType(Object object, ContextPath contextPath,
+            Class<T> cls, Class<S> parametricTypeClass, RequestOptions options, SchemaInfo schemaInfo) {
+        // build the url
+        ContextPath cp = contextPath.addQueries(options.getQueries());
+
+        String json = Serializer.INSTANCE.serialize(object);
+
+        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+
+        // get the response
+        HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
+
+        // deserialize
+        if (response.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+            throw new RuntimeException("Returned response code " + response.getResponseCode()
+                    + " from url=" + cp.toUrl() + ", expected 204 (NO_CONTENT)");
+        }
+
+        // deserialize
+        Class<? extends T> c = getSubClass(cp, schemaInfo, cls,
+                response.getText(HttpURLConnection.HTTP_CREATED));
+        // check if we need to deserialize into a subclass of T (e.g. return a
+        // FileAttachment which is a subclass of Attachment)
+        return cp.context().serializer().deserializeWithParametricType(
+                response.getText(HttpURLConnection.HTTP_CREATED), c, parametricTypeClass, contextPath, false);
     }
 
     public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,

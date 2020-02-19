@@ -19,8 +19,15 @@ public final class ActionRequestReturningNonCollection<T>
         this.schemaInfo = schemaInfo;
     }
 
-    public T get() {
-        return RequestHelper.postAny(ParameterMap.toMap(parameters), contextPath, returnClass, this, schemaInfo);
+    @SuppressWarnings("unchecked")
+    public ODataValue<T> get() {
+        return RequestHelper.postAnyWithParametricType( //
+                ParameterMap.toMap(parameters), //
+                contextPath, //
+                ODataValue.class, //
+                returnClass, //
+                this, //
+                schemaInfo);
     }
 
 }
