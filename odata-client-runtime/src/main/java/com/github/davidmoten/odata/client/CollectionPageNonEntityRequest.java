@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.odata.client.internal.TypedObject;
 
 @JsonIgnoreType
 public class CollectionPageNonEntityRequest<T> {
@@ -39,7 +40,7 @@ public class CollectionPageNonEntityRequest<T> {
     }
 
     public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath,
-            Class<T> returnClass, Map<String, Object> parameters, SchemaInfo returnTypeSchemaInfo) {
+            Class<T> returnClass, Map<String, TypedObject> parameters, SchemaInfo returnTypeSchemaInfo) {
         String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
