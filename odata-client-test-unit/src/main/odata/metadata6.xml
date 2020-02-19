@@ -60,6 +60,17 @@
                     Type="Test6.A.Product" Nullable="false" />
                 <ReturnType Type="Edm.Boolean" />
             </Function>
+            
+            <Function Name="functionToTestNulls" IsBound="true"
+                EntitySetPath="bindingParameter">
+                <Parameter Name="bindingParameter"
+                    Type="Test6.A.Product" Nullable="false" />
+                <Parameter Name="value" Type="Edm.Int32"
+                    Nullable="true" />
+                <Parameter Name="collection"
+                    Type="Collection(Edm.Int32)" Nullable="true" />
+                <ReturnType Type="Edm.Int32" Nullable="false" />
+            </Function>
 
         </Schema>
         <Schema Namespace="Test6.B"

@@ -72,13 +72,14 @@ public final class Function implements Method {
                 .collect(Collectors.toList());
     }
 
-    public static final class Parameter {
+    public static final class Parameter implements HasNameJavaHasNullable {
         public final String name;
-        public final String nameJava;
+        private final String nameJava;
         public final String importedFullClassName;
 
         public final boolean isCollection;
         public String typeWithNamespace;
+        private final boolean isNullable;
 
         public Parameter(TActionFunctionParameter p, Names names, Imports imports) {
             this.name = p.getName();
@@ -86,6 +87,17 @@ public final class Function implements Method {
             this.importedFullClassName = names.toImportedFullClassName(p, imports);
             this.isCollection = names.isCollection(p);
             this.typeWithNamespace = p.getType().get(0);
+            this.isNullable = p.isNullable() == null? false: p.isNullable();
+        }
+
+        @Override
+        public String nameJava() {
+            return nameJava;
+        }
+
+        @Override
+        public boolean isNullable() {
+            return isNullable;
         }
     }
 
