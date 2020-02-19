@@ -39,4 +39,5 @@ public class FunctionRequestReturningNonCollectionTest {
         parameters.put("name", t);
         assertEquals("(name=\"2007-12-03T10:15:30+01:00\")", toInlineParameterSyntax(Serializer.INSTANCE, parameters));
     }
+    
 }

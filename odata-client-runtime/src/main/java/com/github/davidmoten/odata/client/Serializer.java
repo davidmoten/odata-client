@@ -14,7 +14,9 @@ import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.InjectableValues.Std;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
@@ -37,7 +39,9 @@ public final class Serializer {
                 .registerModule(new JavaTimeModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) //
                 .setSerializationInclusion(Include.NON_NULL) //
-        ;
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //
+                // StdDateFormat is ISO8601 since jackson 2.9
+                .setDateFormat(new StdDateFormat().withColonInTimeZone(true));
     }
 
     public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath, boolean addKeysToContextPath) {
