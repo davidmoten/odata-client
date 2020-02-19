@@ -154,6 +154,7 @@ drafts //
 ### Updating Microsoft Graph metadata
 Developer instructions:
 * Copy latest from https://graph.microsoft.com/v1.0/$metadata and place in `odata-client-generator/src/main/odata/msgraph-metadata.xml` then format it using `xmllint --format <input> ><output>`
+* Update the Entity ItemAttachment to have HasStream="true" attribute (still missing from msgraph metadata)
 * Copy latest from https://graph.microsoft.com/beta/$metadata and place in `odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml` then format it using `xmllint --format <input> ><output>`
 
 ## Usage Notes
@@ -200,6 +201,7 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * use annotations (docs) in javadoc
 * support unbound actions
 * support unbound functions
+* support function composition
 * support `count`
 * support `raw`
 * support geographical primitive types (where's the spec?!!)
