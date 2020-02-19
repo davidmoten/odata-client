@@ -6,17 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.odata.client.internal.TypedObject;
 
 public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>> implements RequestOptions {
 
     protected final ContextPath contextPath;
 
-    protected final Map<String, Object> parameters;
+    protected final Map<String, TypedObject> parameters;
 
     protected final List<RequestHeader> requestHeaders = new ArrayList<>();
     protected final Map<String, String> queries = new HashMap<>();
 
-    public ActionFunctionRequestBase(Map<String, Object> parameters, ContextPath contextPath) {
+    public ActionFunctionRequestBase(Map<String, TypedObject> parameters, ContextPath contextPath) {
         this.parameters = parameters;
         this.contextPath = contextPath;
     }

@@ -62,5 +62,10 @@ public class Test6ServiceTest {
                 .build();
         assertTrue(client.products(1).revokeSessions().get());
     }
+    
+    @Test
+    public void testFunctionParametersAreInlineSyntax() {
+        
+    }
 
 }

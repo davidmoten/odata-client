@@ -78,12 +78,14 @@ public final class Function implements Method {
         public final String importedFullClassName;
 
         public final boolean isCollection;
+        public String typeWithNamespace;
 
         public Parameter(TActionFunctionParameter p, Names names, Imports imports) {
             this.name = p.getName();
             this.nameJava = Names.getIdentifier(p.getName());
             this.importedFullClassName = names.toImportedFullClassName(p, imports);
             this.isCollection = names.isCollection(p);
+            this.typeWithNamespace = p.getType().get(0);
         }
     }
 

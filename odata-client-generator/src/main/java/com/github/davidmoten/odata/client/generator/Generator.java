@@ -38,16 +38,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
-import com.github.davidmoten.odata.client.ActionRequestReturningCollection;
 import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntityRequest;
-import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
-import com.github.davidmoten.odata.client.FunctionRequestReturningCollection;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
@@ -74,6 +72,7 @@ import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import com.github.davidmoten.odata.client.internal.TypedObject;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Generator {
@@ -557,14 +556,15 @@ public final class Generator {
                 indent.right(), //
                 imports.add(Map.class), //
                 imports.add(String.class), //
-                imports.add(Object.class), //
+                imports.add(TypedObject.class), //
                 imports.add(ParameterMap.class), //
                 parameters.isEmpty() ? String.format(".empty()")
                         : parameters //
                                 .stream() //
-                                .map(par -> String.format("\n%s.put(\"%s\", %s)", //
+                                .map(par -> String.format("\n%s.put(\"%s\", \"%s\", %s)", //
                                         indent.copy().right(),
                                         par.name, //
+                                        par.typeWithNamespace, //
                                         par.nameJava)) //
                                 .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
@@ -575,14 +575,15 @@ public final class Generator {
                 indent.right(), //
                 imports.add(Map.class), //
                 imports.add(String.class), //
-                imports.add(Object.class), //
+                imports.add(TypedObject.class), //
                 imports.add(ParameterMap.class), //
                 parameters.isEmpty() ? String.format(".empty()")
                         : parameters //
                                 .stream() //
-                                .map(par -> String.format("\n%s.put(\"%s\", %s)", //
+                                .map(par -> String.format("\n%s.put(\"%s\", \"%s\", %s)", //
                                         indent.copy().right(),
                                         par.name, //
+                                        par.typeWithNamespace, //
                                         par.nameJava)) //
                                 .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
