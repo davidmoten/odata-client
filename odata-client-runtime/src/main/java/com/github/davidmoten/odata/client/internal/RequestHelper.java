@@ -53,6 +53,23 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
 
+    
+    public static <T, S> T getWithParametricType(ContextPath contextPath, Class<T> cls,Class<S> parametricTypeClass, RequestOptions options,
+            SchemaInfo schemaInfo) {
+        // build the url
+        ContextPath cp = contextPath.addQueries(options.getQueries());
+
+        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+
+        // get the response
+        HttpResponse response = cp.context().service().get(cp.toUrl(), h);
+
+        // deserialize
+        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
+        // check if we need to deserialize into a subclass of T (e.g. return a
+        // FileAttachment which is a subclass of Attachment)
+        return cp.context().serializer().deserializeWithParametricType(response.getText(), c, parametricTypeClass, contextPath, false);
+    }
     //designed for saving a new entity and returning that entity
     public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath,
             Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {

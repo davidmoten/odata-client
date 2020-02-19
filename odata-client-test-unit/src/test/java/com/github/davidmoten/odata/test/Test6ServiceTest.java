@@ -72,7 +72,7 @@ public class Test6ServiceTest {
                 .replyWithResource("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3D%5B1%2C2%2C3%5D)", //
                         "/function-return-1.json")
                 .build();
-        int value = client.products(1).functionToTestNulls(1, Arrays.asList(1, 2, 3)).get();
+        int value = client.products(1).functionToTestNulls(1, Arrays.asList(1, 2, 3)).get().value();
         assertEquals(456, value);
     }
     
@@ -82,7 +82,7 @@ public class Test6ServiceTest {
                 .replyWithResource("/Products/1/Test6.A.functionToTestNulls/(value%3Dnull'Edm.Int32'%2Ccollection%3D%5B1%2C2%2C3%5D)", //
                         "/function-return-1.json")
                 .build();
-        int value = client.products(1).functionToTestNulls(null, Arrays.asList(1, 2, 3)).get();
+        int value = client.products(1).functionToTestNulls(null, Arrays.asList(1, 2, 3)).get().value();
         assertEquals(456, value);
     }
     
@@ -92,7 +92,7 @@ public class Test6ServiceTest {
                 .replyWithResource("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3Dnull'Collection(Edm.Int32)')", //
                         "/function-return-1.json")
                 .build();
-        int value = client.products(1).functionToTestNulls(1, null).get();
+        int value = client.products(1).functionToTestNulls(1, null).get().value();
         assertEquals(456, value);
     }
 

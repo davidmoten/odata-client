@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 
 public class Util {
 
@@ -27,5 +28,9 @@ public class Util {
             throw new UncheckedIOException(e);
         }
         return bytes.toByteArray();
+    }
+
+    public static String utf8(InputStream in) {
+        return new String(toByteArray(in), StandardCharsets.UTF_8);
     }
 }

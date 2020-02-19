@@ -1,1 +1,4 @@
-456
+{
+	"@odata.context": "https://testing.com/blah", 
+    "value": 456
+}
