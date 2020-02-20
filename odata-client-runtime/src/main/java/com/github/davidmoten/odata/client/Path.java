@@ -18,6 +18,7 @@ public class Path {
     private final Map<String, String> queries; // unencoded
     private final PathStyle style;
 
+    //TODO support repeated query keys?
     public Path(String url, Map<String, String> queries, PathStyle style) {
         this.url = url;
         this.queries = queries;
