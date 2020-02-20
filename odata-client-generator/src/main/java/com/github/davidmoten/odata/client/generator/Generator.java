@@ -47,6 +47,7 @@ import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.HasContext;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
@@ -923,7 +924,7 @@ public final class Generator {
             } else {
                 extension = "";
             }
-            p.format("public final class %s%s {\n\n", simpleClassName, extension);
+            p.format("public final class %s%s implements %s {\n\n", simpleClassName, extension, imports.add(HasContext.class));
 
             // TODO handle container extension
 
@@ -936,7 +937,8 @@ public final class Generator {
                     imports.add(ContextPath.class));
             p.format("%s}\n", indent.left());
 
-            p.format("\n%spublic %s _context() {\n", indent, imports.add(Context.class));
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic %s _context() {\n", indent, imports.add(Context.class));
             p.format("%sreturn contextPath.context();\n", indent.right());
             p.format("%s}\n", indent.left());
 
