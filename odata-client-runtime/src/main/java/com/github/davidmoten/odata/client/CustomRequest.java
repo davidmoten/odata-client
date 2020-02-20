@@ -9,25 +9,34 @@ public final class CustomRequest {
     }
 
     public <T> T get(String url, Class<T> responseCls, RequestHeader... headers) {
-        return null;
+        // TODO implement
+        throw new UnsupportedOperationException("not implemented yet");
     }
-    
+
     public <T> String getJson(String url, RequestHeader... headers) {
-        return null;
+        // TODO implement
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     public <T> void post(String url, Class<T> contentClass, T content, RequestHeader... headers) {
+        // TODO implement
+        throw new UnsupportedOperationException("not implemented yet");
     }
-    
+
     public <T> void postJson(String url, String contentJson, RequestHeader... headers) {
+        // TODO implement
+        throw new UnsupportedOperationException("not implemented yet");
     }
-    
+
     public String postJsonReturnsJson(String url, String contentJson, RequestHeader... headers) {
-        return null;
+        // TODO implement
+        throw new UnsupportedOperationException("not implemented yet");
     }
-    
-    public <T, S> T post(String url, Class<T> contentClass, T content, Class<S> responseClass, RequestHeader... headers) {
-        return null;
+
+    public <T, S> T post(String url, Class<T> contentClass, T content, Class<S> responseClass,
+            RequestHeader... headers) {
+        // TODO implement
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
 }
