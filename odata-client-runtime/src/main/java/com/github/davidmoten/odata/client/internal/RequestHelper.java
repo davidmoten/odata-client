@@ -260,7 +260,7 @@ public final class RequestHelper {
                 // the collection type has subclasses. For example when a collection of
                 // Attachment (with full metadata) is requested the editLink of an individual
                 // attachment may end in /itemAttachment to indicate the type of the attachment.
-                // To get the $value download working we need to remove that typing.
+                // To get the $value download working we need to remove that type cast.
                 int i = endsWith(editLink, "/" + entity.odataTypeName());
                 if (i == -1) {
                     i = endsWith(editLink, "/" + entity.odataTypeName() + "/$value");
