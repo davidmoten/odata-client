@@ -99,7 +99,7 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatch() {
-        DemoService client = serviceBuilder().replyWithResource("/Products(1)", "/response-product.json") //
+        DemoService client = serviceBuilder().expectResponse("/Products(1)", "/response-product.json") //
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH) //
                 .build();
         Product p = Product //
@@ -112,7 +112,7 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatchDirect() {
-        DemoService client = serviceBuilder().replyWithResource("/Products(1)", "/response-product.json") //
+        DemoService client = serviceBuilder().expectResponse("/Products(1)", "/response-product.json") //
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH) //
                 .build();
         Product p = client.products(1).get();
@@ -127,7 +127,7 @@ public class DemoServiceTest {
     }
 
     private static DemoService createClient(String path, String resource) {
-        return serviceBuilder().replyWithResource(path, resource) //
+        return serviceBuilder().expectResponse(path, resource) //
                 .build();
     }
 

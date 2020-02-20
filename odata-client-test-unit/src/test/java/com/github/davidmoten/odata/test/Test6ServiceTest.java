@@ -49,8 +49,8 @@ public class Test6ServiceTest {
     public void testEntityActionReturningBoolean() {
         // just has to compile, is not run!
         Test6Service client = Test6Service.test() //
-                .replyWithResource("/Products/1", "/response-product-1.json")
-                .expectRequestAndReply("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
+                .expectResponse("/Products/1", "/response-product-1.json")
+                .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
                         "/response-revoke-sessions.json", HttpMethod.POST) //
                 .build();
         assertTrue(client.products(1).get().revokeSessions().get().value());
@@ -60,7 +60,7 @@ public class Test6ServiceTest {
     public void testEntityRequestActionReturningBoolean() {
         // just has to compile, is not run!
         Test6Service client = Test6Service.test() //
-                .expectRequestAndReply("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
+                .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
                         "/response-revoke-sessions.json", HttpMethod.POST) //
                 .build();
         assertTrue(client.products(1).revokeSessions().get().value());
@@ -69,7 +69,7 @@ public class Test6ServiceTest {
     @Test
     public void testFunctionParametersAreInlineSyntax() {
         Test6Service client = Test6Service.test() //
-                .replyWithResource("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3D%5B1%2C2%2C3%5D)", //
+                .expectResponse("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3D%5B1%2C2%2C3%5D)", //
                         "/function-return-1.json")
                 .build();
         int value = client.products(1).functionToTestNulls(1, Arrays.asList(1, 2, 3)).get().value();
@@ -79,7 +79,7 @@ public class Test6ServiceTest {
     @Test
     public void testFunctionParametersAreInlineSyntaxWhenNonCollectionParameterNull() {
         Test6Service client = Test6Service.test() //
-                .replyWithResource("/Products/1/Test6.A.functionToTestNulls/(value%3Dnull'Edm.Int32'%2Ccollection%3D%5B1%2C2%2C3%5D)", //
+                .expectResponse("/Products/1/Test6.A.functionToTestNulls/(value%3Dnull'Edm.Int32'%2Ccollection%3D%5B1%2C2%2C3%5D)", //
                         "/function-return-1.json")
                 .build();
         int value = client.products(1).functionToTestNulls(null, Arrays.asList(1, 2, 3)).get().value();
@@ -89,7 +89,7 @@ public class Test6ServiceTest {
     @Test
     public void testFunctionParametersAreInlineSyntaxWhenCollectionParameterNull() {
         Test6Service client = Test6Service.test() //
-                .replyWithResource("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3Dnull'Collection(Edm.Int32)')", //
+                .expectResponse("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3Dnull'Collection(Edm.Int32)')", //
                         "/function-return-1.json")
                 .build();
         int value = client.products(1).functionToTestNulls(1, null).get().value();

@@ -30,7 +30,7 @@ public class Test1ServiceTest {
         Test1Service client = Test1Service //
                 .test() //
                 .expectRequest("/Products", "/request-post.json", HttpMethod.POST) //
-                .replyWithResource("/Products", "/response-post.json", HttpMethod.POST) //
+                .expectResponse("/Products", "/response-post.json", HttpMethod.POST) //
                 .build();
         Product p = Product.builder().name("bingo").build();
         client.products().post(p);

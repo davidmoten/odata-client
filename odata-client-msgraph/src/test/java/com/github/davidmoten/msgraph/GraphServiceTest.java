@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
@@ -29,6 +28,11 @@ import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
 
 public class GraphServiceTest {
+    
+    @Test
+    public void testFileAttachmentBuilderCompiles() {
+        FileAttachment.builderFileAttachment().build();
+    }
 
     @Test
     public void testGetEntityWithComplexTypeCollection() {
@@ -51,9 +55,9 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityCollectionWithNextPage() {
-        GraphService client = serviceBuilder() //
-                .replyWithResource("/me/contacts", "/response-contacts.json") //
-                .replyWithResource("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
+        GraphService client = clientBuilder() //
+                .expectResponse("/me/contacts", "/response-contacts.json") //
+                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -101,11 +105,11 @@ public class GraphServiceTest {
 
     @Test
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
-        GraphService client = serviceBuilder() //
-                .replyWithResource(
+        GraphService client = clientBuilder() //
+                .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
                         "/response-messages-expand-attachments-minimal-metadata.json") //
-                .replyWithResource(
+                .expectResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
                         "/response-message-attachments.json") //
                 .build();
@@ -124,13 +128,13 @@ public class GraphServiceTest {
 
     @Test
     public void testGetStreamOnItemAttachment() throws IOException {
-        GraphService client = serviceBuilder() //
-                .replyWithResource(
+        GraphService client = clientBuilder() //
+                .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
                         "/response-messages-with-item-attachment.json") //
-                .replyWithResource("/users/fred/mailFolders/Inbox/messages/86/attachments",
+                .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments",
                         "/response-attachments.json") //
-                .replyWithResource(
+                .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
                 .build();
@@ -155,10 +159,10 @@ public class GraphServiceTest {
 
     @Test
     public void testUnmappedFields() {
-        GraphService client = serviceBuilder() //
-                .replyWithResource("/users/fred/mailFolders/inbox/messages/1",
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
                         "/response-message-has-item-attachment.json") //
-                .replyWithResource("/users/fred/mailFolders/inbox/messages/1/attachments",
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments",
                         "/response-attachments-includes-item.json") //
                 .build();
         Attachment a = client //
@@ -177,8 +181,8 @@ public class GraphServiceTest {
 
     @Test
     public void testFunctionBoundToCollection() {
-        GraphService client = serviceBuilder() //
-                .expectRequestAndReply(
+        GraphService client = clientBuilder() //
+                .expectRequestAndResponse(
                         "/users/fred/mailFolders/inbox/messages/microsoft.graph.delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
                         "/request-messages-delta.json", //
                         "/response-messages-delta.json", //
@@ -194,16 +198,17 @@ public class GraphServiceTest {
                 .metadataMinimal() //
                 .iterator() //
                 .next();
+        assertEquals("86", m.getId().get());
     }
 
     @Test
     public void testMailMove() {
         // TODO get real json to use for this test
-        GraphService client = serviceBuilder() //
-                .replyWithResource(
+        GraphService client = clientBuilder() //
+                .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
                         "/response-messages-expand-attachments-minimal-metadata.json") //
-                .expectRequestAndReply(
+                .expectRequestAndResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
                         "/request-post-action-move.json", //
                         "/response-message-move.json", //
@@ -226,8 +231,8 @@ public class GraphServiceTest {
     @Test
     public void testMailRead() {
 
-        GraphService client = serviceBuilder() //
-                .replyWithResource(
+        GraphService client = clientBuilder() //
+                .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
                         "/response-messages-expand-attachments-minimal-metadata.json") //
                 .expectRequest(
@@ -285,7 +290,7 @@ public class GraphServiceTest {
     // test paged complex type
     //
 
-    private static ContainerBuilder<GraphService> serviceBuilder() {
+    private static ContainerBuilder<GraphService> clientBuilder() {
         return GraphService //
                 .test() //
                 .baseUrl("https://graph.microsoft.com/v1.0") //
@@ -294,8 +299,8 @@ public class GraphServiceTest {
     }
 
     private static GraphService createClient(String path, String resource) {
-        return serviceBuilder() //
-                .replyWithResource(path, resource) //
+        return clientBuilder() //
+                .expectResponse(path, resource) //
                 .build();
     }
 }

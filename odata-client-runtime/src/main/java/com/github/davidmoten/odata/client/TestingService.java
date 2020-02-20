@@ -13,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class TestingService {
     
-    public static Builder replyWithResource(String path, String resourceName) {
-        return new Builder().replyWithResource(path, resourceName);
+    public static Builder expectResponse(String path, String responseResourceName) {
+        return new Builder().expectResponse(path, responseResourceName);
     }
 
     public static Builder baseUrl(String url) {
@@ -53,26 +55,27 @@ public final class TestingService {
             return (T) this;
         }
 
-        public T replyWithResource(String path, String resourceName) {
-            return replyWithResource(path, resourceName, HttpMethod.GET);
+        public T expectResponse(String path, String responseResourceName) {
+            return expectResponse(path, responseResourceName, HttpMethod.GET);
         }
 
         @SuppressWarnings("unchecked")
-        public T replyWithResource(String path, String resourceName, HttpMethod method) {
-            responses.put(toKey(method, baseUrl + path), resourceName);
+        public T expectResponse(String path, String responseResourceName, HttpMethod method) {
+            responses.put(toKey(method, baseUrl + path), responseResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
-        public T expectRequest(String path, String resourceName, HttpMethod method) {
-            requests.put(toKey(method, baseUrl + path), resourceName);
+        public T expectRequest(String path, String requestResourceName, HttpMethod method) {
+            Preconditions.checkArgument(method != HttpMethod.GET, "GET not expected for a request with content");
+            requests.put(toKey(method, baseUrl + path), requestResourceName);
             return (T) this;
         }
         
         @SuppressWarnings("unchecked")
-        public T expectRequestAndReply(String path, String resourceName, String replyResourceName, HttpMethod method) {
-            requests.put(toKey(method, baseUrl + path), resourceName);
-            responses.put(toKey(method, baseUrl+ path), replyResourceName);
+        public T expectRequestAndResponse(String path, String requestResourceName, String responseResourceName, HttpMethod method) {
+            requests.put(toKey(method, baseUrl + path), requestResourceName);
+            responses.put(toKey(method, baseUrl+ path), responseResourceName);
             return (T) this;
         }
 

@@ -17,8 +17,8 @@ public class Test5ServiceTest {
     @Test
     public void testStreamGet() throws IOException {
         Test5Service client = Test5Service.test() //
-                .replyWithResource("/Products/2", "/response-get-stream.json") //
-                .replyWithResource("/Photos(123)/%24value", "/response-get-stream.txt") //
+                .expectResponse("/Products/2", "/response-get-stream.json") //
+                .expectResponse("/Photos(123)/%24value", "/response-get-stream.txt") //
                 .build();
         StreamProvider stream = client.products(2).metadataFull().get().getStream().get();
         assertEquals("image/jpeg",stream.contentType());
