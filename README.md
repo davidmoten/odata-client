@@ -22,6 +22,7 @@ Status: *in development*
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
 * More generated clients can be added, just raise an issue
+* Runs on Java 8+ (including Java 11+). When running <11 the jaxb dependencies can be excluded from odata-client-runtime. 
 
 ## How to build
 `mvn clean install`
@@ -50,6 +51,43 @@ Use this dependency:
     <version>VERSION_HERE</version>
 </dependency>
 ```
+
+If you are running on less than Java 11 then you can exclude some dependencies:
+```xml
+<dependency>
+    <groupId>com.github.davidmoten</groupId>
+    <artifactId>odata-client-msgraph</artifactId>
+    <version>VERSION_HERE</version>
+    <exclusions>
+        <exclusion>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+As slf4j is used for logging you may wish to exclude the *slf4j-api* dependency and add the slf4j logging adapter dependency (e.g. *slf4j-log4j12*) for your logging library:
+
+```xml
+	<exclusion>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	</exclusion>
+```
+
 ### Create a client
 The first step is to create a client that will be used for all calls in your application.
 
