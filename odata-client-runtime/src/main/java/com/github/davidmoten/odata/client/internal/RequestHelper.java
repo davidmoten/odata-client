@@ -118,9 +118,26 @@ public final class RequestHelper {
             RequestOptions options, SchemaInfo schemaInfo) {
         return postAny(entity, contextPath, cls, options, schemaInfo);
     }
+    
+    public static void post(Map<String, Object> parameters, ContextPath contextPath, RequestOptions options) {
 
-    private static <T> T postAny(Object object, ContextPath contextPath, Class<T> cls, RequestOptions options,
-            SchemaInfo schemaInfo) {
+        String json = Serializer.INSTANCE.serialize(parameters);
+
+        // build the url
+        ContextPath cp = contextPath.addQueries(options.getQueries());
+        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        final String url = cp.toUrl();
+
+        // get the response
+        HttpService service = cp.context().service();
+        final HttpResponse response = service.post(url, h, json);
+
+        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
+    }
+
+
+    public static <T> T postAny(Object object, ContextPath contextPath, Class<T> responseClass, RequestOptions options,
+            SchemaInfo responseSchemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -135,7 +152,7 @@ public final class RequestHelper {
         checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
+        Class<? extends T> c = getSubClass(cp, responseSchemaInfo, responseClass, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
@@ -349,22 +366,6 @@ public final class RequestHelper {
                     contentType, //
                     base64));
         }
-    }
-
-    public static void post(Map<String, Object> parameters, ContextPath contextPath, RequestOptions options) {
-
-        String json = Serializer.INSTANCE.serialize(parameters);
-
-        // build the url
-        ContextPath cp = contextPath.addQueries(options.getQueries());
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
-        final String url = cp.toUrl();
-
-        // get the response
-        HttpService service = cp.context().service();
-        final HttpResponse response = service.post(url, h, json);
-
-        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
 
 }
