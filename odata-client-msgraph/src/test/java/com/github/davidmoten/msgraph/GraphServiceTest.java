@@ -200,6 +200,11 @@ public class GraphServiceTest {
                 .next();
         assertEquals("86", m.getId().get());
     }
+    
+    @Test
+    public void testUnboundActions() {
+        GraphService client = clientBuilder().build();
+    }
 
     @Test
     public void testMailMove() {
