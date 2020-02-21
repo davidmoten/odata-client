@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
 
 @JsonIgnoreType
@@ -59,11 +60,12 @@ public class CollectionPageNonEntityRequest<T> {
         } else {
             r = cp.context().service().post(cp.toUrl(), options.getRequestHeaders(), content.get());
         }
+        RequestHelper.checkResponseCode(cp,  r, expectedResponseCode);
         return cp //
                 .context() //
                 .serializer() //
                 .deserializeCollectionPageNonEntity( //
-                        r.getText(expectedResponseCode), //
+                        r.getText(), //
                         cls, //
                         cp, //
                         schemaInfo);

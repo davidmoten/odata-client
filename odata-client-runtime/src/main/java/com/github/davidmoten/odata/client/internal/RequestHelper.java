@@ -64,6 +64,8 @@ public final class RequestHelper {
 
         // get the response
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
+        
+        checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
 
         // deserialize
         // Though cls might be Class<Attachment> we might actually want to return a
@@ -74,7 +76,13 @@ public final class RequestHelper {
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
-
+    
+    public static void checkResponseCode(ContextPath cp, HttpResponse response, int expectedResponseCode) {
+        if (response.getResponseCode() != expectedResponseCode) {
+            throw new ClientException("responseCode=" + response.getResponseCode()
+                    + " from url=" + cp.toUrl() + ", expectedResponseCode=" + expectedResponseCode + ", message=\n" + response.getText());
+        }
+    }
     
     public static <T, S> T getWithParametricType(ContextPath contextPath, Class<T> cls,Class<S> parametricTypeClass, RequestOptions options,
             SchemaInfo schemaInfo) {
@@ -86,12 +94,15 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
 
+        checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
+        
         // deserialize
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserializeWithParametricType(response.getText(), c, parametricTypeClass, contextPath, false);
     }
+    
     //designed for saving a new entity and returning that entity
     public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath,
             Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
@@ -111,18 +122,15 @@ public final class RequestHelper {
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
 
         // deserialize
-        if (response.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-            throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from url=" + cp.toUrl() + ", expected 204 (NO_CONTENT)");
-        }
+        checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
         // deserialize
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls,
-                response.getText(HttpURLConnection.HTTP_CREATED));
+                response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(
-                response.getText(HttpURLConnection.HTTP_CREATED), c, contextPath, false);
+                response.getText(), c, contextPath, false);
     }
     
     public static <T, S> T postAnyWithParametricType(Object object, ContextPath contextPath,
@@ -137,19 +145,15 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
 
-        // deserialize
-        if (response.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-            throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from url=" + cp.toUrl() + ", expected 204 (NO_CONTENT)");
-        }
+        checkResponseCode(cp, response, HttpURLConnection. HTTP_CREATED);
 
         // deserialize
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls,
-                response.getText(HttpURLConnection.HTTP_CREATED));
+                response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserializeWithParametricType(
-                response.getText(HttpURLConnection.HTTP_CREATED), c, parametricTypeClass, contextPath, false);
+                response.getText(), c, parametricTypeClass, contextPath, false);
     }
 
     public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
@@ -215,7 +219,7 @@ public final class RequestHelper {
         if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
             //TODO 204 code would not apply to a POST
             throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from PATCH/PUT at url=" + url + ", expected 204 (NO_CONTENT)");
+                    + " from PATCH/PUT at url=" + url + ", message=\n" + response.getText());
         }
         return entity;
     }
@@ -374,7 +378,7 @@ public final class RequestHelper {
         if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
             //TODO 204 code would not apply to a POST
             throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from PATCH/PUT at url=" + url + ", expected 204 (NO_CONTENT)");
+                    + " from PATCH/PUT at url=" + url + ", message=\n"+ response.getText());
         }
     }
 
