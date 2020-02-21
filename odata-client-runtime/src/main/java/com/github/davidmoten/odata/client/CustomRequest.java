@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -17,20 +18,23 @@ public final class CustomRequest {
     public CustomRequest(Context context) {
         this.context = context;
     }
+    
+    public String getJson(String url, RequestHeader... headers) {
+        return context.service().getStringUtf8(url, Arrays.asList(headers));
+    }
+    
+    public InputStream getStream(String url, RequestHeader... headers) {
+        return context.service().getStream(url, Arrays.asList(headers));
+    }
 
     public <T> T get(String url, Class<T> responseCls, SchemaInfo responseSchemaInfo, RequestHeader... headers) {
         UrlInfo info = getInfo(context, url, headers);
         return RequestHelper.get(info.contextPath, responseCls, info, responseSchemaInfo);
     }
 
-    public <T> String getJson(String url, RequestHeader... headers) {
-        // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    public <T> void post(String url, Class<T> contentClass, T content, RequestHeader... headers) {
-        // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+    public <T extends ODataEntityType> void post(String url, Class<T> contentClass, T content, SchemaInfo schemaInfo, RequestHeader... headers) {
+        UrlInfo info = getInfo(context, url, headers);
+        RequestHelper.post(content, info.contextPath, contentClass, info, schemaInfo);
     }
 
     public <T> void postJson(String url, String contentJson, RequestHeader... headers) {
