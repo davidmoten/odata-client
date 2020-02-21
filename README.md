@@ -96,9 +96,30 @@ GraphService client = MsGraph
     .tenantName(tenantName) 
     .clientId(clientId) 
     .clientSecret(clientSecret) 
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
     .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
     .build();
 ```
+### Create a client behind a proxy
+
+```java
+GraphService client = MsGraph 
+    .tenantName(tenantName) 
+    .clientId(clientId) 
+    .clientSecret(clientSecret) 
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
+    .proxyHost(proxyHost)
+    .proxyPort(proxyPort)
+    .proxyUsername(proxyUsername)
+    .proxyPassword(proxyPassword)
+    .build();
+```
+
+If you want to do really complicated things with proxies or http in general you can use the `.httpClientProvider` or `.httpClientBuilderExtras` methods (coupled to Apache *HttpClient*). 
+
 ### Usage example 1 - simple
 Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread:
 

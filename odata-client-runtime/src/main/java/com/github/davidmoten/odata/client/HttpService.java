@@ -2,9 +2,11 @@ package com.github.davidmoten.odata.client;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -23,6 +25,10 @@ public interface HttpService extends AutoCloseable {
     HttpResponse delete(String url, List<RequestHeader> requestHeaders);
 
     InputStream getStream(String url, List<RequestHeader> requestHeaders);
+    
+    default Optional<Proxy> getProxy() {
+        return Optional.empty();
+    }
 
     Path getBasePath();
 
