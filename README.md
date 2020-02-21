@@ -263,6 +263,7 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support function composition
 * support `count`
 * support `raw`
+* support updating/creating streams
 * support geographical primitive types (where's the spec?!!)
 * support references to other metadata files (imports)
 * auto-rerequest with odata.metadata=full header if Edm.Stream is read
