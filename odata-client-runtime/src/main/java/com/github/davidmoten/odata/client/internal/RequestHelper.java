@@ -257,7 +257,7 @@ public final class RequestHelper {
             editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         }
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
-        if (editLink == null) {
+        if (editLink == null && !"true".equals(contextPath.context().getProperty("attempt.stream.when.no.metadata"))) {
             return Optional.empty();
         } else {
             if (contentType == null) {
@@ -265,6 +265,9 @@ public final class RequestHelper {
             }
             // TODO support relative editLink?
             Context context = contextPath.context();
+            if (editLink == null) {
+                editLink = contextPath.toUrl();
+            }
             if (!editLink.startsWith(HTTPS)) {
                 // TODO should use the base path from @odata.context field?
                 editLink = concatenate(contextPath.context().service().getBasePath().toUrl(), editLink);
