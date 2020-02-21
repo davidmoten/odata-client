@@ -29,6 +29,8 @@ import com.github.davidmoten.odata.client.StreamProvider;
 
 public final class RequestHelper {
 
+    private static final int HTTP_OK_MIN = 200;
+    private static final int HTTP_OK_MAX = 299;
     private static final String HTTPS = "https://";
     private static final String CONTENT_TYPE_APPLICATION_OCTET_STREAM = "application/octet-stream";
 
@@ -64,28 +66,35 @@ public final class RequestHelper {
 
         // get the response
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
-        
+
         checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
 
         // deserialize
         // Though cls might be Class<Attachment> we might actually want to return a
         // sub-class like FileAttachment (which extends Attachment). This method returns
-        // the actual sub-class by inspecting the json response. 
+        // the actual sub-class by inspecting the json response.
         Class<? extends T> c = getSubClass(cp, returnSchemaInfo, returnCls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
-    
-    public static void checkResponseCode(ContextPath cp, HttpResponse response, int expectedResponseCode) {
-        if (response.getResponseCode() != expectedResponseCode) {
-            throw new ClientException("responseCode=" + response.getResponseCode()
-                    + " from url=" + cp.toUrl() + ", expectedResponseCode=" + expectedResponseCode + ", message=\n" + response.getText());
+
+    public static void checkResponseCode(ContextPath cp, HttpResponse response, int expectedResponseCodeMin,
+            int expectedResponseCodeMax) {
+        if (response.getResponseCode() < expectedResponseCodeMin
+                || response.getResponseCode() > expectedResponseCodeMax) {
+            throw new ClientException("responseCode=" + response.getResponseCode() + " from url=" + cp.toUrl()
+                    + ", expectedResponseCode in [" + expectedResponseCodeMin + ", " + expectedResponseCodeMax
+                    + "], message=\n" + response.getText());
         }
     }
-    
-    public static <T, S> T getWithParametricType(ContextPath contextPath, Class<T> cls,Class<S> parametricTypeClass, RequestOptions options,
-            SchemaInfo schemaInfo) {
+
+    public static void checkResponseCode(ContextPath cp, HttpResponse response, int expectedResponseCode) {
+        checkResponseCode(cp, response, expectedResponseCode, expectedResponseCode);
+    }
+
+    public static <T, S> T getWithParametricType(ContextPath contextPath, Class<T> cls, Class<S> parametricTypeClass,
+            RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -95,22 +104,23 @@ public final class RequestHelper {
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
 
         checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
-        
+
         // deserialize
         Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserializeWithParametricType(response.getText(), c, parametricTypeClass, contextPath, false);
+        return cp.context().serializer().deserializeWithParametricType(response.getText(), c, parametricTypeClass,
+                contextPath, false);
     }
-    
-    //designed for saving a new entity and returning that entity
-    public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath,
-            Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
+
+    // designed for saving a new entity and returning that entity
+    public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath, Class<T> cls,
+            RequestOptions options, SchemaInfo schemaInfo) {
         return postAny(entity, contextPath, cls, options, schemaInfo);
     }
-    
-    private static <T> T postAny(Object object, ContextPath contextPath,
-            Class<T> cls, RequestOptions options, SchemaInfo schemaInfo) {
+
+    private static <T> T postAny(Object object, ContextPath contextPath, Class<T> cls, RequestOptions options,
+            SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -125,16 +135,14 @@ public final class RequestHelper {
         checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, schemaInfo, cls,
-                response.getText());
+        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(
-                response.getText(), c, contextPath, false);
+        return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
-    
-    public static <T, S> T postAnyWithParametricType(Object object, ContextPath contextPath,
-            Class<T> cls, Class<S> parametricTypeClass, RequestOptions options, SchemaInfo schemaInfo) {
+
+    public static <T, S> T postAnyWithParametricType(Object object, ContextPath contextPath, Class<T> cls,
+            Class<S> parametricTypeClass, RequestOptions options, SchemaInfo schemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -145,38 +153,32 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
 
-        checkResponseCode(cp, response, HttpURLConnection. HTTP_CREATED);
+        checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, schemaInfo, cls,
-                response.getText());
+        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserializeWithParametricType(
-                response.getText(), c, parametricTypeClass, contextPath, false);
+        return cp.context().serializer().deserializeWithParametricType(response.getText(), c, parametricTypeClass,
+                contextPath, false);
     }
 
-    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
-            RequestOptions options) {
+    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath, RequestOptions options) {
         return patchOrPut(entity, contextPath, options, HttpMethod.PATCH);
     }
 
     public static <T extends ODataEntityType> void delete(ContextPath cp, RequestOptions options) {
         String url = cp.toUrl();
         HttpResponse response = cp.context().service().delete(url, options.getRequestHeaders());
-        if (response.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT) {
-            throw new ClientException("Returned response code " + response.getResponseCode()
-                    + " from DELETE to url=" + url + ", expected 204 (NO_CONTENT)");
-        }
+        checkResponseCode(cp, response, HttpURLConnection.HTTP_NO_CONTENT);
     }
 
-    public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath,
-            RequestOptions options) {
+    public static <T extends ODataEntityType> T put(T entity, ContextPath contextPath, RequestOptions options) {
         return patchOrPut(entity, contextPath, options, HttpMethod.PUT);
     }
 
-    private static <T extends ODataEntityType> T patchOrPut(T entity, ContextPath contextPath,
-            RequestOptions options, HttpMethod method) {
+    private static <T extends ODataEntityType> T patchOrPut(T entity, ContextPath contextPath, RequestOptions options,
+            HttpMethod method) {
         Preconditions.checkArgument(method == HttpMethod.PUT || method == HttpMethod.PATCH);
         String json = Serializer.INSTANCE.serializeChangesOnly(entity);
 
@@ -215,31 +217,22 @@ public final class RequestHelper {
         // get the response
         HttpService service = cp.context().service();
         final HttpResponse response = service.submitWithContent(method, url, h, json);
-        // deserialize
-        if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
-            //TODO 204 code would not apply to a POST
-            throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from PATCH/PUT at url=" + url + ", message=\n" + response.getText());
-        }
+        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
         return entity;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo,
-            Class<T> cls, String json) {
-        Optional<String> namespacedType = cp.context().serializer().getODataType(json)
-                .map(x -> x.substring(1));
+    public static <T> Class<? extends T> getSubClass(ContextPath cp, SchemaInfo schemaInfo, Class<T> cls, String json) {
+        Optional<String> namespacedType = cp.context().serializer().getODataType(json).map(x -> x.substring(1));
 
         if (namespacedType.isPresent()) {
-            return (Class<? extends T>) schemaInfo
-                    .getClassFromTypeWithNamespace(namespacedType.get());
+            return (Class<? extends T>) schemaInfo.getClassFromTypeWithNamespace(namespacedType.get());
         } else {
             return cls;
         }
     }
 
-    private static List<RequestHeader> supplementRequestHeaders(RequestOptions options,
-            String odataMetadataValue) {
+    private static List<RequestHeader> supplementRequestHeaders(RequestOptions options, String odataMetadataValue) {
         List<RequestHeader> h = new ArrayList<>();
         h.add(new RequestHeader("OData-Version", "4.0"));
         h.add(RequestHeader.contentTypeJsonWithMetadata(odataMetadataValue));
@@ -248,20 +241,17 @@ public final class RequestHelper {
         return h;
     }
 
-    public static InputStream getStream(ContextPath contextPath, RequestOptions options,
-            String base64) {
+    public static InputStream getStream(ContextPath contextPath, RequestOptions options, String base64) {
         if (base64 != null) {
             return new ByteArrayInputStream(Base64.getDecoder().decode(base64));
         } else {
             ContextPath cp = contextPath.addQueries(options.getQueries());
-            return contextPath.context().service().getStream(cp.toUrl(),
-                    options.getRequestHeaders());
+            return contextPath.context().service().getStream(cp.toUrl(), options.getRequestHeaders());
         }
     }
 
     // for HasStream case (only for entities, not for complexTypes)
-    public static Optional<StreamProvider> createStream(ContextPath contextPath,
-            ODataEntityType entity) {
+    public static Optional<StreamProvider> createStream(ContextPath contextPath, ODataEntityType entity) {
         String editLink = (String) entity.getUnmappedFields().get("@odata.mediaEditLink");
         if (editLink == null) {
             editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
@@ -277,8 +267,7 @@ public final class RequestHelper {
             Context context = contextPath.context();
             if (!editLink.startsWith(HTTPS)) {
                 // TODO should use the base path from @odata.context field?
-                editLink = concatenate(contextPath.context().service().getBasePath().toUrl(),
-                        editLink);
+                editLink = concatenate(contextPath.context().service().getBasePath().toUrl(), editLink);
             }
             if ("true".equals(contextPath.context().getProperty("modify.stream.edit.link"))) {
                 // Bug fix for Microsoft Graph only?
@@ -296,7 +285,7 @@ public final class RequestHelper {
                 }
                 if (i != -1) {
                     editLink = editLink.substring(0, i);
-                } 
+                }
             }
             Path path = new Path(editLink, contextPath.path().style());
             if (!path.toUrl().endsWith("/$value")) {
@@ -337,12 +326,11 @@ public final class RequestHelper {
         return s.toString();
     }
 
-    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath,
-            ODataType item, String fieldName, String base64) {
+    public static Optional<StreamProvider> createStreamForEdmStream(ContextPath contextPath, ODataType item,
+            String fieldName, String base64) {
         Preconditions.checkNotNull(fieldName);
         String readLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaReadLink");
-        String contentType = (String) item.getUnmappedFields()
-                .get(fieldName + "@odata.mediaContentType");
+        String contentType = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaContentType");
         if (readLink == null && base64 != null) {
             return Optional.empty();
         } else {
@@ -360,9 +348,8 @@ public final class RequestHelper {
         }
     }
 
-    public static void post(Map<String, Object> parameters, ContextPath contextPath,
-            RequestOptions options) {
-        
+    public static void post(Map<String, Object> parameters, ContextPath contextPath, RequestOptions options) {
+
         String json = Serializer.INSTANCE.serialize(parameters);
 
         // build the url
@@ -373,13 +360,8 @@ public final class RequestHelper {
         // get the response
         HttpService service = cp.context().service();
         final HttpResponse response = service.post(url, h, json);
-        
-        // deserialize
-        if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
-            //TODO 204 code would not apply to a POST
-            throw new RuntimeException("Returned response code " + response.getResponseCode()
-                    + " from PATCH/PUT at url=" + url + ", message=\n"+ response.getText());
-        }
+
+        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
 
 }
