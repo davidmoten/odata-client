@@ -13,6 +13,7 @@ import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 
+import test6.a.container.Test6ServiceA;
 import test6.a.entity.Product;
 import test6.b.container.Test6Service;
 
@@ -94,6 +95,15 @@ public class Test6ServiceTest {
                 .build();
         int value = client.products(1).functionToTestNulls(1, null).get().value();
         assertEquals(456, value);
+    }
+    
+    @Test
+    public void testUnboundFunction() {
+        Test6ServiceA client = Test6ServiceA.test() //
+                .expectResponse("/Test6.A.globalFunction/(productId%3D%221%22%2Cvalue%3D23)", //
+                        "/function-return-1.json")
+                .build();
+        assertEquals(456,(int) client.globalFunction("1", 23).get().value());
     }
 
 }
