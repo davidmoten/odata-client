@@ -36,8 +36,27 @@ public final class RequestHelper {
         // prevent instantiation
     }
 
-    public static <T> T get(ContextPath contextPath, Class<T> cls, RequestOptions options,
-            SchemaInfo schemaInfo) {
+    /**
+     * Returns the json from an HTTP GET of the url built from the contextPath and
+     * options. In the case where the returned object is actually a sub-class of T
+     * we lookup the sub-class from schemaInfo based on the namespaced type of the
+     * return object.
+     * 
+     * @param <T>
+     *            return object type
+     * @param contextPath
+     *            context and current path
+     * @param returnCls
+     *            return class
+     * @param options
+     *            request options
+     * @param returnSchemaInfo
+     *            schema to be used for lookup generated class of of the returned
+     *            object from the namespaced type
+     * @return object hydrated from json
+     */
+    public static <T> T get(ContextPath contextPath, Class<T> returnCls, RequestOptions options,
+            SchemaInfo returnSchemaInfo) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
@@ -47,7 +66,10 @@ public final class RequestHelper {
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, schemaInfo, cls, response.getText());
+        // Though cls might be Class<Attachment> we might actually want to return a
+        // sub-class like FileAttachment (which extends Attachment). This method returns
+        // the actual sub-class by inspecting the json response. 
+        Class<? extends T> c = getSubClass(cp, returnSchemaInfo, returnCls, response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
