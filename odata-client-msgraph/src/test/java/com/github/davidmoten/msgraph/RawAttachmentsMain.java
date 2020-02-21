@@ -30,17 +30,21 @@ public final class RawAttachmentsMain {
             System.exit(0);
         }
 
-        System.out.println(client.users(mailbox).get().revokeSignInSessions());
+        String s = client.users(mailbox)
+        .messages("AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
+        .metadataFull() //
+        .get() //
+        .getStream() //
+        .get() //
+        .getStringUtf8();
+        System.out.println(s);
+        
+        
+        //System.out.println(client.users(mailbox).get().revokeSignInSessions());
         System.exit(0);
         
         System.out.println(client.sites("root").get().getDisplayName().orElse(""));
         
-        client.users(mailbox)
-        .mailFolders("Inbox")
-        .messages("AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
-        .get() //
-        .move("Inbox") //
-        .get();
         
         
         

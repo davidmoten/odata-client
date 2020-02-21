@@ -224,6 +224,7 @@ public final class MsGraph {
                 m -> authenticate(m, accessTokenProvider));
         Map<String, Object> properties = new HashMap<>();
         properties.put("modify.stream.edit.link", "true");
+        properties.put("attempt.stream.when.no.metadata", "true");
         return new GraphService(new Context(Serializer.INSTANCE, httpService, properties));
     }
 

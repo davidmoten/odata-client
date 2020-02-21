@@ -1802,7 +1802,7 @@
         <Property Name="changeKey" Type="Edm.String"/>
         <Property Name="categories" Type="Collection(Edm.String)"/>
       </EntityType>
-      <EntityType Name="message" BaseType="graph.outlookItem" OpenType="true">
+      <EntityType Name="message" BaseType="graph.outlookItem" OpenType="true" HasStream="true">
         <Property Name="receivedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="sentDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="hasAttachments" Type="Edm.Boolean"/>
