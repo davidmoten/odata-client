@@ -1,7 +1,5 @@
 package com.github.davidmoten.odata.client;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -20,9 +18,9 @@ public final class CustomRequest {
         this.context = context;
     }
 
-    public <T> T get(String url, Class<T> responseCls, SchemaInfo schemaInfo, RequestHeader... headers) {
+    public <T> T get(String url, Class<T> responseCls, SchemaInfo responseSchemaInfo, RequestHeader... headers) {
         UrlInfo info = getInfo(context, url, headers);
-        return RequestHelper.get(info.contextPath, responseCls, info, schemaInfo);
+        return RequestHelper.get(info.contextPath, responseCls, info, responseSchemaInfo);
     }
 
     public <T> String getJson(String url, RequestHeader... headers) {

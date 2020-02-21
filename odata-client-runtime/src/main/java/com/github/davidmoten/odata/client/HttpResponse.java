@@ -1,7 +1,5 @@
 package com.github.davidmoten.odata.client;
 
-import java.net.HttpURLConnection;
-
 public class HttpResponse {
 
     private final int responseCode;
@@ -13,15 +11,7 @@ public class HttpResponse {
     }
 
     public String getText() {
-        return getText(HttpURLConnection.HTTP_OK);
-    }
-
-    public String getText(int expectedResponseCode) {
-        if (responseCode == expectedResponseCode) {
-            return text;
-        } else {
-            throw new RuntimeException("responseCode=" + responseCode);
-        }
+        return text;
     }
 
     public int getResponseCode() {
