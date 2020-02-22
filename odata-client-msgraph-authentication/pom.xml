@@ -12,7 +12,7 @@
     </parent>
     <artifactId>odata-client-msgraph-authentication</artifactId>
     <name>${project.artifactId}</name>
-    <description>OData client runtime for use with generated code</description>
+    <description>Builds client for Microsoft Graph 1.0 and Beta, includes MsGraph authentication support</description>
 
     <dependencies>
         
