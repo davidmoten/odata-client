@@ -621,7 +621,6 @@ public final class Generator {
     private void writeToString(Structure<?> t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(Override.class));
-        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%spublic %s toString() {\n", indent, imports.add(String.class));
         p.format("%s%s b = new %s();\n", indent.right(), imports.add(StringBuilder.class),
                 imports.add(StringBuilder.class));
@@ -653,7 +652,6 @@ public final class Generator {
             // copy method not required if no fields to mutate on
             return;
         }
-        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%sprivate %s _copy() {\n", indent, simpleClassName);
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
@@ -698,7 +696,6 @@ public final class Generator {
     private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
-        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%spublic %s %s() {\n", indent, simpleClassName, methodName);
         p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(),
                 imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class));
@@ -748,25 +745,23 @@ public final class Generator {
 
             addUnmappedFieldsField(imports, indent, p);
 
-            p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
-            p.format("%spublic String odataTypeName() {\n", indent);
-            p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
-            p.format("%s}\n", indent.left());
-
             // write fields from properties
             printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
 
             // write constructor
             writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
 
+            p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%spublic String odataTypeName() {\n", indent);
+            p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
+            p.format("%s}\n", indent.left());
+            
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(),
                     t.getProperties(), t.getFields(imports), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
-            p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
             p.format("%s// do nothing;\n", indent.right());
             p.format("%s}\n", indent.left());
@@ -1334,8 +1329,7 @@ public final class Generator {
                             p.format("%s}\n", indent.left());
 
                             String classSuffix = "";
-                            p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
-                            p.format("%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
+                            p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
                                     fieldName);
                             if (x.isUnicode() != null && !x.isUnicode()) {
