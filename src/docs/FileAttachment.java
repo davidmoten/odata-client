@@ -158,7 +158,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return Optional.ofNullable(contentId);
     }
 
-    @JsonIgnore
     public FileAttachment withContentId(String contentId) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentId");
@@ -173,7 +172,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return Optional.ofNullable(contentLocation);
     }
 
-    @JsonIgnore
     public FileAttachment withContentLocation(String contentLocation) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentLocation");
@@ -188,7 +186,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return Optional.ofNullable(contentBytes);
     }
 
-    @JsonIgnore
     public FileAttachment withContentBytes(byte[] contentBytes) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentBytes");
@@ -225,24 +222,18 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     public Optional<StreamProvider> getStream() {
         return RequestHelper.createStream(contextPath, this);
     }
-
-    @JsonIgnore
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
     }
-
-    @JsonIgnore
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
     }
-
-    @JsonIgnore
     private FileAttachment _copy() {
         FileAttachment _x = new FileAttachment();
         _x.contextPath = contextPath;
@@ -262,7 +253,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append("FileAttachment[");
