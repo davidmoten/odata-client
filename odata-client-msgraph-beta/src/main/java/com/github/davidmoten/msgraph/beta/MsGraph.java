@@ -2,7 +2,7 @@ package com.github.davidmoten.msgraph.beta;
 
 import com.github.davidmoten.msgraph.MsGraphClientBuilder;
 
-import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.beta.container.GraphService;
 
 public final class MsGraph {
 

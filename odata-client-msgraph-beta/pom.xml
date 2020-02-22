@@ -68,7 +68,7 @@
                             <schemas>
                                 <schema>
                                     <namespace>microsoft.graph</namespace>
-                                    <packageName>odata.msgraph.client</packageName>
+                                    <packageName>odata.msgraph.client.beta</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
