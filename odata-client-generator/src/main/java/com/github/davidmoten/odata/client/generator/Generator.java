@@ -381,6 +381,7 @@ public final class Generator {
             writeBuilder(t, simpleClassName, imports, indent, p);
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
             p.format("%spublic %s getChangedFields() {\n", indent,
                     imports.add(ChangedFields.class));
             p.format("%sreturn changedFields;\n", indent.right());
@@ -430,6 +431,7 @@ public final class Generator {
                         indent);
                 p.format("%s *         {@code Optional.empty()}\n", indent);
                 p.format("%s */\n", indent);
+                p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
                 p.format("%spublic %s<%s> getStream() {\n", indent, imports.add(Optional.class),
                         imports.add(StreamProvider.class));
                 p.format("%sreturn %s.createStream(contextPath, this);\n", indent.right(),
@@ -469,6 +471,7 @@ public final class Generator {
                 indent, //
                 imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
                 action.getName());
+        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         List<Parameter> parameters = action.getParametersUnbound(imports);
         String paramsDeclaration = parameters //
                 .stream() //
@@ -527,6 +530,7 @@ public final class Generator {
                 indent, //
                 imports.add(com.github.davidmoten.odata.client.annotation.Function.class), //
                 function.getName());
+        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         List<Function.Parameter> parameters = function.getParametersUnbound(imports);
         String paramsDeclaration = parameters //
                 .stream() //
@@ -617,6 +621,7 @@ public final class Generator {
     private void writeToString(Structure<?> t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(Override.class));
+        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%spublic %s toString() {\n", indent, imports.add(String.class));
         p.format("%s%s b = new %s();\n", indent.right(), imports.add(StringBuilder.class),
                 imports.add(StringBuilder.class));
@@ -648,7 +653,8 @@ public final class Generator {
             // copy method not required if no fields to mutate on
             return;
         }
-        p.format("\n%sprivate %s _copy() {\n", indent, simpleClassName);
+        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+        p.format("%sprivate %s _copy() {\n", indent, simpleClassName);
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
         p.format("%s_x.contextPath = contextPath;\n", indent);
@@ -692,7 +698,8 @@ public final class Generator {
     private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
-        p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
+        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+        p.format("%spublic %s %s() {\n", indent, simpleClassName, methodName);
         p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(),
                 imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class));
 
@@ -742,6 +749,7 @@ public final class Generator {
             addUnmappedFieldsField(imports, indent, p);
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
             p.format("%spublic String odataTypeName() {\n", indent);
             p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
             p.format("%s}\n", indent.left());
@@ -758,6 +766,7 @@ public final class Generator {
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
+            p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
             p.format("%s// do nothing;\n", indent.right());
             p.format("%s}\n", indent.left());
@@ -1234,6 +1243,7 @@ public final class Generator {
         p.format("%s}\n", indent.left());
 
         p.format("\n%s@%s\n", indent, imports.add(Override.class));
+        p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
         p.format("%sreturn unmappedFields == null ? new %s() : unmappedFields;\n", indent.right(),
                 imports.add(UnmappedFields.class));
@@ -1263,6 +1273,7 @@ public final class Generator {
                     String t = names.getType(x);
                     boolean isCollection = isCollection(x);
                     addPropertyAnnotation(imports, indent, p, x.getName());
+                    p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     if (isCollection) {
                         String inner = names.getInnerType(t);
                         String importedInnerType = names.toImportedTypeNonCollection(inner,
@@ -1274,7 +1285,7 @@ public final class Generator {
                         } else {
                             collectionCls = CollectionPage.class;
                         }
-                        p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls),
+                        p.format("%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls),
                                 importedInnerType, Names.getGetterMethod(x.getName()));
                         if (isEntity) {
                             Schema sch = names.getSchema(inner);
@@ -1302,7 +1313,7 @@ public final class Generator {
                     } else {
                         boolean isStream = "Edm.Stream".equals(names.getType(x));
                         if (isStream) {
-                            p.format("\n%spublic %s<%s> %s() {\n", indent,
+                            p.format("%spublic %s<%s> %s() {\n", indent,
                                     imports.add(Optional.class), imports.add(StreamProvider.class),
                                     Names.getGetterMethod(x.getName()));
                             p.format(
@@ -1316,14 +1327,15 @@ public final class Generator {
                                     imports);
                             String importedTypeWithOptional = imports.add(Optional.class) + "<"
                                     + importedType + ">";
-                            p.format("\n%spublic %s %s() {\n", indent, importedTypeWithOptional,
+                            p.format("%spublic %s %s() {\n", indent, importedTypeWithOptional,
                                     Names.getGetterMethod(x.getName()));
                             p.format("%sreturn %s.ofNullable(%s);\n", indent.right(),
                                     imports.add(Optional.class), fieldName);
                             p.format("%s}\n", indent.left());
 
                             String classSuffix = "";
-                            p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
+                            p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+                            p.format("%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
                                     fieldName);
                             if (x.isUnicode() != null && !x.isUnicode()) {
@@ -1400,7 +1412,8 @@ public final class Generator {
                 .forEach(x -> {
                     String typeName = toType(x, imports);
                     addNavigationPropertyAnnotation(imports, indent, p, x.getName());
-                    p.format("\n%spublic %s %s() {\n", indent, typeName,
+                    p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
+                    p.format("%spublic %s %s() {\n", indent, typeName,
                             Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
