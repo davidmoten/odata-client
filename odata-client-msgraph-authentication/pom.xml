@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.davidmoten</groupId>
+        <artifactId>odata-client-parent</artifactId>
+        <version>0.1.4-SNAPSHOT</version>
+    </parent>
+    <artifactId>odata-client-msgraph-authentication</artifactId>
+    <name>${project.artifactId}</name>
+    <description>OData client runtime for use with generated code</description>
+
+    <dependencies>
+        
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>odata-client-runtime</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>junit-extras</artifactId>
+            <version>0.3</version>
+            <scope>test</scope>
+        </dependency>
+
+
+    </dependencies>
+
+</project>

@@ -99,6 +99,7 @@
         <module>odata-client-test-olingo-trip-pin</module>
         <module>odata-client-test-northwind</module>
         <module>odata-client-test-datascope</module>
+        <module>odata-client-msgraph-authentication</module>
         <module>odata-client-msgraph</module>
         <module>odata-client-msgraph-beta</module>
         <module>odata-client-test-report</module>
