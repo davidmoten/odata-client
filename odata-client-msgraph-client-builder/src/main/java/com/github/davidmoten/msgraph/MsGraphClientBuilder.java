@@ -232,10 +232,9 @@ public final class MsGraphClientBuilder<T> {
             List<RequestHeader> m2 = new ArrayList<>(m);
             try {
                 final String token = accessTokenProvider.get();
-                m2.add(new RequestHeader(AUTHORIZATION_HEADER_NAME, OAUTH_BEARER_PREFIX + token));
+                m2.add(RequestHeader.create(AUTHORIZATION_HEADER_NAME, OAUTH_BEARER_PREFIX + token));
             } catch (Throwable e) {
-                final String message = "Unable to authenticate request";
-                throw new ClientException(message, e);
+                throw new ClientException("Unable to authenticate request", e);
             }
             return m2;
         }
