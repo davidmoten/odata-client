@@ -16,7 +16,7 @@
 
         <dependency>
             <groupId>com.github.davidmoten</groupId>
-            <artifactId>odata-client-runtime</artifactId>
+            <artifactId>odata-client-msgraph-authentication</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
