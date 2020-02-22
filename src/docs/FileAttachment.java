@@ -1,6 +1,7 @@
 package microsoft.graph.generated.entity;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -139,6 +140,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Override
+    @JsonIgnore
     public ChangedFields getChangedFields() {
         return changedFields;
     }
@@ -151,10 +153,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Property(name="contentId")
+    @JsonIgnore
     public Optional<String> getContentId() {
         return Optional.ofNullable(contentId);
     }
 
+    @JsonIgnore
     public FileAttachment withContentId(String contentId) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentId");
@@ -164,10 +168,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Property(name="contentLocation")
+    @JsonIgnore
     public Optional<String> getContentLocation() {
         return Optional.ofNullable(contentLocation);
     }
 
+    @JsonIgnore
     public FileAttachment withContentLocation(String contentLocation) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentLocation");
@@ -177,10 +183,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Property(name="contentBytes")
+    @JsonIgnore
     public Optional<byte[]> getContentBytes() {
         return Optional.ofNullable(contentBytes);
     }
 
+    @JsonIgnore
     public FileAttachment withContentBytes(byte[] contentBytes) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentBytes");
@@ -198,6 +206,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Override
+    @JsonIgnore
     public UnmappedFields getUnmappedFields() {
         return unmappedFields == null ? new UnmappedFields() : unmappedFields;
     }
@@ -212,10 +221,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
      * @return StreamProvider if suitable metadata found otherwise returns
      *         {@code Optional.empty()}
      */
+    @JsonIgnore
     public Optional<StreamProvider> getStream() {
         return RequestHelper.createStream(contextPath, this);
     }
 
+    @JsonIgnore
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
@@ -223,6 +234,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
+    @JsonIgnore
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
@@ -230,6 +242,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
+    @JsonIgnore
     private FileAttachment _copy() {
         FileAttachment _x = new FileAttachment();
         _x.contextPath = contextPath;
@@ -249,6 +262,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Override
+    @JsonIgnore
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append("FileAttachment[");
