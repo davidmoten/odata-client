@@ -274,7 +274,7 @@ public final class RequestHelper {
             editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
         }
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
-        if (editLink == null && !"true".equals(contextPath.context().getProperty("attempt.stream.when.no.metadata"))) {
+        if (editLink == null && "false".equals(contextPath.context().getProperty("attempt.stream.when.no.metadata"))) {
             return Optional.empty();
         } else {
             if (contentType == null) {
