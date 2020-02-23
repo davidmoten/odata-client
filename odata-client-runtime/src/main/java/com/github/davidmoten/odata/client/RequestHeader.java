@@ -2,7 +2,7 @@ package com.github.davidmoten.odata.client;
 
 public final class RequestHeader {
 
-    public static final RequestHeader ODATA_VERSION = create("OData.Version", "4.0");
+    public static final RequestHeader ODATA_VERSION = create("OData-Version", "4.0");
 
     public static final RequestHeader ACCEPT_JSON = create("Accept", "application/json");
 
