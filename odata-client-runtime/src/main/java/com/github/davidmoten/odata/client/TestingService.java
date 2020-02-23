@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import static java.util.Arrays.asList;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,12 +11,12 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class TestingService {
@@ -57,46 +59,45 @@ public final class TestingService {
             return (T) this;
         }
 
-        public T expectResponse(String path, String responseResourceName) {
-            return expectResponse(path, responseResourceName, HttpMethod.GET);
+        public T expectResponse(String path, String responseResourceName,
+                RequestHeader... requestHeaders) {
+            return expectResponse(path, responseResourceName, HttpMethod.GET, requestHeaders);
         }
 
         @SuppressWarnings("unchecked")
-        public T expectResponse(String path, String responseResourceName, HttpMethod method) {
-            responses.put(toKey(method, baseUrl + path), responseResourceName);
+        public T expectResponse(String path, String responseResourceName, HttpMethod method,
+                RequestHeader... requestHeaders) {
+            responses.put(toKey(method, baseUrl + path, asList(requestHeaders)),
+                    responseResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
-        public T expectRequest(String path, String requestResourceName, HttpMethod method) {
+        public T expectRequest(String path, String requestResourceName, HttpMethod method, RequestHeader... requestHeaders) {
             Preconditions.checkArgument(method != HttpMethod.GET,
                     "GET not expected for a request with content");
-            requests.put(toKey(method, baseUrl + path), requestResourceName);
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
         public T expectRequestAndResponse(String path, String requestResourceName,
-                String responseResourceName, HttpMethod method) {
-            requests.put(toKey(method, baseUrl + path), requestResourceName);
-            responses.put(toKey(method, baseUrl + path), responseResourceName);
+                String responseResourceName, HttpMethod method, RequestHeader... requestHeaders) {
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
+            responses.put(toKey(method, baseUrl + path, asList(requestHeaders)), responseResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
-        public T expectDelete(String path) {
-            requests.put(toKey(HttpMethod.DELETE, baseUrl + path), "DELETE");
+        public T expectDelete(String path, RequestHeader... requestHeaders) {
+            requests.put(toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders)), "DELETE");
             return (T) this;
         }
 
         private static String toKey(HttpMethod method, String url,
-                List<RequestHeader> requestHeaders) {
-            return method + "_" + url + "::" + requestHeaders.stream()
-                    .map(x -> x.name() + "=" + x.value()).collect(Collectors.joining("|"));
-        }
-
-        private static String toKey(HttpMethod method, String url) {
-            return toKey(method, url, Lists.newArrayList());
+                Collection<RequestHeader> requestHeaders) {
+            return method + "\n" + url + "\n" + requestHeaders.stream()
+                    .map(x -> x.name() + "=" + x.value()).sorted().collect(Collectors.joining("|"));
         }
 
         private static final void log(Object o) {
@@ -108,9 +109,12 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
-                    responses.entrySet().forEach(r -> log(r));
+                    log("Available responses:\n");
+                    responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
+                    log("Getting:\n" + key);
                     String resourceName = responses
-                            .get(BuilderBase.toKey(HttpMethod.GET, url, requestHeaders));
+                            .get(key);
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url
                                 + ", headers=" + requestHeaders);

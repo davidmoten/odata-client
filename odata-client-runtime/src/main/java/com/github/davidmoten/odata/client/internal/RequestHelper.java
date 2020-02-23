@@ -7,9 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
@@ -62,7 +64,7 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal");
 
         // get the response
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
@@ -98,7 +100,7 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal");
 
         // get the response
         HttpResponse response = cp.context().service().get(cp.toUrl(), h);
@@ -125,7 +127,7 @@ public final class RequestHelper {
 
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal");
         final String url = cp.toUrl();
 
         // get the response
@@ -143,7 +145,7 @@ public final class RequestHelper {
 
         String json = Serializer.INSTANCE.serialize(object);
 
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal");
 
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
@@ -165,7 +167,7 @@ public final class RequestHelper {
 
         String json = Serializer.INSTANCE.serialize(object);
 
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal");
 
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
@@ -202,7 +204,7 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        List<RequestHeader> h = supplementRequestHeaders(options, "minimal");
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal");
 
         final String url;
         String editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
@@ -249,13 +251,31 @@ public final class RequestHelper {
         }
     }
 
-    private static List<RequestHeader> supplementRequestHeaders(RequestOptions options, String odataMetadataValue) {
-        List<RequestHeader> h = new ArrayList<>();
-        h.add(new RequestHeader("OData-Version", "4.0"));
-        h.add(RequestHeader.contentTypeJsonWithMetadata(odataMetadataValue));
-        h.add(new RequestHeader("Accept", "application/json"));
-        h.addAll(options.getRequestHeaders());
-        return h;
+    private static List<RequestHeader> cleanAndSupplementRequestHeaders(RequestOptions options, String odataMetadataValue) {
+        // remove repeated headers
+        
+        List<RequestHeader> list = new ArrayList<>();
+        list.add(new RequestHeader("OData-Version", "4.0"));
+        list.add(RequestHeader.contentTypeJsonWithMetadata(odataMetadataValue));
+        list.add(RequestHeader.ACCEPT_JSON);
+        list.addAll(options.getRequestHeaders());
+
+        
+        // remove duplicates
+        List<RequestHeader> list2 = new ArrayList<>();
+        Set<RequestHeader> set = new HashSet<>();
+        for (RequestHeader r: list) {
+            if (!set.contains(r)) {
+                list2.add(r);
+            }
+            set.add(r);
+        }
+        
+        // remove overriden accept header
+        if (list2.contains(RequestHeader.ACCEPT_JSON) && list2.stream().filter(x -> x.isAcceptJsonWithMetadata()).findFirst().isPresent()) {
+            list2.remove(RequestHeader.ACCEPT_JSON);
+        }
+        return list2;
     }
 
     public static InputStream getStream(ContextPath contextPath, RequestOptions options, String base64) {

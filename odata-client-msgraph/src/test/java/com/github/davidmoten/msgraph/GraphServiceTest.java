@@ -16,6 +16,7 @@ import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
+import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
 import odata.msgraph.client.container.GraphService;
@@ -36,7 +37,10 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityWithComplexTypeCollection() {
-        GraphService client = createClient("/users/1", "/response-user.json");
+        GraphService client = createClient("/users/1", "/response-user.json", //
+                RequestHeader.ODATA_VERSION, //
+                RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         User user = client.users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
         assertEquals(1, user.getBusinessPhones().currentPage().size());
@@ -303,9 +307,9 @@ public class GraphServiceTest {
                 .addProperty("modify.stream.edit.link", "true");
     }
 
-    private static GraphService createClient(String path, String resource) {
+    private static GraphService createClient(String path, String resource, RequestHeader... requestHeaders) {
         return clientBuilder() //
-                .expectResponse(path, resource) //
+                .expectResponse(path, resource, requestHeaders) //
                 .build();
     }
 }
