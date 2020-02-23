@@ -29,7 +29,7 @@ import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
 
 public class GraphServiceTest {
-    
+
     @Test
     public void testFileAttachmentBuilderCompiles() {
         FileAttachment.builderFileAttachment().build();
@@ -49,7 +49,8 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityCollectionWithoutNextPage() {
-        GraphService client = createClient("/users", "/response-users.json");
+        GraphService client = createClient("/users", "/response-users.json",
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         assertNotNull(client.users().get());
         CollectionPage<User> c = client.users().get();
         assertNotNull(c);
@@ -60,7 +61,9 @@ public class GraphServiceTest {
     @Test
     public void testGetEntityCollectionWithNextPage() {
         GraphService client = clientBuilder() //
-                .expectResponse("/me/contacts", "/response-contacts.json") //
+                .expectResponse("/me/contacts", "/response-contacts.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                // TODO what request header should be specified for next page?
                 .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
@@ -74,7 +77,10 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
-        GraphService client = createClient("/me/messages/1", "/response-message.json");
+        GraphService client = createClient("/me/messages/1", "/response-message.json",
+                RequestHeader.ODATA_VERSION, //
+                RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         Message m = client.me().messages("1").get();
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
@@ -91,7 +97,8 @@ public class GraphServiceTest {
     @Test
     public void testEntityCollectionNotFromEntityContainer() {
         GraphService client = createClient("/me/messages/1/attachments",
-                "/response-me-messages-1-attachments.json");
+                "/response-me-messages-1-attachments.json",
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         List<Attachment> list = client.me().messages("1").attachments().get().toList();
         assertEquals(16, list.size());
     }
@@ -99,7 +106,9 @@ public class GraphServiceTest {
     @Test
     public void testDeserializationOfAttachmentEntityReturnsFileAttachment() {
         GraphService client = createClient("/me/messages/1/attachments/2",
-                "/response-attachment.json");
+                "/response-attachment.json", RequestHeader.ODATA_VERSION, //
+                RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         Attachment m = client.me().messages("1").attachments("2").get();
         assertTrue(m instanceof FileAttachment);
         FileAttachment f = (FileAttachment) m;
@@ -112,10 +121,10 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-expand-attachments-minimal-metadata.json") //
+                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
-                        "/response-message-attachments.json") //
+                        "/response-message-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -135,9 +144,9 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-with-item-attachment.json") //
+                        "/response-messages-with-item-attachment.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments",
-                        "/response-attachments.json") //
+                        "/response-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_FULL) //
                 .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
@@ -204,7 +213,7 @@ public class GraphServiceTest {
                 .next();
         assertEquals("86", m.getId().get());
     }
-    
+
     @Test
     public void testUnboundActions() {
         GraphService client = clientBuilder().build();
@@ -307,7 +316,8 @@ public class GraphServiceTest {
                 .addProperty("modify.stream.edit.link", "true");
     }
 
-    private static GraphService createClient(String path, String resource, RequestHeader... requestHeaders) {
+    private static GraphService createClient(String path, String resource,
+            RequestHeader... requestHeaders) {
         return clientBuilder() //
                 .expectResponse(path, resource, requestHeaders) //
                 .build();

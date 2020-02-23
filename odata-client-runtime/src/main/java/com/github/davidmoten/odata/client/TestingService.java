@@ -109,7 +109,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
-                    log("Available responses:\n");
+                    log("Available responses:");
                     responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
