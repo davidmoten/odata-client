@@ -31,4 +31,9 @@ public final class RequestHeader {
                 "application/json;odata.metadata=" + metadata);
     }
 
+    @Override
+    public String toString() {
+        return "[name=" + name + ", value=" + value + "]";
+    }
+
 }
