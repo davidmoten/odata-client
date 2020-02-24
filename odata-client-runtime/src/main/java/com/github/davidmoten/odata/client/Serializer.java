@@ -142,9 +142,9 @@ public final class Serializer {
     }
 
     public <T> CollectionPage<T> deserializeCollectionPageNonEntity(String json, Class<T> cls, ContextPath contextPath,
-            SchemaInfo schemaInfo) {
+            SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo);
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo, requestHeaders);
     }
 
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls, ContextPath contextPath,

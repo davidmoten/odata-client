@@ -54,13 +54,13 @@
                     Type="Test6.A.Product" Nullable="false" />
                 <ReturnType Type="Edm.Boolean" />
             </Action>
-            
+
             <Function Name="countSessions" IsBound="true">
                 <Parameter Name="bindingParameter"
                     Type="Test6.A.Product" Nullable="false" />
                 <ReturnType Type="Edm.Boolean" />
             </Function>
-            
+
             <Function Name="functionToTestNulls" IsBound="true"
                 EntitySetPath="bindingParameter">
                 <Parameter Name="bindingParameter"
@@ -72,6 +72,18 @@
                 <ReturnType Type="Edm.Int32" Nullable="false" />
             </Function>
 
+            <Function Name="globalFunction" IsBound="false">
+                <Parameter Name="productId" Type="Edm.String"
+                    Nullable="false" />
+                <Parameter Name="value" Type="Edm.Int32"
+                    Nullable="false" />
+                <ReturnType Type="Edm.Int32" Nullable="false" />
+            </Function>
+            <EntityContainer Name="Test6ServiceA">
+                <EntitySet Name="Products"
+                    EntityType="Test6.A.Product">
+                </EntitySet>
+            </EntityContainer>
         </Schema>
         <Schema Namespace="Test6.B"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">

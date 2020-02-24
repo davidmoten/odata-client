@@ -12,7 +12,9 @@ import org.mockito.Mockito;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
+import com.github.davidmoten.odata.client.RequestHeader;
 
+import test6.a.container.Test6ServiceA;
 import test6.a.entity.Product;
 import test6.b.container.Test6Service;
 
@@ -49,9 +51,9 @@ public class Test6ServiceTest {
     public void testEntityActionReturningBoolean() {
         // just has to compile, is not run!
         Test6Service client = Test6Service.test() //
-                .expectResponse("/Products/1", "/response-product-1.json")
+                .expectResponse("/Products/1", "/response-product-1.json", RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL)
                 .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
-                        "/response-revoke-sessions.json", HttpMethod.POST) //
+                        "/response-revoke-sessions.json", HttpMethod.POST, RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, RequestHeader.ACCEPT_JSON) //
                 .build();
         assertTrue(client.products(1).get().revokeSessions().get().value());
     }
@@ -61,7 +63,7 @@ public class Test6ServiceTest {
         // just has to compile, is not run!
         Test6Service client = Test6Service.test() //
                 .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions", "/request-revoke-sessions.json",
-                        "/response-revoke-sessions.json", HttpMethod.POST) //
+                        "/response-revoke-sessions.json", HttpMethod.POST, RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
                 .build();
         assertTrue(client.products(1).revokeSessions().get().value());
     }
@@ -70,7 +72,7 @@ public class Test6ServiceTest {
     public void testFunctionParametersAreInlineSyntax() {
         Test6Service client = Test6Service.test() //
                 .expectResponse("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3D%5B1%2C2%2C3%5D)", //
-                        "/function-return-1.json")
+                        "/function-return-1.json", RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION)
                 .build();
         int value = client.products(1).functionToTestNulls(1, Arrays.asList(1, 2, 3)).get().value();
         assertEquals(456, value);
@@ -80,7 +82,7 @@ public class Test6ServiceTest {
     public void testFunctionParametersAreInlineSyntaxWhenNonCollectionParameterNull() {
         Test6Service client = Test6Service.test() //
                 .expectResponse("/Products/1/Test6.A.functionToTestNulls/(value%3Dnull'Edm.Int32'%2Ccollection%3D%5B1%2C2%2C3%5D)", //
-                        "/function-return-1.json")
+                        "/function-return-1.json", RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION)
                 .build();
         int value = client.products(1).functionToTestNulls(null, Arrays.asList(1, 2, 3)).get().value();
         assertEquals(456, value);
@@ -90,10 +92,19 @@ public class Test6ServiceTest {
     public void testFunctionParametersAreInlineSyntaxWhenCollectionParameterNull() {
         Test6Service client = Test6Service.test() //
                 .expectResponse("/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3Dnull'Collection(Edm.Int32)')", //
-                        "/function-return-1.json")
+                        "/function-return-1.json", RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION)
                 .build();
         int value = client.products(1).functionToTestNulls(1, null).get().value();
         assertEquals(456, value);
+    }
+    
+    @Test
+    public void testUnboundFunction() {
+        Test6ServiceA client = Test6ServiceA.test() //
+                .expectResponse("/Test6.A.globalFunction/(productId%3D%221%22%2Cvalue%3D23)", //
+                        "/function-return-1.json", RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION)
+                .build();
+        assertEquals(456,(int) client.globalFunction("1", 23).get().value());
     }
 
 }

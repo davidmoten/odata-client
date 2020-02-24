@@ -1,4 +1,4 @@
-package com.github.davidmoten.msgraph.beta;
+package com.github.davidmoten.msgraph;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -42,20 +42,28 @@ public final class MsGraphAccessTokenProvider {
     private final String clientId;
     private final String clientSecret;
     private final long refreshBeforeExpiryMs;
+    private final long connectTimeoutMs;
+    private final long readTimeoutMs;
 
     private long expiryTime;
     private String accessToken;
 
     private MsGraphAccessTokenProvider(String tenantName, String clientId, String clientSecret,
-            long refreshBeforeExpiryMs) {
+            long refreshBeforeExpiryMs, long connectTimeoutMs, long readTimeoutMs) {
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
-        Preconditions.checkArgument(refreshBeforeExpiryMs >= 0, "refreshBeforeExpiry must be >=0");
+        Preconditions.checkArgument(refreshBeforeExpiryMs >= 0,
+                "refreshBeforeExpiryMs must be >=0");
+        Preconditions.checkArgument(connectTimeoutMs >= 0, "connectTimeoutMs must be >=0");
+        Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
         this.tenantName = tenantName;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.refreshBeforeExpiryMs = refreshBeforeExpiryMs;
+        this.connectTimeoutMs = connectTimeoutMs;
+        this.readTimeoutMs = readTimeoutMs;
+
     }
 
     public static Builder tenantName(String tenantName) {
@@ -76,6 +84,8 @@ public final class MsGraphAccessTokenProvider {
             log.debug("refreshing access token");
             URL url = new URL(OAUTH2_TOKEN_URL_PREFIX + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            con.setConnectTimeout((int) connectTimeoutMs);
+            con.setReadTimeout((int) readTimeoutMs);
             con.setRequestMethod(POST);
             con.setRequestProperty(REQUEST_HEADER, APPLICATION_JSON);
             StringBuilder params = new StringBuilder();
@@ -131,6 +141,8 @@ public final class MsGraphAccessTokenProvider {
 
         // default to refresh access token on every call of get()
         long refreshBeforeExpiryMs = Long.MAX_VALUE;
+        long connectTimeoutMs = TimeUnit.SECONDS.toMillis(30);
+        long readTimeoutMs = TimeUnit.SECONDS.toMillis(30);
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -150,7 +162,7 @@ public final class MsGraphAccessTokenProvider {
             this.b = b;
         }
 
-        Builder3 clientSecret(String clientSecret) {
+        public Builder3 clientSecret(String clientSecret) {
             b.clientSecret = clientSecret;
             return new Builder3(b);
         }
@@ -171,8 +183,8 @@ public final class MsGraphAccessTokenProvider {
          * the access token will be performed. If this value is not set then the access
          * token is refreshed on every call of {@code get()}.
          * 
-         * @param duration interval before expiry time after which point the next
-         *                 authentication call will refresh the token
+         * @param duration duration before expiry time after which point a refresh will
+         *                 be run (on next authentication attempt)
          * @param unit     time unit for the duration
          * @return builder
          */
@@ -180,9 +192,20 @@ public final class MsGraphAccessTokenProvider {
             b.refreshBeforeExpiryMs = unit.toMillis(duration);
             return this;
         }
+        
+        public Builder3 connectTimeoutMs(long duration, TimeUnit unit) {
+            b.connectTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
+        
+        public Builder3 readTimeoutMs(long duration, TimeUnit unit) {
+            b.readTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
 
         public MsGraphAccessTokenProvider build() {
-            return new MsGraphAccessTokenProvider(b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryMs);
+            return new MsGraphAccessTokenProvider(b.tenantName, b.clientId, b.clientSecret,
+                    b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs);
         }
     }
 

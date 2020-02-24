@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -55,10 +56,11 @@ public class CollectionPageNonEntityRequest<T> {
     CollectionPage<T> get(RequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;
+        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
         if (method == HttpMethod.GET) {
-            r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
+            r = cp.context().service().get(cp.toUrl(), h);
         } else {
-            r = cp.context().service().post(cp.toUrl(), options.getRequestHeaders(), content.get());
+            r = cp.context().service().post(cp.toUrl(), h, content.get());
         }
         RequestHelper.checkResponseCode(cp,  r, expectedResponseCode);
         return cp //
@@ -68,7 +70,8 @@ public class CollectionPageNonEntityRequest<T> {
                         r.getText(), //
                         cls, //
                         cp, //
-                        schemaInfo);
+                        schemaInfo, //
+                        h);
     }
 
     public CollectionPage<T> get() {

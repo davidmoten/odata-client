@@ -40,7 +40,8 @@ public abstract class Structure<T> {
     public abstract List<TProperty> getProperties();
 
     public final List<Property> getProperties2() {
-        return getProperties().stream().map(x -> new Property(x, names)).collect(Collectors.toList());
+        return getProperties().stream().map(x -> new Property(x, names))
+                .collect(Collectors.toList());
     }
 
     public abstract List<TNavigationProperty> getNavigationProperties();
@@ -55,7 +56,8 @@ public abstract class Structure<T> {
             if (st.getBaseType() == null) {
                 return a;
             } else {
-                String baseTypeSimpleName = names.getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
+                String baseTypeSimpleName = names
+                        .getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
                 // TODO make a map for lookup to increase perf
                 st = names.getSchemas() //
                         .stream() //
@@ -79,39 +81,46 @@ public abstract class Structure<T> {
         return list;
     }
 
-    public final List<Field> getFieldsLocal(Imports imports) {
-        return getProperties() //
+    public static final class FieldName {
+        public final String name;
+        public final String fieldName;
+
+        FieldName(String name, String fieldName) {
+            this.name = name;
+            this.fieldName = fieldName;
+        }
+
+    }
+
+    public final List<FieldName> getFieldNames() {
+        return getHeirarchy() //
                 .stream() //
-                .flatMap(x -> toFields(x, imports)) //
+                .flatMap(z -> z.getProperties() //
+                        .stream() //
+                        .map(x -> new FieldName(x.getName(), toFieldName(x))))
                 .collect(Collectors.toList());
+    }
+
+    private String toFieldName(TProperty x) {
+        return Names.getIdentifier(x.getName());
     }
 
     private final Stream<Field> toFields(TProperty x, Imports imports) {
         Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
                 names.toImportedFullClassName(x, imports));
         if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
-                    imports.add(String.class));
+            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink",
+                    x.getName() + "@nextLink", imports.add(String.class));
             return Stream.of(a, b);
         } else {
             return Stream.of(a);
         }
     }
 
-    public final List<Field> getSuperFields(Imports imports) {
-        List<? extends Structure<T>> h = getHeirarchy();
-        List<Field> list = h.subList(0, h.size() - 1) //
-                .stream() //
-                .flatMap(z -> z.getProperties() //
-                        .stream() //
-                        .flatMap(x -> toFields(x, imports))) //
-                .collect(Collectors.toList());
-        return list;
-    }
-
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {
-            return " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
+            return " extends "
+                    + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
         } else {
             return "";
         }
