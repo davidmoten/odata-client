@@ -348,6 +348,9 @@ public final class Generator {
         EntityType t = new EntityType(entityType, names);
         t.getDirectoryEntity().mkdirs();
         String simpleClassName = t.getSimpleClassName();
+        if (simpleClassName.equals("AppleDeviceFeaturesConfigurationBase")) {
+            System.out.println("remove me");
+        }
         Imports imports = new Imports(t.getFullClassNameEntity());
         Indent indent = new Indent();
 
@@ -404,7 +407,7 @@ public final class Generator {
 
             // write property getter and setters
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(),
-                    t.getProperties(), t.getFields(imports), true);
+                    t.getProperties(), true);
             printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
@@ -756,7 +759,7 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(),
-                    t.getProperties(), t.getFields(imports), false);
+                    t.getProperties(), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -1278,8 +1281,7 @@ public final class Generator {
     }
 
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
-            String simpleClassName, String fullType, List<TProperty> properties, List<Field> fields,
-            boolean ofEntity) {
+            String simpleClassName, String fullType, List<TProperty> properties, boolean ofEntity) {
 
         // write getters and setters
         properties //
