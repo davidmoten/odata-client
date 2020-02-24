@@ -117,17 +117,6 @@ public abstract class Structure<T> {
         }
     }
 
-    public final List<Field> getSuperFields(Imports imports) {
-        List<? extends Structure<T>> h = getHeirarchy();
-        List<Field> list = h.subList(0, h.size() - 1) //
-                .stream() //
-                .flatMap(z -> z.getProperties() //
-                        .stream() //
-                        .flatMap(x -> toFields(x, imports))) //
-                .collect(Collectors.toList());
-        return list;
-    }
-
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {
             return " extends "

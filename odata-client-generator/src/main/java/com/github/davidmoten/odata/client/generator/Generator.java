@@ -387,20 +387,18 @@ public final class Generator {
                     imports.add(ChangedFields.class));
             p.format("%sreturn changedFields;\n", indent.right());
             p.format("%s}\n", indent.left());
-
-            KeyInfo k = getKeyInfo(t, imports);
-            String nullCheck = k //
-                    .fieldNames //
-                            .stream() //
-                            .map(f -> f + " != null") //
-                            .collect(Collectors.joining(" && "));
+            String nullCheck = fieldNames(t) //
+                    .stream() //
+                    .map(f -> f + " != null") //
+                    .collect(Collectors.joining(" && "));
             if (!nullCheck.isEmpty()) {
                 nullCheck = " && " + nullCheck;
             }
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
             p.format("%sif (addKeysToContextPath%s) {\n", indent.right(), nullCheck);
-            p.format("%scontextPath = contextPath.clearQueries()%s;\n", indent.right(), k.addKeys);
+            p.format("%scontextPath = contextPath.clearQueries()%s;\n", indent.right(),
+                    getAddKeys(t, imports));
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
@@ -905,25 +903,29 @@ public final class Generator {
     }
 
     private static final class KeyInfo {
-        final List<String> fieldNames;
         final String typedParams;
         final String addKeys;
 
-        KeyInfo(List<String> fields, String typedParams, String addKeys) {
-            this.fieldNames = fields;
+        KeyInfo(String typedParams, String addKeys) {
             this.typedParams = typedParams;
             this.addKeys = addKeys;
         }
     }
 
-    private KeyInfo getKeyInfo(EntityType et, Imports imports) {
-        KeyElement key = et.getFirstKey();
+    private static List<String> fieldNames(EntityType et) {
+        return fieldNames(et.getFirstKey());
+    }
 
-        List<String> fields = key //
+    private static List<String> fieldNames(KeyElement key) {
+        return key //
                 .getPropertyRefs() //
                 .stream() //
                 .map(z -> z.getReferredProperty().getFieldName()) //
                 .collect(Collectors.toList());
+    }
+
+    private KeyInfo getKeyInfo(EntityType et, Imports imports) {
+        KeyElement key = et.getFirstKey();
 
         String typedParams = key //
                 .getPropertyRefs() //
@@ -932,6 +934,16 @@ public final class Generator {
                 .map(z -> String.format("%s %s", z.getImportedType(imports), z.getFieldName())) //
                 .collect(Collectors.joining(", "));
 
+        String addKeys = getAddKeys(et, imports, key);
+        return new KeyInfo(typedParams, addKeys);
+    }
+
+    private String getAddKeys(EntityType et, Imports imports) {
+        KeyElement key = et.getFirstKey();
+        return getAddKeys(et, imports, key);
+    }
+
+    private String getAddKeys(EntityType et, Imports imports, KeyElement key) {
         String addKeys = et.getFirstKey() //
                 .getPropertyRefs() //
                 .stream() //
@@ -946,8 +958,7 @@ public final class Generator {
                     }
                 }) //
                 .collect(Collectors.joining(", "));
-        addKeys = ".addKeys(" + addKeys + ")";
-        return new KeyInfo(fields, typedParams, addKeys);
+        return ".addKeys(" + addKeys + ")";
     }
 
     private void writeContainer(Schema schema, TEntityContainer t) {
