@@ -7,9 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
@@ -18,14 +20,20 @@ import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
+import odata.msgraph.client.complex.Identity;
+import odata.msgraph.client.complex.IdentitySet;
+import odata.msgraph.client.complex.InvitationParticipantInfo;
+import odata.msgraph.client.complex.ServiceHostedMediaConfig;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Attachment;
+import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
+import odata.msgraph.client.enums.Modality;
 
 public class GraphServiceTest {
     
@@ -255,36 +263,35 @@ public class GraphServiceTest {
         System.out.println(m.getSubject());
         // mark as read
         m.withIsRead(true).patch();
-//        client.users("fred") //
-//                .messages(m.getId().get()) //
-//                .patch(m.withIsRead(true));
-
-        // List<Option> queryOptions = Lists.newArrayList( //
-        // new QueryOption("$filter", "isRead eq false"), //
-        // new QueryOption("$expand", "attachments"), //
-        // new QueryOption("$orderBy", "createdDateTime"));
-        //
-        // IMessageCollectionPage p = client //
-        // .users(mailbox) //
-        // .mailFolders("inbox") //
-        // .messages() //
-        // .buildRequest(queryOptions) //
-        // .get();
-        // List<Message> list = p.getCurrentPage();
-        // while (true) {
-        // if (!list.isEmpty()) {
-        // log.info("msgraph returned " + list.size() + " in current page");
-        // MessagReceiver sender = senderFactory.create(connectionFactory, queue);
-        // sender.sendJmsMessages(list, client, mailbox);
-        // monitoring.setProperty(MonitoringKey.LastReportTime,
-        // System.currentTimeMillis());
-        // }
-        // if (p.getNextPage() == null) {
-        // break;
-        // }
-        // p = p.getNextPage().buildRequest().get();
-        // list = p.getCurrentPage();
-        // }
+    }
+    
+    @Test
+    @Ignore
+    public void testCallCompiles() {
+        GraphService client = clientBuilder().build();
+        Identity user = Identity //
+                .builder() //
+                .displayName("John") //
+                .id("blah") //
+                .build();
+        IdentitySet set = IdentitySet //
+                .builder() //
+                .user(user) //
+                .build();
+        InvitationParticipantInfo targets = InvitationParticipantInfo //
+                .builder()//
+                .identity(set) //
+                .build();
+        ServiceHostedMediaConfig config = ServiceHostedMediaConfig //
+                .builderServiceHostedMediaConfig() //
+                .build();
+        Call call = Call.builderCall() //
+                .callbackUri("https://bot.contoso.com/callback") //
+                .targets(Collections.singletonList(targets)) //
+                .requestedModalities(Collections.singletonList(Modality.AUDIO)) //
+                .mediaConfig(config) //
+                .build();
+        client.communications().calls().post(call);
     }
 
     // test paged complex type
