@@ -174,7 +174,7 @@ public class GraphServiceTest {
     public void testUnmappedFields() {
         GraphService client = clientBuilder() //
                 .expectResponse("/users/fred/mailFolders/inbox/messages/1",
-                        "/response-message-has-item-attachment.json") //
+                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_FULL) //
                 .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments",
                         "/response-attachments-includes-item.json") //
                 .build();
