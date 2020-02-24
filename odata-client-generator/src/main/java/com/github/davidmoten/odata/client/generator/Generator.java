@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1274,21 +1275,16 @@ public final class Generator {
                         String importedInnerType = names.toImportedTypeNonCollection(inner,
                                 imports);
                         boolean isEntity = names.isEntityWithNamespace(inner);
-                        Class<?> collectionCls;
-                        if (isEntity) {
-                            collectionCls = CollectionPage.class;
-                        } else {
-                            collectionCls = CollectionPage.class;
-                        }
-                        p.format("%spublic %s<%s> %s() {\n", indent, imports.add(collectionCls),
+                        p.format("%spublic %s<%s> %s() {\n", indent, imports.add(CollectionPage.class),
                                 importedInnerType, Names.getGetterMethod(x.getName()));
                         if (isEntity) {
                             Schema sch = names.getSchema(inner);
                             p.format(
-                                    "%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE);\n",
+                                    "%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE, %s.emptyList());\n",
                                     indent.right(), imports.add(CollectionPage.class), fieldName,
                                     importedInnerType,
-                                    imports.add(names.getFullClassNameSchemaInfo(sch)));
+                                    imports.add(names.getFullClassNameSchemaInfo(sch)), //
+                                    imports.add(Collections.class));
                         } else {
                             final String importedSchemaInfo;
                             if (inner.startsWith("Edm.")) {
@@ -1299,10 +1295,11 @@ public final class Generator {
                                         .add(names.getFullClassNameSchemaInfo(sch));
                             }
                             p.format(
-                                    "%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE);\n",
+                                    "%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE, %s.emptyList());\n",
                                     indent.right(), imports.add(CollectionPage.class),
                                     importedInnerType, importedInnerType, fieldName,
-                                    imports.add(Optional.class), fieldName, importedSchemaInfo);
+                                    imports.add(Optional.class), fieldName, importedSchemaInfo, 
+                                    imports.add(Collections.class));
                         }
                         p.format("%s}\n", indent.left());
                     } else {
