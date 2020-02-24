@@ -8,6 +8,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.StreamProvider;
 
 import test5.container.Test5Service;
@@ -17,11 +18,12 @@ public class Test5ServiceTest {
     @Test
     public void testStreamGet() throws IOException {
         Test5Service client = Test5Service.test() //
-                .expectResponse("/Products/2", "/response-get-stream.json") //
+                .expectResponse("/Products/2", "/response-get-stream.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.ODATA_VERSION) //
                 .expectResponse("/Photos(123)/%24value", "/response-get-stream.txt") //
                 .build();
         StreamProvider stream = client.products(2).metadataFull().get().getStream().get();
-        assertEquals("image/jpeg",stream.contentType());
+        assertEquals("image/jpeg", stream.contentType());
         try (InputStream is = stream.get()) {
             byte[] bytes = getBytes(is);
             assertEquals("some bytes", new String(bytes));

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.davidmoten</groupId>
         <artifactId>odata-client-parent</artifactId>
-        <version>0.1.4-SNAPSHOT</version>
+        <version>0.1.5-SNAPSHOT</version>
     </parent>
     <artifactId>odata-client-msgraph-beta</artifactId>
     <name>${project.artifactId}</name>
@@ -16,7 +16,7 @@
 
         <dependency>
             <groupId>com.github.davidmoten</groupId>
-            <artifactId>odata-client-runtime</artifactId>
+            <artifactId>odata-client-msgraph-client-builder</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
@@ -68,7 +68,7 @@
                             <schemas>
                                 <schema>
                                     <namespace>microsoft.graph</namespace>
-                                    <packageName>odata.msgraph.client</packageName>
+                                    <packageName>odata.msgraph.client.beta</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
