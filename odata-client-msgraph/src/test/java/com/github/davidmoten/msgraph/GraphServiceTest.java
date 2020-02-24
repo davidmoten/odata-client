@@ -50,7 +50,7 @@ public class GraphServiceTest {
     @Test
     public void testGetEntityCollectionWithoutNextPage() {
         GraphService client = createClient("/users", "/response-users.json",
-                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION);
         assertNotNull(client.users().get());
         CollectionPage<User> c = client.users().get();
         assertNotNull(c);
@@ -98,7 +98,7 @@ public class GraphServiceTest {
     public void testEntityCollectionNotFromEntityContainer() {
         GraphService client = createClient("/me/messages/1/attachments",
                 "/response-me-messages-1-attachments.json",
-                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION);
         List<Attachment> list = client.me().messages("1").attachments().get().toList();
         assertEquals(16, list.size());
     }
@@ -107,7 +107,6 @@ public class GraphServiceTest {
     public void testDeserializationOfAttachmentEntityReturnsFileAttachment() {
         GraphService client = createClient("/me/messages/1/attachments/2",
                 "/response-attachment.json", RequestHeader.ODATA_VERSION, //
-                RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
                 RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         Attachment m = client.me().messages("1").attachments("2").get();
         assertTrue(m instanceof FileAttachment);
@@ -144,9 +143,9 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-with-item-attachment.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                        "/response-messages-with-item-attachment.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments",
-                        "/response-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                        "/response-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.ODATA_VERSION) //
                 .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
@@ -199,7 +198,7 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/microsoft.graph.delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
                         "/request-messages-delta.json", //
                         "/response-messages-delta.json", //
-                        HttpMethod.POST) //
+                        HttpMethod.POST, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
         Message m = client //
                 .users("fred") //
