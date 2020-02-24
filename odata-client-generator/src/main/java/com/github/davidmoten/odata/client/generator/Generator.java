@@ -900,8 +900,10 @@ public final class Generator {
                         }
                         indent.left();
                     });
+            indent.right();
             writeBoundActionMethods(t, typeActions, imports, indent, p);
             writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
+            indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileEntityRequest());
         } catch (IOException e) {
