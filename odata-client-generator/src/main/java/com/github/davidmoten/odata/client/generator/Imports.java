@@ -18,9 +18,6 @@ public final class Imports {
     }
 
     public String add(String className) {
-        if (className.equals(OffsetDateTime.class.getName())) {
-            System.out.println("remove me 2");
-        }
         final String simpleName = simpleName(className);
         String c = map.get(simpleName);
         if (c == null) {

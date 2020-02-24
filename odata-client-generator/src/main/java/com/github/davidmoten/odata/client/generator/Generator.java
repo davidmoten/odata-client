@@ -348,9 +348,6 @@ public final class Generator {
         EntityType t = new EntityType(entityType, names);
         t.getDirectoryEntity().mkdirs();
         String simpleClassName = t.getSimpleClassName();
-        if (simpleClassName.equals("AppleDeviceFeaturesConfigurationBase")) {
-            System.out.println("remove me");
-        }
         Imports imports = new Imports(t.getFullClassNameEntity());
         Indent indent = new Indent();
 
@@ -771,7 +768,14 @@ public final class Generator {
             writeBuilder(t, simpleClassName, imports, indent, p);
 
             // write copy method
-            writeCopyMethod(t, simpleClassName, imports, indent, p, false);
+            if (t.getProperties() //
+                    .stream() //
+                    .filter(x -> !isCollection(x)) //
+                    .filter(x -> !"Edm.Stream".equals(names.getType(x))) //
+                    .findAny() //
+                    .isPresent()) {
+                writeCopyMethod(t, simpleClassName, imports, indent, p, false);
+            }
 
             // write toString
             writeToString(t, simpleClassName, imports, indent, p);
