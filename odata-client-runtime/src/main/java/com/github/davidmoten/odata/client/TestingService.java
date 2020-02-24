@@ -96,7 +96,7 @@ public final class TestingService {
 
         private static String toKey(HttpMethod method, String url,
                 Collection<RequestHeader> requestHeaders) {
-            return method + "\n" + url + "\n" + requestHeaders.stream()
+            return method + "\n  " + url + "\n  " + requestHeaders.stream()
                     .map(x -> x.name() + "=" + x.value()).sorted().collect(Collectors.joining("|"));
         }
 
@@ -137,8 +137,13 @@ public final class TestingService {
                         String text) {
                     log("PATCH called at" + url);
                     log(text);
+                    log("Available requests:");
+                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    log("Calling:");
+                    String key = BuilderBase.toKey(HttpMethod.PATCH, url, requestHeaders);
+                    log(key);
                     String resourceName = requests
-                            .get(BuilderBase.toKey(HttpMethod.PATCH, url, requestHeaders));
+                            .get(key);
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url
                                 + ", headers=" + requestHeaders);
@@ -169,8 +174,12 @@ public final class TestingService {
                         String text) {
                     log("POST called at " + url);
                     log(text);
+                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    log("Calling:");
+                    String key = BuilderBase.toKey(HttpMethod.POST, url, requestHeaders);
+                    log(key);
                     String requestResourceName = requests
-                            .get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders));
+                            .get(key);
                     if (requestResourceName == null) {
                         throw new RuntimeException("POST request not expected for url=" + url
                                 + ", headers=" + requestHeaders);
@@ -197,8 +206,13 @@ public final class TestingService {
                 @Override
                 public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
                     log("DELETE called at\n" + url);
+                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    log("Calling:");
+                    String key = BuilderBase.toKey(HttpMethod.DELETE, url, requestHeaders);
+                    log(key);
+                    
                     String resourceName = requests
-                            .get(BuilderBase.toKey(HttpMethod.DELETE, url, requestHeaders));
+                            .get(key);
                     if (resourceName == null) {
                         throw new RuntimeException("DELETE request not expected for url=" + url
                                 + ", headers=" + requestHeaders);

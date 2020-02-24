@@ -68,7 +68,8 @@ public class CollectionPageNonEntityRequest<T> {
                         r.getText(), //
                         cls, //
                         cp, //
-                        schemaInfo);
+                        schemaInfo, //
+                        options.getRequestHeaders());
     }
 
     public CollectionPage<T> get() {

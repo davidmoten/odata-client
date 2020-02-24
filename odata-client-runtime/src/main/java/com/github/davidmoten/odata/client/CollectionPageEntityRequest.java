@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -24,9 +25,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     CollectionPage<T> get(CollectionRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
-        HttpResponse r = cp.context().service().get(cp.toUrl(), options.getRequestHeaders());
+        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
+        HttpResponse r = cp.context().service().get(cp.toUrl(), h);
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp,
-                schemaInfo);
+                schemaInfo, h);
     }
 
     T post(CollectionRequestOptions options, T entity) {
