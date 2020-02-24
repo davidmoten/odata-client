@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +70,7 @@ import com.github.davidmoten.odata.client.generator.model.HasNameJavaHasNullable
 import com.github.davidmoten.odata.client.generator.model.KeyElement;
 import com.github.davidmoten.odata.client.generator.model.Method;
 import com.github.davidmoten.odata.client.generator.model.Structure;
+import com.github.davidmoten.odata.client.generator.model.Structure.FieldName;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
@@ -628,7 +628,7 @@ public final class Generator {
         p.format("%sb.append(\"%s[\");\n", indent, simpleClassName);
         boolean[] first = new boolean[1];
         first[0] = true;
-        t.getFields(imports).stream().forEach(f -> {
+        t.getFieldNames().stream().forEach(f -> {
             if (first[0]) {
                 first[0] = false;
             } else {
@@ -648,7 +648,7 @@ public final class Generator {
 
     private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p, boolean ofEntity) {
-        List<Field> fields = t.getFields(imports);
+        List<FieldName> fields = t.getFieldNames();
         if (fields.isEmpty()) {
             // copy method not required if no fields to mutate on
             return;
@@ -756,7 +756,7 @@ public final class Generator {
             p.format("%spublic String odataTypeName() {\n", indent);
             p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
             p.format("%s}\n", indent.left());
-            
+
             printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(),
                     t.getProperties(), t.getFields(imports), false);
 
@@ -1055,18 +1055,18 @@ public final class Generator {
                                 indent.right(), importedType, x.getName());
                         p.format("%s}\n", indent.left());
                     });
-            
+
             // write unbound actions
             Util //
                     .types(schema, TAction.class) //
                     .filter(x -> !x.isIsBound())
                     .forEach(x -> writeAction(imports, indent, p, new Action(x, names)));
-            
+
             Util //
                     .types(schema, TFunction.class) //
                     .filter(x -> !x.isIsBound())
                     .forEach(x -> writeFunction(imports, indent, p, new Function(x, names)));
-            
+
             p.format("\n}\n");
             File classFile = names.getClassFileContainer(schema, t.getName());
             writeToFile(imports, w, classFile);
@@ -1258,6 +1258,14 @@ public final class Generator {
         p.format("%sprotected %s%s contextPath;\n", indent, "", imports.add(ContextPath.class));
     }
 
+    private boolean shouldWriteCopyMethod(List<TProperty> properties, Names names) {
+        return properties //
+                .stream() //
+                .filter(x -> !isCollection(x)) //
+                .filter(x -> !"Edm.Stream".equals(names.getType(x))).findAny() //
+                .isPresent();
+    }
+
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
             String simpleClassName, String fullType, List<TProperty> properties, List<Field> fields,
             boolean ofEntity) {
@@ -1275,8 +1283,9 @@ public final class Generator {
                         String importedInnerType = names.toImportedTypeNonCollection(inner,
                                 imports);
                         boolean isEntity = names.isEntityWithNamespace(inner);
-                        p.format("%spublic %s<%s> %s() {\n", indent, imports.add(CollectionPage.class),
-                                importedInnerType, Names.getGetterMethod(x.getName()));
+                        p.format("%spublic %s<%s> %s() {\n", indent,
+                                imports.add(CollectionPage.class), importedInnerType,
+                                Names.getGetterMethod(x.getName()));
                         if (isEntity) {
                             Schema sch = names.getSchema(inner);
                             p.format(
@@ -1298,7 +1307,7 @@ public final class Generator {
                                     "%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE, %s.emptyList());\n",
                                     indent.right(), imports.add(CollectionPage.class),
                                     importedInnerType, importedInnerType, fieldName,
-                                    imports.add(Optional.class), fieldName, importedSchemaInfo, 
+                                    imports.add(Optional.class), fieldName, importedSchemaInfo,
                                     imports.add(Collections.class));
                         }
                         p.format("%s}\n", indent.left());
