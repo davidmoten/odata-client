@@ -39,7 +39,6 @@ public class GraphServiceTest {
     public void testGetEntityWithComplexTypeCollection() {
         GraphService client = createClient("/users/1", "/response-user.json", //
                 RequestHeader.ODATA_VERSION, //
-                RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
                 RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         User user = client.users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
@@ -62,9 +61,10 @@ public class GraphServiceTest {
     public void testGetEntityCollectionWithNextPage() {
         GraphService client = clientBuilder() //
                 .expectResponse("/me/contacts", "/response-contacts.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 // TODO what request header should be specified for next page?
-                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json") //
+                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -79,7 +79,6 @@ public class GraphServiceTest {
     public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
         GraphService client = createClient("/me/messages/1", "/response-message.json",
                 RequestHeader.ODATA_VERSION, //
-                RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
                 RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         Message m = client.me().messages("1").get();
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
@@ -120,10 +119,12 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                        "/response-messages-expand-attachments-minimal-metadata.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
-                        "/response-message-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                        "/response-message-attachments.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -143,9 +144,11 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-with-item-attachment.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                        "/response-messages-with-item-attachment.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments",
-                        "/response-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.ODATA_VERSION) //
+                        "/response-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_FULL,
+                        RequestHeader.ODATA_VERSION) //
                 .expectResponse(
                         "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
                         "/response-item-attachment-raw.txt") //
@@ -173,9 +176,11 @@ public class GraphServiceTest {
     public void testUnmappedFields() {
         GraphService client = clientBuilder() //
                 .expectResponse("/users/fred/mailFolders/inbox/messages/1",
-                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL) //
                 .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments",
-                        "/response-attachments-includes-item.json") //
+                        "/response-attachments-includes-item.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .build();
         Attachment a = client //
                 .users("fred") //
@@ -198,7 +203,8 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/microsoft.graph.delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
                         "/request-messages-delta.json", //
                         "/response-messages-delta.json", //
-                        HttpMethod.POST, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                        HttpMethod.POST, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -224,12 +230,14 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json") //
+                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .expectRequestAndResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
                         "/request-post-action-move.json", //
                         "/response-message-move.json", //
-                        HttpMethod.POST) //
+                        HttpMethod.POST,RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -251,10 +259,10 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json") //
+                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectRequest(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
-                        "/request-patch-message-is-read.json", HttpMethod.PATCH) //
+                        "/request-patch-message-is-read.json", HttpMethod.PATCH, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON) //
                 .build();
 
         Message m = client //
