@@ -46,7 +46,6 @@ public final class MsGraphClientBuilder<T> {
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
-        Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(creator);
         this.baseUrl = baseUrl;
         this.creator = creator;

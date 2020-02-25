@@ -20,8 +20,7 @@ import com.github.davidmoten.odata.client.internal.Util;
 
 public final class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(ClientCredentialsAccessTokenProvider.class);
+    private static final Logger log = LoggerFactory.getLogger(ClientCredentialsAccessTokenProvider.class);
 
     private static final int OK = 200;
     private static final String POST = "POST";
@@ -30,7 +29,6 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private static final String SCOPE_MS_GRAPH_DEFAULT = "https://graph.microsoft.com/.default";
     private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
     private static final String RESOURCE_MS_GRAPH = "https://graph.microsoft.com/";
-    private static final String OAUTH2_TOKEN_URL_PREFIX = "https://login.windows.net/";
     private static final String OAUTH2_TOKEN_URL_SUFFIX = "/oauth2/token";
 
     private static final String PARAMETER_SCOPE = "scope";
@@ -46,26 +44,26 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private final long connectTimeoutMs;
     private final long readTimeoutMs;
 
+    private final String  graphEndpoint;
     private long expiryTime;
     private String accessToken;
 
-    private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
-            String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
-            long readTimeoutMs) {
+    private ClientCredentialsAccessTokenProvider(String tenantName, String clientId, String clientSecret,
+            long refreshBeforeExpiryMs, long connectTimeoutMs, long readTimeoutMs, String graphEndpoint) {
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
-        Preconditions.checkArgument(refreshBeforeExpiryMs >= 0,
-                "refreshBeforeExpiryMs must be >=0");
+        Preconditions.checkArgument(refreshBeforeExpiryMs >= 0, "refreshBeforeExpiryMs must be >=0");
         Preconditions.checkArgument(connectTimeoutMs >= 0, "connectTimeoutMs must be >=0");
         Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
+        Preconditions.checkNotNull(graphEndpoint);
         this.tenantName = tenantName;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.refreshBeforeExpiryMs = refreshBeforeExpiryMs;
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
-
+        this.graphEndpoint = graphEndpoint;
     }
 
     public static Builder tenantName(String tenantName) {
@@ -85,7 +83,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private String refreshAccessToken() {
         try {
             log.debug("refreshing access token");
-            URL url = new URL(OAUTH2_TOKEN_URL_PREFIX + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
+            URL url = new URL(graphEndpoint + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
             HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
             con.setConnectTimeout((int) connectTimeoutMs);
             con.setReadTimeout((int) readTimeoutMs);
@@ -146,6 +144,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         long refreshBeforeExpiryMs = Long.MAX_VALUE;
         long connectTimeoutMs = TimeUnit.SECONDS.toMillis(30);
         long readTimeoutMs = TimeUnit.SECONDS.toMillis(30);
+        String endpoint = GraphEndpoint.GLOBAL.url();
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -186,9 +185,11 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
          * the access token will be performed. If this value is not set then the access
          * token is refreshed on every call of {@code get()}.
          * 
-         * @param duration duration before expiry time after which point a refresh will
-         *                 be run (on next authentication attempt)
-         * @param unit     time unit for the duration
+         * @param duration
+         *            duration before expiry time after which point a refresh will be
+         *            run (on next authentication attempt)
+         * @param unit
+         *            time unit for the duration
          * @return builder
          */
         public Builder3 refreshBeforeExpiry(long duration, TimeUnit unit) {
@@ -206,9 +207,26 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             return this;
         }
 
+        /**
+         * Default value is {@link GraphEndpoint#GLOBAL}.
+         * 
+         * @param endpoint
+         *            graph service endpoint
+         * @return this
+         */
+        public Builder3 endpoint(GraphEndpoint endpoint) {
+            b.endpoint = endpoint.url();
+            return this;
+        }
+        
+        public Builder3 endpoint(String endpoint) {
+            b.endpoint = endpoint;
+            return this;
+        }
+
         public ClientCredentialsAccessTokenProvider build() {
-            return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
-                    b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs);
+            return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId, b.clientSecret,
+                    b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs, b.endpoint);
         }
     }
 
