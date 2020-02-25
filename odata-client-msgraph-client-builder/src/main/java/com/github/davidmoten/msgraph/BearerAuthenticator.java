@@ -7,14 +7,14 @@ import java.util.function.Supplier;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.RequestHeader;
 
-public final class ClientCredentialsAuthenticator implements Authenticator {
+public final class BearerAuthenticator implements Authenticator {
 
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String OAUTH_BEARER_PREFIX = "Bearer ";
 
     private final Supplier<String> tokenProvider;
 
-    public ClientCredentialsAuthenticator(Supplier<String> tokenProvider) {
+    public BearerAuthenticator(Supplier<String> tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 

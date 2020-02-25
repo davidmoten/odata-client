@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -19,9 +18,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.Util;
 
-public final class MsGraphAccessTokenProvider implements Supplier<String> {
+public final class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(MsGraphAccessTokenProvider.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(ClientCredentialsAccessTokenProvider.class);
 
     private static final int OK = 200;
     private static final String POST = "POST";
@@ -49,8 +49,9 @@ public final class MsGraphAccessTokenProvider implements Supplier<String> {
     private long expiryTime;
     private String accessToken;
 
-    private MsGraphAccessTokenProvider(String tenantName, String clientId, String clientSecret,
-            long refreshBeforeExpiryMs, long connectTimeoutMs, long readTimeoutMs) {
+    private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
+            String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
+            long readTimeoutMs) {
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
@@ -194,20 +195,20 @@ public final class MsGraphAccessTokenProvider implements Supplier<String> {
             b.refreshBeforeExpiryMs = unit.toMillis(duration);
             return this;
         }
-        
+
         public Builder3 connectTimeoutMs(long duration, TimeUnit unit) {
             b.connectTimeoutMs = unit.toMillis(duration);
             return this;
         }
-        
+
         public Builder3 readTimeoutMs(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public MsGraphAccessTokenProvider build() {
-            return new MsGraphAccessTokenProvider(b.tenantName, b.clientId, b.clientSecret,
-                    b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs);
+        public ClientCredentialsAccessTokenProvider build() {
+            return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
+                    b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs);
         }
     }
 
