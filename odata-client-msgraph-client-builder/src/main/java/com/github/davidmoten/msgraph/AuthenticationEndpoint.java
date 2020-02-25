@@ -2,7 +2,7 @@ package com.github.davidmoten.msgraph;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public enum GraphEndpoint {
+public enum AuthenticationEndpoint {
 
     GLOBAL("https://login.microsoftonline.com/"), //
     GLOBAL2("https://login.windows.net/"), //
@@ -12,7 +12,7 @@ public enum GraphEndpoint {
 
     private String url;
 
-    private GraphEndpoint(String url) {
+    private AuthenticationEndpoint(String url) {
         Preconditions.checkArgument(url.endsWith("/"));
         this.url = url;
     }

@@ -8,7 +8,7 @@ import com.github.davidmoten.odata.client.RequestHeader;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.ItemAttachment;
 
-public final class RawAttachmentsMain {
+public final class AdHocMain {
 
     public static void main(String[] args) {
 
@@ -22,6 +22,7 @@ public final class RawAttachmentsMain {
                 .clientId(clientId) //
                 .clientSecret(clientSecret) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
+                .authenticationEndpoint(AuthenticationEndpoint.GLOBAL) //
                 .build();
 
         if (false) {

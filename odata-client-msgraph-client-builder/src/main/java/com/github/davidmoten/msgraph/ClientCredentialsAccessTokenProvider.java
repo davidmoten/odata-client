@@ -144,7 +144,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         long refreshBeforeExpiryMs = Long.MAX_VALUE;
         long connectTimeoutMs = TimeUnit.SECONDS.toMillis(30);
         long readTimeoutMs = TimeUnit.SECONDS.toMillis(30);
-        String endpoint = GraphEndpoint.GLOBAL.url();
+        String endpoint = AuthenticationEndpoint.GLOBAL.url();
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -208,18 +208,18 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         }
 
         /**
-         * Default value is {@link GraphEndpoint#GLOBAL}.
+         * Default value is {@link AuthenticationEndpoint#GLOBAL}.
          * 
          * @param endpoint
          *            graph service endpoint
          * @return this
          */
-        public Builder3 endpoint(GraphEndpoint endpoint) {
+        public Builder3 authenticationEndpoint(AuthenticationEndpoint endpoint) {
             b.endpoint = endpoint.url();
             return this;
         }
         
-        public Builder3 endpoint(String endpoint) {
+        public Builder3 authenticationEndpoint(String endpoint) {
             b.endpoint = endpoint;
             return this;
         }
