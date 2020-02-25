@@ -1,8 +1,6 @@
 package com.github.davidmoten.msgraph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -21,19 +19,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.PathStyle;
-import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.internal.ApacheHttpClientHttpService;
 
 public final class MsGraphClientBuilder<T> {
-
-    private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    private static final String OAUTH_BEARER_PREFIX = "Bearer ";
 
     final Creator<T> creator;
     final String baseUrl;
@@ -157,7 +150,7 @@ public final class MsGraphClientBuilder<T> {
             b.httpClientBuilderExtras = Optional.of(extras);
             return this;
         }
-
+        
         public T build() {
             return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret,
                     b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
@@ -214,29 +207,15 @@ public final class MsGraphClientBuilder<T> {
                 return b.build();
             };
         }
+        Authenticator authenticator = new ClientCredentialsAuthenticator(accessTokenProvider);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
                 clientSupplier, //
-                m -> authenticate(m, accessTokenProvider));
+                authenticator::authenticate);
         Map<String, Object> properties = new HashMap<>();
         properties.put("modify.stream.edit.link", "true");
         properties.put("attempt.stream.when.no.metadata", "true");
         return creator.create(new Context(Serializer.INSTANCE, httpService, properties));
     }
 
-    public static List<RequestHeader> authenticate(List<RequestHeader> m,
-            MsGraphAccessTokenProvider accessTokenProvider) {
-        if (m.stream().anyMatch(x -> x.name().equals(AUTHORIZATION_HEADER_NAME))) {
-            return m;
-        } else {
-            List<RequestHeader> m2 = new ArrayList<>(m);
-            try {
-                final String token = accessTokenProvider.get();
-                m2.add(RequestHeader.create(AUTHORIZATION_HEADER_NAME, OAUTH_BEARER_PREFIX + token));
-            } catch (Throwable e) {
-                throw new ClientException("Unable to authenticate request", e);
-            }
-            return m2;
-        }
-    }
 }
