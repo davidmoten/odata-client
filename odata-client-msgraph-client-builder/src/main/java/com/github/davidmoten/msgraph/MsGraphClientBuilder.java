@@ -40,9 +40,11 @@ public final class MsGraphClientBuilder<T> {
     Optional<Integer> proxyPort = Optional.empty();
     Optional<String> proxyUsername = Optional.empty();
     Optional<String> proxyPassword = Optional.empty();
-    public Optional<String> proxyScheme = Optional.of("http");
-    public Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
-    public Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional.empty();
+    Optional<String> proxyScheme = Optional.of("http");
+    Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
+    Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional.empty();
+
+    String authenticationEndpoint;
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
@@ -81,7 +83,7 @@ public final class MsGraphClientBuilder<T> {
             b.clientSecret = clientSecret;
             return new Builder3<T>(b);
         }
-        
+
     }
 
     public static final class Builder3<T> {
@@ -164,10 +166,19 @@ public final class MsGraphClientBuilder<T> {
             return this;
         }
 
+        public Builder3<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
+            return authenticationEndpoint(authenticationEndpoint.url());
+        }
+        
+        public Builder3<T> authenticationEndpoint(String authenticationEndpoint) {
+            b.authenticationEndpoint = authenticationEndpoint;
+            return this;
+        }
+
         public T build() {
             return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryDurationMs,
                     b.connectTimeoutMs, b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername,
-                    b.proxyPassword, b.httpClientSupplier, b.httpClientBuilderExtras, b.creator);
+                    b.proxyPassword, b.httpClientSupplier, b.httpClientBuilderExtras, b.creator, b.authenticationEndpoint);
         }
 
     }
@@ -177,7 +188,8 @@ public final class MsGraphClientBuilder<T> {
             Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyScheme, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
-            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras, Creator<T> creator) {
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras, Creator<T> creator,
+            String authenticationEndpoint) {
         ClientCredentialsAccessTokenProvider accessTokenProvider = ClientCredentialsAccessTokenProvider //
                 .tenantName(tenantName) //
                 .clientId(clientId) //
@@ -185,6 +197,7 @@ public final class MsGraphClientBuilder<T> {
                 .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
                 .readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
                 .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
+                .authenticationEndpoint(authenticationEndpoint) //
                 .build();
         Path basePath = new Path(baseUrl, PathStyle.IDENTIFIERS_AS_SEGMENTS);
         final Supplier<CloseableHttpClient> clientSupplier;
