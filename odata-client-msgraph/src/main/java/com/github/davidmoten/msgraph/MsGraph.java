@@ -1,6 +1,6 @@
 package com.github.davidmoten.msgraph;
 
-import com.github.davidmoten.msgraph.MsGraphClientBuilder;
+import com.github.davidmoten.msgraph.MsGraphClientBuilder.Builder;
 
 import odata.msgraph.client.container.GraphService;
 
@@ -12,7 +12,9 @@ public final class MsGraph {
         // prevent instantiation
     }
 
-    public static MsGraphClientBuilder<GraphService> tenantName(String tenantName) {
-        return new MsGraphClientBuilder<GraphService>(MSGRAPH_1_0_BASE_URL, tenantName, context -> new GraphService(context));
+    public static Builder<GraphService> tenantName(String tenantName) {
+        return new MsGraphClientBuilder<GraphService> //
+        (MSGRAPH_1_0_BASE_URL, //
+                context -> new GraphService(context)).tenantName(tenantName);
     }
 }
