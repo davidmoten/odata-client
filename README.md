@@ -118,6 +118,23 @@ GraphService client = MsGraph
     .build();
 ```
 
+### Specify the authentication endpoint
+This client supports Client Credential authentication only at the moment. Raise an issue if you need a different sort.
+
+To change the authentication endpoint used to retrieve access tokens (the default is AuthenticationEndpoint.GLOBAL):
+
+```java
+GraphService client = MsGraph
+    .tenantName(tenantName)
+    .clientId(clientId)
+    .clientSecret(clientSecret)
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .refreshBeforeExpiry(5, TimeUnit.MINUTES)
+    .authenticationEndpoint(AuthenticationEndpoint.GERMANY)
+    .build();
+``` 
+
 If you want to do really complicated things with proxies or http in general you can use the `.httpClientProvider` or `.httpClientBuilderExtras` methods (coupled to Apache *HttpClient*). 
 
 ### Usage example 1 - simple
