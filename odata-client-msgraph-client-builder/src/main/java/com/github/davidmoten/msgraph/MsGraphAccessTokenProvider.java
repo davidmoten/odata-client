@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -18,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.Util;
 
-public final class MsGraphAccessTokenProvider {
+public final class MsGraphAccessTokenProvider implements Supplier<String> {
 
     private static final Logger log = LoggerFactory.getLogger(MsGraphAccessTokenProvider.class);
 
@@ -70,6 +71,7 @@ public final class MsGraphAccessTokenProvider {
         return new Builder(tenantName);
     }
 
+    @Override
     public synchronized String get() {
         long now = System.currentTimeMillis();
         if (accessToken != null && now < expiryTime - refreshBeforeExpiryMs) {

@@ -2,6 +2,7 @@ package com.github.davidmoten.msgraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.RequestHeader;
@@ -11,9 +12,9 @@ public final class ClientCredentialsAuthenticator implements Authenticator {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String OAUTH_BEARER_PREFIX = "Bearer ";
 
-    private final MsGraphAccessTokenProvider tokenProvider;
+    private final Supplier<String> tokenProvider;
 
-    public ClientCredentialsAuthenticator(MsGraphAccessTokenProvider tokenProvider) {
+    public ClientCredentialsAuthenticator(Supplier<String> tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
