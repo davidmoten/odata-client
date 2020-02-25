@@ -228,11 +228,6 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void testUnboundActions() {
-        GraphService client = clientBuilder().build();
-    }
-
-    @Test
     public void testMailMove() {
         // TODO get real json to use for this test
         GraphService client = clientBuilder() //
