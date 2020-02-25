@@ -81,6 +81,7 @@ public final class MsGraphClientBuilder<T> {
             b.clientSecret = clientSecret;
             return new Builder3<T>(b);
         }
+        
     }
 
     public static final class Builder3<T> {
