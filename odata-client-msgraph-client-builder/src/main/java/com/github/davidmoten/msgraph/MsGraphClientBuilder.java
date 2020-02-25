@@ -94,6 +94,7 @@ public final class MsGraphClientBuilder<T> {
             return this;
         }
 
+
         public Builder3<T> proxyScheme(String proxyScheme) {
             b.proxyScheme = Optional.of(proxyScheme);
             return this;
@@ -167,7 +168,7 @@ public final class MsGraphClientBuilder<T> {
             Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
             Creator<T> creator) {
-        MsGraphAccessTokenProvider accessTokenProvider = MsGraphAccessTokenProvider //
+        ClientCredentialsAccessTokenProvider accessTokenProvider = ClientCredentialsAccessTokenProvider //
                 .tenantName(tenantName) //
                 .clientId(clientId) //
                 .clientSecret(clientSecret) //
@@ -207,7 +208,7 @@ public final class MsGraphClientBuilder<T> {
                 return b.build();
             };
         }
-        Authenticator authenticator = new ClientCredentialsAuthenticator(accessTokenProvider);
+        Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
                 clientSupplier, //
