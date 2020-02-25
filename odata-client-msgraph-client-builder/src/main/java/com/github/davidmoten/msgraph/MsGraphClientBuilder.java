@@ -42,21 +42,33 @@ public final class MsGraphClientBuilder<T> {
     Optional<String> proxyPassword = Optional.empty();
     public Optional<String> proxyScheme = Optional.of("http");
     public Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
-    public Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
-            .empty();
-    
-    public MsGraphClientBuilder(String baseUrl, String tenantName, Creator<T> creator) {
+    public Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional.empty();
+
+    public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(creator);
         this.baseUrl = baseUrl;
-        this.tenantName = tenantName;
         this.creator = creator;
     }
 
-    public Builder2<T> clientId(String clientId) {
-        this.clientId = clientId;
-        return new Builder2<T>(this);
+    public Builder<T> tenantName(String tenantName) {
+        this.tenantName = tenantName;
+        return new Builder<T>(this);
+    }
+
+    public static final class Builder<T> {
+        final MsGraphClientBuilder<T> b;
+
+        public Builder(MsGraphClientBuilder<T> b) {
+            this.b = b;
+        }
+
+        public Builder2<T> clientId(String clientId) {
+            b.clientId = clientId;
+            return new Builder2<T>(b);
+        }
+
     }
 
     public static final class Builder2<T> {
@@ -94,7 +106,6 @@ public final class MsGraphClientBuilder<T> {
             return this;
         }
 
-
         public Builder3<T> proxyScheme(String proxyScheme) {
             b.proxyScheme = Optional.of(proxyScheme);
             return this;
@@ -126,7 +137,8 @@ public final class MsGraphClientBuilder<T> {
          * You might want to use this method if your proxy interaction is complicated
          * for example.
          * 
-         * @param supplier provider of HttpClient
+         * @param supplier
+         *            provider of HttpClient
          * @return this
          */
         public Builder3<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
@@ -142,21 +154,20 @@ public final class MsGraphClientBuilder<T> {
          * is complicated for example or if you want to use interceptors or other fancy
          * stuff.
          * 
-         * @param extras modifier of builder
+         * @param extras
+         *            modifier of builder
          * @return this
          */
-        public Builder3<T> httpClientBuilderExtras(
-                Function<HttpClientBuilder, HttpClientBuilder> extras) {
+        public Builder3<T> httpClientBuilderExtras(Function<HttpClientBuilder, HttpClientBuilder> extras) {
             Preconditions.checkArgument(!b.httpClientSupplier.isPresent());
             b.httpClientBuilderExtras = Optional.of(extras);
             return this;
         }
-        
+
         public T build() {
-            return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret,
-                    b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername, b.proxyPassword,
-                    b.httpClientSupplier, b.httpClientBuilderExtras, b.creator);
+            return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryDurationMs,
+                    b.connectTimeoutMs, b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername,
+                    b.proxyPassword, b.httpClientSupplier, b.httpClientBuilderExtras, b.creator);
         }
 
     }
@@ -166,8 +177,7 @@ public final class MsGraphClientBuilder<T> {
             Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyScheme, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
-            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
-            Creator<T> creator) {
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras, Creator<T> creator) {
         ClientCredentialsAccessTokenProvider accessTokenProvider = ClientCredentialsAccessTokenProvider //
                 .tenantName(tenantName) //
                 .clientId(clientId) //
@@ -181,32 +191,8 @@ public final class MsGraphClientBuilder<T> {
         if (supplier.isPresent()) {
             clientSupplier = supplier.get();
         } else {
-            clientSupplier = () -> {
-                RequestConfig config = RequestConfig.custom() //
-                        .setConnectTimeout((int) connectTimeoutMs) //
-                        .setSocketTimeout((int) readTimeoutMs) //
-                        .build();
-                HttpClientBuilder b = HttpClientBuilder //
-                        .create() //
-                        .useSystemProperties() //
-                        .setDefaultRequestConfig(config);
-                if (proxyHost.isPresent()) {
-                    HttpHost proxy = new HttpHost(proxyHost.get(), proxyPort.get());
-                    if (proxyUsername.isPresent()) {
-                        Credentials credentials = new UsernamePasswordCredentials(
-                                proxyUsername.get(), proxyPassword.orElse(null));
-                        AuthScope authScope = new AuthScope(proxyHost.get(), proxyPort.get());
-                        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                        credentialsProvider.setCredentials(authScope, credentials);
-                        b = b.setDefaultCredentialsProvider(credentialsProvider);
-                    }
-                    b = b.setProxy(proxy);
-                }
-                if (httpClientBuilderExtras.isPresent()) {
-                    b = httpClientBuilderExtras.get().apply(b);
-                }
-                return b.build();
-            };
+            clientSupplier = () -> createHttpClient(connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
+                    proxyUsername, proxyPassword, httpClientBuilderExtras);
         }
         Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
         HttpService httpService = new ApacheHttpClientHttpService( //
@@ -217,6 +203,36 @@ public final class MsGraphClientBuilder<T> {
         properties.put("modify.stream.edit.link", "true");
         properties.put("attempt.stream.when.no.metadata", "true");
         return creator.create(new Context(Serializer.INSTANCE, httpService, properties));
+    }
+
+    private static CloseableHttpClient createHttpClient(long connectTimeoutMs, long readTimeoutMs,
+            Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyUsername,
+            Optional<String> proxyPassword,
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras) {
+        RequestConfig config = RequestConfig.custom() //
+                .setConnectTimeout((int) connectTimeoutMs) //
+                .setSocketTimeout((int) readTimeoutMs) //
+                .build();
+        HttpClientBuilder b = HttpClientBuilder //
+                .create() //
+                .useSystemProperties() //
+                .setDefaultRequestConfig(config);
+        if (proxyHost.isPresent()) {
+            HttpHost proxy = new HttpHost(proxyHost.get(), proxyPort.get());
+            if (proxyUsername.isPresent()) {
+                Credentials credentials = new UsernamePasswordCredentials(proxyUsername.get(),
+                        proxyPassword.orElse(null));
+                AuthScope authScope = new AuthScope(proxyHost.get(), proxyPort.get());
+                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                credentialsProvider.setCredentials(authScope, credentials);
+                b = b.setDefaultCredentialsProvider(credentialsProvider);
+            }
+            b = b.setProxy(proxy);
+        }
+        if (httpClientBuilderExtras.isPresent()) {
+            b = httpClientBuilderExtras.get().apply(b);
+        }
+        return b.build();
     }
 
 }
