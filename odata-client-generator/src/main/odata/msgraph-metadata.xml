@@ -1870,7 +1870,7 @@
         <Property Name="changeKey" Type="Edm.String"/>
         <Property Name="categories" Type="Collection(Edm.String)"/>
       </EntityType>
-      <EntityType Name="message" BaseType="graph.outlookItem" OpenType="true">
+      <EntityType Name="message" BaseType="graph.outlookItem" OpenType="true" HasStream="true">
         <Property Name="receivedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="sentDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="hasAttachments" Type="Edm.Boolean"/>
@@ -3617,7 +3617,7 @@
         <Property Name="contentLocation" Type="Edm.String"/>
         <Property Name="contentBytes" Type="Edm.Binary"/>
       </EntityType>
-      <EntityType Name="itemAttachment" BaseType="graph.attachment">
+      <EntityType Name="itemAttachment" BaseType="graph.attachment" HasStream="true">
         <NavigationProperty Name="item" Type="graph.outlookItem" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="referenceAttachment" BaseType="graph.attachment"/>
