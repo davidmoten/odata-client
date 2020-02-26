@@ -7,3 +7,5 @@ xmllint --format /tmp/graph.metadata.xml >/tmp/graph.metadata.2
 xmllint --format /tmp/beta.metadata.xml >/tmp/beta.metadata.2
 cp /tmp/graph.metadata.2 ../odata-client-generator/src/main/odata/msgraph-metadata.xml
 cp /tmp/beta.metadata.2 ../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml
+sed -i 's/<EntityType Name="itemAttachment" BaseType="graph.attachment">/<EntityType Name="itemAttachment" BaseType="graph.attachment" HasStream="true">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
+sed -i 's/<EntityType Name="message" BaseType="graph.outlookItem" OpenType="true">/<EntityType Name="message" BaseType="graph.outlookItem" OpenType="true" HasStream="true">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
