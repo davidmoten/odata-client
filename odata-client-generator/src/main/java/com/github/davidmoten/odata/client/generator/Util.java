@@ -16,6 +16,8 @@ import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
+
 public final class Util {
 
     public static <T> Stream<T> types(Schema schema, Class<T> cls) {
@@ -102,10 +104,15 @@ public final class Util {
     }
 
     private static String replaceAlias(Schema schema, String type) {
-        if (type == null || schema.getAlias() == null || type.startsWith(schema.getNamespace())) {
+        return replaceAlias(schema.getAlias(), schema.getNamespace(), type);
+    }
+    
+    @VisibleForTesting
+    static String replaceAlias(String alias, String namespace, String type) {
+        if (type == null || alias == null || type.startsWith(namespace)) {
             return type;
         } else {
-            return type.replaceAll("\\b" + schema.getAlias() + "\\b", schema.getNamespace());
+            return type.replaceFirst("^" + alias + "\\b", namespace);
         }
     }
 
