@@ -69,6 +69,9 @@
                                 <schema>
                                     <namespace>microsoft.graph</namespace>
                                     <packageName>odata.msgraph.client.beta</packageName>
+                                </schema><schema>
+                                    <namespace>microsoft.graph.callRecords</namespace>
+                                    <packageName>odata.msgraph.client.beta.callRecords</packageName>
                                 </schema>
                             </schemas>
                         </configuration>

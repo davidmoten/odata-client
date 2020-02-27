@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.odata.csdl.v4.TDataServices;
 import org.oasisopen.odata.csdl.v4.TEdmx;
@@ -38,6 +39,7 @@ public class GeneratorTest {
     }
 
     @Test
+    @Ignore
     public void testGenerateMsgraphBeta() throws JAXBException, IOException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
