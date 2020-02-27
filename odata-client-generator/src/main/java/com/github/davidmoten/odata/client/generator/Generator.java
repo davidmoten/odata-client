@@ -92,19 +92,25 @@ public final class Generator {
 
     public void generate() {
 
+        System.out.println("-----------------------------------");
+        System.out.println("Generating code for namespaces:");
+        schemas //
+                .stream() //
+                .forEach(s -> System.out.println("  " + s.getNamespace()));
+        System.out.println("-----------------------------------");
         System.out.println("replacing aliases");
         Util.replaceAliases(schemas);
-        
+
         for (Schema schema : schemas) {
 
             System.out.println("generating for namespace=" + schema.getNamespace());
 
             System.out.println("  creating maps");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names, false);
-            System.out.println("    actions count = " + typeActions.size());
+            System.out.println("    entity actions count = " + typeActions.size());
 
             Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names, false);
-            System.out.println("    functions count = " + typeFunctions.size());
+            System.out.println("    entity functions count = " + typeFunctions.size());
 
             Map<String, List<Action>> collectionTypeActions = createTypeActions(schema, names,
                     true);
