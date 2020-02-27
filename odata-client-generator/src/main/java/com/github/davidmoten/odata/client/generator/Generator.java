@@ -92,12 +92,12 @@ public final class Generator {
 
     public void generate() {
 
+        System.out.println("replacing aliases");
+        Util.replaceAliases(schemas);
+        
         for (Schema schema : schemas) {
 
             System.out.println("generating for namespace=" + schema.getNamespace());
-
-            System.out.println("  replacing aliases");
-            Util.replaceAliases(schema);
 
             System.out.println("  creating maps");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names, false);

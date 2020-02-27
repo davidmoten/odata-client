@@ -29,16 +29,24 @@ public final class Util {
         return (Stream<T>) (c.stream() //
                 .filter(x -> cls.isInstance(x)));
     }
+    
+    static void replaceAliases(List<Schema> schemas) {
+        for (Schema schema: schemas) {
+            for (Schema aliasedSchema: schemas) {
+                replaceAliases(schema, aliasedSchema);
+            }
+        }
+    }
 
-    static void replaceAliases(Schema schema) {
+    static void replaceAliases(Schema schema, Schema aliasedSchema) {
         types(schema, TEntityType.class) //
-                .forEach(x -> replaceAlias(schema, x));
+                .forEach(x -> replaceAlias(aliasedSchema, x));
         types(schema, TComplexType.class) //
-                .forEach(x -> replaceAlias(schema, x));
+                .forEach(x -> replaceAlias(aliasedSchema, x));
         types(schema, TAction.class) //
-                .forEach(x -> replaceAlias(schema, x));
+                .forEach(x -> replaceAlias(aliasedSchema, x));
         types(schema, TFunction.class) //
-                .forEach(x -> replaceAlias(schema, x));
+                .forEach(x -> replaceAlias(aliasedSchema, x));
     }
 
     private static void replaceAlias(Schema schema, Object x) {
