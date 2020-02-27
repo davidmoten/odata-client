@@ -1278,14 +1278,6 @@ public final class Generator {
         p.format("%sprotected %s%s contextPath;\n", indent, "", imports.add(ContextPath.class));
     }
 
-    private boolean shouldWriteCopyMethod(List<TProperty> properties, Names names) {
-        return properties //
-                .stream() //
-                .filter(x -> !isCollection(x)) //
-                .filter(x -> !"Edm.Stream".equals(names.getType(x))).findAny() //
-                .isPresent();
-    }
-
     private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
             String simpleClassName, String fullType, List<TProperty> properties, boolean ofEntity) {
 

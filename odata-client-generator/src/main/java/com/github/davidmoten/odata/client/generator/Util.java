@@ -109,8 +109,10 @@ public final class Util {
     
     @VisibleForTesting
     static String replaceAlias(String alias, String namespace, String type) {
-        if (type == null || alias == null || type.startsWith(namespace)) {
+        if (type == null || alias == null) {
             return type;
+        } if (type.startsWith("Collection(")) {
+            return type.replaceFirst("^Collection\\(" + alias + "\\b", "Collection(" + namespace);
         } else {
             return type.replaceFirst("^" + alias + "\\b", namespace);
         }

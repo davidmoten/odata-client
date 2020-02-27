@@ -18925,7 +18925,7 @@
         <Property Name="message" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="conversationMemberRoles"/>
-      <EntityType Name="chatMembersNotificationAudience"/>
+      <!-- commented out due no keys: <EntityType Name="chatMembersNotificationAudience"/> -->
       <ComplexType Name="workforceIntegrationEncryption">
         <Property Name="protocol" Type="graph.workforceIntegrationEncryptionProtocol"/>
         <Property Name="secret" Type="Edm.String"/>

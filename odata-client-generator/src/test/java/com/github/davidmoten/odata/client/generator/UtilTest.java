@@ -15,6 +15,12 @@ public class UtilTest {
     @Test
     public void test2() {
         assertEquals("microsoft.graph.call",
-                Util.replaceAlias("microsoft.graph.call", "microsoft.graph", "microsoft.graph.call"));
+                Util.replaceAlias("graph", "microsoft.graph", "microsoft.graph.call"));
+    }
+    
+    @Test
+    public void test3() {
+        assertEquals("Collection(microsoft.graph.call)",
+                Util.replaceAlias("graph", "microsoft.graph", "Collection(graph.call)"));
     }
 }
