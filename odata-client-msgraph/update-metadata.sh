@@ -9,3 +9,4 @@ cp /tmp/graph.metadata.2 ../odata-client-generator/src/main/odata/msgraph-metada
 cp /tmp/beta.metadata.2 ../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml
 sed -i 's/<EntityType Name="itemAttachment" BaseType="graph.attachment">/<EntityType Name="itemAttachment" BaseType="graph.attachment" HasStream="true">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
 sed -i 's/<EntityType Name="message" BaseType="graph.outlookItem" OpenType="true">/<EntityType Name="message" BaseType="graph.outlookItem" OpenType="true" HasStream="true">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
+sed -i 's/<EntityType Name="chatMembersNotificationAudience"\/>/<!-- commented out due no keys: <EntityType Name="chatMembersNotificationAudience"\/> -->/g' ../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml
