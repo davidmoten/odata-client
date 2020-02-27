@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.xml.bind.JAXBContext;
@@ -13,7 +14,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.oasisopen.odata.csdl.v4.TDataServices;
 import org.oasisopen.odata.csdl.v4.TEdmx;
@@ -39,16 +39,16 @@ public class GeneratorTest {
     }
 
     @Test
-    @Ignore
     public void testGenerateMsgraphBeta() throws JAXBException, IOException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
         TEdmx t = unmarshaller
                 .unmarshal(new StreamSource(new FileInputStream("../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml")), TEdmx.class)
                 .getValue();
-        
-        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph", "microsoft.graph.betas.generated");
-        Options options = new Options(GENERATED, Collections.singletonList(schemaOptions));
+        t.getDataServices().getSchema().forEach(s -> System.out.println(s.getNamespace()));
+        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph", "microsoft.graph.beta.generated");
+        SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords", "microsoft.graph.beta.callRecords.generated");
+        Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
     }
