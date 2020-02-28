@@ -415,7 +415,7 @@ public final class Generator {
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(),
+            printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
                     t.getProperties(), true);
             printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
 
@@ -762,6 +762,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
+            printJavadoc(p, t.getJavadoc(), indent);
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName,
@@ -785,7 +786,7 @@ public final class Generator {
             p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
             p.format("%s}\n", indent.left());
 
-            printPropertyGetterAndSetters(imports, indent, p, simpleClassName, t.getFullType(),
+            printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
                     t.getProperties(), false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
@@ -1308,7 +1309,7 @@ public final class Generator {
         p.format("%sprotected %s%s contextPath;\n", indent, "", imports.add(ContextPath.class));
     }
 
-    private void printPropertyGetterAndSetters(Imports imports, Indent indent, PrintWriter p,
+    private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
             String simpleClassName, String fullType, List<TProperty> properties, boolean ofEntity) {
 
         // write getters and setters
@@ -1317,6 +1318,7 @@ public final class Generator {
                     String fieldName = Names.getIdentifier(x.getName());
                     String t = names.getType(x);
                     boolean isCollection = isCollection(x);
+                    printJavadoc(p, structure.getJavadocProperty(x.getName()), indent);
                     addPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     if (isCollection) {

@@ -19,19 +19,19 @@ public class Documentation {
         this.longDescriptions = createLongDescriptions(schemas);
     }
 
-    public Optional<String> getDescriptionEntity(String typeWithNamespace) {
+    public Optional<String> getDescription(String typeWithNamespace) {
         return Optional.ofNullable(descriptions.get(typeWithNamespace));
     }
 
-    public Optional<String> getDescriptionEntityProperty(String typeWithNamespace, String propertyName) {
+    public Optional<String> getDescriptionProperty(String typeWithNamespace, String propertyName) {
         return Optional.ofNullable(descriptions.get(typeWithNamespace + "/" + propertyName));
     }
     
-    public Optional<String> getLongDescriptionEntity(String typeWithNamespace) {
+    public Optional<String> getLongDescription(String typeWithNamespace) {
         return Optional.ofNullable(descriptions.get(typeWithNamespace));
     }
 
-    public Optional<String> getLongDescriptionEntityProperty(String typeWithNamespace, String propertyName) {
+    public Optional<String> getLongDescriptionProperty(String typeWithNamespace, String propertyName) {
         return Optional.ofNullable(descriptions.get(typeWithNamespace + "/" + propertyName));
     }
 

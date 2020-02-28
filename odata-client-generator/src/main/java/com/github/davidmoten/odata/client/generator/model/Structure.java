@@ -125,14 +125,38 @@ public abstract class Structure<T> {
     }
 
     public Optional<String> getJavadoc() {
-        Stream<String> a = toStream(names.getDocumentation().getDescriptionEntity(getFullType()));
-        Stream<String> b = toStream(names.getDocumentation().getLongDescriptionEntity(getFullType()));
+        Stream<String> a = toStream(names.getDocumentation().getDescription(getFullType()).map(Structure::encodeJavadoc));
+        Stream<String> b = toStream(names.getDocumentation().getLongDescription(getFullType()).map(Structure::encodeJavadoc));
+        return combine(a, b);
+    }
+
+    private static Optional<String> combine(Stream<String> a, Stream<String> b) {
         String s = Stream.concat(a, b).collect(Collectors.joining("\n\n<p>"));
         if (s.length() >  0) {
             return Optional.of(s);
         } else {
             return Optional.empty();
         }
+    }
+    
+    public Optional<String> getJavadocProperty(String propertyName) {
+        return getFieldNames() //
+                .stream() //
+                .map(x -> x.name) //
+                .filter(x -> x.equals(propertyName)) //
+                .findFirst() //
+                .flatMap(x -> {
+                    Stream<String> a = toStream(names.getDocumentation().getDescriptionProperty(getFullType(), propertyName).map(Structure::encodeJavadoc));
+                    Stream<String> b = toStream(names.getDocumentation().getLongDescriptionProperty(getFullType(), propertyName).map(Structure::encodeJavadoc));
+                    return combine(a, b);
+                });
+    }
+
+    private static String encodeJavadoc(String x) {
+        return x.replace("@", "&#064;") //
+                .replace("\\", "\\\\") //
+                .replace("<", "&lt;") //
+                .replace(">", "@gt;");
     }
 
     private static <T> Stream<T> toStream(Optional<T> o) {
