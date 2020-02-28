@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.davidmoten.text.utils.WordWrap;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TComplexType;
@@ -468,11 +469,21 @@ public final class Generator {
             throw new RuntimeException(e);
         }
     }
+    
+    private static final int MAX_JAVADOC_WIDTH = 80;
 
     private void printJavadoc(PrintWriter p, Optional<String> javadoc, Indent indent) {
         if (javadoc.isPresent()) {
             p.format("\n%s/**\n", indent);
-            p.format("%s * %s\n", indent, javadoc.get());
+            String text = WordWrap //
+                    .from(javadoc.get()) //
+                    .breakWords(false) //
+                    .maxWidth(MAX_JAVADOC_WIDTH) //
+                    .newLine("\n") //
+                    .wrap() //
+                    .trim() //
+                    .replace("\n", "\n" + indent + " * ");
+            p.format("%s * %s\n", indent, text);
             p.format("%s */\n", indent);
         }
     }

@@ -129,7 +129,6 @@ public abstract class Structure<T> {
         Stream<String> b = toStream(names.getDocumentation().getLongDescriptionEntity(getFullType()));
         String s = Stream.concat(a, b).collect(Collectors.joining("\n\n<p>"));
         if (s.length() >  0) {
-            System.out.println("javadoc for " + getName() + "=" + s);
             return Optional.of(s);
         } else {
             return Optional.empty();
