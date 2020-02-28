@@ -146,15 +146,15 @@ public abstract class Structure<T> {
                 .filter(x -> x.equals(propertyName)) //
                 .findFirst() //
                 .flatMap(x -> {
-                    Stream<String> a = toStream(names.getDocumentation().getDescriptionProperty(getFullType(), propertyName).map(Structure::encodeJavadoc));
-                    Stream<String> b = toStream(names.getDocumentation().getLongDescriptionProperty(getFullType(), propertyName).map(Structure::encodeJavadoc));
+                    Stream<String> a = toStream(names.getDocumentation().getPropertyDescription(getFullType(), propertyName).map(Structure::encodeJavadoc));
+                    Stream<String> b = toStream(names.getDocumentation().getPropertyLongDescription(getFullType(), propertyName).map(Structure::encodeJavadoc));
                     return combine(a, b);
                 });
     }
 
     private static String encodeJavadoc(String x) {
         return x.replace("@", "&#064;") //
-                .replace("\\", "\\\\") //
+                .replace("\\", "{@literal \\}") //
                 .replace("<", "&lt;") //
                 .replace(">", "@gt;");
     }
