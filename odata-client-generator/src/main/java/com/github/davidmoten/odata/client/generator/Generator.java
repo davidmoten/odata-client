@@ -367,7 +367,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            printJavadoc(p, t.getJavadoc(), indent);
+            printJavadoc(p, t.getJavadoc(), indent, Optional.empty());
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n", simpleClassName,
@@ -472,22 +472,32 @@ public final class Generator {
     
     private static final int MAX_JAVADOC_WIDTH = 80;
 
-    private void printJavadoc(PrintWriter p, Optional<String> javadoc, Indent indent) {
+    private void printJavadoc(PrintWriter p, Optional<String> javadoc, Indent indent, Optional<String> preamble) {
         if (javadoc.isPresent()) {
             p.format("\n%s/**\n", indent);
-            String text = WordWrap //
-                    .from(javadoc.get()) //
-                    .breakWords(false) //
-                    .maxWidth(MAX_JAVADOC_WIDTH) //
-                    .newLine("\n") //
-                    .wrap() //
-                    .trim() //
+            if (preamble.isPresent()) {
+                String pref = wrap(preamble.get()) //
+                        .replace("\n", "\n" + indent + " * ");
+                p.format("%s * %s\n",  indent, pref);
+                p.format("%s *\n",  indent);
+            }
+            String text = wrap(javadoc.get()) //
                     .replace("\n", "\n" + indent + " * ");
-            p.format("%s * %s\n", indent, text);
-            p.format("%s */\n", indent);
+            p.format("%s * %s%s\n", indent, preamble.isPresent()? "<p>" : "", text);
+            p.format("%s */", indent);
         }
     }
-
+    
+    private static String wrap(String s) {
+        return WordWrap //
+                .from(s) //
+                .breakWords(false) //
+                .maxWidth(MAX_JAVADOC_WIDTH) //
+                .newLine("\n") //
+                .wrap() //
+                .trim(); 
+    }
+    
     private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions,
             Imports imports, Indent indent, PrintWriter p) {
         typeActions //
@@ -762,7 +772,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            printJavadoc(p, t.getJavadoc(), indent);
+            printJavadoc(p, t.getJavadoc(), indent, Optional.empty());
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName,
@@ -1246,6 +1256,8 @@ public final class Generator {
         // write builder setters
 
         fields.forEach(f -> {
+            printJavadoc(p, t.getJavadocProperty(f.name), indent, Optional
+                    .of("Returns an immutable copy of this this with a modified {@code " + f.name + "} field. The {@code " + f.name + "} field is described below."));
             p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType,
                     f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
@@ -1318,7 +1330,7 @@ public final class Generator {
                     String fieldName = Names.getIdentifier(x.getName());
                     String t = names.getType(x);
                     boolean isCollection = isCollection(x);
-                    printJavadoc(p, structure.getJavadocProperty(x.getName()), indent);
+                    printJavadoc(p, structure.getJavadocProperty(x.getName()), indent, Optional.empty());
                     addPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     if (isCollection) {
