@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -662,6 +663,11 @@ public final class Names {
 
     public Documentation getDocumentation() {
         return docs;
+    }
+
+    public Optional<String> getJavadoc(TEnumType t) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
