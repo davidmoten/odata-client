@@ -1257,7 +1257,7 @@ public final class Generator {
 
         fields.forEach(f -> {
             printJavadoc(p, t.getJavadocProperty(f.name), indent, Optional
-                    .of("Returns an immutable copy of this this with a modified {@code " + f.name + "} field. The {@code " + f.name + "} field is described below."));
+                    .empty());
             p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType,
                     f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
@@ -1389,6 +1389,7 @@ public final class Generator {
                                     imports.add(Optional.class), fieldName);
                             p.format("%s}\n", indent.left());
 
+                            printJavadoc(p, structure.getJavadocProperty(x.getName()), indent, Optional.of("Returns an immutable copy with just the {@code " + x.getName() + "} field changed. Field description below."));
                             String classSuffix = "";
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
