@@ -22,50 +22,48 @@ public final class AdHocMain {
                 .clientId(clientId) //
                 .clientSecret(clientSecret) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
-                .authenticationEndpoint(AuthenticationEndpoint.GLOBAL) //
+                .authenticationEndpoint(AuthenticationEndpoint.GLOBAL) // is default
                 .build();
 
-        if (false) {
-            String url = "https://graph.microsoft.com/v1.0/users('dnex001%40amsa.gov.au')/mailFolders('inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvGHoMgAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvGHoMgAAAAESABAAEk3MvTWvlkaZoyGmFgr4ag%3D%3D')";
-            System.out.println(url + "\n->\n" + client._service().getStringUtf8(url, Arrays.asList(new RequestHeader("Accept", "application/json;odata.metadata=full"))));
-            System.exit(0);
-        }
+        // if (false) {
+        // String url =
+        // "https://graph.microsoft.com/v1.0/users('dnex001%40amsa.gov.au')/mailFolders('inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvGHoMgAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvGHoMgAAAAESABAAEk3MvTWvlkaZoyGmFgr4ag%3D%3D')";
+        // System.out.println(url + "\n->\n" + client._service().getStringUtf8(url,
+        // Arrays.asList(new RequestHeader("Accept",
+        // "application/json;odata.metadata=full"))));
+        // System.exit(0);
+        // }
 
-        String s = client.users(mailbox)
-        .messages("AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
-        .metadataFull() //
-        .get() //
-        .getStream() //
-        .get() //
-        .getStringUtf8();
+        String s = client.users(mailbox).messages(
+                "AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
+                .metadataFull() //
+                .get() // 
+                .getStream() // get mime content of message
+                .get() //
+                .getStringUtf8();
         System.out.println(s);
-        
-        
-        //System.out.println(client.users(mailbox).get().revokeSignInSessions());
+
+        // System.out.println(client.users(mailbox).get().revokeSignInSessions());
         System.exit(0);
-        
+
         System.out.println(client.sites("root").get().getDisplayName().orElse(""));
-        
-        
-        
-        
-//      client.users(mailbox).get().revokeSignInSessions(null) 
-      
-        
+
+        // client.users(mailbox).get().revokeSignInSessions(null)
+
         // test raw value of service
-//        String s = client.users(mailbox) //
-//                .mailFolders("Inbox") //
-//                .messages() //
-//                .filter("isRead eq false") //
-//                .metadataFull() //
-//                .get() //
-//                .stream() //
-//                .findFirst() //
-//                .get() //
-//                .getStream() //
-//                .get() //
-//                .getStringUtf8();
-//        System.out.println(s);
+        // String s = client.users(mailbox) //
+        // .mailFolders("Inbox") //
+        // .messages() //
+        // .filter("isRead eq false") //
+        // .metadataFull() //
+        // .get() //
+        // .stream() //
+        // .findFirst() //
+        // .get() //
+        // .getStream() //
+        // .get() //
+        // .getStringUtf8();
+        // System.out.println(s);
 
         client //
                 .users(mailbox) //
@@ -80,7 +78,7 @@ public final class AdHocMain {
                 .map(x -> x.getStream().get().getStringUtf8()) //
                 .peek(System.out::println) //
                 .findFirst();
-        
+
         client //
                 .users(mailbox) //
                 .mailFolders("Inbox") //
@@ -90,8 +88,7 @@ public final class AdHocMain {
                 .filter(x -> x.getHasAttachments().orElse(false)) //
                 .peek(x -> System.out.println("Subject: " + x.getSubject().orElse(""))) //
                 .flatMap(x -> x.getAttachments().get().stream()) //
-                .peek(x -> System.out.println(
-                        "  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
+                .peek(x -> System.out.println("  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
                 .count();
 
     }

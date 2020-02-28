@@ -166,10 +166,24 @@ public final class MsGraphClientBuilder<T> {
             return this;
         }
 
+        /**
+         * Sets the authentication endpoint url to use for access tokens etc. If not
+         * specified defaults to {@link AuthenticationEndpoint#GLOBAL}.
+         * 
+         * @param authenticationEndpoint endpoint to use for authentication
+         * @return this
+         */
         public Builder3<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
             return authenticationEndpoint(authenticationEndpoint.url());
         }
         
+        /**
+         * Sets the authentication endpoint url to use for access tokens etc. If not
+         * specified defaults to {@link AuthenticationEndpoint#GLOBAL.url()}.
+         * 
+         * @param authenticationEndpoint endpoint to use for authentication
+         * @return this
+         */
         public Builder3<T> authenticationEndpoint(String authenticationEndpoint) {
             b.authenticationEndpoint = authenticationEndpoint;
             return this;
