@@ -23,16 +23,16 @@ public class Documentation {
         return Optional.ofNullable(descriptions.get(typeWithNamespace));
     }
 
-    public Optional<String> getDescriptionProperty(String typeWithNamespace, String propertyName) {
+    public Optional<String> getPropertyDescription(String typeWithNamespace, String propertyName) {
         return Optional.ofNullable(descriptions.get(typeWithNamespace + "/" + propertyName));
     }
     
     public Optional<String> getLongDescription(String typeWithNamespace) {
-        return Optional.ofNullable(descriptions.get(typeWithNamespace));
+        return Optional.ofNullable(longDescriptions.get(typeWithNamespace));
     }
 
-    public Optional<String> getLongDescriptionProperty(String typeWithNamespace, String propertyName) {
-        return Optional.ofNullable(descriptions.get(typeWithNamespace + "/" + propertyName));
+    public Optional<String> getPropertyLongDescription(String typeWithNamespace, String propertyName) {
+        return Optional.ofNullable(longDescriptions.get(typeWithNamespace + "/" + propertyName));
     }
 
     private static Map<String, String> createDescriptions(List<Schema> schemas) {
