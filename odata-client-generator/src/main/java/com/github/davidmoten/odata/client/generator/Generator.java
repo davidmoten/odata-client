@@ -92,70 +92,70 @@ public final class Generator {
 
     public void generate() {
 
-        System.out.println("-----------------------------------");
-        System.out.println("Generating code for namespaces:");
+        log("-----------------------------------");
+        log("Generating code for namespaces:");
         schemas //
                 .stream() //
-                .forEach(s -> System.out.println("  " + s.getNamespace()));
-        System.out.println("-----------------------------------");
-        System.out.println("replacing aliases");
+                .forEach(s -> log("  " + s.getNamespace()));
+        log("-----------------------------------");
+        log("replacing aliases");
         Util.replaceAliases(schemas);
 
         for (Schema schema : schemas) {
 
-            System.out.println("generating for namespace=" + schema.getNamespace());
+            log("generating for namespace=" + schema.getNamespace());
 
-            System.out.println("  creating maps");
+            log("  creating maps");
             Map<String, List<Action>> typeActions = createTypeActions(schema, names, false);
-            System.out.println("    entity actions count = " + typeActions.size());
+            log("    entity actions count = " + typeActions.size());
 
             Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names, false);
-            System.out.println("    entity functions count = " + typeFunctions.size());
+            log("    entity functions count = " + typeFunctions.size());
 
             Map<String, List<Action>> collectionTypeActions = createTypeActions(schema, names,
                     true);
-            System.out.println("    collection actions count = " + collectionTypeActions.size());
+            log("    collection actions count = " + collectionTypeActions.size());
 
             Map<String, List<Function>> collectionTypeFunctions = createTypeFunctions(schema, names,
                     true);
             System.out
                     .println("    collection functions count = " + collectionTypeFunctions.size());
 
-            System.out.println("  writing schema info");
+            log("  writing schema info");
             writeSchemaInfo(schema);
 
             // write enums
-            System.out.println("  writing enums");
+            log("  writing enums");
             Util.types(schema, TEnumType.class) //
                     .forEach(x -> writeEnum(schema, x));
 
             // write entityTypes
-            System.out.println("  writing entities");
+            log("  writing entities");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntity(x, typeActions, typeFunctions));
 
             // write complexTypes
-            System.out.println("  writing complex types");
+            log("  writing complex types");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexType(schema, x));
 
             // write entity collection requests
-            System.out.println("  writing entity collection requests");
+            log("  writing entity collection requests");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityCollectionRequest(schema, x, collectionTypeActions,
                             collectionTypeFunctions));
 
             // write containers
-            System.out.println("  writing container");
+            log("  writing container");
             Util.types(schema, TEntityContainer.class) //
                     .forEach(x -> writeContainer(schema, x));
 
             // write single requests
-            System.out.println("  writing entity requests");
+            log("  writing entity requests");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityRequest(schema, x, typeActions, typeFunctions));
 
-            System.out.println("  writing complex type requests");
+            log("  writing complex type requests");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
 
@@ -166,6 +166,10 @@ public final class Generator {
             // TODO consume annotations for documentation
         }
 
+    }
+    
+    private void log(Object s) {
+        System.out.println(String.valueOf(s));
     }
 
     private Map<String, List<Action>> createTypeActions(Schema schema, Names names,
@@ -362,6 +366,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
+            printJavadoc(p, t.getJavadoc(), indent);
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n", simpleClassName,
@@ -461,6 +466,14 @@ public final class Generator {
             writeToFile(imports, w, t.getClassFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void printJavadoc(PrintWriter p, Optional<String> javadoc, Indent indent) {
+        if (javadoc.isPresent()) {
+            p.format("\n%s/**\n", indent);
+            p.format("%s * %s\n", indent, javadoc.get());
+            p.format("%s */\n", indent);
         }
     }
 
@@ -832,7 +845,7 @@ public final class Generator {
                         boolean isEntity = names
                                 .isEntityWithNamespace(names.getInnerType(names.getType(x)));
                         if (!isEntity) {
-                            System.out.println(
+                            log(
                                     "Unexpected entity with non-entity navigation property type: "
                                             + simpleClassName + "." + x.getName()
                                             + ". If you get this message then raise an issue on the github project for odata-client.");

@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.client.generator;
 
-import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;

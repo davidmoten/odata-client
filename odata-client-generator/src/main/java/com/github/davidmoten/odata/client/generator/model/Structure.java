@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client.generator.model;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,8 +41,7 @@ public abstract class Structure<T> {
     public abstract List<TProperty> getProperties();
 
     public final List<Property> getProperties2() {
-        return getProperties().stream().map(x -> new Property(x, names))
-                .collect(Collectors.toList());
+        return getProperties().stream().map(x -> new Property(x, names)).collect(Collectors.toList());
     }
 
     public abstract List<TNavigationProperty> getNavigationProperties();
@@ -56,8 +56,7 @@ public abstract class Structure<T> {
             if (st.getBaseType() == null) {
                 return a;
             } else {
-                String baseTypeSimpleName = names
-                        .getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
+                String baseTypeSimpleName = names.getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
                 // TODO make a map for lookup to increase perf
                 st = names.getSchemas() //
                         .stream() //
@@ -109,8 +108,8 @@ public abstract class Structure<T> {
         Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
                 names.toImportedFullClassName(x, imports));
         if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink",
-                    x.getName() + "@nextLink", imports.add(String.class));
+            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
+                    imports.add(String.class));
             return Stream.of(a, b);
         } else {
             return Stream.of(a);
@@ -119,10 +118,29 @@ public abstract class Structure<T> {
 
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {
-            return " extends "
-                    + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
+            return " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(getBaseType()));
         } else {
             return "";
+        }
+    }
+
+    public Optional<String> getJavadoc() {
+        Stream<String> a = toStream(names.getDocumentation().getDescriptionEntity(getFullType()));
+        Stream<String> b = toStream(names.getDocumentation().getLongDescriptionEntity(getFullType()));
+        String s = Stream.concat(a, b).collect(Collectors.joining("\n\n<p>"));
+        if (s.length() >  0) {
+            System.out.println("javadoc for " + getName() + "=" + s);
+            return Optional.of(s);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private static <T> Stream<T> toStream(Optional<T> o) {
+        if (o.isPresent()) {
+            return Stream.of(o.get());
+        } else {
+            return Stream.empty();
         }
     }
 
