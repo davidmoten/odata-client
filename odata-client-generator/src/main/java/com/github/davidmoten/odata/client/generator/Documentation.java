@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.client.generator;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,70 +8,49 @@ import java.util.stream.Collectors;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAnnotations;
 
-public class Documentation {
+import com.github.davidmoten.odata.client.generator.model.Annotations;
 
-    private Map<String, String> descriptions;
-    private Map<String, String> longDescriptions;
+public final class Documentation {
 
-    public Documentation(List<Schema> schemas) {
-        this.descriptions = createDescriptions(schemas);
-        this.longDescriptions = createLongDescriptions(schemas);
-    }
+	private final Map<String, Annotations> map;
 
-    public Optional<String> getDescription(String typeWithNamespace) {
-        return getDescriptionWithKey(typeWithNamespace);
-    }
+	public Documentation(List<Schema> schemas) {
+		this.map = createMap(schemas);
+	}
 
-    public Optional<String> getPropertyDescription(String typeWithNamespace, String propertyName) {
-        return getDescriptionWithKey(typeWithNamespace + "/" + propertyName);
-    }
+	private static Map<String, Annotations> createMap(List<Schema> schemas) {
+		return schemas //
+				.stream() //
+				.flatMap(schema -> Util.types(schema, TAnnotations.class)) //
+				.map(a -> new Annotations(a)) //
+				.collect(Collectors.toMap(a -> a.value().getTarget(), a -> a));
 
-    private Optional<String> getDescriptionWithKey(String typeWithNamespace) {
-        String a = longDescriptions.get(typeWithNamespace);
-        String b = descriptions.get(typeWithNamespace);
-        if (a != null) {
-            return Optional.of(a);
-        } else {
-            return Optional.ofNullable(b);
-        }
-    }
+	}
 
-    private static Map<String, String> createDescriptions(List<Schema> schemas) {
-        Map<String, String> map = new HashMap<>();
-        for (Schema schema : schemas) {
-            Util //
-                    .types(schema, TAnnotations.class) //
-                    .filter(a -> a.getTarget() != null) //
-                    .forEach(a -> a //
-                            .getAnnotation() //
-                            .stream() //
-                            .filter(x -> "Org.OData.Core.V1.Description".equals(x.getTerm())) //
-                            .filter(x -> x.getString() != null) //
-                            .forEach(x -> map.put(a.getTarget(), x.getString())));
-        }
-        return map;
-    }
+	public Optional<String> getDescription(String typeWithNamespace) {
+		return getDescriptionWithKey(typeWithNamespace);
+	}
 
-    private static Map<String, String> createLongDescriptions(List<Schema> schemas) {
-        Map<String, String> map = new HashMap<>();
-        for (Schema schema : schemas) {
-            Util //
-                    .types(schema, TAnnotations.class) //
-                    .filter(a -> a.getTarget() != null) //
-                    .forEach(a -> a //
-                            .getAnnotation() //
-                            .stream() //
-                            .filter(x -> "Org.OData.Core.V1.LongDescription".equals(x.getTerm())) //
-                            .filter(x -> x.getString() != null) //
-                            .forEach(x -> map.put(a.getTarget(), x.getString())));
-        }
-        return map;
-    }
+	public Optional<String> getPropertyDescription(String typeWithNamespace, String propertyName) {
+		return description(typeWithNamespace + "/" + propertyName);
+	}
 
-    @Override
-    public String toString() {
-        return "Documentation\n" + descriptions.entrySet().stream().sorted((a, b) -> a.getKey().compareTo(b.getKey()))
-                .map(x -> "  " + x.getKey() + " -> " + x.getValue()).collect(Collectors.joining("\n"));
-    }
+	private Optional<String> getDescriptionWithKey(String typeWithNamespace) {
+		return description(typeWithNamespace);
+	}
+
+	private Optional<String> description(String key) {
+		Annotations a = map.get(key);
+		if (a == null) {
+			return Optional.empty();
+		} else {
+			Optional<String> v = a.getValue("Org.OData.Core.V1.LongDescription");
+			if (v.isPresent()) {
+				return v;
+			} else {
+				return a.getValue("Org.OData.Core.V1.Description");
+			}
+		}
+	}
 
 }
