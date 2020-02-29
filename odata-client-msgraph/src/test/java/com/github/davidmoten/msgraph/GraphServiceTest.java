@@ -32,6 +32,7 @@ import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
+import odata.msgraph.client.entity.Team;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
 import odata.msgraph.client.enums.Modality;
@@ -42,7 +43,7 @@ public class GraphServiceTest {
     public void testFileAttachmentBuilderCompiles() {
         FileAttachment.builderFileAttachment().build();
     }
-
+    
     @Test
     public void testGetEntityWithComplexTypeCollection() {
         GraphService client = createClient("/users/1", "/response-user.json", //

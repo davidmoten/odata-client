@@ -135,7 +135,7 @@ public final class TestingService {
                 @Override
                 public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
                         String text) {
-                    log("PATCH called at" + url);
+                    log("PATCH called at " + url);
                     log(text);
                     log("Available requests:");
                     requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
@@ -205,7 +205,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
-                    log("DELETE called at\n" + url);
+                    log("DELETE called at " + url);
                     requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.DELETE, url, requestHeaders);
