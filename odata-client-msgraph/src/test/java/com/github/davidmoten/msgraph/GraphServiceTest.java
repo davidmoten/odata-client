@@ -32,7 +32,6 @@ import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
-import odata.msgraph.client.entity.Team;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.enums.Importance;
 import odata.msgraph.client.enums.Modality;
