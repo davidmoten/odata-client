@@ -28,7 +28,7 @@ public final class Annotation {
 	}
 
 	public List<String> getRecords() {
-		return Util.filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
+		List<String> bools = Util.filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
 				.map(x -> x.getValue()) //
 				.filter(x -> x instanceof TRecordExpression) //
 				.map(x -> (TRecordExpression) x) //
@@ -36,6 +36,26 @@ public final class Annotation {
 				.filter(x -> x.isBool() != null) //
 				.map(x -> x.getProperty() + " = " + x.isBool()) //
 				.collect(Collectors.toList());
+		List<String> enums = Util.filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
+				.map(x -> x.getValue()) //
+				.filter(x -> x instanceof TRecordExpression) //
+				.map(x -> (TRecordExpression) x) //
+				.flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
+				.filter(x -> x.getEnumMember() != null && !x.getEnumMember().isEmpty()) //
+				.map(x -> x.getProperty() + " = " + toString(x.getEnumMember())) //
+				.collect(Collectors.toList());
+		bools.addAll(enums);
+		return bools;
+	}
+
+	private static String toString(List<String> list) {
+		if (list.isEmpty()) {
+			return "";
+		} else if (list.size() == 1) {
+			return String.valueOf(list.get(0));
+		} else {
+			return String.valueOf(list);
+		}
 	}
 
 	public Optional<Boolean> getBool() {

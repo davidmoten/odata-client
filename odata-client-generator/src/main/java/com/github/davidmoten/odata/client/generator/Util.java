@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.oasisopen.odata.csdl.v4.Annotation;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
@@ -125,5 +126,5 @@ public final class Util {
             return type.replaceFirst("^" + alias + "\\b", namespace);
         }
     }
-
+    
 }
