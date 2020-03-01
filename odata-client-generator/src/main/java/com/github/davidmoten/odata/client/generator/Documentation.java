@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client.generator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,10 +9,13 @@ import java.util.stream.Collectors;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAnnotations;
 
+import com.github.davidmoten.odata.client.generator.model.Annotation;
 import com.github.davidmoten.odata.client.generator.model.Annotations;
 
 public final class Documentation {
 
+	private static final String DESCRIPTION = "Org.OData.Core.V1.Description";
+	private static final String LONG_DESCRIPTION = "Org.OData.Core.V1.LongDescription";
 	private final Map<String, Annotations> map;
 
 	public Documentation(List<Schema> schemas) {
@@ -39,16 +43,29 @@ public final class Documentation {
 		return description(typeWithNamespace);
 	}
 
+	public List<Annotation> getNonDescriptionAnnotations(String typeWithNamespace) {
+		Annotations a = map.get(typeWithNamespace);
+		if (a == null) {
+			return Collections.emptyList();
+		} else {
+			return a //
+					.getValues() //
+					.stream() //
+					.filter(x -> !x.getTerm().equals(LONG_DESCRIPTION) && !x.getTerm().equals(DESCRIPTION)) //
+					.collect(Collectors.toList());
+		}
+	}
+
 	private Optional<String> description(String key) {
 		Annotations a = map.get(key);
 		if (a == null) {
 			return Optional.empty();
 		} else {
-			Optional<String> v = a.getValue("Org.OData.Core.V1.LongDescription");
+			Optional<String> v = a.getValue(LONG_DESCRIPTION);
 			if (v.isPresent()) {
 				return v;
 			} else {
-				return a.getValue("Org.OData.Core.V1.Description");
+				return a.getValue(DESCRIPTION);
 			}
 		}
 	}

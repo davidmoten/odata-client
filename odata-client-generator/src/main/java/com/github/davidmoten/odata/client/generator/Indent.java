@@ -1,20 +1,20 @@
 package com.github.davidmoten.odata.client.generator;
 
-final class Indent {
+public final class Indent {
 
     public static final String INDENT = "    ";
 
     private String value;
 
-    Indent() {
+    public Indent() {
         this("");
     }
 
-    Indent(String value) {
+    public Indent(String value) {
         this.value = value;
     }
 
-    Indent left() {
+    public Indent left() {
         if (value.length() < INDENT.length()) {
             throw new RuntimeException("left called more than right");
         }
@@ -23,7 +23,7 @@ final class Indent {
 
     }
 
-    Indent right() {
+    public Indent right() {
         value += INDENT;
         return this;
     }
@@ -33,7 +33,7 @@ final class Indent {
         return value;
     }
 
-    Indent copy() {
+    public Indent copy() {
         return new Indent(value);
     }
 
