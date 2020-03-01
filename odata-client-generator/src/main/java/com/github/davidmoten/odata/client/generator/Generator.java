@@ -367,7 +367,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            printJavadoc(p, t.getJavadoc(), indent, Optional.empty());
+            t.printJavadoc(p, indent);
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n", simpleClassName,
@@ -470,7 +470,7 @@ public final class Generator {
         }
     }
     
-    private static final int MAX_JAVADOC_WIDTH = 80;
+    public static final int MAX_JAVADOC_WIDTH = 80;
 
     private void printJavadoc(PrintWriter p, Optional<String> javadoc, Indent indent, Optional<String> preamble) {
         if (javadoc.isPresent()) {
