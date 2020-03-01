@@ -772,7 +772,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            printJavadoc(p, t.getJavadoc(), indent, Optional.empty());
+            t.printJavadoc(p, indent);
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName,
@@ -1330,7 +1330,7 @@ public final class Generator {
                     String fieldName = Names.getIdentifier(x.getName());
                     String t = names.getType(x);
                     boolean isCollection = isCollection(x);
-                    printJavadoc(p, structure.getJavadocProperty(x.getName()), indent, Optional.empty());
+                    structure.printPropertyJavadoc(p, indent, x.getName());
                     addPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     if (isCollection) {
