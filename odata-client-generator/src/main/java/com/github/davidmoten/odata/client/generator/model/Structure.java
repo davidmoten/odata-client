@@ -161,12 +161,12 @@ public abstract class Structure<T> {
 	public void printPropertyJavadoc(PrintWriter p, Indent indent) {
 		printJavadoc(p, indent, getFullType());
 	}
-	
+
 	private final void printJavadoc(PrintWriter p, Indent indent, String key) {
 		Optional<String> text = names.getDocumentation().getDescription(key);
 		if (text.isPresent()) {
 			p.format("\n%s /**\n", indent);
-			String s = encodeJavadoc(wrap(text.get()).replace("\n", "\n%s * "));
+			String s = encodeJavadoc(wrap(text.get()).replace("\n", String.format("\n%s * ", indent)));
 			p.format("%s * %s\n", indent, s);
 		}
 		List<Annotation> list = names.getDocumentation().getNonDescriptionAnnotations(key);
