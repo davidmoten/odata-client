@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.davidmoten.text.utils.WordWrap;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TComplexType;
@@ -472,32 +471,6 @@ public final class Generator {
     
     public static final int MAX_JAVADOC_WIDTH = 80;
 
-    private void printJavadoc(PrintWriter p, Optional<String> javadoc, Indent indent, Optional<String> preamble) {
-        if (javadoc.isPresent()) {
-            p.format("\n%s/**\n", indent);
-            if (preamble.isPresent()) {
-                String pref = wrap(preamble.get()) //
-                        .replace("\n", "\n" + indent + " * ");
-                p.format("%s * %s\n",  indent, pref);
-                p.format("%s *\n",  indent);
-            }
-            String text = wrap(javadoc.get()) //
-                    .replace("\n", "\n" + indent + " * ");
-            p.format("%s * %s%s\n", indent, preamble.isPresent()? "<p>" : "", text);
-            p.format("%s */", indent);
-        }
-    }
-    
-    private static String wrap(String s) {
-        return WordWrap //
-                .from(s) //
-                .breakWords(false) //
-                .maxWidth(MAX_JAVADOC_WIDTH) //
-                .newLine("\n") //
-                .wrap() //
-                .trim(); 
-    }
-    
     private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions,
             Imports imports, Indent indent, PrintWriter p) {
         typeActions //
@@ -1256,8 +1229,7 @@ public final class Generator {
         // write builder setters
 
         fields.forEach(f -> {
-            printJavadoc(p, t.getJavadocProperty(f.name), indent, Optional
-                    .empty());
+            t.printPropertyJavadoc(p, indent, f.name);
             p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType,
                     f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
@@ -1389,7 +1361,7 @@ public final class Generator {
                                     imports.add(Optional.class), fieldName);
                             p.format("%s}\n", indent.left());
 
-                            printJavadoc(p, structure.getJavadocProperty(x.getName()), indent, Optional.of("Returns an immutable copy with just the {@code " + x.getName() + "} field changed. Field description below."));
+                            structure.printBuilderPropertyJavadoc(p, indent, x.getName());
                             String classSuffix = "";
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
