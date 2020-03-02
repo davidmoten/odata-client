@@ -1398,7 +1398,7 @@ public final class Generator {
 
     private void addNavigationPropertyAnnotation(Imports imports, Indent indent, PrintWriter p,
             String name) {
-        p.format("\n%s@%s(name=\"%s\")", indent, imports.add(NavigationProperty.class), name);
+        p.format("\n%s@%s(name=\"%s\")\n", indent, imports.add(NavigationProperty.class), name);
     }
 
     private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties) {
