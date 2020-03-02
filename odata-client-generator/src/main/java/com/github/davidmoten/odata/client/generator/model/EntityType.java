@@ -1,20 +1,15 @@
 package com.github.davidmoten.odata.client.generator.model;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.davidmoten.text.utils.WordWrap;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TEntityKeyElement;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
-import com.github.davidmoten.odata.client.generator.Generator;
-import com.github.davidmoten.odata.client.generator.Indent;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
 
@@ -38,12 +33,15 @@ public final class EntityType extends Structure<TEntityType> {
 
 	@Override
 	public List<TProperty> getProperties() {
-		return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class).collect(Collectors.toList());
+		return Util //
+				.filter(value.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<TNavigationProperty> getNavigationProperties() {
-		return Util.filter(value.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class)
+		return Util //
+				.filter(value.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class)
 				.collect(Collectors.toList());
 	}
 
