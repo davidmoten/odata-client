@@ -155,9 +155,7 @@ public abstract class Structure<T> {
             }
         }
         if (text.isPresent()) {
-            String s = encodeJavadoc(wrap(text.get()) //
-                    .replace("\n", String.format("\n%s * ", indent)));
-            p.format("%s * %s\n", indent, s);
+            p.format("%s * %s\n", indent, encodeAndWrapForJavadoc(text.get(), indent));
         }
         list.forEach(a -> {
             p.format("%s * <p>\n", indent);
@@ -178,6 +176,11 @@ public abstract class Structure<T> {
         if (hasText) {
             p.format("%s */", indent);
         }
+    }
+
+    private String encodeAndWrapForJavadoc(String s, Indent indent) {
+        return encodeJavadoc(wrap(s) //
+                .replace("\n", String.format("\n%s * ", indent)));
     }
 
     public final void printJavadoc(PrintWriter p, Indent indent) {
