@@ -8,7 +8,8 @@ public enum AuthenticationEndpoint {
     GLOBAL2("https://login.windows.net/"), //
     CHINA("https://login.chinacloudapi.cn/"), //
     GERMANY("https://login.microsoftonline.de/"), //
-    US_GOVERNMENT("https://login.microsoftonline.us/");
+    US_GOVERNMENT("https://login.microsoftonline.us/"), //
+    PERSONAL("https://login.microsoftonline.com/consumers/");
 
     private String url;
 
