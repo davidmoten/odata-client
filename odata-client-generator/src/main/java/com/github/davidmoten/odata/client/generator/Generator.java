@@ -416,7 +416,7 @@ public final class Generator {
             // write property getter and setters
             printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
                     t.getProperties(), true);
-            printNavigationPropertyGetters(imports, indent, p, t.getNavigationProperties());
+            printNavigationPropertyGetters(t, imports, indent, p, t.getNavigationProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -1432,13 +1432,14 @@ public final class Generator {
         });
     }
 
-    private void printNavigationPropertyGetters(Imports imports, Indent indent, PrintWriter p,
+    private void printNavigationPropertyGetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
             List<TNavigationProperty> properties) {
         // write getters
         properties //
                 .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
+                    structure.printPropertyJavadoc(p, indent, x.getName());
                     addNavigationPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
                     p.format("%spublic %s %s() {\n", indent, typeName,
