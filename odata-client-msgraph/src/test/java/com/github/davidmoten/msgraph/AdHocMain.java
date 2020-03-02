@@ -1,9 +1,6 @@
 package com.github.davidmoten.msgraph;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
-import com.github.davidmoten.odata.client.RequestHeader;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.ItemAttachment;
