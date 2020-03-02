@@ -128,25 +128,6 @@ public abstract class Structure<T> {
 		}
 	}
 
-	public Optional<String> getJavadoc() {
-		return names //
-				.getDocumentation() //
-				.getDescription(getFullType()) //
-				.map(Structure::encodeJavadoc);
-	}
-
-	public Optional<String> getJavadocProperty(String propertyName) {
-		return getFieldNames() //
-				.stream() //
-				.map(x -> x.name) //
-				.filter(x -> x.equals(propertyName)) //
-				.findFirst() //
-				.flatMap(x -> names //
-						.getDocumentation() //
-						.getPropertyDescription(getFullType(), propertyName) //
-						.map(Structure::encodeJavadoc));
-	}
-
 	private static String encodeJavadoc(String x) {
 		return x.replace("@", "&#064;") //
 				.replace("\\", "{@literal \\}") //
@@ -155,23 +136,24 @@ public abstract class Structure<T> {
 	}
 
 	public void printPropertyJavadoc(PrintWriter p, Indent indent, String name) {
-		printJavadoc(p, indent, getFullType() + "/" + name);
+		printJavadoc(p, indent, getFullType() + "/" + name, Optional.empty());
 	}
 
-	public void printPropertyJavadoc(PrintWriter p, Indent indent) {
-		printJavadoc(p, indent, getFullType());
-	}
-
-	private final void printJavadoc(PrintWriter p, Indent indent, String key) {
+	private final void printJavadoc(PrintWriter p, Indent indent, String key, Optional<String> preamble) {
 		Optional<String> text = names.getDocumentation().getDescription(key);
-		if (text.isPresent()) {
-			p.format("\n%s /**\n", indent);
-			String s = encodeJavadoc(wrap(text.get()).replace("\n", String.format("\n%s * ", indent)));
-			p.format("%s * %s\n", indent, s);
-		}
 		List<Annotation> list = names.getDocumentation().getNonDescriptionAnnotations(key);
-		if (!text.isPresent() && !list.isEmpty()) {
-			p.format("%s /**\n", indent);
+		boolean hasText = text.isPresent() || !list.isEmpty();
+		if (hasText) {
+			p.format("\n%s /**\n", indent);
+			if (preamble.isPresent()) {
+				p.format("%s * <p>\n", indent);
+				p.format("%s * %s\n", indent, preamble.get());
+			}
+		}
+		if (text.isPresent()) {
+			String s = encodeJavadoc(wrap(text.get()) //
+					.replace("\n", String.format("\n%s * ", indent)));
+			p.format("%s * %s\n", indent, s);
 		}
 		list.forEach(a -> {
 			p.format("%s * <p>\n", indent);
@@ -189,13 +171,19 @@ public abstract class Structure<T> {
 				p.format("%s * %s\n", indent, record);
 			}
 		});
-		if (text.isPresent() || !list.isEmpty()) {
+		if (hasText) {
 			p.format("%s */\n", indent);
 		}
-
 	}
 
 	public final void printJavadoc(PrintWriter p, Indent indent) {
+		printJavadoc(p, indent, getFullType(), Optional.empty());
+	}
+
+	public void printBuilderPropertyJavadoc(PrintWriter p, Indent indent, String name) {
+		String s = "Returns an immutable copy with just the {@code " + name
+				+ "} field changed. Field description below.";
+		printJavadoc(p, indent, name, Optional.of(s));
 	}
 
 	private static String wrap(String s) {
