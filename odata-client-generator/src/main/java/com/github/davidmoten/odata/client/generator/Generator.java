@@ -664,7 +664,7 @@ public final class Generator {
             // copy method not required if no fields to mutate on
             return;
         }
-        p.format("%sprivate %s _copy() {\n", indent, simpleClassName);
+        p.format("\n%sprivate %s _copy() {\n", indent, simpleClassName);
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
         p.format("%s_x.contextPath = contextPath;\n", indent);
@@ -708,7 +708,7 @@ public final class Generator {
     private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
-        p.format("%spublic %s %s() {\n", indent, simpleClassName, methodName);
+        p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
         p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(),
                 imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class));
 
