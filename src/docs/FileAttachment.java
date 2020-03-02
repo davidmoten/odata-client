@@ -222,18 +222,21 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     public Optional<StreamProvider> getStream() {
         return RequestHelper.createStream(contextPath, this);
     }
+
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
     }
+
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
         _x.changedFields = null;
         return _x;
     }
+
     private FileAttachment _copy() {
         FileAttachment _x = new FileAttachment();
         _x.contextPath = contextPath;
