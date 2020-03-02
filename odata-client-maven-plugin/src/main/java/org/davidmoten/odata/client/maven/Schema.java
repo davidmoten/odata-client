@@ -19,5 +19,4 @@ public class Schema {
     public String actionRequestClassSuffix = "ActionRequest";
     public boolean pageComplexTypes = true;
 
-
 }

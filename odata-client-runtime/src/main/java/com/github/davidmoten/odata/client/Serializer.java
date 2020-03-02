@@ -70,9 +70,11 @@ public final class Serializer {
     }
 
     public <T, S> T deserializeWithParametricType(String text, Class<? extends T> cls,
-            Class<? extends S> parametricTypeClass, ContextPath contextPath, boolean addKeysToContextPath) {
+            Class<? extends S> parametricTypeClass, ContextPath contextPath,
+            boolean addKeysToContextPath) {
         try {
-            JavaType type = MAPPER.getTypeFactory().constructParametricType(cls, parametricTypeClass);
+            JavaType type = MAPPER.getTypeFactory().constructParametricType(cls,
+                    parametricTypeClass);
             if (contextPath != null) {
                 ObjectMapper m = createObjectMapper();
                 Std iv = new InjectableValues.Std() //
@@ -141,25 +143,28 @@ public final class Serializer {
         }
     }
 
-    public <T> CollectionPage<T> deserializeCollectionPageNonEntity(String json, Class<T> cls, ContextPath contextPath,
-            SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
+    public <T> CollectionPage<T> deserializeCollectionPageNonEntity(String json, Class<T> cls,
+            ContextPath contextPath, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo, requestHeaders);
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo,
+                requestHeaders);
     }
 
-    private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls, ContextPath contextPath,
-            SchemaInfo schemaInfo) {
+    private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls,
+            ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
             ObjectMapper m = MAPPER;
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
                 String text = m.writeValueAsString(item);
-                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo, cls, text);
+                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo,
+                        cls, text);
                 list.add(deserialize(text, subClass, contextPath, true));
             }
             // TODO support relative urls using odata.context if present
-            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink")).map(JsonNode::asText);
+            Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink"))
+                    .map(JsonNode::asText);
             return new CollectionInfo<T>(list, nextLink);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

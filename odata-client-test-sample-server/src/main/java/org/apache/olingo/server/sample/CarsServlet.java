@@ -39,29 +39,31 @@ import org.slf4j.LoggerFactory;
 
 public class CarsServlet extends HttpServlet {
 
-  private static final long serialVersionUID = 1L;
-  private static final Logger LOG = LoggerFactory.getLogger(CarsServlet.class);
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(CarsServlet.class);
 
-  @Override
-  protected void service(final HttpServletRequest req, final HttpServletResponse resp)
-      throws ServletException, IOException {
-    try {
-      HttpSession session = req.getSession(true);
-      DataProvider dataProvider = (DataProvider) session.getAttribute(DataProvider.class.getName());
-      if (dataProvider == null) {
-        dataProvider = new DataProvider();
-        session.setAttribute(DataProvider.class.getName(), dataProvider);
-        LOG.info("Created new data provider.");
-      }
+    @Override
+    protected void service(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+        try {
+            HttpSession session = req.getSession(true);
+            DataProvider dataProvider = (DataProvider) session
+                    .getAttribute(DataProvider.class.getName());
+            if (dataProvider == null) {
+                dataProvider = new DataProvider();
+                session.setAttribute(DataProvider.class.getName(), dataProvider);
+                LOG.info("Created new data provider.");
+            }
 
-      OData odata = OData.newInstance();
-      ServiceMetadata edm = odata.createServiceMetadata(new CarsEdmProvider(), new ArrayList<EdmxReference>());
-      ODataHttpHandler handler = odata.createHandler(edm);
-      handler.register(new CarsProcessor(dataProvider));
-      handler.process(req, resp);
-    } catch (RuntimeException e) {
-      LOG.error("Server Error", e);
-      throw new ServletException(e);
+            OData odata = OData.newInstance();
+            ServiceMetadata edm = odata.createServiceMetadata(new CarsEdmProvider(),
+                    new ArrayList<EdmxReference>());
+            ODataHttpHandler handler = odata.createHandler(edm);
+            handler.register(new CarsProcessor(dataProvider));
+            handler.process(req, resp);
+        } catch (RuntimeException e) {
+            LOG.error("Server Error", e);
+            throw new ServletException(e);
+        }
     }
-  }
 }

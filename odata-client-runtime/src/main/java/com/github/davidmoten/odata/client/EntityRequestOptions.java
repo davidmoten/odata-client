@@ -12,8 +12,8 @@ public final class EntityRequestOptions<T extends ODataEntityType> implements Re
     private final Optional<String> expand;
     private final boolean useCaches;
 
-    public EntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> select, Optional<String> expand,
-            boolean useCaches) {
+    public EntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> select,
+            Optional<String> expand, boolean useCaches) {
         this.requestHeaders = requestHeaders;
         this.select = select;
         this.expand = expand;

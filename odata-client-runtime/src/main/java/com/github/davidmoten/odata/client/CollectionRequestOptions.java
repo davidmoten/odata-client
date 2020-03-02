@@ -17,8 +17,8 @@ public final class CollectionRequestOptions implements RequestOptions {
     private final Optional<String> expand;
 
     public CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
-            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
-            Optional<String> select, Optional<String> expand) {
+            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
+            Optional<Long> top, Optional<String> select, Optional<String> expand) {
         this.requestHeaders = requestHeaders;
         this.search = search;
         this.filter = filter;

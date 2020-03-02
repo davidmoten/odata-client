@@ -29,10 +29,10 @@ public final class Util {
         return (Stream<T>) (c.stream() //
                 .filter(x -> cls.isInstance(x)));
     }
-    
+
     static void replaceAliases(List<Schema> schemas) {
-        for (Schema schema: schemas) {
-            for (Schema aliasedSchema: schemas) {
+        for (Schema schema : schemas) {
+            for (Schema aliasedSchema : schemas) {
                 replaceAliases(schema, aliasedSchema);
             }
         }
@@ -114,16 +114,17 @@ public final class Util {
     private static String replaceAlias(Schema schema, String type) {
         return replaceAlias(schema.getAlias(), schema.getNamespace(), type);
     }
-    
+
     @VisibleForTesting
     static String replaceAlias(String alias, String namespace, String type) {
         if (type == null || alias == null) {
             return type;
-        } if (type.startsWith("Collection(")) {
+        }
+        if (type.startsWith("Collection(")) {
             return type.replaceFirst("^Collection\\(" + alias + "\\b", "Collection(" + namespace);
         } else {
             return type.replaceFirst("^" + alias + "\\b", namespace);
         }
     }
-    
+
 }

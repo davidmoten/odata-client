@@ -167,7 +167,7 @@ public final class Generator {
         }
 
     }
-    
+
     private void log(Object s) {
         System.out.println(String.valueOf(s));
     }
@@ -468,7 +468,7 @@ public final class Generator {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static final int MAX_JAVADOC_WIDTH = 80;
 
     private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions,
@@ -840,10 +840,9 @@ public final class Generator {
                         boolean isEntity = names
                                 .isEntityWithNamespace(names.getInnerType(names.getType(x)));
                         if (!isEntity) {
-                            log(
-                                    "Unexpected entity with non-entity navigation property type: "
-                                            + simpleClassName + "." + x.getName()
-                                            + ". If you get this message then raise an issue on the github project for odata-client.");
+                            log("Unexpected entity with non-entity navigation property type: "
+                                    + simpleClassName + "." + x.getName()
+                                    + ". If you get this message then raise an issue on the github project for odata-client.");
                         }
                         return isEntity;
                     }) //
@@ -1293,8 +1292,9 @@ public final class Generator {
         p.format("%sprotected %s%s contextPath;\n", indent, "", imports.add(ContextPath.class));
     }
 
-    private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
-            String simpleClassName, String fullType, List<TProperty> properties, boolean ofEntity) {
+    private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports,
+            Indent indent, PrintWriter p, String simpleClassName, String fullType,
+            List<TProperty> properties, boolean ofEntity) {
 
         // write getters and setters
         properties //
@@ -1432,8 +1432,8 @@ public final class Generator {
         });
     }
 
-    private void printNavigationPropertyGetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
-            List<TNavigationProperty> properties) {
+    private void printNavigationPropertyGetters(Structure<?> structure, Imports imports,
+            Indent indent, PrintWriter p, List<TNavigationProperty> properties) {
         // write getters
         properties //
                 .stream() //

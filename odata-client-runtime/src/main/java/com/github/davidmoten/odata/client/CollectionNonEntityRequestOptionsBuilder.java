@@ -89,18 +89,18 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
 
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
-        return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select,
-                expand);
+        return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
+                select, expand);
     }
 
     public CollectionPage<T> get() {
         return request.get(build());
     }
-    
+
     public Iterator<T> iterator() {
         return get().iterator();
     }
-    
+
     public Stream<T> stream() {
         return get().stream();
     }

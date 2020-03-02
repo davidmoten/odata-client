@@ -11,13 +11,13 @@ public class UtilTest {
         assertEquals("microsoft.graph.targetResource",
                 Util.replaceAlias("graph", "microsoft.graph", "graph.targetResource"));
     }
-    
+
     @Test
     public void test2() {
         assertEquals("microsoft.graph.call",
                 Util.replaceAlias("graph", "microsoft.graph", "microsoft.graph.call"));
     }
-    
+
     @Test
     public void test3() {
         assertEquals("Collection(microsoft.graph.call)",

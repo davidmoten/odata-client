@@ -7,7 +7,7 @@ import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.TypedObject;
 
 final class InlineParameterSyntax {
- // see
+    // see
     // http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_InlineParameterSyntax
     // TODO investigate the format for encoding all of the Edm simple types (see
     // EdmSchemaInfo)

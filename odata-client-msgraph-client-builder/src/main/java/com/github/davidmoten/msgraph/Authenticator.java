@@ -8,5 +8,5 @@ import com.github.davidmoten.odata.client.RequestHeader;
 public interface Authenticator {
 
     List<RequestHeader> authenticate(List<RequestHeader> requestHeaders);
-    
+
 }

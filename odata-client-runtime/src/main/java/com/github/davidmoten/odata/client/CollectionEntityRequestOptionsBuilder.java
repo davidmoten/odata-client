@@ -8,7 +8,8 @@ import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityType, R extends EntityRequest<T>> implements Iterable<T> {
+public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityType, R extends EntityRequest<T>>
+        implements Iterable<T> {
 
     private final CollectionPageEntityRequest<T, R> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
@@ -89,18 +90,19 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
-        return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top, select, expand);
+        return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
+                select, expand);
     }
 
     public CollectionPage<T> get() {
         return request.get(build());
     }
-    
+
     @Override
     public Iterator<T> iterator() {
         return get().iterator();
     }
-    
+
     public Stream<T> stream() {
         return get().stream();
     }

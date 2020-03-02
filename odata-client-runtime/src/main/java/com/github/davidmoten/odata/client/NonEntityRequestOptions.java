@@ -12,8 +12,8 @@ public final class NonEntityRequestOptions<T> implements RequestOptions {
     private final Optional<String> expand;
     private final boolean useCaches;
 
-    public NonEntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> select, Optional<String> expand,
-            boolean useCaches) {
+    public NonEntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> select,
+            Optional<String> expand, boolean useCaches) {
         this.requestHeaders = requestHeaders;
         this.select = select;
         this.expand = expand;

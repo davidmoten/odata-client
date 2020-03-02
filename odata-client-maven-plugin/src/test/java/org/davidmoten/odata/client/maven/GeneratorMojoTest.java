@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class GeneratorMojoTest {
-    
+
     @Test
     public void testToPackage() {
         assertEquals("abc", toPackage("abc"));

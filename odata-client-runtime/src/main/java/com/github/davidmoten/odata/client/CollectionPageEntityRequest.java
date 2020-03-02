@@ -25,7 +25,8 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     CollectionPage<T> get(CollectionRequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
-        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
+        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
+                false);
         HttpResponse r = cp.context().service().get(cp.toUrl(), h);
         return cp.context().serializer().deserializeCollectionPageNonEntity(r.getText(), cls, cp,
                 schemaInfo, h);
@@ -42,7 +43,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public CollectionPage<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
     }
-    
+
     public Stream<T> stream() {
         return get().stream();
     }

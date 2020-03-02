@@ -21,7 +21,7 @@ public class ImportsTest {
         assertEquals("jill.Boo", imports.add("jill.Boo"));
         assertEquals("Boo", imports.add("fred.Boo"));
     }
-    
+
     @Test
     public void testNameClash() {
         Imports imports = new Imports("fred.Something");

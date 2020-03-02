@@ -15,7 +15,8 @@ public final class StreamProvider {
     private final String contentType;
     private final String base64;
 
-    public StreamProvider(ContextPath contextPath, RequestOptions options, String contentType, String base64) {
+    public StreamProvider(ContextPath contextPath, RequestOptions options, String contentType,
+            String base64) {
         Preconditions.checkNotNull(contextPath);
         Preconditions.checkNotNull(contentType);
         this.contextPath = contextPath;
@@ -36,7 +37,7 @@ public final class StreamProvider {
     public InputStream get() {
         return RequestHelper.getStream(contextPath, options, base64);
     }
-    
+
     public byte[] getBytes() {
         try (InputStream in = get()) {
             return Util.toByteArray(in);
@@ -44,11 +45,10 @@ public final class StreamProvider {
             throw new UncheckedIOException(e);
         }
     }
-    
+
     public String getStringUtf8() {
         return new String(getBytes(), StandardCharsets.UTF_8);
     }
-    
 
     /**
      * Returns the HTTP <i>ContentType</i> for the content delivered by

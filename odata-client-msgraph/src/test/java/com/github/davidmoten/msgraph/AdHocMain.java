@@ -37,7 +37,7 @@ public final class AdHocMain {
         String s = client.users(mailbox).messages(
                 "AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
                 .metadataFull() //
-                .get() // 
+                .get() //
                 .getStream() // get mime content of message
                 .get() //
                 .getStringUtf8();
@@ -88,7 +88,8 @@ public final class AdHocMain {
                 .filter(x -> x.getHasAttachments().orElse(false)) //
                 .peek(x -> System.out.println("Subject: " + x.getSubject().orElse(""))) //
                 .flatMap(x -> x.getAttachments().get().stream()) //
-                .peek(x -> System.out.println("  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
+                .peek(x -> System.out.println(
+                        "  " + x.getName().orElse("?") + " [" + x.getSize().orElse(0) + "]")) //
                 .count();
 
     }

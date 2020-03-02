@@ -52,7 +52,7 @@ public final class RequestHeader {
     public boolean isAcceptJsonWithMetadata() {
         return name.equals("Accept") && value.contains("application/json;odata.metadata=");
     }
-    
+
     public boolean isContentTypeJsonWithMetadata() {
         return name.equals("Content-Type") && value.contains("application/json;odata.metadata=");
     }

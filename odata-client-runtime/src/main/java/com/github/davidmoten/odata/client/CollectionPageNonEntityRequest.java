@@ -42,7 +42,8 @@ public class CollectionPageNonEntityRequest<T> {
     }
 
     public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath,
-            Class<T> returnClass, Map<String, TypedObject> parameters, SchemaInfo returnTypeSchemaInfo) {
+            Class<T> returnClass, Map<String, TypedObject> parameters,
+            SchemaInfo returnTypeSchemaInfo) {
         String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
@@ -56,13 +57,14 @@ public class CollectionPageNonEntityRequest<T> {
     CollectionPage<T> get(RequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;
-        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
+        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
+                false);
         if (method == HttpMethod.GET) {
             r = cp.context().service().get(cp.toUrl(), h);
         } else {
             r = cp.context().service().post(cp.toUrl(), h, content.get());
         }
-        RequestHelper.checkResponseCode(cp,  r, expectedResponseCode);
+        RequestHelper.checkResponseCode(cp, r, expectedResponseCode);
         return cp //
                 .context() //
                 .serializer() //

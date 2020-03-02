@@ -7,7 +7,7 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
 
 public final class ActionRequestNoReturn extends ActionFunctionRequestBase<ActionRequestNoReturn> {
-    
+
     public ActionRequestNoReturn(ContextPath contextPath, Map<String, TypedObject> parameters) {
         super(parameters, contextPath);
     }

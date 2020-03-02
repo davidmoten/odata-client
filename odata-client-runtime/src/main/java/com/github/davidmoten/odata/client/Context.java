@@ -20,7 +20,7 @@ public final class Context {
         this.service = service;
         this.properties = new HashMap<>(properties);
     }
-    
+
     public Context(Serializer serializer, HttpService service) {
         this(serializer, service, Collections.emptyMap());
     }
@@ -36,7 +36,7 @@ public final class Context {
     public Object getProperty(String name) {
         return properties.get(name);
     }
-    
+
     public Map<String, Object> getProperties() {
         return new HashMap<>(properties);
     }

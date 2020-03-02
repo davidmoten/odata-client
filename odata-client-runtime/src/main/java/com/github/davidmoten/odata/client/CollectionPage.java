@@ -17,8 +17,8 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     private final SchemaInfo schemaInfo;
     private final List<RequestHeader> requestHeaders;
 
-    public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list, Optional<String> nextLink,
-            SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
+    public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
+            Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
         this.contextPath = contextPath;
         this.cls = cls;
         this.list = list;
@@ -36,12 +36,14 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     public Optional<CollectionPage<T>> nextPage() {
         if (nextLink.isPresent()) {
             // TODO handle relative nextLink?
-            HttpResponse response = contextPath.context().service().get(nextLink.get(), requestHeaders);
+            HttpResponse response = contextPath.context().service().get(nextLink.get(),
+                    requestHeaders);
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
-            return Optional.of(contextPath.context().serializer().deserializeCollectionPageNonEntity(response.getText(),
-                    cls, contextPath, schemaInfo, requestHeaders));
+            return Optional
+                    .of(contextPath.context().serializer().deserializeCollectionPageNonEntity(
+                            response.getText(), cls, contextPath, schemaInfo, requestHeaders));
         } else {
             return Optional.empty();
         }

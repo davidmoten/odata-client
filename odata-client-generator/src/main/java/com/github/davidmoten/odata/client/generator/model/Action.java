@@ -44,11 +44,14 @@ public final class Action implements Method {
 
     public String getFullClassNameActionReturnType() {
         Optional<TActionFunctionReturnType> returnParameter = Util
-                .filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class).findFirst();
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class)
+                .findFirst();
         if (!returnParameter.isPresent()) {
             return Void.class.getName();
         } else {
-            return names.getFullClassNameFromTypeWithNamespace(names.getInnerType(returnParameter.get()));
+            return names.getFullClassNameFromTypeWithNamespace(
+                    names.getInnerType(returnParameter.get()));
         }
     }
 
@@ -57,7 +60,9 @@ public final class Action implements Method {
     }
 
     public Optional<String> getActionReturnType() {
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class) //
                 .map(x -> names.getInnerType(x)) //
                 .findFirst();
     }
@@ -67,7 +72,9 @@ public final class Action implements Method {
             return Optional.empty();
         } else {
             // TODO what does EntitySetPath mean?
-            return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class)
+            return Util
+                    .filter(action.getParameterOrAnnotationOrReturnType(),
+                            TActionFunctionParameter.class)
                     .map(x -> names.getInnerType(x)) //
                     .findFirst();
         }
@@ -83,13 +90,15 @@ public final class Action implements Method {
 
     public List<Parameter> getParametersUnbound(Imports imports) {
         AtomicBoolean first = new AtomicBoolean(true);
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionParameter.class) //
                 .filter(x -> !action.isIsBound() || !first.getAndSet(false)) //
                 .map(x -> new Parameter(x, names, imports)) //
                 .collect(Collectors.toList());
     }
 
-    public static final class Parameter implements HasNameJavaHasNullable{
+    public static final class Parameter implements HasNameJavaHasNullable {
         public final String name;
         private final String nameJava;
         public final String importedFullClassName;
@@ -125,7 +134,8 @@ public final class Action implements Method {
 
         public final String schemaInfoFullClassName;
 
-        public ReturnType(boolean isCollection, String innerImportedFullClassName, String schemaInfoFullClassName) {
+        public ReturnType(boolean isCollection, String innerImportedFullClassName,
+                String schemaInfoFullClassName) {
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
             this.schemaInfoFullClassName = schemaInfoFullClassName;
@@ -133,13 +143,17 @@ public final class Action implements Method {
     }
 
     public boolean hasReturnType() {
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class) //
                 .findFirst() //
                 .isPresent();
     }
 
     public ReturnType getReturnType(Imports imports) {
-        return Util.filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionReturnType.class) //
+        return Util
+                .filter(action.getParameterOrAnnotationOrReturnType(),
+                        TActionFunctionReturnType.class) //
                 .findFirst() //
                 .map(x -> {
                     String innerType = names.getInnerType(x);
@@ -147,7 +161,8 @@ public final class Action implements Method {
                     if (innerType.startsWith("Edm.")) {
                         schemaInfoClassName = EdmSchemaInfo.INSTANCE.getClass().getCanonicalName();
                     } else {
-                        schemaInfoClassName = names.getFullClassNameSchemaInfo(names.getSchema(innerType));
+                        schemaInfoClassName = names
+                                .getFullClassNameSchemaInfo(names.getSchema(innerType));
                     }
 
                     return new ReturnType( //
@@ -170,9 +185,8 @@ public final class Action implements Method {
         if (!action.isIsBound()) {
             return Optional.empty();
         } else {
-            TActionFunctionParameter p = Util
-                    .filter(action.getParameterOrAnnotationOrReturnType(), TActionFunctionParameter.class).findFirst()
-                    .get();
+            TActionFunctionParameter p = Util.filter(action.getParameterOrAnnotationOrReturnType(),
+                    TActionFunctionParameter.class).findFirst().get();
             return Optional.of(p.getType().get(0));
         }
     }
