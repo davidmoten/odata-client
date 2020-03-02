@@ -158,7 +158,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return Optional.ofNullable(contentId);
     }
 
-    // mutate javadoc here
     public FileAttachment withContentId(String contentId) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentId");
@@ -173,7 +172,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return Optional.ofNullable(contentLocation);
     }
 
-    // mutate javadoc here
     public FileAttachment withContentLocation(String contentLocation) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentLocation");
@@ -188,7 +186,6 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return Optional.ofNullable(contentBytes);
     }
 
-    // mutate javadoc here
     public FileAttachment withContentBytes(byte[] contentBytes) {
         FileAttachment _x = _copy();
         _x.changedFields = changedFields.add("contentBytes");

@@ -1363,7 +1363,6 @@ public final class Generator {
 
                             structure.printMutatePropertyJavadoc(p, indent, x.getName());
                             String classSuffix = "";
-                            p.format("\n%s// mutate javadoc here", indent);
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
                                     fieldName);
