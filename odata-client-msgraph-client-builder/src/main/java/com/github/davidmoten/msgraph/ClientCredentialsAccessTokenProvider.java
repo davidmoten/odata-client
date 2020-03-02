@@ -44,6 +44,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private final long refreshBeforeExpiryMs;
     private final long connectTimeoutMs;
     private final long readTimeoutMs;
+    private final String scope;
 
     private final String graphEndpoint;
     private long expiryTime;
@@ -51,7 +52,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
     private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
             String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
-            long readTimeoutMs, String graphEndpoint) {
+            long readTimeoutMs, String graphEndpoint, String scope) {
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
@@ -60,6 +61,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         Preconditions.checkArgument(connectTimeoutMs >= 0, "connectTimeoutMs must be >=0");
         Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
         Preconditions.checkNotNull(graphEndpoint);
+        Preconditions.checkNotNull(scope);
         this.tenantName = tenantName;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -67,6 +69,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
         this.graphEndpoint = graphEndpoint;
+        this.scope = scope;
     }
 
     public static Builder tenantName(String tenantName) {
@@ -97,7 +100,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             add(params, PARAMETER_CLIENT_ID, clientId);
             add(params, PARAMETER_GRANT_TYPE, GRANT_TYPE_CLIENT_CREDENTIALS);
             add(params, PARAMETER_CLIENT_SECRET, clientSecret);
-            add(params, PARAMETER_SCOPE, SCOPE_MS_GRAPH_DEFAULT);
+            add(params, PARAMETER_SCOPE, scope);
             con.setDoOutput(true);
             try (DataOutputStream dos = new DataOutputStream(con.getOutputStream())) {
                 dos.writeBytes(params.toString());
@@ -148,6 +151,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         long connectTimeoutMs = TimeUnit.SECONDS.toMillis(30);
         long readTimeoutMs = TimeUnit.SECONDS.toMillis(30);
         String endpoint = AuthenticationEndpoint.GLOBAL.url();
+        String scope = SCOPE_MS_GRAPH_DEFAULT;
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -208,6 +212,11 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             return this;
         }
 
+        public Builder3 scope(String scope) {
+            b.scope = scope;
+            return this;
+        }
+
         /**
          * Default value is {@link AuthenticationEndpoint#GLOBAL}.
          * 
@@ -227,7 +236,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         public ClientCredentialsAccessTokenProvider build() {
             return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
                     b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.endpoint);
+                    b.endpoint, b.scope);
         }
     }
 
