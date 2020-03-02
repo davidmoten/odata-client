@@ -144,7 +144,7 @@ public abstract class Structure<T> {
 		List<Annotation> list = names.getDocumentation().getNonDescriptionAnnotations(key);
 		boolean hasText = text.isPresent() || !list.isEmpty();
 		if (hasText) {
-			p.format("\n%s /**\n", indent);
+			p.format("\n%s/**\n", indent);
 			if (preamble.isPresent()) {
 				p.format("%s * <p>\n", indent);
 				p.format("%s * %s\n", indent, preamble.get());
@@ -172,7 +172,7 @@ public abstract class Structure<T> {
 			}
 		});
 		if (hasText) {
-			p.format("%s */\n", indent);
+			p.format("%s */", indent);
 		}
 	}
 
@@ -180,7 +180,7 @@ public abstract class Structure<T> {
 		printJavadoc(p, indent, getFullType(), Optional.empty());
 	}
 
-	public void printBuilderPropertyJavadoc(PrintWriter p, Indent indent, String name) {
+	public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name) {
 		String s = "Returns an immutable copy with just the {@code " + name
 				+ "} field changed. Field description below.";
 		printJavadoc(p, indent, name, Optional.of(s));
