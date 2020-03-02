@@ -1361,7 +1361,7 @@ public final class Generator {
                                     imports.add(Optional.class), fieldName);
                             p.format("%s}\n", indent.left());
 
-                            structure.printBuilderPropertyJavadoc(p, indent, x.getName());
+                            structure.printMutatePropertyJavadoc(p, indent, x.getName());
                             String classSuffix = "";
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
