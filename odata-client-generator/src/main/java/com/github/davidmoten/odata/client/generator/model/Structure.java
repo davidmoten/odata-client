@@ -187,7 +187,7 @@ public abstract class Structure<T> {
     public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name) {
         String s = "Returns an immutable copy with just the {@code " + name
                 + "} field changed. Field description below.";
-        printJavadoc(p, indent, name, Optional.of(s));
+        printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s));
     }
 
     private static String wrap(String s) {
