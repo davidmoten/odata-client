@@ -18,7 +18,7 @@ public class NorthwindTest {
                 .expectResponse("/Order_Details(OrderID=10248,ProductID=42)",
                         "/response-order-details-one-record.json")
                 .build();
-        
+
         client.order_Details().id("OrderID=10248,ProductID=42").get();
     }
 

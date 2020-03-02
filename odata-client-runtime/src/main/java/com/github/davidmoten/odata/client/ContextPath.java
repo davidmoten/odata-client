@@ -45,7 +45,7 @@ public final class ContextPath {
         }
         return new ContextPath(context, p);
     }
-    
+
     public ContextPath clearQueries() {
         Path p = path.clearQueries();
         return new ContextPath(context, p);

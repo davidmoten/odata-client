@@ -87,7 +87,7 @@ public final class Function implements Method {
             this.importedFullClassName = names.toImportedFullClassName(p, imports);
             this.isCollection = names.isCollection(p);
             this.typeWithNamespace = p.getType().get(0);
-            this.isNullable = p.isNullable() == null? false: p.isNullable();
+            this.isNullable = p.isNullable() == null ? false : p.isNullable();
         }
 
         @Override
@@ -132,7 +132,8 @@ public final class Function implements Method {
     }
 
     public String getReturnTypeFullClassNameSchemaInfo() {
-        return names.getFullClassNameSchemaInfo(names.getSchema(names.getInnerType(function.getReturnType())));
+        return names.getFullClassNameSchemaInfo(
+                names.getSchema(names.getInnerType(function.getReturnType())));
     }
 
     public String getFullType() {

@@ -21,14 +21,17 @@ public class CarServiceTest {
 
     @Test
     public void testWithDefaultHttpService() throws Exception {
-        Path basePath = new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
-        HttpService service = HttpService.createDefaultService(basePath, m -> m, c -> {});
+        Path basePath = new Path("http://localhost:8090/cars.svc",
+                PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
+        HttpService service = HttpService.createDefaultService(basePath, m -> m, c -> {
+        });
         checkServiceCalls(service).stop();
     }
 
     @Test
     public void testWithApacheHttpService() throws Exception {
-        Path basePath = new Path("http://localhost:8090/cars.svc", PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
+        Path basePath = new Path("http://localhost:8090/cars.svc",
+                PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
         HttpService service = new ApacheHttpClientHttpService(basePath);
         checkServiceCalls(service).stop();
     }
@@ -39,8 +42,10 @@ public class CarServiceTest {
 
         // test get collection
         List<Car> list = c.cars().get().toList();
-        list.stream().forEach(car -> System.out.println(car.getModel().orElse("") + " at $"
-                + car.getCurrency().orElse("") + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
+        list.stream()
+                .forEach(car -> System.out
+                        .println(car.getModel().orElse("") + " at $" + car.getCurrency().orElse("")
+                                + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
         assertEquals(5, list.size());
         assertEquals("F1 W03", list.get(0).getModel().orElse(null));
 

@@ -13,53 +13,55 @@ import com.github.davidmoten.odata.client.generator.Util;
 
 public final class Annotation {
 
-	private final org.oasisopen.odata.csdl.v4.Annotation annotation;
+    private final org.oasisopen.odata.csdl.v4.Annotation annotation;
 
-	public Annotation(org.oasisopen.odata.csdl.v4.Annotation annotation) {
-		this.annotation = annotation;
-	}
+    public Annotation(org.oasisopen.odata.csdl.v4.Annotation annotation) {
+        this.annotation = annotation;
+    }
 
-	public String getTerm() {
-		return annotation.getTerm();
-	}
+    public String getTerm() {
+        return annotation.getTerm();
+    }
 
-	public Optional<String> getString() {
-		return Optional.ofNullable(annotation.getString());
-	}
+    public Optional<String> getString() {
+        return Optional.ofNullable(annotation.getString());
+    }
 
-	public List<String> getRecords() {
-		List<String> bools = Util.filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
-				.map(x -> x.getValue()) //
-				.filter(x -> x instanceof TRecordExpression) //
-				.map(x -> (TRecordExpression) x) //
-				.flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
-				.filter(x -> x.isBool() != null) //
-				.map(x -> x.getProperty() + " = " + x.isBool()) //
-				.collect(Collectors.toList());
-		List<String> enums = Util.filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
-				.map(x -> x.getValue()) //
-				.filter(x -> x instanceof TRecordExpression) //
-				.map(x -> (TRecordExpression) x) //
-				.flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
-				.filter(x -> x.getEnumMember() != null && !x.getEnumMember().isEmpty()) //
-				.map(x -> x.getProperty() + " = " + toString(x.getEnumMember())) //
-				.collect(Collectors.toList());
-		bools.addAll(enums);
-		return bools;
-	}
+    public List<String> getRecords() {
+        List<String> bools = Util
+                .filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
+                .map(x -> x.getValue()) //
+                .filter(x -> x instanceof TRecordExpression) //
+                .map(x -> (TRecordExpression) x) //
+                .flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
+                .filter(x -> x.isBool() != null) //
+                .map(x -> x.getProperty() + " = " + x.isBool()) //
+                .collect(Collectors.toList());
+        List<String> enums = Util
+                .filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
+                .map(x -> x.getValue()) //
+                .filter(x -> x instanceof TRecordExpression) //
+                .map(x -> (TRecordExpression) x) //
+                .flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
+                .filter(x -> x.getEnumMember() != null && !x.getEnumMember().isEmpty()) //
+                .map(x -> x.getProperty() + " = " + toString(x.getEnumMember())) //
+                .collect(Collectors.toList());
+        bools.addAll(enums);
+        return bools;
+    }
 
-	private static String toString(List<String> list) {
-		if (list.isEmpty()) {
-			return "";
-		} else if (list.size() == 1) {
-			return String.valueOf(list.get(0));
-		} else {
-			return String.valueOf(list);
-		}
-	}
+    private static String toString(List<String> list) {
+        if (list.isEmpty()) {
+            return "";
+        } else if (list.size() == 1) {
+            return String.valueOf(list.get(0));
+        } else {
+            return String.valueOf(list);
+        }
+    }
 
-	public Optional<Boolean> getBool() {
-		return Optional.ofNullable(annotation.isBool());
-	}
+    public Optional<Boolean> getBool() {
+        return Optional.ofNullable(annotation.isBool());
+    }
 
 }

@@ -14,16 +14,19 @@ public class SchemaOptions {
     public final String simpleClassNameSchema;
     public final String collectionRequestClassSuffix;
     public final String entityRequestClassSuffix;
-    
+
     public final String actionRequestClassSuffix;
     public final boolean pageComplexTypes;
     // TODO make configurable
     private final String packageSuffixComplexTypeCollectionRequest = ".complex.collection.request";
 
-    public SchemaOptions(String namespace, String pkg, String packageSuffixEnum, String packageSuffixEntity, 
-            String packageSuffixComplexType, String packageSuffixEntityRequest, String packageSuffixCollectionRequest, String packageSuffixActionRequest,
-            String packageSuffixContainer, String packageSuffixSchema, String simpleClassNameSchema,
-            String collectionRequestClassSuffix, String entityRequestClassSuffix, String actionRequestClassSuffix, boolean pageComplexTypes) {
+    public SchemaOptions(String namespace, String pkg, String packageSuffixEnum,
+            String packageSuffixEntity, String packageSuffixComplexType,
+            String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
+            String packageSuffixActionRequest, String packageSuffixContainer,
+            String packageSuffixSchema, String simpleClassNameSchema,
+            String collectionRequestClassSuffix, String entityRequestClassSuffix,
+            String actionRequestClassSuffix, boolean pageComplexTypes) {
         this.namespace = namespace;
         this.pkg = pkg;
         this.packageSuffixEnum = packageSuffixEnum;
@@ -90,7 +93,7 @@ public class SchemaOptions {
     public String packageSuffixSchema() {
         return packageSuffixSchema;
     }
-    
+
     public String packageSuffixActionRequest() {
         return packageSuffixActionRequest;
     }
@@ -106,7 +109,7 @@ public class SchemaOptions {
     public String entityRequestClassSuffix() {
         return entityRequestClassSuffix;
     }
-    
+
     public String actionRequestClassSuffix() {
         return actionRequestClassSuffix;
     }

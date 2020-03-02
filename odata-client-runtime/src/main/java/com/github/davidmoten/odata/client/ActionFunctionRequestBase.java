@@ -8,7 +8,8 @@ import java.util.Map;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.TypedObject;
 
-public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>> implements RequestOptions {
+public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>>
+        implements RequestOptions {
 
     protected final ContextPath contextPath;
 
@@ -51,7 +52,7 @@ public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestB
     public T filter(String clause) {
         return query("$filter", clause);
     }
-    
+
     public T search(String clause) {
         return query("$search", clause);
     }
@@ -63,7 +64,7 @@ public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestB
     public T skip(long skip) {
         return query("$skip", String.valueOf(skip));
     }
-    
+
     public T top(long top) {
         return query("$top", String.valueOf(top));
     }

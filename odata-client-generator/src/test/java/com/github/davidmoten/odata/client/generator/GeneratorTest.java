@@ -26,12 +26,14 @@ public class GeneratorTest {
     public void testGenerateMsgraph() throws JAXBException, IOException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
-        TEdmx t = unmarshaller
-                .unmarshal(new StreamSource(new FileInputStream("src/main/odata/msgraph-metadata.xml")), TEdmx.class)
-                .getValue();
-        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph", "microsoft.graph.generated");
+        TEdmx t = unmarshaller.unmarshal(
+                new StreamSource(new FileInputStream("src/main/odata/msgraph-metadata.xml")),
+                TEdmx.class).getValue();
+        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph",
+                "microsoft.graph.generated");
         Options options = new Options(GENERATED, Collections.singletonList(schemaOptions));
-        Generator g = new Generator(options, Collections.singletonList(t.getDataServices().getSchema().get(0)));
+        Generator g = new Generator(options,
+                Collections.singletonList(t.getDataServices().getSchema().get(0)));
         g.generate();
         File file = new File(GENERATED + "/microsoft/graph/generated/entity/FileAttachment.java");
         Files.copy(file.toPath(), new File("../src/docs/FileAttachment.java").toPath(),
@@ -42,12 +44,15 @@ public class GeneratorTest {
     public void testGenerateMsgraphBeta() throws JAXBException, IOException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
-        TEdmx t = unmarshaller
-                .unmarshal(new StreamSource(new FileInputStream("../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml")), TEdmx.class)
-                .getValue();
+        TEdmx t = unmarshaller.unmarshal(
+                new StreamSource(new FileInputStream(
+                        "../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml")),
+                TEdmx.class).getValue();
         t.getDataServices().getSchema().forEach(s -> System.out.println(s.getNamespace()));
-        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph", "microsoft.graph.beta.generated");
-        SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords", "microsoft.graph.beta.callRecords.generated");
+        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph",
+                "microsoft.graph.beta.generated");
+        SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords",
+                "microsoft.graph.beta.callRecords.generated");
         Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
@@ -57,13 +62,14 @@ public class GeneratorTest {
     public void testGenerateODataTestService() throws JAXBException, FileNotFoundException {
         JAXBContext c = JAXBContext.newInstance(TDataServices.class);
         Unmarshaller unmarshaller = c.createUnmarshaller();
-        TEdmx t = unmarshaller
-                .unmarshal(new StreamSource(new FileInputStream("src/main/odata/odata-test-service-metadata.xml")),
-                        TEdmx.class)
-                .getValue();
+        TEdmx t = unmarshaller.unmarshal(
+                new StreamSource(
+                        new FileInputStream("src/main/odata/odata-test-service-metadata.xml")),
+                TEdmx.class).getValue();
         SchemaOptions schemaOptions = new SchemaOptions("ODataDemo", "odata.test.generated");
         Options options = new Options(GENERATED, Collections.singletonList(schemaOptions));
-        Generator g = new Generator(options, Collections.singletonList(t.getDataServices().getSchema().get(0)));
+        Generator g = new Generator(options,
+                Collections.singletonList(t.getDataServices().getSchema().get(0)));
         g.generate();
     }
 

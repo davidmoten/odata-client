@@ -14,6 +14,7 @@ public final class MsGraph {
     }
 
     public static Builder<GraphService> tenantName(String tenantName) {
-        return new MsGraphClientBuilder<GraphService>(MSGRAPH_BETA_BASE_URL, context -> new GraphService(context)).tenantName(tenantName);
+        return new MsGraphClientBuilder<GraphService>(MSGRAPH_BETA_BASE_URL,
+                context -> new GraphService(context)).tenantName(tenantName);
     }
 }

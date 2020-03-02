@@ -15,9 +15,11 @@ public class CustomRequestTest {
     @Test
     public void testCustomRequestGet() {
         Test5Service client = Test5Service.test() //
-                .expectResponse("/Products/1", "/response-product-1.json", RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/Products/1", "/response-product-1.json",
+                        RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION) //
                 .build();
-        Product p = client._custom().get("https://testing.com/Products/1", Product.class, SchemaInfo.INSTANCE);
+        Product p = client._custom().get("https://testing.com/Products/1", Product.class,
+                SchemaInfo.INSTANCE);
         System.out.println(p);
         assertEquals(1, (int) p.getID().get());
     }

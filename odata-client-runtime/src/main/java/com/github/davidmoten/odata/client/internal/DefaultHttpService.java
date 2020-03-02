@@ -30,7 +30,8 @@ public final class DefaultHttpService implements HttpService {
     private final Consumer<HttpURLConnection> consumer;
 
     public DefaultHttpService(Path basePath,
-            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier, Consumer<HttpURLConnection> consumer) {
+            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier,
+            Consumer<HttpURLConnection> consumer) {
         this.basePath = basePath;
         this.requestHeadersModifier = requestHeadersModifier;
         this.consumer = consumer;
@@ -54,7 +55,8 @@ public final class DefaultHttpService implements HttpService {
         }
     }
 
-    private HttpResponse getResponsePatchOverride(String url, List<RequestHeader> requestHeaders, String content) {
+    private HttpResponse getResponsePatchOverride(String url, List<RequestHeader> requestHeaders,
+            String content) {
         List<RequestHeader> list = Lists.newArrayList(requestHeaders);
         list.add(new RequestHeader("X-HTTP-Method-Override", "PATCH"));
         HttpResponse result = getResponse(url, list, HttpMethod.POST, false, content);
@@ -83,8 +85,8 @@ public final class DefaultHttpService implements HttpService {
         return basePath;
     }
 
-    private HttpResponse getResponse(String url, List<RequestHeader> requestHeaders, HttpMethod method, boolean doInput,
-            String content) {
+    private HttpResponse getResponse(String url, List<RequestHeader> requestHeaders,
+            HttpMethod method, boolean doInput, String content) {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
@@ -95,7 +97,8 @@ public final class DefaultHttpService implements HttpService {
             }
             c.setDoInput(doInput);
             c.setDoOutput(content != null);
-            // apply just before connection established so further configuration can take place
+            // apply just before connection established so further configuration can take
+            // place
             // like timeouts
             consumer.accept(c);
             if (content != null) {

@@ -42,7 +42,8 @@ public final class MsGraphClientBuilder<T> {
     Optional<String> proxyPassword = Optional.empty();
     Optional<String> proxyScheme = Optional.of("http");
     Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
-    Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional.empty();
+    Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
+            .empty();
 
     String authenticationEndpoint;
 
@@ -139,8 +140,7 @@ public final class MsGraphClientBuilder<T> {
          * You might want to use this method if your proxy interaction is complicated
          * for example.
          * 
-         * @param supplier
-         *            provider of HttpClient
+         * @param supplier provider of HttpClient
          * @return this
          */
         public Builder3<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
@@ -156,11 +156,11 @@ public final class MsGraphClientBuilder<T> {
          * is complicated for example or if you want to use interceptors or other fancy
          * stuff.
          * 
-         * @param extras
-         *            modifier of builder
+         * @param extras modifier of builder
          * @return this
          */
-        public Builder3<T> httpClientBuilderExtras(Function<HttpClientBuilder, HttpClientBuilder> extras) {
+        public Builder3<T> httpClientBuilderExtras(
+                Function<HttpClientBuilder, HttpClientBuilder> extras) {
             Preconditions.checkArgument(!b.httpClientSupplier.isPresent());
             b.httpClientBuilderExtras = Optional.of(extras);
             return this;
@@ -176,7 +176,7 @@ public final class MsGraphClientBuilder<T> {
         public Builder3<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
             return authenticationEndpoint(authenticationEndpoint.url());
         }
-        
+
         /**
          * Sets the authentication endpoint url to use for access tokens etc. If not
          * specified defaults to {@link AuthenticationEndpoint#GLOBAL.url()}.
@@ -190,20 +190,23 @@ public final class MsGraphClientBuilder<T> {
         }
 
         public T build() {
-            return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret, b.refreshBeforeExpiryDurationMs,
-                    b.connectTimeoutMs, b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername,
-                    b.proxyPassword, b.httpClientSupplier, b.httpClientBuilderExtras, b.creator, b.authenticationEndpoint);
+            return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret,
+                    b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
+                    b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername, b.proxyPassword,
+                    b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
+                    b.authenticationEndpoint);
         }
 
     }
 
-    private static <T> T createService(String baseUrl, String tenantName, String clientId, String clientSecret,
-            long refreshBeforeExpiryDurationMs, long connectTimeoutMs, long readTimeoutMs, //
+    private static <T> T createService(String baseUrl, String tenantName, String clientId,
+            String clientSecret, long refreshBeforeExpiryDurationMs, long connectTimeoutMs,
+            long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyScheme, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
-            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras, Creator<T> creator,
-            String authenticationEndpoint) {
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
+            Creator<T> creator, String authenticationEndpoint) {
         ClientCredentialsAccessTokenProvider accessTokenProvider = ClientCredentialsAccessTokenProvider //
                 .tenantName(tenantName) //
                 .clientId(clientId) //
@@ -218,8 +221,8 @@ public final class MsGraphClientBuilder<T> {
         if (supplier.isPresent()) {
             clientSupplier = supplier.get();
         } else {
-            clientSupplier = () -> createHttpClient(connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
-                    proxyUsername, proxyPassword, httpClientBuilderExtras);
+            clientSupplier = () -> createHttpClient(connectTimeoutMs, readTimeoutMs, proxyHost,
+                    proxyPort, proxyUsername, proxyPassword, httpClientBuilderExtras);
         }
         Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
         HttpService httpService = new ApacheHttpClientHttpService( //

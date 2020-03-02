@@ -42,7 +42,7 @@ public class GraphServiceTest {
     public void testFileAttachmentBuilderCompiles() {
         FileAttachment.builderFileAttachment().build();
     }
-    
+
     @Test
     public void testGetEntityWithComplexTypeCollection() {
         GraphService client = createClient("/users/1", "/response-user.json", //
@@ -233,14 +233,15 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                        "/response-messages-expand-attachments-minimal-metadata.json",
+                        RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .expectRequestAndResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
                         "/request-post-action-move.json", //
                         "/response-message-move.json", //
-                        HttpMethod.POST,RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
+                        HttpMethod.POST, RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL,
+                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -262,10 +263,13 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                        "/response-messages-expand-attachments-minimal-metadata.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectRequest(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
-                        "/request-patch-message-is-read.json", HttpMethod.PATCH, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON) //
+                        "/request-patch-message-is-read.json", HttpMethod.PATCH,
+                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON) //
                 .build();
 
         Message m = client //
@@ -284,7 +288,7 @@ public class GraphServiceTest {
         // mark as read
         m.withIsRead(true).patch();
     }
-    
+
     @Test
     @Ignore
     public void testCallCompiles() {

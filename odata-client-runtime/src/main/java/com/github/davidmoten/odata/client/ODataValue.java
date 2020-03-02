@@ -13,11 +13,11 @@ public class ODataValue<T> {
 
     @JsonProperty("value")
     private T value;
-    
+
     public UnmappedFields unmappedFields() {
         return unmappedFields;
     }
-    
+
     public T value() {
         return value;
     }

@@ -20,7 +20,8 @@ import com.github.davidmoten.odata.client.internal.Util;
 
 public final class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(ClientCredentialsAccessTokenProvider.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(ClientCredentialsAccessTokenProvider.class);
 
     private static final int OK = 200;
     private static final String POST = "POST";
@@ -44,16 +45,18 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private final long connectTimeoutMs;
     private final long readTimeoutMs;
 
-    private final String  graphEndpoint;
+    private final String graphEndpoint;
     private long expiryTime;
     private String accessToken;
 
-    private ClientCredentialsAccessTokenProvider(String tenantName, String clientId, String clientSecret,
-            long refreshBeforeExpiryMs, long connectTimeoutMs, long readTimeoutMs, String graphEndpoint) {
+    private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
+            String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
+            long readTimeoutMs, String graphEndpoint) {
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
-        Preconditions.checkArgument(refreshBeforeExpiryMs >= 0, "refreshBeforeExpiryMs must be >=0");
+        Preconditions.checkArgument(refreshBeforeExpiryMs >= 0,
+                "refreshBeforeExpiryMs must be >=0");
         Preconditions.checkArgument(connectTimeoutMs >= 0, "connectTimeoutMs must be >=0");
         Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
         Preconditions.checkNotNull(graphEndpoint);
@@ -185,11 +188,9 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
          * the access token will be performed. If this value is not set then the access
          * token is refreshed on every call of {@code get()}.
          * 
-         * @param duration
-         *            duration before expiry time after which point a refresh will be
-         *            run (on next authentication attempt)
-         * @param unit
-         *            time unit for the duration
+         * @param duration duration before expiry time after which point a refresh will
+         *                 be run (on next authentication attempt)
+         * @param unit     time unit for the duration
          * @return builder
          */
         public Builder3 refreshBeforeExpiry(long duration, TimeUnit unit) {
@@ -210,23 +211,23 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         /**
          * Default value is {@link AuthenticationEndpoint#GLOBAL}.
          * 
-         * @param endpoint
-         *            graph service endpoint
+         * @param endpoint graph service endpoint
          * @return this
          */
         public Builder3 authenticationEndpoint(AuthenticationEndpoint endpoint) {
             b.endpoint = endpoint.url();
             return this;
         }
-        
+
         public Builder3 authenticationEndpoint(String endpoint) {
             b.endpoint = endpoint;
             return this;
         }
 
         public ClientCredentialsAccessTokenProvider build() {
-            return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId, b.clientSecret,
-                    b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs, b.endpoint);
+            return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
+                    b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs,
+                    b.endpoint);
         }
     }
 

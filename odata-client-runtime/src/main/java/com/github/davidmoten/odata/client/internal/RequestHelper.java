@@ -263,8 +263,8 @@ public final class RequestHelper {
         List<RequestHeader> list = new ArrayList<>();
         list.add(new RequestHeader("OData-Version", "4.0"));
         if (isWrite) {
-        list.add(RequestHeader.contentTypeJsonWithMetadata(contentTypeOdataMetadataValue));
-        } 
+            list.add(RequestHeader.contentTypeJsonWithMetadata(contentTypeOdataMetadataValue));
+        }
         list.add(RequestHeader.ACCEPT_JSON);
         list.addAll(options.getRequestHeaders());
 
@@ -289,7 +289,7 @@ public final class RequestHelper {
                 .stream() //
                 .filter(x -> x.isAcceptJsonWithMetadata()) //
                 .reduce((x, y) -> y);
-        
+
         List<RequestHeader> list3 = list2.stream()
                 .filter(x -> !x.isAcceptJsonWithMetadata() || !m.isPresent() || x.equals(m.get()))
                 .collect(Collectors.toList());

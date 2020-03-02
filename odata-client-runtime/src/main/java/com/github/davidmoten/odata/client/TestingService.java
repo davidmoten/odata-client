@@ -73,24 +73,29 @@ public final class TestingService {
         }
 
         @SuppressWarnings("unchecked")
-        public T expectRequest(String path, String requestResourceName, HttpMethod method, RequestHeader... requestHeaders) {
+        public T expectRequest(String path, String requestResourceName, HttpMethod method,
+                RequestHeader... requestHeaders) {
             Preconditions.checkArgument(method != HttpMethod.GET,
                     "GET not expected for a request with content");
-            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)),
+                    requestResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
         public T expectRequestAndResponse(String path, String requestResourceName,
                 String responseResourceName, HttpMethod method, RequestHeader... requestHeaders) {
-            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
-            responses.put(toKey(method, baseUrl + path, asList(requestHeaders)), responseResourceName);
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)),
+                    requestResourceName);
+            responses.put(toKey(method, baseUrl + path, asList(requestHeaders)),
+                    responseResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
         public T expectDelete(String path, RequestHeader... requestHeaders) {
-            requests.put(toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders)), "DELETE");
+            requests.put(toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders)),
+                    "DELETE");
             return (T) this;
         }
 
@@ -113,8 +118,7 @@ public final class TestingService {
                     responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
-                    String resourceName = responses
-                            .get(key);
+                    String resourceName = responses.get(key);
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url
                                 + ", headers=" + requestHeaders);
@@ -142,8 +146,7 @@ public final class TestingService {
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.PATCH, url, requestHeaders);
                     log(key);
-                    String resourceName = requests
-                            .get(key);
+                    String resourceName = requests.get(key);
                     if (resourceName == null) {
                         throw new RuntimeException("PATCH response not found for url=" + url
                                 + ", headers=" + requestHeaders);
@@ -178,8 +181,7 @@ public final class TestingService {
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.POST, url, requestHeaders);
                     log(key);
-                    String requestResourceName = requests
-                            .get(key);
+                    String requestResourceName = requests.get(key);
                     if (requestResourceName == null) {
                         throw new RuntimeException("POST request not expected for url=" + url
                                 + ", headers=" + requestHeaders);
@@ -210,9 +212,8 @@ public final class TestingService {
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.DELETE, url, requestHeaders);
                     log(key);
-                    
-                    String resourceName = requests
-                            .get(key);
+
+                    String resourceName = requests.get(key);
                     if (resourceName == null) {
                         throw new RuntimeException("DELETE request not expected for url=" + url
                                 + ", headers=" + requestHeaders);

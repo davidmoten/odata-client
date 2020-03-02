@@ -6,5 +6,5 @@ import com.github.davidmoten.odata.client.Context;
 public interface Creator<T> {
 
     T create(Context context);
-    
+
 }

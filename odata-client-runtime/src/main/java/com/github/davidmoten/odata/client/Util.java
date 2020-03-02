@@ -15,13 +15,13 @@ public class Util {
             return object;
         }
     }
-    
+
     static byte[] toByteArray(InputStream in) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         byte[] buffer = new byte[8192];
         int n;
         try {
-            while ((n = in.read(buffer))!= -1) {
+            while ((n = in.read(buffer)) != -1) {
                 bytes.write(buffer, 0, n);
             }
         } catch (IOException e) {

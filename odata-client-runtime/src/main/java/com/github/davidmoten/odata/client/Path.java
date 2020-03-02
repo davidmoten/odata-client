@@ -18,7 +18,7 @@ public class Path {
     private final Map<String, String> queries; // unencoded
     private final PathStyle style;
 
-    //TODO support repeated query keys?
+    // TODO support repeated query keys?
     public Path(String url, Map<String, String> queries, PathStyle style) {
         this.url = url;
         this.queries = queries;
@@ -43,7 +43,7 @@ public class Path {
         u = append(u, segment);
         return new Path(u, queries, style);
     }
-    
+
     private static String addSegmentDelimiter(String url) {
         if (url.charAt(url.length() - 1) != '/') {
             return url + '/';
@@ -89,7 +89,7 @@ public class Path {
         map.put(key, value);
         return new Path(url, map, style);
     }
-    
+
     public Path clearQueries() {
         return new Path(url, Collections.emptyMap(), style);
     }

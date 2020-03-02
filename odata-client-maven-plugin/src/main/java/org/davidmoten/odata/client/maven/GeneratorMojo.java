@@ -60,11 +60,13 @@ public class GeneratorMojo extends AbstractMojo {
             schemas = Collections.emptyList();
         }
         List<SchemaOptions> schemaOptionsList = schemas.stream()
-                .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum, s.packageSuffixEntity,
-                        s.packageSuffixComplexType, s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
-                        s.packageSuffixActionRequest,
-                        s.packageSuffixContainer, s.packageSuffixSchema, s.simpleClassNameSchema,
-                        s.collectionRequestClassSuffix, s.entityRequestClassSuffix,s.actionRequestClassSuffix, s.pageComplexTypes))
+                .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum,
+                        s.packageSuffixEntity, s.packageSuffixComplexType,
+                        s.packageSuffixEntityRequest, s.packageSuffixCollectionRequest,
+                        s.packageSuffixActionRequest, s.packageSuffixContainer,
+                        s.packageSuffixSchema, s.simpleClassNameSchema,
+                        s.collectionRequestClassSuffix, s.entityRequestClassSuffix,
+                        s.actionRequestClassSuffix, s.pageComplexTypes))
                 .collect(Collectors.toList());
 
         InputStream is = null;
@@ -110,7 +112,8 @@ public class GeneratorMojo extends AbstractMojo {
                             return Stream.empty();
                         } else {
                             return Stream.of(new SchemaOptions(schema.getNamespace(),
-                                    blankIfNull(autoPackagePrefix) + toPackage(schema.getNamespace())));
+                                    blankIfNull(autoPackagePrefix)
+                                            + toPackage(schema.getNamespace())));
                         }
                     }) //
                     .collect(Collectors.toList());
@@ -147,7 +150,8 @@ public class GeneratorMojo extends AbstractMojo {
     static String toPackage(String s) {
         String result = s.chars() //
                 .map(ch -> Character.toLowerCase(ch)) //
-                .filter(ch -> Character.isDigit(ch) || (ch >= 'a' && ch <= 'z') || ch == '_' || ch == '.') //
+                .filter(ch -> Character.isDigit(ch) || (ch >= 'a' && ch <= 'z') || ch == '_'
+                        || ch == '.') //
                 .mapToObj(ch -> Character.toString((char) ch)) //
                 .collect(Collectors.joining());
         while (result.startsWith(".")) {
