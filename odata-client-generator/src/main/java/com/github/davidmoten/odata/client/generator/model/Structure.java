@@ -150,8 +150,8 @@ public abstract class Structure<T> {
         if (hasText) {
             p.format("\n%s/**\n", indent);
             if (preamble.isPresent()) {
-                p.format("%s * <p>\n", indent);
                 p.format("%s * %s\n", indent, preamble.get());
+                p.format("%s * <p>\n", indent);
             }
         }
         if (text.isPresent()) {
