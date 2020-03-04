@@ -179,7 +179,7 @@ public final class MsGraphClientBuilder<T> {
 
         /**
          * Sets the authentication endpoint url to use for access tokens etc. If not
-         * specified defaults to {@link AuthenticationEndpoint#GLOBAL.url()}.
+         * specified defaults to {@link AuthenticationEndpoint#GLOBAL} url.
          * 
          * @param authenticationEndpoint endpoint to use for authentication
          * @return this
