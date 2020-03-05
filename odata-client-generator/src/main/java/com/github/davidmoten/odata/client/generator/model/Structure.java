@@ -142,7 +142,8 @@ public abstract class Structure<T> {
     }
 
     public void printPropertyJavadoc(PrintWriter p, Indent indent, String name, String returns) {
-        printJavadoc(p, indent, getFullType() + "/" + name, Optional.empty(), Optional.of(returns), Collections.emptyMap());
+        printJavadoc(p, indent, getFullType() + "/" + name, Optional.empty(), Optional.of(returns),
+                Collections.emptyMap());
     }
 
     private final void printJavadoc(PrintWriter p, Indent indent, String key,
@@ -153,12 +154,12 @@ public abstract class Structure<T> {
         if (hasText) {
             p.format("\n%s/**\n", indent);
             if (preamble.isPresent()) {
-                p.format("%s * %s\n", indent, preamble.get());
+                p.format("%s * %s\n", indent, encodeAndWrapForJavadoc(preamble.get(), indent));
                 p.format("%s * <p>\n", indent);
             }
         }
         if (text.isPresent()) {
-            p.format("%s * %s\n", indent, encodeAndWrapForJavadoc(text.get(), indent));
+            p.format("%s * <i>%s</i>\n", indent, encodeAndWrapForJavadoc(text.get(), indent));
         }
         list.forEach(a -> {
             p.format("%s * <p>\n", indent);
@@ -178,7 +179,7 @@ public abstract class Structure<T> {
         });
         if (hasText) {
             boolean first = true;
-            for (Entry<String, String> entry: parameterDoc.entrySet()) {
+            for (Entry<String, String> entry : parameterDoc.entrySet()) {
                 if (first) {
                     p.format("%s * \n", indent);
                     first = false;
@@ -197,19 +198,25 @@ public abstract class Structure<T> {
     }
 
     private String encodeAndWrapForJavadoc(String s, Indent indent) {
-        return encodeJavadoc(wrap(s) //
-                .replace("\n", String.format("\n%s * ", indent)));
+        return encodeJavadoc(wrap(s.replace("{@", "zz")) //
+                .replace("\n", String.format("\n%s * ", indent))) //
+                        .replace("zz", "{@");
     }
 
     public final void printJavadoc(PrintWriter p, Indent indent) {
-        printJavadoc(p, indent, getFullType(), Optional.empty(), Optional.empty(), Collections.emptyMap());
+        printJavadoc(p, indent, getFullType(), Optional.empty(), Optional.empty(),
+                Collections.emptyMap());
     }
 
     public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name) {
         String s = "Returns an immutable copy with just the {@code " + name
-                + "} field changed. Field description below.";
-        printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s), 
-                Optional.of("immutable copy of this with just the {@code " + name + "} field changed"), Collections.emptyMap());
+                + "} field changed. Field description below. The field name is also added to an "
+                + "internal map of changed fields in the returned object so that when {@link #patch()} is called "
+                + "on the returned object only the changed fields are submitted.";
+        printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s),
+                Optional.of(
+                        "immutable copy of this with just the {@code " + name + "} field changed"),
+                Collections.emptyMap());
     }
 
     private static String wrap(String s) {
