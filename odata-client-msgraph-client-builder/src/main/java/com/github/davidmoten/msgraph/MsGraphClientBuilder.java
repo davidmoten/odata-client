@@ -45,7 +45,7 @@ public final class MsGraphClientBuilder<T> {
     Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
             .empty();
 
-    String authenticationEndpoint;
+    String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
