@@ -224,6 +224,7 @@ public abstract class Structure<T> {
         return WordWrap //
                 .from(s) //
                 .breakWords(false) //
+                .extraWordChars("0123456789") //
                 .maxWidth(Generator.MAX_JAVADOC_WIDTH) //
                 .newLine("\n") //
                 .wrap() //
