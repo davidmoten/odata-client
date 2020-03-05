@@ -138,12 +138,12 @@ public abstract class Structure<T> {
                 .replace(">", "@gt;");
     }
 
-    public void printPropertyJavadoc(PrintWriter p, Indent indent, String name) {
-        printJavadoc(p, indent, getFullType() + "/" + name, Optional.empty());
+    public void printPropertyJavadoc(PrintWriter p, Indent indent, String name, String returns) {
+        printJavadoc(p, indent, getFullType() + "/" + name, Optional.empty(), Optional.of(returns));
     }
 
     private final void printJavadoc(PrintWriter p, Indent indent, String key,
-            Optional<String> preamble) {
+            Optional<String> preamble, Optional<String> returns) {
         Optional<String> text = names.getDocumentation().getDescription(key);
         List<Annotation> list = names.getDocumentation().getNonDescriptionAnnotations(key);
         boolean hasText = text.isPresent() || !list.isEmpty();
@@ -174,6 +174,10 @@ public abstract class Structure<T> {
             }
         });
         if (hasText) {
+            if (returns.isPresent()) {
+                p.format("%s * <p>\n", indent);
+                p.format("%s * @return %s\n", indent, returns.get());
+            }
             p.format("%s */", indent);
         }
     }
@@ -184,13 +188,13 @@ public abstract class Structure<T> {
     }
 
     public final void printJavadoc(PrintWriter p, Indent indent) {
-        printJavadoc(p, indent, getFullType(), Optional.empty());
+        printJavadoc(p, indent, getFullType(), Optional.empty(), Optional.empty());
     }
 
     public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name) {
         String s = "Returns an immutable copy with just the {@code " + name
                 + "} field changed. Field description below.";
-        printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s));
+        printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s), Optional.empty());
     }
 
     private static String wrap(String s) {

@@ -692,7 +692,7 @@ public final class Generator {
     }
 
     private void printJsonIncludeNonNull(Imports imports, PrintWriter p) {
-        p.format("@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
+        p.format("\n@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
     }
 
     private void writePatchAndPutMethods(EntityType t, String simpleClassName, Imports imports,
@@ -1228,7 +1228,7 @@ public final class Generator {
         // write builder setters
 
         fields.forEach(f -> {
-            t.printPropertyJavadoc(p, indent, f.name);
+            t.printPropertyJavadoc(p, indent, f.name, "this");
             p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType,
                     f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
@@ -1302,7 +1302,7 @@ public final class Generator {
                     String fieldName = Names.getIdentifier(x.getName());
                     String t = names.getType(x);
                     boolean isCollection = isCollection(x);
-                    structure.printPropertyJavadoc(p, indent, x.getName());
+                    structure.printPropertyJavadoc(p, indent, x.getName(), "property " + x.getName());
                     addPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     if (isCollection) {
@@ -1439,7 +1439,7 @@ public final class Generator {
                 .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
-                    structure.printPropertyJavadoc(p, indent, x.getName());
+                    structure.printPropertyJavadoc(p, indent, x.getName(), "navigational property " + x.getName());
                     addNavigationPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
                     p.format("%spublic %s %s() {\n", indent, typeName,
