@@ -20,6 +20,7 @@ import java.util.Optional;
 import microsoft.graph.generated.entity.Attachment;
 import microsoft.graph.generated.entity.FileAttachment;
 
+
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({
     "@odata.type", 
