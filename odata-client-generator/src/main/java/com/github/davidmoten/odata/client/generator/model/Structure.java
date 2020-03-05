@@ -138,7 +138,8 @@ public abstract class Structure<T> {
         return x.replace("@", "&#064;") //
                 .replace("\\", "{@literal \\}") //
                 .replace("<", "&lt;") //
-                .replace(">", "@gt;");
+                .replace(">", "&gt;") //
+                .replace("&", "&amp;");
     }
 
     public void printPropertyJavadoc(PrintWriter p, Indent indent, String name, String returns, Map<String, String> parameterDoc) {
@@ -151,14 +152,18 @@ public abstract class Structure<T> {
         Optional<String> text = names.getDocumentation().getDescription(key);
         List<Annotation> list = names.getDocumentation().getNonDescriptionAnnotations(key);
         boolean hasText = text.isPresent() || !list.isEmpty();
+        boolean addParagraph = false;
         if (hasText) {
             p.format("\n%s/**\n", indent);
             if (preamble.isPresent()) {
                 p.format("%s * %s\n", indent, encodeAndWrapForJavadoc(preamble.get(), indent));
-                p.format("%s * <p>\n", indent);
             }
+            addParagraph = true;
         }
         if (text.isPresent()) {
+            if (addParagraph) {
+                p.format("%s * <p>\n", indent);
+            }
             p.format("%s * <i>\u201C%s\u201D</i>\n", indent, encodeAndWrapForJavadoc(text.get(), indent));
         }
         list.forEach(a -> {
@@ -212,7 +217,7 @@ public abstract class Structure<T> {
     public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name, Map<String, String> parameterDoc) {
         String s = "Returns an immutable copy with just the {@code " + name
                 + "} field changed. Field description below. The field name is also added to an "
-                + "internal map of changed fields in the returned object so that when {@link #patch()} is called "
+                + "internal map of changed fields in the returned object so that when {@code this.patch()} is called (if available)"
                 + "on the returned object only the changed fields are submitted.";
         printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s),
                 Optional.of(
