@@ -224,6 +224,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return RequestHelper.createStream(contextPath, this);
     }
 
+    /**
+     * Submits only changed fields for update and returns an 
+     * immutable copy of {@code this} with changed fields reset.
+     *
+     * @return a copy of {@code this} with changed fields reset
+     */
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();
@@ -231,6 +237,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
+    /**
+     * Submits all fields for update and returns an immutable copy of {@code this}
+     * with changed fields reset (they were ignored anyway).
+     *
+     * @return a copy of {@code this} with changed fields reset
+     */
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY);
         FileAttachment _x = _copy();

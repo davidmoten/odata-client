@@ -201,7 +201,12 @@ public final class RequestHelper {
     private static <T extends ODataEntityType> T patchOrPut(T entity, ContextPath contextPath,
             RequestOptions options, HttpMethod method) {
         Preconditions.checkArgument(method == HttpMethod.PUT || method == HttpMethod.PATCH);
-        String json = Serializer.INSTANCE.serializeChangesOnly(entity);
+        final String json;
+        if (method == HttpMethod.PATCH) {
+            json = Serializer.INSTANCE.serializeChangesOnly(entity);
+        } else {
+            json = Serializer.INSTANCE.serialize(entity);
+        }
 
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());

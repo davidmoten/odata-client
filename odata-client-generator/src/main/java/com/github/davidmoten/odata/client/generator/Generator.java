@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -708,6 +709,21 @@ public final class Generator {
     private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
+        if (isPatch) {
+            p.format("\n%s/**", indent);
+            p.format("\n%s * Submits only changed fields for update and returns an ", indent);
+            p.format("\n%s * immutable copy of {@code this} with changed fields reset.", indent);
+            p.format("\n%s *", indent);
+            p.format("\n%s * @return a copy of {@code this} with changed fields reset", indent);
+            p.format("\n%s */", indent);
+        } else {
+            p.format("\n%s/**", indent);
+            p.format("\n%s * Submits all fields for update and returns an immutable copy of {@code this}", indent);
+            p.format("\n%s * with changed fields reset (they were ignored anyway).", indent);
+            p.format("\n%s *", indent);
+            p.format("\n%s * @return a copy of {@code this} with changed fields reset", indent);
+            p.format("\n%s */", indent);
+        }
         p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
         p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(),
                 imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class));
@@ -852,15 +868,6 @@ public final class Generator {
                         String y = x.getType().get(0);
                         Schema sch = names.getSchema(names.getInnerType(y));
                         if (Names.isCollection(y)) {
-                            // String inner = names.getInnerType(y);
-                            // returnClass = imports.add(CollectionPageEntityRequest.class) + "<"
-                            // + imports
-                            // .add(names.getFullClassNameFromTypeWithNamespace(inner))
-                            // + ", "
-                            // + imports.add(names
-                            // .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                            // inner))
-                            // + ">";
                             returnClass = toType(x, imports);
                         } else {
                             returnClass = imports.add(names
@@ -874,15 +881,6 @@ public final class Generator {
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
                             p.format("%scontextPath.addSegment(\"%s\"));\n",
                                     indent.right().right().right().right(), x.getName());
-                            // p.format("%s%s.class,\n", indent,
-                            // imports.add(names.getFullClassNameFromTypeWithNamespace(
-                            // names.getInnerType(names.getType(x)))));
-                            // p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n",
-                            // indent,
-                            // imports.add(names
-                            // .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                            // names.getInnerType(names.getType(x)))),
-                            // imports.add(names.getFullClassNameSchemaInfo(sch)));
                             indent.left().left().left().left();
                         } else {
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n",
@@ -1051,13 +1049,6 @@ public final class Generator {
                         p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
                         p.format("%scontextPath.addSegment(\"%s\"));\n",
                                 indent.right().right().right().right(), x.getName());
-                        // p.format("%s%s.class,\n", indent, imports.add(
-                        // names.getFullClassNameFromTypeWithNamespace(x.getEntityType())));
-                        // p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n", indent,
-                        // imports.add(
-                        // names.getFullClassNameEntityRequestFromTypeWithNamespace(
-                        // sch, x.getEntityType())), //
-                        // imports.add(names.getFullClassNameSchemaInfo(sch)));
                         p.format("%s}\n", indent.left().left().left().left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
@@ -1225,7 +1216,7 @@ public final class Generator {
         p.format("%s// prevent instantiation\n", indent.right());
         p.format("%s}\n", indent.left());
 
-        // write builder setters
+        // write builder setters 
 
         fields.forEach(f -> {
             t.printPropertyJavadoc(p, indent, f.name, "this");
@@ -1361,7 +1352,9 @@ public final class Generator {
                                     imports.add(Optional.class), fieldName);
                             p.format("%s}\n", indent.left());
 
-                            structure.printMutatePropertyJavadoc(p, indent, x.getName());
+                            Map<String, String> map = new LinkedHashMap<>();
+                            map.put(fieldName, "new value of {@code " + x.getName() + "} field as defined in service metadata");
+                            structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
                             String classSuffix = "";
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
                                     classSuffix, Names.getWithMethod(x.getName()), importedType,
@@ -1449,15 +1442,6 @@ public final class Generator {
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
                             p.format("%scontextPath.addSegment(\"%s\"));\n", //
                                     indent.right().right().right().right(), x.getName());
-                            // p.format("%s%s.class,\n", indent,
-                            // imports.add(names.getFullClassNameFromTypeWithNamespace(
-                            // names.getInnerType(names.getType(x)))));
-                            // p.format("%scontextPath -> new %s(contextPath), %s.INSTANCE);\n",
-                            // indent,
-                            // imports.add(names
-                            // .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                            // names.getInnerType(names.getType(x)))), //
-                            // imports.add(names.getFullClassNameSchemaInfo(sch)));
                             indent.left().left().left().left();
                         } else {
                             throw new RuntimeException("unexpected");
@@ -1497,8 +1481,6 @@ public final class Generator {
             Schema schema = names.getSchema(inner);
             return imports.add(
                     names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, inner));
-            // return names.toImportedFullClassName(t, imports,
-            // CollectionPageEntityRequest.class);
         }
     }
 
