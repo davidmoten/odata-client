@@ -1353,7 +1353,7 @@ public final class Generator {
                             p.format("%s}\n", indent.left());
 
                             Map<String, String> map = new LinkedHashMap<>();
-                            map.put(fieldName, "new value of {@code " + x.getName() + "} field as defined in service metadata");
+                            map.put(fieldName, "new value of {@code " + x.getName() + "} field (as defined in service metadata)");
                             structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
                             String classSuffix = "";
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
