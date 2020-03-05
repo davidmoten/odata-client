@@ -35,7 +35,7 @@
         <taglist.version>2.4</taglist.version>
         <changelog.version>2.2</changelog.version>
 
-        <jackson.version>2.10.2</jackson.version>
+        <jackson.version>2.10.3</jackson.version>
         <junit.version>4.12</junit.version>
         <olingo.version>4.7.1</olingo.version>
         <httpclient.version>4.5.11</httpclient.version>
