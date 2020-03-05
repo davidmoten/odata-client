@@ -184,7 +184,8 @@ public abstract class Structure<T> {
                     p.format("%s * \n", indent);
                     first = false;
                 }
-                p.format("%s * @param %s %s\n", indent, entry.getKey(), entry.getValue());
+                p.format("%s * @param %s\n", indent, entry.getKey());
+                p.format("%s *            %s\n", indent, entry.getValue());
             }
             if (returns.isPresent()) {
                 if (first) {
@@ -208,7 +209,7 @@ public abstract class Structure<T> {
                 Collections.emptyMap());
     }
 
-    public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name) {
+    public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name, Map<String, String> parameterDoc) {
         String s = "Returns an immutable copy with just the {@code " + name
                 + "} field changed. Field description below. The field name is also added to an "
                 + "internal map of changed fields in the returned object so that when {@link #patch()} is called "
@@ -216,7 +217,7 @@ public abstract class Structure<T> {
         printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s),
                 Optional.of(
                         "immutable copy of this with just the {@code " + name + "} field changed"),
-                Collections.emptyMap());
+                parameterDoc);
     }
 
     private static String wrap(String s) {
