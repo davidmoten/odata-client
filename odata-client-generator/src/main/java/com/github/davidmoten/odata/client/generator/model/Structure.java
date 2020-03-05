@@ -141,9 +141,9 @@ public abstract class Structure<T> {
                 .replace(">", "@gt;");
     }
 
-    public void printPropertyJavadoc(PrintWriter p, Indent indent, String name, String returns) {
+    public void printPropertyJavadoc(PrintWriter p, Indent indent, String name, String returns, Map<String, String> parameterDoc) {
         printJavadoc(p, indent, getFullType() + "/" + name, Optional.empty(), Optional.of(returns),
-                Collections.emptyMap());
+                parameterDoc);
     }
 
     private final void printJavadoc(PrintWriter p, Indent indent, String key,
