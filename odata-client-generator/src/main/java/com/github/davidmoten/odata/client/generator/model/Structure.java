@@ -159,7 +159,7 @@ public abstract class Structure<T> {
             }
         }
         if (text.isPresent()) {
-            p.format("%s * <i>%s</i>\n", indent, encodeAndWrapForJavadoc(text.get(), indent));
+            p.format("%s * <i>\u201C%s\u201D</i>\n", indent, encodeAndWrapForJavadoc(text.get(), indent));
         }
         list.forEach(a -> {
             p.format("%s * <p>\n", indent);
