@@ -175,7 +175,7 @@ public abstract class Structure<T> {
         });
         if (hasText) {
             if (returns.isPresent()) {
-                p.format("%s * <p>\n", indent);
+                p.format("%s * \n", indent);
                 p.format("%s * @return %s\n", indent, returns.get());
             }
             p.format("%s */", indent);
