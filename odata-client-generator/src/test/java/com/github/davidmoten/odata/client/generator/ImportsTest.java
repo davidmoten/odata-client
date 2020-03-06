@@ -2,9 +2,10 @@ package com.github.davidmoten.odata.client.generator;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
-import com.github.davidmoten.odata.client.generator.Imports;
+import org.junit.Test;
 
 public class ImportsTest {
 
@@ -27,5 +28,21 @@ public class ImportsTest {
         Imports imports = new Imports("fred.Something");
         assertEquals("anne.Something", imports.add("anne.Something"));
         assertEquals("Something", imports.add("fred.Something"));
+    }
+
+    @Test
+    public void testSortedAndGroupedWithNewLineSeparatorBetweenFirstSegmentChanges() {
+        Imports imports = new Imports("Something");
+        imports.add("com.fred.MyClass");
+        imports.add("com.andrew.AnotherClass");
+        imports.add(Integer.class);
+        imports.add(HttpURLConnection.class);
+        imports.add(IOException.class);
+        assertEquals("import com.andrew.AnotherClass;\n" //
+                + "import com.fred.MyClass;\n" //
+                + "\n" //
+                + "import java.io.IOException;\n" //
+                + "import java.net.HttpURLConnection;\n\n", //
+                imports.toString());
     }
 }
