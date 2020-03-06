@@ -1224,7 +1224,7 @@ public final class Generator {
         fields.forEach(f -> {
             Map<String, String> map = new LinkedHashMap<>();
             map.put(f.fieldName, "value of {@code " + f.propertyName + "} property (as defined in service metadata)");
-            t.printPropertyJavadoc(p, indent, f.name, "this", map);
+            t.printPropertyJavadoc(p, indent, f.name, "{@code this} (for method chaining)", map);
             p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType,
                     f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);

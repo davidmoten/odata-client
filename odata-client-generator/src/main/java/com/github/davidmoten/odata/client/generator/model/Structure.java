@@ -157,8 +157,8 @@ public abstract class Structure<T> {
             p.format("\n%s/**\n", indent);
             if (preamble.isPresent()) {
                 p.format("%s * %s\n", indent, encodeAndWrapForJavadoc(preamble.get(), indent));
+                addParagraph = true;
             }
-            addParagraph = true;
         }
         if (text.isPresent()) {
             if (addParagraph) {
@@ -215,13 +215,13 @@ public abstract class Structure<T> {
     }
 
     public void printMutatePropertyJavadoc(PrintWriter p, Indent indent, String name, Map<String, String> parameterDoc) {
-        String s = "Returns an immutable copy with just the {@code " + name
+        String s = "Returns an immutable copy of {@code this} with just the {@code " + name
                 + "} field changed. Field description below. The field name is also added to an "
                 + "internal map of changed fields in the returned object so that when {@code this.patch()} is called (if available)"
                 + "on the returned object only the changed fields are submitted.";
         printJavadoc(p, indent, getFullType() + "/" + name, Optional.of(s),
                 Optional.of(
-                        "immutable copy of this with just the {@code " + name + "} field changed"),
+                        "immutable copy of {@code this} with just the {@code " + name + "} field changed"),
                 parameterDoc);
     }
 
