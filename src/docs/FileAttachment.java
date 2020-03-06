@@ -49,6 +49,14 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         super();
     }
 
+    /**
+     * Returns a builder which is used to create a new
+     * instance of this class (given that this class is immutable).
+     *
+     * @return a new Builder for this class
+     */
+    // Suffix used on builder factory method to differentiate the method
+    // from static builder methods on superclasses
     public static Builder builderFileAttachment() {
         return new Builder();
     }
