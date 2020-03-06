@@ -15,10 +15,11 @@ import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
+
 import java.time.OffsetDateTime;
 import java.util.Optional;
+
 import microsoft.graph.generated.entity.Attachment;
-import microsoft.graph.generated.entity.FileAttachment;
 
 
 @JsonInclude(Include.NON_NULL)

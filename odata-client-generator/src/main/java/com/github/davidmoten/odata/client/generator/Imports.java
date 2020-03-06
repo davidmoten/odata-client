@@ -2,11 +2,15 @@ package com.github.davidmoten.odata.client.generator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class Imports {
 
+    private final String fullClassName;
+
     Imports(String fullClassName) {
+        this.fullClassName = fullClassName;
         add(fullClassName);
     }
 
@@ -42,7 +46,10 @@ public final class Imports {
 
     @Override
     public String toString() {
-        String x = map.values().stream().sorted() //
+        String x = map //
+                .values() //
+                .stream() //
+                .sorted() //
                 .filter(c -> !c.startsWith("java.lang.")) //
                 .filter(c -> !c.equals("boolean")) //
                 .filter(c -> !c.equals("short")) //
@@ -50,11 +57,33 @@ public final class Imports {
                 .filter(c -> !c.equals("double")) //
                 .filter(c -> !c.equals("int")) //
                 .filter(c -> !c.equals("byte")) //
-                .map(c -> "import " + c + ";").collect(Collectors.joining("\n"));
+                .filter(c -> !c.equals(fullClassName))
+                .map(new Function<String,String>() {
+
+                    String previous;
+                    
+                    @Override
+                    public String apply(String c) {
+                        String firstSegment = firstSegment(c);
+                        boolean insertBlankLine  = previous != null && !firstSegment.equals(previous);
+                        previous = firstSegment;
+                        return (insertBlankLine? "\n" : "") + "import " + c + ";";
+                    }
+                }) //
+                .collect(Collectors.joining("\n"));
         if (!x.isEmpty()) {
             x = x + "\n\n";
         }
         return x;
+    }
+    
+    private static String firstSegment(String s) {
+        int i = s.indexOf('.');
+        if (i == -1) {
+            return s;
+        } else {
+            return s.substring(0, i);
+        }
     }
 
 }
