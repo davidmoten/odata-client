@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
@@ -230,6 +231,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
      * immutable copy of {@code this} with changed fields reset.
      *
      * @return a copy of {@code this} with changed fields reset
+     * @throws ClientException if HTTP response is not as expected
      */
     public FileAttachment patch() {
         RequestHelper.patch(this, contextPath, RequestOptions.EMPTY);
@@ -243,6 +245,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
      * with changed fields reset (they were ignored anyway).
      *
      * @return a copy of {@code this} with changed fields reset
+     * @throws ClientException if HTTP response is not as expected
      */
     public FileAttachment put() {
         RequestHelper.put(this, contextPath, RequestOptions.EMPTY);

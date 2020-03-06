@@ -40,6 +40,7 @@ import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntityRequest;
@@ -715,6 +716,7 @@ public final class Generator {
             p.format("\n%s * immutable copy of {@code this} with changed fields reset.", indent);
             p.format("\n%s *", indent);
             p.format("\n%s * @return a copy of {@code this} with changed fields reset", indent);
+            p.format("\n%s * @throws %s if HTTP response is not as expected", indent, imports.add(ClientException.class));
             p.format("\n%s */", indent);
         } else {
             p.format("\n%s/**", indent);
@@ -722,6 +724,7 @@ public final class Generator {
             p.format("\n%s * with changed fields reset (they were ignored anyway).", indent);
             p.format("\n%s *", indent);
             p.format("\n%s * @return a copy of {@code this} with changed fields reset", indent);
+            p.format("\n%s * @throws %s if HTTP response is not as expected", indent, imports.add(ClientException.class));
             p.format("\n%s */", indent);
         }
         p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
