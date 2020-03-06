@@ -1196,6 +1196,14 @@ public final class Generator {
         }
         String builderSuffix = t.getBaseType() == null ? "" : simpleClassName;
 
+        p.format("\n%s/**", indent);
+        p.format("\n%s * Returns a builder which is used to create a new", indent); 
+        p.format("\n%s * instance of this class (given that this class is immutable).", indent);
+        p.format("\n%s *", indent);
+        p.format("\n%s * @return a new Builder for this class", indent);
+        p.format("\n%s */", indent);
+        p.format("\n%s// Suffix used on builder factory method to differentiate the method", indent);
+        p.format("\n%s// from static builder methods on superclasses", indent);
         p.format("\n%spublic static Builder builder%s() {\n", indent, builderSuffix);
         p.format("%sreturn new Builder();\n", indent.right());
         p.format("%s}\n", indent.left());
