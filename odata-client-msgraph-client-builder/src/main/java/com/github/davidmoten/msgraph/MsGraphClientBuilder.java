@@ -28,24 +28,23 @@ import com.github.davidmoten.odata.client.internal.ApacheHttpClientHttpService;
 
 public final class MsGraphClientBuilder<T> {
 
-    final Creator<T> creator;
-    final String baseUrl;
-    String tenantName;
-    String clientId;
-    String clientSecret;
-    long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
-    long connectTimeoutMs;
-    long readTimeoutMs;
-    Optional<String> proxyHost = Optional.empty();
-    Optional<Integer> proxyPort = Optional.empty();
-    Optional<String> proxyUsername = Optional.empty();
-    Optional<String> proxyPassword = Optional.empty();
-    Optional<String> proxyScheme = Optional.of("http");
-    Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
-    Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
+    private final Creator<T> creator;
+    private final String baseUrl;
+    private String tenantName;
+    private String clientId;
+    private String clientSecret;
+    private long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
+    private long connectTimeoutMs;
+    private long readTimeoutMs;
+    private Optional<String> proxyHost = Optional.empty();
+    private Optional<Integer> proxyPort = Optional.empty();
+    private Optional<String> proxyUsername = Optional.empty();
+    private Optional<String> proxyPassword = Optional.empty();
+    private Optional<String> proxyScheme = Optional.of("http");
+    private Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
+    private Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
             .empty();
-
-    String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
+    private String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
@@ -60,9 +59,9 @@ public final class MsGraphClientBuilder<T> {
     }
 
     public static final class Builder<T> {
-        final MsGraphClientBuilder<T> b;
+        private final MsGraphClientBuilder<T> b;
 
-        public Builder(MsGraphClientBuilder<T> b) {
+        Builder(MsGraphClientBuilder<T> b) {
             this.b = b;
         }
 
@@ -74,9 +73,9 @@ public final class MsGraphClientBuilder<T> {
     }
 
     public static final class Builder2<T> {
-        final MsGraphClientBuilder<T> b;
+        private final MsGraphClientBuilder<T> b;
 
-        public Builder2(MsGraphClientBuilder<T> b) {
+        Builder2(MsGraphClientBuilder<T> b) {
             this.b = b;
         }
 
@@ -88,9 +87,9 @@ public final class MsGraphClientBuilder<T> {
     }
 
     public static final class Builder3<T> {
-        final MsGraphClientBuilder<T> b;
+        private final MsGraphClientBuilder<T> b;
 
-        public Builder3(MsGraphClientBuilder<T> b) {
+        Builder3(MsGraphClientBuilder<T> b) {
             this.b = b;
         }
 
