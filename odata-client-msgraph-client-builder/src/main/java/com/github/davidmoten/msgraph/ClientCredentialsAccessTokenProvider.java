@@ -3,9 +3,13 @@ package com.github.davidmoten.msgraph;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -45,6 +49,10 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private final long connectTimeoutMs;
     private final long readTimeoutMs;
     private final String scope;
+    private final Optional<String> proxyHost;
+    private final Optional<Integer> proxyPort;
+    private final Optional<String> proxyUsername;
+    private final Optional<String> proxyPassword;
 
     private final String graphEndpoint;
     private long expiryTime;
@@ -52,7 +60,9 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
     private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
             String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
-            long readTimeoutMs, String graphEndpoint, String scope) {
+            long readTimeoutMs, String graphEndpoint, String scope, Optional<String> proxyHost,
+            Optional<Integer> proxyPort, //
+            Optional<String> proxyUsername, Optional<String> proxyPassword) {
         Preconditions.checkNotNull(tenantName);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
@@ -62,6 +72,12 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
         Preconditions.checkNotNull(graphEndpoint);
         Preconditions.checkNotNull(scope);
+        Preconditions.checkNotNull(proxyHost);
+        Preconditions.checkNotNull(proxyPort);
+        Preconditions.checkNotNull(proxyUsername);
+        Preconditions.checkNotNull(proxyPassword);
+        Preconditions.checkArgument(!proxyHost.isPresent() || proxyPort.isPresent(),
+                "if proxyHost specified then so must proxyPort be specified");
         this.tenantName = tenantName;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -70,6 +86,10 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         this.readTimeoutMs = readTimeoutMs;
         this.graphEndpoint = graphEndpoint;
         this.scope = scope;
+        this.proxyHost = proxyHost;
+        this.proxyPort = proxyPort;
+        this.proxyUsername = proxyUsername;
+        this.proxyPassword = proxyPassword;
     }
 
     public static Builder tenantName(String tenantName) {
@@ -94,7 +114,22 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         try {
             log.debug("refreshing access token");
             URL url = new URL(graphEndpoint + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
-            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            final HttpsURLConnection con;
+            if (proxyHost.isPresent()) {
+                InetSocketAddress proxyInet = new InetSocketAddress(proxyHost.get(),
+                        proxyPort.get());
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyInet);
+                con = (HttpsURLConnection) url.openConnection(proxy);
+                if (proxyUsername.isPresent()) {
+                    String usernameAndPassword = proxyUsername.get() + ":" + proxyPassword.get();
+                    String authString = "Basic " + Base64.getEncoder()
+                            .encode(usernameAndPassword.getBytes(StandardCharsets.UTF_8));
+                    con.setRequestProperty("Proxy-Authorization", authString);
+                }
+                // TODO support NTLM?
+            } else {
+                con = (HttpsURLConnection) url.openConnection();
+            }
             con.setConnectTimeout((int) connectTimeoutMs);
             con.setReadTimeout((int) readTimeoutMs);
             con.setRequestMethod(POST);
@@ -156,6 +191,10 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         long readTimeoutMs = TimeUnit.SECONDS.toMillis(30);
         String endpoint = AuthenticationEndpoint.GLOBAL.url();
         String scope = SCOPE_MS_GRAPH_DEFAULT;
+        Optional<String> proxyHost = Optional.empty();
+        Optional<Integer> proxyPort = Optional.empty();
+        Optional<String> proxyUsername = Optional.empty();
+        Optional<String> proxyPassword = Optional.empty();
 
         Builder(String tenantName) {
             this.tenantName = tenantName;
@@ -237,10 +276,34 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             return this;
         }
 
+        public Builder3 proxyHost(String proxyHost) {
+            Preconditions.checkNotNull(proxyHost);
+            b.proxyHost = Optional.of(proxyHost);
+            return this;
+        }
+
+        public Builder3 proxyPort(int proxyPort) {
+            b.proxyPort = Optional.of(proxyPort);
+            return this;
+        }
+
+        public Builder3 proxyUsername(String username) {
+            Preconditions.checkNotNull(username);
+            b.proxyUsername = Optional.of(username);
+            return this;
+        }
+
+        public Builder3 proxyPassword(String password) {
+            Preconditions.checkNotNull(password);
+            b.proxyPassword = Optional.of(password);
+            return this;
+        }
+
         public ClientCredentialsAccessTokenProvider build() {
             return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
                     b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.endpoint, b.scope);
+                    b.endpoint, b.scope, b.proxyHost, b.proxyPort, b.proxyUsername,
+                    b.proxyPassword);
         }
     }
 
