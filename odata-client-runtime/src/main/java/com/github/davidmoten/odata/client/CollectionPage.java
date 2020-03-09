@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.client;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
