@@ -5,7 +5,7 @@
 
 Generates java client for a service described by OData v4 metadata. Includes client libraries for Microsoft Graph primary and beta APIs.
 
-Status: *in development* 
+Status : *released to Maven Central* 
 
 ## Features
 * High level of type safety in generated code
