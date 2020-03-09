@@ -87,6 +87,10 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     }
 
     private String refreshAccessToken() {
+
+        // post some parameters in json format to the access token url
+        // and record returned expiry information so they we know when we
+        // need to refresh the token
         try {
             log.debug("refreshing access token");
             URL url = new URL(graphEndpoint + tenantName + OAUTH2_TOKEN_URL_SUFFIX);

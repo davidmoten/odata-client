@@ -45,12 +45,104 @@ public final class MsGraphClientBuilder<T> {
     private Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
             .empty();
     private String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
+    public Authenticator authenticator;
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
         Preconditions.checkNotNull(creator);
         this.baseUrl = baseUrl;
         this.creator = creator;
+    }
+
+    public BuilderCustomAuthenticator<T> authenticator(Authenticator authenticator) {
+        return new BuilderCustomAuthenticator<T>(this, authenticator);
+    }
+
+    public static final class BuilderCustomAuthenticator<T> {
+
+        private final Authenticator authenticator;
+        private MsGraphClientBuilder<T> b;
+
+        BuilderCustomAuthenticator(MsGraphClientBuilder<T> b, Authenticator authenticator) {
+            this.authenticator = authenticator;
+            this.b = b;
+        }
+
+        public BuilderCustomAuthenticator<T> connectTimeout(long duration, TimeUnit unit) {
+            b.connectTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
+
+        public BuilderCustomAuthenticator<T> readTimeout(long duration, TimeUnit unit) {
+            b.readTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
+
+        public BuilderCustomAuthenticator<T> proxyScheme(String proxyScheme) {
+            b.proxyScheme = Optional.of(proxyScheme);
+            return this;
+        }
+
+        public BuilderCustomAuthenticator<T> proxyHost(String proxyHost) {
+            b.proxyHost = Optional.of(proxyHost);
+            return this;
+        }
+
+        public BuilderCustomAuthenticator<T> proxyPort(int proxyPort) {
+            b.proxyPort = Optional.of(proxyPort);
+            return this;
+        }
+
+        public BuilderCustomAuthenticator<T> proxyUsername(String username) {
+            b.proxyUsername = Optional.of(username);
+            return this;
+        }
+
+        public BuilderCustomAuthenticator<T> proxyPassword(String password) {
+            b.proxyPassword = Optional.of(password);
+            return this;
+        }
+
+        /**
+         * Do your own thing to create an Apache {@link HttpClient}. This method might
+         * disappear if the underlying http service gets swapped out for another one.
+         * You might want to use this method if your proxy interaction is complicated
+         * for example.
+         * 
+         * @param supplier provider of HttpClient
+         * @return this
+         */
+        public BuilderCustomAuthenticator<T> httpClientProvider(
+                Supplier<CloseableHttpClient> supplier) {
+            Preconditions.checkArgument(!b.httpClientBuilderExtras.isPresent());
+            b.httpClientSupplier = Optional.of(supplier);
+            return this;
+        }
+
+        /**
+         * Do your own thing to further modify a configured {@link HttpClientBuilder}.
+         * This method might disappear if the underlying http service gets swapped out
+         * for another one. You might want to use this method if your proxy interaction
+         * is complicated for example or if you want to use interceptors or other fancy
+         * stuff.
+         * 
+         * @param extras modifier of builder
+         * @return this
+         */
+        public BuilderCustomAuthenticator<T> httpClientBuilderExtras(
+                Function<HttpClientBuilder, HttpClientBuilder> extras) {
+            Preconditions.checkArgument(!b.httpClientSupplier.isPresent());
+            b.httpClientBuilderExtras = Optional.of(extras);
+            return this;
+        }
+
+        public T build() {
+            return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs,
+                    b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername, b.proxyPassword,
+                    b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
+                    b.authenticationEndpoint);
+        }
+
     }
 
     public Builder<T> tenantName(String tenantName) {
@@ -215,7 +307,19 @@ public final class MsGraphClientBuilder<T> {
                 .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
                 .authenticationEndpoint(authenticationEndpoint) //
                 .build();
-        Path basePath = new Path(baseUrl, PathStyle.IDENTIFIERS_AS_SEGMENTS);
+
+        Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
+
+        return createService(baseUrl, authenticator, connectTimeoutMs, readTimeoutMs, proxyHost,
+                proxyPort, proxyScheme, proxyUsername, proxyPassword, supplier,
+                httpClientBuilderExtras, creator, authenticationEndpoint);
+    }
+
+    private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs,
+            long readTimeoutMs, Optional<String> proxyHost, Optional<Integer> proxyPort,
+            Optional<String> proxyUsername, Optional<String> proxyPassword,
+            Optional<Supplier<CloseableHttpClient>> supplier,
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras) {
         final Supplier<CloseableHttpClient> clientSupplier;
         if (supplier.isPresent()) {
             clientSupplier = supplier.get();
@@ -223,7 +327,20 @@ public final class MsGraphClientBuilder<T> {
             clientSupplier = () -> createHttpClient(connectTimeoutMs, readTimeoutMs, proxyHost,
                     proxyPort, proxyUsername, proxyPassword, httpClientBuilderExtras);
         }
-        Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
+        return clientSupplier;
+    }
+
+    private static <T> T createService(String baseUrl, Authenticator authenticator,
+            long connectTimeoutMs, long readTimeoutMs, //
+            Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyScheme, //
+            Optional<String> proxyUsername, Optional<String> proxyPassword,
+            Optional<Supplier<CloseableHttpClient>> supplier,
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
+            Creator<T> creator, String authenticationEndpoint) {
+        final Supplier<CloseableHttpClient> clientSupplier = createClientSupplier(connectTimeoutMs,
+                readTimeoutMs, proxyHost, proxyPort, proxyUsername, proxyPassword, supplier,
+                httpClientBuilderExtras);
+        Path basePath = new Path(baseUrl, PathStyle.IDENTIFIERS_AS_SEGMENTS);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
                 clientSupplier, //
