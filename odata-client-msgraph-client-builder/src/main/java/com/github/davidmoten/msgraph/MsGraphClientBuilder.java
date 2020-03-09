@@ -40,7 +40,6 @@ public final class MsGraphClientBuilder<T> {
     private Optional<Integer> proxyPort = Optional.empty();
     private Optional<String> proxyUsername = Optional.empty();
     private Optional<String> proxyPassword = Optional.empty();
-    private Optional<String> proxyScheme = Optional.of("http");
     private Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
     private Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
             .empty();
@@ -75,11 +74,6 @@ public final class MsGraphClientBuilder<T> {
 
         public BuilderCustomAuthenticator<T> readTimeout(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
-            return this;
-        }
-
-        public BuilderCustomAuthenticator<T> proxyScheme(String proxyScheme) {
-            b.proxyScheme = Optional.of(proxyScheme);
             return this;
         }
 
@@ -138,7 +132,7 @@ public final class MsGraphClientBuilder<T> {
 
         public T build() {
             return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername, b.proxyPassword,
+                    b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
                     b.authenticationEndpoint);
         }
@@ -197,11 +191,6 @@ public final class MsGraphClientBuilder<T> {
 
         public Builder3<T> readTimeout(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
-            return this;
-        }
-
-        public Builder3<T> proxyScheme(String proxyScheme) {
-            b.proxyScheme = Optional.of(proxyScheme);
             return this;
         }
 
@@ -283,7 +272,7 @@ public final class MsGraphClientBuilder<T> {
         public T build() {
             return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret,
                     b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.proxyHost, b.proxyPort, b.proxyScheme, b.proxyUsername, b.proxyPassword,
+                    b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
                     b.authenticationEndpoint);
         }
@@ -293,7 +282,7 @@ public final class MsGraphClientBuilder<T> {
     private static <T> T createService(String baseUrl, String tenantName, String clientId,
             String clientSecret, long refreshBeforeExpiryDurationMs, long connectTimeoutMs,
             long readTimeoutMs, //
-            Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyScheme, //
+            Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
@@ -311,7 +300,7 @@ public final class MsGraphClientBuilder<T> {
         Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
 
         return createService(baseUrl, authenticator, connectTimeoutMs, readTimeoutMs, proxyHost,
-                proxyPort, proxyScheme, proxyUsername, proxyPassword, supplier,
+                proxyPort, proxyUsername, proxyPassword, supplier,
                 httpClientBuilderExtras, creator, authenticationEndpoint);
     }
 
@@ -332,7 +321,7 @@ public final class MsGraphClientBuilder<T> {
 
     private static <T> T createService(String baseUrl, Authenticator authenticator,
             long connectTimeoutMs, long readTimeoutMs, //
-            Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyScheme, //
+            Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
