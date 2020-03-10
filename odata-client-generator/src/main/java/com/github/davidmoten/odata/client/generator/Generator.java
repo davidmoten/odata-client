@@ -110,7 +110,6 @@ public final class Generator {
 
         log("finding collection types");
         Set<String> collectionTypes = findTypesUsedInCollections(names, schemas);
-        collectionTypes.forEach(System.out::println);
 
         for (Schema schema : schemas) {
 
@@ -166,12 +165,6 @@ public final class Generator {
             log("  writing complex type requests");
             Util.types(schema, TComplexType.class) //
                     .forEach(x -> writeComplexTypeRequest(schema, x));
-
-            // TODO write actions
-
-            // TODO write functions
-
-            // TODO consume annotations for documentation
         }
 
     }
