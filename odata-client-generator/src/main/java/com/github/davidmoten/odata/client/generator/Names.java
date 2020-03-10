@@ -18,6 +18,7 @@ import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
+import org.oasisopen.odata.csdl.v4.TNavigationPropertyBinding;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -199,6 +200,10 @@ public final class Names {
                 classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
+    
+    public String getInnerType(TNavigationProperty t) {
+        return getInnerType(getType(t));
+    }
 
     public String getInnerType(String type) {
         if (type.startsWith("Collection(")) {
@@ -227,7 +232,7 @@ public final class Names {
         }
         return list.get(0);
     }
-
+    
     public String getType(TNavigationProperty x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
@@ -247,6 +252,10 @@ public final class Names {
     }
 
     public boolean isCollection(TProperty x) {
+        return isCollection(getType(x));
+    }
+    
+    public boolean isCollection(TNavigationProperty x) {
         return isCollection(getType(x));
     }
 
@@ -595,7 +604,7 @@ public final class Names {
     public String getInnerType(TProperty p) {
         return getInnerType(getType(p));
     }
-
+    
     public String getEnumInstanceName(TEnumType t, String name) {
         // ensures uniqueness
         //

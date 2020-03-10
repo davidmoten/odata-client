@@ -11,6 +11,8 @@ import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
 import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TAnnotations;
 import org.oasisopen.odata.csdl.v4.TComplexType;
+import org.oasisopen.odata.csdl.v4.TEntityContainer;
+import org.oasisopen.odata.csdl.v4.TEntitySet;
 import org.oasisopen.odata.csdl.v4.TEntityType;
 import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
@@ -46,6 +48,8 @@ public final class Util {
         types(schema, TAction.class) //
                 .forEach(x -> replaceAlias(aliasedSchema, x));
         types(schema, TFunction.class) //
+                .forEach(x -> replaceAlias(aliasedSchema, x));
+        types(schema, TEntityContainer.class) //
                 .forEach(x -> replaceAlias(aliasedSchema, x));
     }
 
@@ -100,6 +104,13 @@ public final class Util {
         } else if (x instanceof TAnnotations) {
             TAnnotations a = (TAnnotations) x;
             a.setTarget(replaceAlias(schema, a.getTarget()));
+        } else if (x instanceof TEntityContainer) {
+            TEntityContainer a = (TEntityContainer) x;
+            Util.filter(a.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class)
+                    .forEach(y -> replaceAlias(schema, y));
+        } else if (x instanceof TEntitySet) {
+            TEntitySet a = (TEntitySet) x;
+            a.setEntityType(replaceAlias(schema, a.getEntityType()));
         }
     }
 
