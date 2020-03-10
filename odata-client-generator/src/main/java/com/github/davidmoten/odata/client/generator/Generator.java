@@ -6,17 +6,21 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
+import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
+import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import org.oasisopen.odata.csdl.v4.TComplexType;
 import org.oasisopen.odata.csdl.v4.TEntityContainer;
 import org.oasisopen.odata.csdl.v4.TEntitySet;
@@ -25,6 +29,7 @@ import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
+import org.oasisopen.odata.csdl.v4.TNavigationPropertyBinding;
 import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
@@ -103,6 +108,10 @@ public final class Generator {
         log("replacing aliases");
         Util.replaceAliases(schemas);
 
+        log("finding collection types");
+        Set<String> collectionTypes = findTypesUsedInCollections(names, schemas);
+        collectionTypes.forEach(System.out::println);
+
         for (Schema schema : schemas) {
 
             log("generating for namespace=" + schema.getNamespace());
@@ -114,14 +123,11 @@ public final class Generator {
             Map<String, List<Function>> typeFunctions = createTypeFunctions(schema, names, false);
             log("    entity functions count = " + typeFunctions.size());
 
-            Map<String, List<Action>> collectionTypeActions = createTypeActions(schema, names,
-                    true);
+            Map<String, List<Action>> collectionTypeActions = createTypeActions(schema, names, true);
             log("    collection actions count = " + collectionTypeActions.size());
 
-            Map<String, List<Function>> collectionTypeFunctions = createTypeFunctions(schema, names,
-                    true);
-            System.out
-                    .println("    collection functions count = " + collectionTypeFunctions.size());
+            Map<String, List<Function>> collectionTypeFunctions = createTypeFunctions(schema, names, true);
+            System.out.println("    collection functions count = " + collectionTypeFunctions.size());
 
             log("  writing schema info");
             writeSchemaInfo(schema);
@@ -145,7 +151,7 @@ public final class Generator {
             log("  writing entity collection requests");
             Util.types(schema, TEntityType.class) //
                     .forEach(x -> writeEntityCollectionRequest(schema, x, collectionTypeActions,
-                            collectionTypeFunctions));
+                            collectionTypeFunctions, collectionTypes));
 
             // write containers
             log("  writing container");
@@ -170,25 +176,85 @@ public final class Generator {
 
     }
 
+    private static Set<String> findTypesUsedInCollections(Names names, List<Schema> schemas) {
+        return schemas //
+                .stream() //
+                .flatMap(schema -> {
+                    List<String> types = new ArrayList<>();
+                    Util.types(schema, TEntityType.class) //
+                            .flatMap(t -> Stream.concat(Util //
+                                    .filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
+                                    .filter(x -> names.isCollection(x)) //
+                                    .map(x -> names.getType(x)),
+                                    Util //
+                                            .filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class)
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)))) //
+                            .forEach(x -> types.add(x));
+                    Util.types(schema, TComplexType.class) //
+                            .flatMap(t -> Stream.concat(//
+                                    Util //
+                                            .filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class)
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)),
+                                    Util //
+                                            .filter(t.getPropertyOrNavigationPropertyOrAnnotation(),
+                                                    TNavigationProperty.class)
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)))) //
+                            .forEach(x -> types.add(x));
+                    Util.types(schema, TAction.class) //
+                            .flatMap(t -> Stream.concat( //
+                                    Util //
+                                            .filter(t.getParameterOrAnnotationOrReturnType(),
+                                                    TActionFunctionParameter.class) //
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)),
+                                    Util //
+                                            .filter(t.getParameterOrAnnotationOrReturnType(),
+                                                    TActionFunctionReturnType.class)
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)))) //
+                            .forEach(x -> types.add(x));
+                    Util.types(schema, TFunction.class) //
+                            .flatMap(t -> Stream.concat( //
+                                    Util //
+                                            .filter(t.getParameterOrAnnotation(), TActionFunctionParameter.class) //
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)),
+                                    Util //
+                                            .filter(t.getParameterOrAnnotation(), TActionFunctionReturnType.class)
+                                            .filter(x -> names.isCollection(x)) //
+                                            .map(x -> names.getType(x)))) //
+                            .forEach(x -> types.add(x));
+                    Util.types(schema, TEntityContainer.class) //
+                            .flatMap(t -> Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class)) //
+                            .flatMap(t -> Stream.concat(Stream.of(t.getEntityType()), Util //
+                                    .filter(t.getNavigationPropertyBindingOrAnnotation(),
+                                            TNavigationPropertyBinding.class) //
+                                    .map(x -> x.getPath())))
+                            .forEach(x -> types.add(x));
+                    return types.stream();
+                }) //
+                .map(x -> names.getInnerType(x)) //
+                .collect(Collectors.toSet());
+    }
+
     private void log(Object s) {
         System.out.println(String.valueOf(s));
     }
 
-    private Map<String, List<Action>> createTypeActions(Schema schema, Names names,
-            boolean collectionsOnly) {
-        return createMap(TAction.class, schema, names, action -> new Action(action, names),
-                collectionsOnly);
+    private Map<String, List<Action>> createTypeActions(Schema schema, Names names, boolean collectionsOnly) {
+        return createMap(TAction.class, schema, names, action -> new Action(action, names), collectionsOnly);
     }
 
-    private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names,
-            boolean collectionsOnly) {
-        return createMap(TFunction.class, schema, names, function -> new Function(function, names),
-                collectionsOnly);
+    private Map<String, List<Function>> createTypeFunctions(Schema schema, Names names, boolean collectionsOnly) {
+        return createMap(TFunction.class, schema, names, function -> new Function(function, names), collectionsOnly);
     }
 
     @SuppressWarnings("unchecked")
-    private <T, S extends Method> Map<String, List<S>> createMap(Class<T> cls, Schema schema,
-            Names names, java.util.function.Function<T, S> mapper, boolean collectionsOnly) {
+    private <T, S extends Method> Map<String, List<S>> createMap(Class<T> cls, Schema schema, Names names,
+            java.util.function.Function<T, S> mapper, boolean collectionsOnly) {
         Map<String, List<S>> map = new HashMap<>();
         Util.types(schema, cls) //
                 .forEach(method -> {
@@ -223,8 +289,7 @@ public final class Generator {
             try (PrintWriter p = new PrintWriter(w)) {
                 p.format("package %s;\n\n", names.getPackageSchema(schema));
                 p.format("IMPORTSHERE");
-                p.format("public enum %s implements %s {\n\n", simpleClassName,
-                        imports.add(SchemaInfo.class));
+                p.format("public enum %s implements %s {\n\n", simpleClassName, imports.add(SchemaInfo.class));
 
                 // add enum
                 p.format("%sINSTANCE;\n\n", indent.right());
@@ -248,8 +313,7 @@ public final class Generator {
                         .getSchemas() //
                         .stream() //
                         .flatMap(
-                                sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(),
-                                        TEntityType.class)) //
+                                sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)) //
                         .forEach(x -> {
                             Schema sch = names.getSchema(x);
                             p.format("%sclasses.put(\"%s\", %s.class);\n", indent,
@@ -259,14 +323,13 @@ public final class Generator {
                 names //
                         .getSchemas() //
                         .stream() //
-                        .flatMap(
-                                sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(),
-                                        TComplexType.class)) //
+                        .flatMap(sch -> Util.filter(sch.getComplexTypeOrEntityTypeOrTypeDefinition(),
+                                TComplexType.class)) //
                         .forEach(x -> {
                             Schema sch = names.getSchema(x);
                             p.format("%sclasses.put(\"%s\", %s.class);\n", indent,
-                                    names.getFullTypeFromSimpleType(sch, x.getName()), imports.add(
-                                            names.getFullClassNameComplexType(sch, x.getName())));
+                                    names.getFullTypeFromSimpleType(sch, x.getName()),
+                                    imports.add(names.getFullClassNameComplexType(sch, x.getName())));
                         });
                 indent.left();
 
@@ -285,8 +348,7 @@ public final class Generator {
                 // close class
                 p.format("}\n");
             }
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
-                    .getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileSchema(schema).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -327,8 +389,8 @@ public final class Generator {
                 p.format("%sprivate final %s value;\n\n", indent, imports.add(String.class));
 
                 // add constructor
-                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName,
-                        imports.add(String.class), imports.add(String.class));
+                p.format("%sprivate %s(%s name, %s value) {\n", indent, simpleClassName, imports.add(String.class),
+                        imports.add(String.class));
                 p.format("%sthis.name = name;\n", indent.right());
                 p.format("%sthis.value = value;\n", indent);
                 p.format("%s}\n\n", indent.left());
@@ -347,8 +409,7 @@ public final class Generator {
                 // close class
                 p.format("}\n");
             }
-            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString())
-                    .getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
             Files.write(names.getClassFileEnum(schema, t.getName()).toPath(), bytes);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -371,8 +432,8 @@ public final class Generator {
             t.printJavadoc(p, indent);
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
-            p.format("public class %s%s implements %s {\n", simpleClassName,
-                    t.getExtendsClause(imports), imports.add(ODataEntityType.class));
+            p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
+                    imports.add(ODataEntityType.class));
 
             indent.right();
             if (!t.hasBaseType()) {
@@ -396,8 +457,7 @@ public final class Generator {
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
-            p.format("%spublic %s getChangedFields() {\n", indent,
-                    imports.add(ChangedFields.class));
+            p.format("%spublic %s getChangedFields() {\n", indent, imports.add(ChangedFields.class));
             p.format("%sreturn changedFields;\n", indent.right());
             p.format("%s}\n", indent.left());
             String nullCheck = fieldNames(t) //
@@ -410,37 +470,27 @@ public final class Generator {
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
             p.format("%sif (addKeysToContextPath%s) {\n", indent.right(), nullCheck);
-            p.format("%scontextPath = contextPath.clearQueries()%s;\n", indent.right(),
-                    getAddKeys(t, imports));
+            p.format("%scontextPath = contextPath.clearQueries()%s;\n", indent.right(), getAddKeys(t, imports));
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
             // write property getter and setters
-            printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
-                    t.getProperties(), true);
+            printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(), t.getProperties(),
+                    true);
             printNavigationPropertyGetters(t, imports, indent, p, t.getNavigationProperties());
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
             if (t.hasStream()) {
                 p.format("\n%s/**\n", indent);
-                p.format(
-                        "%s * If suitable metadata found a StreamProvider is returned otherwise returns\n",
-                        indent);
-                p.format(
-                        "%s * {@code Optional.empty()}. Normally for a stream to be available this entity\n",
-                        indent);
-                p.format(
-                        "%s * needs to have been hydrated with full metadata. Consider calling the builder\n",
-                        indent);
-                p.format(
-                        "%s * method {@code .metadataFull()} when getting this instance (either directly or\n",
+                p.format("%s * If suitable metadata found a StreamProvider is returned otherwise returns\n", indent);
+                p.format("%s * {@code Optional.empty()}. Normally for a stream to be available this entity\n", indent);
+                p.format("%s * needs to have been hydrated with full metadata. Consider calling the builder\n", indent);
+                p.format("%s * method {@code .metadataFull()} when getting this instance (either directly or\n",
                         indent);
                 p.format("%s * as part of a collection).\n", indent);
                 p.format("%s *\n", indent);
-                p.format(
-                        "%s * @return StreamProvider if suitable metadata found otherwise returns\n",
-                        indent);
+                p.format("%s * @return StreamProvider if suitable metadata found otherwise returns\n", indent);
                 p.format("%s *         {@code Optional.empty()}\n", indent);
                 p.format("%s */\n", indent);
                 p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
@@ -473,8 +523,8 @@ public final class Generator {
 
     public static final int MAX_JAVADOC_WIDTH = 80;
 
-    private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions,
-            Imports imports, Indent indent, PrintWriter p) {
+    private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions, Imports imports,
+            Indent indent, PrintWriter p) {
         typeActions //
                 .getOrDefault(t.getFullType(), Collections.emptyList()) //
                 .forEach(action -> writeAction(imports, indent, p, action));
@@ -497,8 +547,8 @@ public final class Generator {
                     indent, //
                     returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
                             : imports.add(ActionRequestReturningNonCollection.class), //
-                    action.getReturnType(imports).innerImportedFullClassName,
-                    action.getActionMethodName(), paramsDeclaration);
+                    action.getReturnType(imports).innerImportedFullClassName, action.getActionMethodName(),
+                    paramsDeclaration);
             writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
             if (returnType.isCollection) {
                 p.format(
@@ -532,8 +582,8 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private void writeBoundFunctionMethods(EntityType t, Map<String, List<Function>> typeFunctions,
-            Imports imports, Indent indent, PrintWriter p) {
+    private void writeBoundFunctionMethods(EntityType t, Map<String, List<Function>> typeFunctions, Imports imports,
+            Indent indent, PrintWriter p) {
         typeFunctions //
                 .getOrDefault(t.getFullType(), Collections.emptyList()) //
                 .forEach(function -> writeFunction(imports, indent, p, function));
@@ -555,8 +605,8 @@ public final class Generator {
                 indent, //
                 returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
                         : imports.add(FunctionRequestReturningNonCollection.class), //
-                function.getReturnType(imports).innerImportedFullClassName,
-                function.getActionMethodName(), paramsDeclaration);
+                function.getReturnType(imports).innerImportedFullClassName, function.getActionMethodName(),
+                paramsDeclaration);
         writeFunctionParameterMapAndNullChecks(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
@@ -567,8 +617,7 @@ public final class Generator {
                     returnType.innerImportedFullClassName, //
                     returnType.schemaInfoFullClassName);
         } else {
-            p.format(
-                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+            p.format("%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                     indent, //
                     imports.add(FunctionRequestReturningNonCollection.class), //
                     returnType.innerImportedFullClassName, //
@@ -578,8 +627,8 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private static void writeActionParameterMapAndNullChecks(Imports imports, Indent indent,
-            PrintWriter p, List<Parameter> parameters) {
+    private static void writeActionParameterMapAndNullChecks(Imports imports, Indent indent, PrintWriter p,
+            List<Parameter> parameters) {
         indent.right();
         writeParameterNullChecks(imports, indent, p, parameters);
         p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
@@ -595,8 +644,7 @@ public final class Generator {
                                         indent.copy().right(), par.name, //
                                         par.typeWithNamespace, //
                                         par.nameJava())) //
-                                .collect(Collectors.joining()) + "\n" + indent.copy().right()
-                                + ".build()");
+                                .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
     private static void writeParameterNullChecks(Imports imports, Indent indent, PrintWriter p,
@@ -611,8 +659,8 @@ public final class Generator {
                         x.nameJava()));
     }
 
-    private static void writeFunctionParameterMapAndNullChecks(Imports imports, Indent indent,
-            PrintWriter p, List<Function.Parameter> parameters) {
+    private static void writeFunctionParameterMapAndNullChecks(Imports imports, Indent indent, PrintWriter p,
+            List<Function.Parameter> parameters) {
         indent.right();
         writeParameterNullChecks(imports, indent, p, parameters);
         p.format("%s%s<%s, %s> _parameters = %s%s;\n", //
@@ -628,12 +676,10 @@ public final class Generator {
                                         indent.copy().right(), par.name, //
                                         par.typeWithNamespace, //
                                         par.nameJava())) //
-                                .collect(Collectors.joining()) + "\n" + indent.copy().right()
-                                + ".build()");
+                                .collect(Collectors.joining()) + "\n" + indent.copy().right() + ".build()");
     }
 
-    private void writeToString(Structure<?> t, String simpleClassName, Imports imports,
-            Indent indent, PrintWriter p) {
+    private void writeToString(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(Override.class));
         p.format("%spublic %s toString() {\n", indent, imports.add(String.class));
         p.format("%s%s b = new %s();\n", indent.right(), imports.add(StringBuilder.class),
@@ -659,8 +705,8 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports,
-            Indent indent, PrintWriter p, boolean ofEntity) {
+    private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p,
+            boolean ofEntity) {
         List<FieldName> fields = t.getFieldNames();
         if (fields.isEmpty()) {
             // copy method not required if no fields to mutate on
@@ -683,8 +729,7 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private void writeNoArgsConstructor(String simpleClassName, Indent indent, PrintWriter p,
-            boolean hasBaseType) {
+    private void writeNoArgsConstructor(String simpleClassName, Indent indent, PrintWriter p, boolean hasBaseType) {
         p.format("\n%sprotected %s() {\n", indent, simpleClassName);
         indent.right();
         if (hasBaseType) {
@@ -697,8 +742,8 @@ public final class Generator {
         p.format("\n@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class), imports.add(Include.class));
     }
 
-    private void writePatchAndPutMethods(EntityType t, String simpleClassName, Imports imports,
-            Indent indent, PrintWriter p) {
+    private void writePatchAndPutMethods(EntityType t, String simpleClassName, Imports imports, Indent indent,
+            PrintWriter p) {
         // write patch() method
         writePutOrPatchMethod(t, simpleClassName, imports, indent, p, true);
 
@@ -707,8 +752,8 @@ public final class Generator {
 
     }
 
-    private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports,
-            Indent indent, PrintWriter p, boolean isPatch) {
+    private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports, Indent indent,
+            PrintWriter p, boolean isPatch) {
         String methodName = isPatch ? "patch" : "put";
         if (isPatch) {
             p.format("\n%s/**", indent);
@@ -716,7 +761,8 @@ public final class Generator {
             p.format("\n%s * immutable copy of {@code this} with changed fields reset.", indent);
             p.format("\n%s *", indent);
             p.format("\n%s * @return a copy of {@code this} with changed fields reset", indent);
-            p.format("\n%s * @throws %s if HTTP response is not as expected", indent, imports.add(ClientException.class));
+            p.format("\n%s * @throws %s if HTTP response is not as expected", indent,
+                    imports.add(ClientException.class));
             p.format("\n%s */", indent);
         } else {
             p.format("\n%s/**", indent);
@@ -724,12 +770,13 @@ public final class Generator {
             p.format("\n%s * with changed fields reset (they were ignored anyway).", indent);
             p.format("\n%s *", indent);
             p.format("\n%s * @return a copy of {@code this} with changed fields reset", indent);
-            p.format("\n%s * @throws %s if HTTP response is not as expected", indent, imports.add(ClientException.class));
+            p.format("\n%s * @throws %s if HTTP response is not as expected", indent,
+                    imports.add(ClientException.class));
             p.format("\n%s */", indent);
         }
         p.format("\n%spublic %s %s() {\n", indent, simpleClassName, methodName);
-        p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(),
-                imports.add(RequestHelper.class), methodName, imports.add(RequestOptions.class));
+        p.format("%s%s.%s(this, contextPath, %s.EMPTY);\n", indent.right(), imports.add(RequestHelper.class),
+                methodName, imports.add(RequestOptions.class));
 
         // use _x as identifier so doesn't conflict with any field name
         p.format("%s%s _x = _copy();\n", indent, simpleClassName);
@@ -767,8 +814,8 @@ public final class Generator {
             t.printJavadoc(p, indent);
             printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
-            p.format("public class %s%s implements %s {\n\n", simpleClassName,
-                    t.getExtendsClause(imports), imports.add(ODataType.class));
+            p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
+                    imports.add(ODataType.class));
 
             indent.right();
             if (!t.hasBaseType()) {
@@ -788,8 +835,8 @@ public final class Generator {
             p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
             p.format("%s}\n", indent.left());
 
-            printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
-                    t.getProperties(), false);
+            printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(), t.getProperties(),
+                    false);
 
             addUnmappedFieldsSetterAndGetter(imports, indent, p);
 
@@ -820,8 +867,8 @@ public final class Generator {
         }
     }
 
-    private void writeEntityRequest(Schema schema, TEntityType entityType,
-            Map<String, List<Action>> typeActions, Map<String, List<Function>> typeFunctions) {
+    private void writeEntityRequest(Schema schema, TEntityType entityType, Map<String, List<Action>> typeActions,
+            Map<String, List<Function>> typeFunctions) {
         EntityType t = new EntityType(entityType, names);
         names.getDirectoryEntityRequest(schema).mkdirs();
         // TODO only write out those requests needed
@@ -836,14 +883,13 @@ public final class Generator {
 
             p.format("@%s\n", imports.add(JsonIgnoreType.class));
             p.format("public final class %s extends %s {\n\n", simpleClassName,
-                    imports.add(EntityRequest.class) + "<" + imports.add(t.getFullClassNameEntity())
-                            + ">");
+                    imports.add(EntityRequest.class) + "<" + imports.add(t.getFullClassNameEntity()) + ">");
 
             indent.right();
 
             // add constructor
-            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName,
-                    imports.add(ContextPath.class), imports.add(String.class));
+            p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
+                    imports.add(String.class));
             p.format("%ssuper(%s.class, contextPath, %s.INSTANCE);\n", //
                     indent.right(), //
                     imports.add(t.getFullClassNameEntity()), //
@@ -856,11 +902,10 @@ public final class Generator {
             t.getNavigationProperties() //
                     .stream() //
                     .filter(x -> {
-                        boolean isEntity = names
-                                .isEntityWithNamespace(names.getInnerType(names.getType(x)));
+                        boolean isEntity = names.isEntityWithNamespace(names.getInnerType(names.getType(x)));
                         if (!isEntity) {
-                            log("Unexpected entity with non-entity navigation property type: "
-                                    + simpleClassName + "." + x.getName()
+                            log("Unexpected entity with non-entity navigation property type: " + simpleClassName + "."
+                                    + x.getName()
                                     + ". If you get this message then raise an issue on the github project for odata-client.");
                         }
                         return isEntity;
@@ -873,8 +918,7 @@ public final class Generator {
                         if (Names.isCollection(y)) {
                             returnClass = toType(x, imports);
                         } else {
-                            returnClass = imports.add(names
-                                    .getFullClassNameEntityRequestFromTypeWithNamespace(sch, y));
+                            returnClass = imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, y));
                         }
                         p.format("\n%spublic %s %s() {\n", //
                                 indent, //
@@ -882,12 +926,12 @@ public final class Generator {
                                 Names.getGetterMethodWithoutGet(x.getName()));
                         if (isCollection(x)) {
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                            p.format("%scontextPath.addSegment(\"%s\"));\n",
-                                    indent.right().right().right().right(), x.getName());
+                            p.format("%scontextPath.addSegment(\"%s\"));\n", indent.right().right().right().right(),
+                                    x.getName());
                             indent.left().left().left().left();
                         } else {
-                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n",
-                                    indent.right(), returnClass, x.getName());
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", indent.right(), returnClass,
+                                    x.getName());
                         }
                         p.format("%s}\n", indent.left());
 
@@ -897,18 +941,15 @@ public final class Generator {
                             String inner = names.getInnerType(y);
                             // TODO remove redundant check
                             if (names.isEntityWithNamespace(inner)) {
-                                String entityRequestType = names
-                                        .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                                inner);
+                                String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                        inner);
                                 EntityType et = names.getEntityType(inner);
                                 KeyInfo k = getKeyInfo(et, imports);
 
-                                p.format("\n%spublic %s %s(%s) {\n", indent,
-                                        imports.add(entityRequestType),
+                                p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), k.typedParams);
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n",
-                                        indent.right(), imports.add(entityRequestType), x.getName(),
-                                        k.addKeys);
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
+                                        imports.add(entityRequestType), x.getName(), k.addKeys);
                                 p.format("%s}\n", indent.left());
                             }
                         }
@@ -973,11 +1014,10 @@ public final class Generator {
                 .map(z -> z.getReferredProperty()) //
                 .map(z -> {
                     if (key.getPropertyRefs().size() > 1) {
-                        return String.format("new %s(\"%s\", %s)", imports.add(NameValue.class),
-                                z.getName(), z.getFieldName());
-                    } else {
-                        return String.format("new %s(%s.toString())", imports.add(NameValue.class),
+                        return String.format("new %s(\"%s\", %s)", imports.add(NameValue.class), z.getName(),
                                 z.getFieldName());
+                    } else {
+                        return String.format("new %s(%s.toString())", imports.add(NameValue.class), z.getFieldName());
                     }
                 }) //
                 .collect(Collectors.joining(", "));
@@ -997,8 +1037,7 @@ public final class Generator {
 
             final String extension;
             if (t.getExtends() != null) {
-                extension = " extends "
-                        + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getExtends()));
+                extension = " extends " + imports.add(names.getFullClassNameFromTypeWithNamespace(t.getExtends()));
             } else {
                 extension = "";
             }
@@ -1008,14 +1047,12 @@ public final class Generator {
             // TODO handle container extension
 
             // write fields
-            p.format("%sprivate final %s contextPath;\n\n", indent.right(),
-                    imports.add(ContextPath.class));
+            p.format("%sprivate final %s contextPath;\n\n", indent.right(), imports.add(ContextPath.class));
 
             // write constructor
-            p.format("%spublic %s(%s context) {\n", indent, simpleClassName,
-                    imports.add(Context.class));
-            p.format("%sthis.contextPath = new %s(context, context.service().getBasePath());\n",
-                    indent.right(), imports.add(ContextPath.class));
+            p.format("%spublic %s(%s context) {\n", indent, simpleClassName, imports.add(Context.class));
+            p.format("%sthis.contextPath = new %s(context, context.service().getBasePath());\n", indent.right(),
+                    imports.add(ContextPath.class));
             p.format("%s}\n", indent.left());
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
@@ -1031,15 +1068,13 @@ public final class Generator {
             p.format("\n%sstatic final class ContainerBuilderImpl extends %s<%s> {\n", indent,
                     imports.add(ContainerBuilder.class), simpleClassName);
             p.format("\n%s@%s\n", indent.right(), imports.add(Override.class));
-            p.format("%spublic %s _create(%s context) {\n", indent, simpleClassName,
-                    imports.add(Context.class));
+            p.format("%spublic %s _create(%s context) {\n", indent, simpleClassName, imports.add(Context.class));
             p.format("%sreturn new %s(context);\n", indent.right(), simpleClassName);
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
-            p.format("\n%spublic static %s<%s<%s>, %s> test() {\n", indent,
-                    imports.add(BuilderBase.class), imports.add(ContainerBuilder.class),
-                    simpleClassName, simpleClassName);
+            p.format("\n%spublic static %s<%s<%s>, %s> test() {\n", indent, imports.add(BuilderBase.class),
+                    imports.add(ContainerBuilder.class), simpleClassName, simpleClassName);
             p.format("%sreturn new ContainerBuilderImpl();\n", indent.right());
             p.format("%s}\n", indent.left());
 
@@ -1050,24 +1085,21 @@ public final class Generator {
                         p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
                                 Names.getIdentifier(x.getName()));
                         p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
-                        p.format("%scontextPath.addSegment(\"%s\"));\n",
-                                indent.right().right().right().right(), x.getName());
+                        p.format("%scontextPath.addSegment(\"%s\"));\n", indent.right().right().right().right(),
+                                x.getName());
                         p.format("%s}\n", indent.left().left().left().left().left());
 
                         if (names.isEntityWithNamespace(x.getEntityType())) {
-                            String entityRequestType = names
-                                    .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                            x.getEntityType());
+                            String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                    x.getEntityType());
 
                             EntityType et = names.getEntityType(x.getEntityType());
                             KeyInfo k = getKeyInfo(et, imports);
 
-                            p.format("\n%spublic %s %s(%s) {\n", indent,
-                                    imports.add(entityRequestType),
+                            p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
                                     Names.getIdentifier(x.getName()), k.typedParams);
-                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n",
-                                    indent.right(), imports.add(entityRequestType), x.getName(),
-                                    k.addKeys);
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
+                                    imports.add(entityRequestType), x.getName(), k.addKeys);
                             p.format("%s}\n", indent.left());
                         }
                     });
@@ -1076,18 +1108,16 @@ public final class Generator {
                     .filter(t.getEntitySetOrActionImportOrFunctionImport(), TSingleton.class) //
                     .forEach(x -> {
                         String importedType = toType(x, imports);
-                        p.format("\n%spublic %s %s() {\n", indent, importedType,
-                                Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n",
-                                indent.right(), importedType, x.getName());
+                        p.format("\n%spublic %s %s() {\n", indent, importedType, Names.getIdentifier(x.getName()));
+                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", indent.right(), importedType,
+                                x.getName());
                         p.format("%s}\n", indent.left());
                     });
 
             // write unbound actions
             Util //
                     .types(schema, TAction.class) //
-                    .filter(x -> !x.isIsBound())
-                    .forEach(x -> writeAction(imports, indent, p, new Action(x, names)));
+                    .filter(x -> !x.isIsBound()).forEach(x -> writeAction(imports, indent, p, new Action(x, names)));
 
             Util //
                     .types(schema, TFunction.class) //
@@ -1103,9 +1133,11 @@ public final class Generator {
     }
 
     private void writeEntityCollectionRequest(Schema schema, TEntityType entityType,
-            Map<String, List<Action>> collectionTypeActions,
-            Map<String, List<Function>> collectionTypeFunctions) {
+            Map<String, List<Action>> collectionTypeActions, Map<String, List<Function>> collectionTypeFunctions, Set<String> collectionTypes) {
         EntityType t = new EntityType(entityType, names);
+        if (!collectionTypes.contains(t.getFullType())) {
+            return;
+        }
         names.getDirectoryEntityCollectionRequest(schema).mkdirs();
         String simpleClassName = names.getSimpleClassNameCollectionRequest(schema, t.getName());
         Imports imports = new Imports(names.getFullClassNameCollectionRequest(schema, t.getName()));
@@ -1117,22 +1149,18 @@ public final class Generator {
             p.format("IMPORTSHERE");
             p.format("public final class %s extends %s<%s, %s>{\n\n", simpleClassName,
                     imports.add(CollectionPageEntityRequest.class),
-                    imports.add(
-                            names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
                     imports.add(names.getFullClassNameEntityRequest(schema, t.getName())));
 
             indent.right();
             addContextPathField(imports, indent, p);
 
             // add constructor
-            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName,
-                    imports.add(ContextPath.class), imports.add(String.class));
-            p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp), %s.INSTANCE);\n",
-                    indent.right(),
-                    imports.add(
-                            names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
-                    imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema,
-                            t.getName())), //
+            p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
+                    imports.add(String.class));
+            p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp), %s.INSTANCE);\n", indent.right(),
+                    imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
+                    imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
                     imports.add(names.getFullClassNameSchemaInfo(schema)));
             p.format("%sthis.contextPath = contextPath;\n", indent);
             p.format("%s}\n", indent.left());
@@ -1147,31 +1175,25 @@ public final class Generator {
                             String y = names.getInnerType(names.getType(x));
                             p.format("%spublic %s %s() {\n", //
                                     indent, //
-                                    imports.add(names
-                                            .getFullClassNameCollectionRequestFromTypeWithNamespace(
-                                                    sch, y)), //
+                                    imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
                                     Names.getIdentifier(x.getName()));
 
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
                                     indent.right(), //
-                                    imports.add(names
-                                            .getFullClassNameCollectionRequestFromTypeWithNamespace(
-                                                    sch, y)), //
+                                    imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
                                     x.getName());
                             p.format("%s}\n", indent.left());
 
                             if (names.isEntityWithNamespace(y)) {
-                                String entityRequestType = names
-                                        .getFullClassNameEntityRequestFromTypeWithNamespace(sch, y);
+                                String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                        y);
                                 EntityType et = names.getEntityType(y);
                                 KeyInfo k = getKeyInfo(et, imports);
 
-                                p.format("\n%spublic %s %s(%s) {\n", indent,
-                                        imports.add(entityRequestType),
+                                p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
                                         Names.getIdentifier(x.getName()), k.typedParams);
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n",
-                                        indent.right(), imports.add(entityRequestType), x.getName(),
-                                        k.addKeys);
+                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s);\n", indent.right(),
+                                        imports.add(entityRequestType), x.getName(), k.addKeys);
                                 p.format("%s}\n", indent.left());
                             }
                         }
@@ -1189,15 +1211,14 @@ public final class Generator {
 
     }
 
-    private void writeBuilder(Structure<?> t, String simpleClassName, Imports imports,
-            Indent indent, PrintWriter p) {
+    private void writeBuilder(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p) {
         if (t.isAbstract()) {
             return;
         }
         String builderSuffix = t.getBaseType() == null ? "" : simpleClassName;
 
         p.format("\n%s/**", indent);
-        p.format("\n%s * Returns a builder which is used to create a new", indent); 
+        p.format("\n%s * Returns a builder which is used to create a new", indent);
         p.format("\n%s * instance of this class (given that this class is immutable).", indent);
         p.format("\n%s *", indent);
         p.format("\n%s * @return a new Builder for this class", indent);
@@ -1219,22 +1240,21 @@ public final class Generator {
                     p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName);
                 });
         if (!fields.isEmpty()) {
-            p.format("%sprivate %s changedFields = new %s();\n", indent,
-                    imports.add(ChangedFields.class), imports.add(ChangedFields.class));
+            p.format("%sprivate %s changedFields = new %s();\n", indent, imports.add(ChangedFields.class),
+                    imports.add(ChangedFields.class));
         }
 
         p.format("\n%sBuilder() {\n", indent);
         p.format("%s// prevent instantiation\n", indent.right());
         p.format("%s}\n", indent.left());
 
-        // write builder setters 
+        // write builder setters
 
         fields.forEach(f -> {
             Map<String, String> map = new LinkedHashMap<>();
             map.put(f.fieldName, "value of {@code " + f.propertyName + "} property (as defined in service metadata)");
             t.printPropertyJavadoc(p, indent, f.name, "{@code this} (for method chaining)", map);
-            p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType,
-                    f.fieldName);
+            p.format("\n%spublic Builder %s(%s %s) {\n", indent, f.fieldName, f.importedType, f.fieldName);
             p.format("%sthis.%s = %s;\n", indent.right(), f.fieldName, f.fieldName);
             p.format("%sthis.changedFields = changedFields.add(\"%s\");\n", indent, f.name);
             p.format("%sreturn this;\n", indent);
@@ -1250,8 +1270,7 @@ public final class Generator {
         }
         p.format("%s_x.unmappedFields = new %s();\n", indent, imports.add(UnmappedFields.class));
         p.format("%s_x.odataType = \"%s\";\n", indent, t.getFullType());
-        fields.stream().map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName))
-                .forEach(p::print);
+        fields.stream().map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName)).forEach(p::print);
         p.format("%sreturn _x;\n", indent);
         p.format("%s}\n", indent.left());
 
@@ -1264,14 +1283,12 @@ public final class Generator {
         p.format("%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
     }
 
-    private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent,
-            PrintWriter p) {
+    private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p) {
         p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
         // TODO protect "setUnmappedField" name against clashes
         p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
         p.format("%sif (unmappedFields == null) {\n", indent.right());
-        p.format("%sunmappedFields = new %s();\n", indent.right(),
-                imports.add(UnmappedFields.class));
+        p.format("%sunmappedFields = new %s();\n", indent.right(), imports.add(UnmappedFields.class));
         p.format("%s}\n", indent.left());
         p.format("%sunmappedFields.put(name, value);\n", indent);
         p.format("%s}\n", indent.left());
@@ -1284,8 +1301,7 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private static void addContextPathInjectableField(Imports imports, Indent indent,
-            PrintWriter p) {
+    private static void addContextPathInjectableField(Imports imports, Indent indent, PrintWriter p) {
         // add context path field
         p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
         p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
@@ -1296,9 +1312,8 @@ public final class Generator {
         p.format("%sprotected %s%s contextPath;\n", indent, "", imports.add(ContextPath.class));
     }
 
-    private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports,
-            Indent indent, PrintWriter p, String simpleClassName, String fullType,
-            List<TProperty> properties, boolean ofEntity) {
+    private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
+            String simpleClassName, String fullType, List<TProperty> properties, boolean ofEntity) {
 
         // write getters and setters
         properties //
@@ -1306,23 +1321,21 @@ public final class Generator {
                     String fieldName = Names.getIdentifier(x.getName());
                     String t = names.getType(x);
                     boolean isCollection = isCollection(x);
-                    structure.printPropertyJavadoc(p, indent, x.getName(), "property " + x.getName(), Collections.emptyMap());
+                    structure.printPropertyJavadoc(p, indent, x.getName(), "property " + x.getName(),
+                            Collections.emptyMap());
                     addPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
                     if (isCollection) {
                         String inner = names.getInnerType(t);
-                        String importedInnerType = names.toImportedTypeNonCollection(inner,
-                                imports);
+                        String importedInnerType = names.toImportedTypeNonCollection(inner, imports);
                         boolean isEntity = names.isEntityWithNamespace(inner);
-                        p.format("%spublic %s<%s> %s() {\n", indent,
-                                imports.add(CollectionPage.class), importedInnerType,
-                                Names.getGetterMethod(x.getName()));
+                        p.format("%spublic %s<%s> %s() {\n", indent, imports.add(CollectionPage.class),
+                                importedInnerType, Names.getGetterMethod(x.getName()));
                         if (isEntity) {
                             Schema sch = names.getSchema(inner);
                             p.format(
                                     "%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE, %s.emptyList());\n",
-                                    indent.right(), imports.add(CollectionPage.class), fieldName,
-                                    importedInnerType,
+                                    indent.right(), imports.add(CollectionPage.class), fieldName, importedInnerType,
                                     imports.add(names.getFullClassNameSchemaInfo(sch)), //
                                     imports.add(Collections.class));
                         } else {
@@ -1331,59 +1344,49 @@ public final class Generator {
                                 importedSchemaInfo = imports.add(EdmSchemaInfo.class);
                             } else {
                                 Schema sch = names.getSchema(inner);
-                                importedSchemaInfo = imports
-                                        .add(names.getFullClassNameSchemaInfo(sch));
+                                importedSchemaInfo = imports.add(names.getFullClassNameSchemaInfo(sch));
                             }
                             p.format(
                                     "%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE, %s.emptyList());\n",
-                                    indent.right(), imports.add(CollectionPage.class),
-                                    importedInnerType, importedInnerType, fieldName,
-                                    imports.add(Optional.class), fieldName, importedSchemaInfo,
-                                    imports.add(Collections.class));
+                                    indent.right(), imports.add(CollectionPage.class), importedInnerType,
+                                    importedInnerType, fieldName, imports.add(Optional.class), fieldName,
+                                    importedSchemaInfo, imports.add(Collections.class));
                         }
                         p.format("%s}\n", indent.left());
                     } else {
                         boolean isStream = "Edm.Stream".equals(names.getType(x));
                         if (isStream) {
-                            p.format("%spublic %s<%s> %s() {\n", indent,
-                                    imports.add(Optional.class), imports.add(StreamProvider.class),
-                                    Names.getGetterMethod(x.getName()));
-                            p.format(
-                                    "%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
-                                    indent.right(), imports.add(RequestHelper.class), x.getName(),
-                                    fieldName);
+                            p.format("%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class),
+                                    imports.add(StreamProvider.class), Names.getGetterMethod(x.getName()));
+                            p.format("%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
+                                    indent.right(), imports.add(RequestHelper.class), x.getName(), fieldName);
                             p.format("%s}\n", indent.left());
                             // TODO how to patch streamed content?
                         } else {
-                            final String importedType = names.toImportedTypeNonCollection(t,
-                                    imports);
-                            String importedTypeWithOptional = imports.add(Optional.class) + "<"
-                                    + importedType + ">";
+                            final String importedType = names.toImportedTypeNonCollection(t, imports);
+                            String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
                             p.format("%spublic %s %s() {\n", indent, importedTypeWithOptional,
                                     Names.getGetterMethod(x.getName()));
-                            p.format("%sreturn %s.ofNullable(%s);\n", indent.right(),
-                                    imports.add(Optional.class), fieldName);
+                            p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
+                                    fieldName);
                             p.format("%s}\n", indent.left());
 
                             Map<String, String> map = new LinkedHashMap<>();
-                            map.put(fieldName, "new value of {@code " + x.getName() + "} field (as defined in service metadata)");
+                            map.put(fieldName,
+                                    "new value of {@code " + x.getName() + "} field (as defined in service metadata)");
                             structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
                             String classSuffix = "";
-                            p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
-                                    classSuffix, Names.getWithMethod(x.getName()), importedType,
-                                    fieldName);
+                            p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
+                                    Names.getWithMethod(x.getName()), importedType, fieldName);
                             if (x.isUnicode() != null && !x.isUnicode()) {
                                 p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
-                                        imports.add(EntityPreconditions.class), fieldName,
-                                        fieldName);
+                                        imports.add(EntityPreconditions.class), fieldName, fieldName);
                                 indent.left();
                             }
                             // use _x as identifier so doesn't conflict with any field name
-                            p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName,
-                                    simpleClassName);
+                            p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName, simpleClassName);
                             if (ofEntity) {
-                                p.format("%s_x.changedFields = changedFields.add(\"%s\");\n",
-                                        indent, x.getName());
+                                p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
                             }
                             p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
                                     indent, //
@@ -1402,8 +1405,7 @@ public final class Generator {
         p.format("\n%s@%s(name=\"%s\")", indent, imports.add(Property.class), name);
     }
 
-    private void addNavigationPropertyAnnotation(Imports imports, Indent indent, PrintWriter p,
-            String name) {
+    private void addNavigationPropertyAnnotation(Imports imports, Indent indent, PrintWriter p, String name) {
         p.format("\n%s@%s(name=\"%s\")\n", indent, imports.add(NavigationProperty.class), name);
     }
 
@@ -1415,8 +1417,8 @@ public final class Generator {
         p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
     }
 
-    private void printPropertyFields(Imports imports, Indent indent, PrintWriter p,
-            List<TProperty> properties, boolean hasBaseType) {
+    private void printPropertyFields(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties,
+            boolean hasBaseType) {
 
         // TODO make a wrapper for TProperty that passes propertyName, fieldName,
         // importedType
@@ -1430,26 +1432,25 @@ public final class Generator {
                     Names.getIdentifier(x.getName()));
             String t = names.getInnerType(names.getType(x));
             if (isCollection(x) && !names.isEntityWithNamespace(t)) {
-                p.format("\n%s@%s(\"%s@nextLink\")\n", indent, imports.add(JsonProperty.class),
-                        x.getName());
+                p.format("\n%s@%s(\"%s@nextLink\")\n", indent, imports.add(JsonProperty.class), x.getName());
                 p.format("%sprotected %s %sNextLink;\n", indent, imports.add(String.class),
                         Names.getIdentifier(x.getName()));
             }
         });
     }
 
-    private void printNavigationPropertyGetters(Structure<?> structure, Imports imports,
-            Indent indent, PrintWriter p, List<TNavigationProperty> properties) {
+    private void printNavigationPropertyGetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
+            List<TNavigationProperty> properties) {
         // write getters
         properties //
                 .stream() //
                 .forEach(x -> {
                     String typeName = toType(x, imports);
-                    structure.printPropertyJavadoc(p, indent, x.getName(), "navigational property " + x.getName(), Collections.emptyMap());
+                    structure.printPropertyJavadoc(p, indent, x.getName(), "navigational property " + x.getName(),
+                            Collections.emptyMap());
                     addNavigationPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
-                    p.format("%spublic %s %s() {\n", indent, typeName,
-                            Names.getGetterMethod(x.getName()));
+                    p.format("%spublic %s %s() {\n", indent, typeName, Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
                             p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
@@ -1464,9 +1465,8 @@ public final class Generator {
                             Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
                             p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
                                     indent.right(), //
-                                    imports.add(names
-                                            .getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-                                                    names.getInnerType(names.getType(x)))),
+                                    imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                            names.getInnerType(names.getType(x)))),
                                     x.getName());
                         } else {
                             throw new RuntimeException("unexpected");
@@ -1486,14 +1486,12 @@ public final class Generator {
             } else {
                 // is navigation property so must be an entity and is a single request
                 Schema sch = names.getSchema(names.getInnerType(t));
-                return imports
-                        .add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, t));
+                return imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, t));
             }
         } else {
             String inner = names.getInnerType(t);
             Schema schema = names.getSchema(inner);
-            return imports.add(
-                    names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, inner));
+            return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, inner));
         }
     }
 
