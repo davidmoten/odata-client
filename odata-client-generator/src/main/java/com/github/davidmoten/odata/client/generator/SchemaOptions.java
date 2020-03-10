@@ -122,4 +122,9 @@ public class SchemaOptions {
         return packageSuffixComplexTypeCollectionRequest;
     }
 
+    public String packageSuffixEntitySet() {
+        // TODO make configurable
+        return packageSuffixEntity() + ".set";
+    }
+
 }

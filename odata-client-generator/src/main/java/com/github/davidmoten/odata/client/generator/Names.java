@@ -455,6 +455,11 @@ public final class Names {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEntityRequest();
     }
+    
+    public String getPackageEntitySetRequest(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return o.pkg() + o.packageSuffixEntitySet();
+    }
 
     public File getClassFileComplexType(Schema schema, String name) {
         return new File(getDirectoryComplexType(schema),
@@ -705,7 +710,22 @@ public final class Names {
 
     public Optional<String> getJavadoc(TEnumType t) {
         // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
+    }
+
+    public String getPackageEntitySet(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return o.pkg() + o.packageSuffixEntitySet();
+    }
+
+    public File getClassFileEntitySet(Schema schema, String name) {
+        return new File(getDirectoryEntitySet(schema),
+                Names.toSimpleClassName(name) + ".java");
+    }
+
+    public File getDirectoryEntitySet(Schema schema) {
+        SchemaOptions o = getOptions(schema);
+        return toDirectory(output, o.pkg() + o.packageSuffixEntitySet());
     }
 
 }
