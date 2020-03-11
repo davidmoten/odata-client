@@ -224,8 +224,11 @@ public final class Generator {
                         EntitySet referredEntitySet = t.getReferredEntitySet(b.getTarget());
                         String returnClassName = referredEntitySet.getFullClassNameEntitySet();
                         p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName), methodName);
-                        p.format("%sreturn new %s(contextPath);\n", indent, imports.add(referredEntitySet.getFullClassNameEntitySet()));
-                        p.format("%s}\n", indent);
+                        p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
+                                indent.right(), //
+                                imports.add(referredEntitySet.getFullClassNameEntitySet()), //
+                                t.getSimplifiedPath(b));
+                        p.format("%s}\n", indent.left());
                     });
             p.format("%s}\n", indent.left());
             writeToFile(imports, w, t.getClassFile());
