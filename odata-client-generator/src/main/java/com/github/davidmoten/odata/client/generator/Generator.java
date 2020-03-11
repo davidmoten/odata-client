@@ -202,7 +202,7 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            String baseCollectionClassName = toClassName(pair.b,imports);
+            String baseCollectionClassName = t.getBaseCollectionRequestClassName(imports);
             p.format("%spublic final class %s extends %s {\n", // 
                     indent, //
                     t.getSimpleClassNameEntitySet(), //
@@ -214,6 +214,14 @@ public final class Generator {
                     imports.add(ContextPath.class));
             p.format("%ssuper(contextPath);\n", indent.right());
             p.format("%s}\n", indent.left());
+            
+            // write navigation property bindings
+            Util.filter( //
+                    pair.b.getNavigationPropertyBindingOrAnnotation(), //
+                    TNavigationPropertyBinding.class) //
+            .forEach(b -> {
+                String methodName = Names.getIdentifier(b.getPath());
+            });
             p.format("%s}\n", indent.left());
             writeToFile(imports, w, t.getClassFile());
         } catch (IOException e) {
@@ -1175,10 +1183,11 @@ public final class Generator {
             // write get methods from properties
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
                     .forEach(x -> {
+                        EntitySet es = new EntitySet(schema, t,x, names);
                         Schema sch = names.getSchema(x.getEntityType());
-                        p.format("\n%spublic %s %s() {\n", indent, toClassName(x, imports),
+                        p.format("\n%spublic %s %s() {\n", indent, es.getBaseCollectionRequestClassName(imports),
                                 Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
+                        p.format("%sreturn new %s(\n", indent.right(), es.getBaseCollectionRequestClassName(imports));
                         p.format("%scontextPath.addSegment(\"%s\"));\n",
                                 indent.right().right().right().right(), x.getName());
                         p.format("%s}\n", indent.left().left().left().left().left());
@@ -1642,13 +1651,6 @@ public final class Generator {
         } else {
             return names.toImportedFullClassName(t, imports, CollectionPageEntityRequest.class);
         }
-    }
-
-    private String toClassName(TEntitySet x, Imports imports) {
-        String t = x.getEntityType();
-        // an entity set is always a collection
-        Schema schema = names.getSchema(t);
-        return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, t));
     }
 
     private boolean isCollection(TProperty x) {

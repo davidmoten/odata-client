@@ -6,6 +6,7 @@ import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TEntityContainer;
 import org.oasisopen.odata.csdl.v4.TEntitySet;
 
+import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 
 public final class EntitySet {
@@ -21,7 +22,7 @@ public final class EntitySet {
         this.entitySet = entitySet;
         this.names = names;
     }
-
+    
     public String getFullClassNameEntitySet() {
         return getPackage() + "." + getSimpleClassNameEntitySet();
     }
@@ -40,6 +41,13 @@ public final class EntitySet {
 
     public File getDirectoryEntitySet() {
         return names.getDirectoryEntitySet(schema);
+    }
+    
+    public String getBaseCollectionRequestClassName(Imports imports) {
+        String t = entitySet.getEntityType();
+        // an entity set is always a collection
+        Schema schema = names.getSchema(t);
+        return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, t));
     }
 
 }
