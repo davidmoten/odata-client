@@ -208,7 +208,7 @@ public final class Generator {
                     t.getSimpleClassNameEntitySet(), //
                     baseCollectionClassName);
             indent.right();
-            p.format("%s\npublic %s(%s contextPath) {\n", //
+            p.format("\n%spublic %s(%s contextPath) {\n", //
                     indent, //
                     t.getSimpleClassNameEntitySet(), //
                     imports.add(ContextPath.class));
@@ -1193,9 +1193,9 @@ public final class Generator {
                     .forEach(x -> {
                         EntitySet es = new EntitySet(schema, t,x, names);
                         Schema sch = names.getSchema(x.getEntityType());
-                        p.format("\n%spublic %s %s() {\n", indent, es.getBaseCollectionRequestClassName(imports),
+                        p.format("\n%spublic %s %s() {\n", indent, imports.add(es.getFullClassNameEntitySet()),
                                 Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(\n", indent.right(), es.getBaseCollectionRequestClassName(imports));
+                        p.format("%sreturn new %s(\n", indent.right(), imports.add(es.getFullClassNameEntitySet()));
                         p.format("%scontextPath.addSegment(\"%s\"));\n",
                                 indent.right().right().right().right(), x.getName());
                         p.format("%s}\n", indent.left().left().left().left().left());
