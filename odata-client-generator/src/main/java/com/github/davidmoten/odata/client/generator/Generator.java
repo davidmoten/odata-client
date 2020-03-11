@@ -208,7 +208,7 @@ public final class Generator {
                     t.getSimpleClassNameEntitySet(), //
                     baseCollectionClassName);
             indent.right();
-            p.format("%spublic %s(%s contextPath) {\n", //
+            p.format("%s\npublic %s(%s contextPath) {\n", //
                     indent, //
                     t.getSimpleClassNameEntitySet(), //
                     imports.add(ContextPath.class));
