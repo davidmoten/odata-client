@@ -53,14 +53,23 @@ public final class EntitySet {
     }
 
     public EntitySet getReferredEntitySet(String name) {
-        // TODO don't ignore the prefix of the NavigationPropertyBinding target (see
-        // odata-client-test-sample-server metadata.xml for example
-        TEntitySet t = Util //
+        return Util //
                 .filter(container.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
-                .filter(x -> x.getName().equals(lastSegment(name))) //
+                .filter(x -> x.getName().equals(name)) //
+                .map(es -> new EntitySet(schema, container, es, names)) //
                 .findFirst() //
-                .orElseThrow(() -> new RuntimeException("EntitySet " + name + " not found"));
-        return new EntitySet(schema, container, t, names);
+                .orElseGet(() -> names.getSchemas() //
+                        .stream() //
+                        .flatMap(sch -> Util.types(sch, TEntityContainer.class) //
+                                .flatMap(c -> Util
+                                        .filter(c.getEntitySetOrActionImportOrFunctionImport(),
+                                                TEntitySet.class) //
+                                        .filter(es -> name.equals(sch.getNamespace() + "."
+                                                + c.getName() + "/" + es.getName()))
+                                        .map(es -> new EntitySet(sch, c, es, names))))
+                        .findFirst() //
+                        .orElseThrow(
+                                () -> new RuntimeException("EntitySet " + name + " not found")));
     }
 
     public String getMethodName(TNavigationPropertyBinding b) {
@@ -70,7 +79,7 @@ public final class EntitySet {
     public String getSimplifiedPath(TNavigationPropertyBinding b) {
         return lastSegment(b.getPath());
     }
-    
+
     private static String lastSegment(String s) {
         int i = s.lastIndexOf("/");
         if (i == -1) {
