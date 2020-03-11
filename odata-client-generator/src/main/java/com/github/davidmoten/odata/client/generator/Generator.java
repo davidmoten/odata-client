@@ -202,9 +202,19 @@ public final class Generator {
             p.format("package %s;\n\n", t.getPackage());
             p.format("IMPORTSHERE");
 
-            p.format("public final class %s extends %s {\n", t.getSimpleClassNameEntitySet(),
-                    imports.add(t.getExtendsFullClassName()));
-            p.format("}");
+            String baseCollectionClassName = toClassName(pair.b,imports);
+            p.format("%spublic final class %s extends %s {\n", // 
+                    indent, //
+                    t.getSimpleClassNameEntitySet(), //
+                    baseCollectionClassName);
+            indent.right();
+            p.format("%spublic %s(%s contextPath) {\n", //
+                    indent, //
+                    t.getSimpleClassNameEntitySet(), //
+                    imports.add(ContextPath.class));
+            p.format("%ssuper(contextPath);\n", indent.right());
+            p.format("%s}\n", indent.left());
+            p.format("%s}\n", indent.left());
             writeToFile(imports, w, t.getClassFile());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -990,7 +1000,7 @@ public final class Generator {
                         String y = x.getType().get(0);
                         Schema sch = names.getSchema(names.getInnerType(y));
                         if (Names.isCollection(y)) {
-                            returnClass = toType(x, imports);
+                            returnClass = toClassName(x, imports);
                         } else {
                             returnClass = imports.add(names
                                     .getFullClassNameEntityRequestFromTypeWithNamespace(sch, y));
@@ -1000,7 +1010,7 @@ public final class Generator {
                                 returnClass, //
                                 Names.getGetterMethodWithoutGet(x.getName()));
                         if (isCollection(x)) {
-                            p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
+                            p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
                             p.format("%scontextPath.addSegment(\"%s\"));\n",
                                     indent.right().right().right().right(), x.getName());
                             indent.left().left().left().left();
@@ -1166,9 +1176,9 @@ public final class Generator {
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
                     .forEach(x -> {
                         Schema sch = names.getSchema(x.getEntityType());
-                        p.format("\n%spublic %s %s() {\n", indent, toType(x, imports),
+                        p.format("\n%spublic %s %s() {\n", indent, toClassName(x, imports),
                                 Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
+                        p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
                         p.format("%scontextPath.addSegment(\"%s\"));\n",
                                 indent.right().right().right().right(), x.getName());
                         p.format("%s}\n", indent.left().left().left().left().left());
@@ -1194,7 +1204,7 @@ public final class Generator {
             Util //
                     .filter(t.getEntitySetOrActionImportOrFunctionImport(), TSingleton.class) //
                     .forEach(x -> {
-                        String importedType = toType(x, imports);
+                        String importedType = toClassName(x, imports);
                         p.format("\n%spublic %s %s() {\n", indent, importedType,
                                 Names.getIdentifier(x.getName()));
                         p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n",
@@ -1570,7 +1580,7 @@ public final class Generator {
         properties //
                 .stream() //
                 .forEach(x -> {
-                    String typeName = toType(x, imports);
+                    String typeName = toClassName(x, imports);
                     structure.printPropertyJavadoc(p, indent, x.getName(),
                             "navigational property " + x.getName(), Collections.emptyMap());
                     addNavigationPropertyAnnotation(imports, indent, p, x.getName());
@@ -1579,7 +1589,7 @@ public final class Generator {
                             Names.getGetterMethod(x.getName()));
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
-                            p.format("%sreturn new %s(\n", indent.right(), toType(x, imports));
+                            p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
                             p.format("%scontextPath.addSegment(\"%s\"));\n", //
                                     indent.right().right().right().right(), x.getName());
                             indent.left().left().left().left();
@@ -1603,7 +1613,7 @@ public final class Generator {
                 });
     }
 
-    private String toType(TNavigationProperty x, Imports imports) {
+    private String toClassName(TNavigationProperty x, Imports imports) {
         Preconditions.checkArgument(x.getType().size() == 1);
         String t = x.getType().get(0);
         if (!isCollection(x)) {
@@ -1624,7 +1634,7 @@ public final class Generator {
         }
     }
 
-    private String toType(TSingleton x, Imports imports) {
+    private String toClassName(TSingleton x, Imports imports) {
         String t = x.getType();
         if (!isCollection(x.getType())) {
             Schema sch = names.getSchema(names.getInnerType(t));
@@ -1634,12 +1644,11 @@ public final class Generator {
         }
     }
 
-    private String toType(TEntitySet x, Imports imports) {
+    private String toClassName(TEntitySet x, Imports imports) {
         String t = x.getEntityType();
         // an entity set is always a collection
         Schema schema = names.getSchema(t);
         return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, t));
-        // return names.wrapCollection(imports, CollectionPageEntityRequest.class, t);
     }
 
     private boolean isCollection(TProperty x) {

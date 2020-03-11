@@ -22,12 +22,6 @@ public final class EntitySet {
         this.names = names;
     }
 
-    public String getExtendsFullClassName() {
-        // TODO deal with cross schema refs (unlikely?)
-        return names.getFullClassNameCollectionRequest(schema,
-                names.getSimpleTypeNameFromTypeWithNamespace(entitySet.getEntityType()));
-    }
-
     public String getFullClassNameEntitySet() {
         return getPackage() + "." + getSimpleClassNameEntitySet();
     }
