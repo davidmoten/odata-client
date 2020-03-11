@@ -219,9 +219,14 @@ public final class Generator {
             Util.filter( //
                     pair.b.getNavigationPropertyBindingOrAnnotation(), //
                     TNavigationPropertyBinding.class) //
-            .forEach(b -> {
-                String methodName = Names.getIdentifier(b.getPath());
-            });
+                    .forEach(b -> {
+                        String methodName = t.getMethodName(b);
+                        EntitySet referredEntitySet = t.getReferredEntitySet(b.getTarget());
+                        String returnClassName = referredEntitySet.getFullClassNameEntitySet();
+                        p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName), methodName);
+                        p.format("%sreturn new %s(contextPath);\n", indent, imports.add(referredEntitySet.getFullClassNameEntitySet()));
+                        p.format("%s}\n", indent);
+                    });
             p.format("%s}\n", indent.left());
             writeToFile(imports, w, t.getClassFile());
         } catch (IOException e) {
