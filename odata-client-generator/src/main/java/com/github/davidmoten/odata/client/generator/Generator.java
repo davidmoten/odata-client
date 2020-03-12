@@ -1534,9 +1534,11 @@ public final class Generator {
                             p.format("\n%spublic boolean %s(%s data) {\n", indent,
                                     Names.getPutMethod(x.getName()),
                                     imports.add(InputStream.class));
-                            // TODO implement put stream
-                            p.format("%s// TODO implement\n", indent.right());
-                            p.format("%sreturn false;\n", indent);
+                            p.format("%sreturn %s.uploadStream(contextPath, %s, data, %s.IGNORE);\n", //
+                                    indent.right(), //
+                                    imports.add(RequestHelper.class), //
+                                    Names.getIdentifier(x.getName()), //
+                                    imports.add(UploadListener.class));
                             p.format("%s}\n", indent.left());
                             
                             p.format("\n%s/**", indent);
@@ -1555,9 +1557,10 @@ public final class Generator {
                                     Names.getPutMethod(x.getName()),
                                     imports.add(InputStream.class), //
                                     imports.add(UploadListener.class));
-                            // TODO implement put stream
-                            p.format("%s// TODO implement\n", indent.right());
-                            p.format("%sreturn false;\n", indent);
+                            p.format("%sreturn %s.uploadStream(contextPath, %s, data, listener);\n", //
+                                    indent.right(), //
+                                    imports.add(RequestHelper.class), //
+                                    Names.getIdentifier(x.getName()));
                             p.format("%s}\n", indent.left());
                         } else {
                             final String importedType = names.toImportedTypeNonCollection(t,
