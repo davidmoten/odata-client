@@ -1512,6 +1512,14 @@ public final class Generator {
                             p.format("%s}\n", indent.left());
 
                             
+                            p.format("\n%spublic boolean %s() {\n", indent,
+                                    Names.getCanPutMethod(x.getName()));
+                            // TODO implement can put stream
+                            p.format("%s// TODO implement\n", indent.right());
+                            p.format("%sreturn false;\n", indent);
+                            p.format("%s}\n", indent.left());
+                            
+                            
                             p.format("\n%s/**", indent);
                             p.format("\n%s * If metadata indicate that the stream is editable then uploads", indent);
                             p.format("\n%s * bytes from the given InputStream. Returns true if and only if", indent);
