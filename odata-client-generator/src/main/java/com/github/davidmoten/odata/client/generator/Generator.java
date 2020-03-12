@@ -1525,8 +1525,8 @@ public final class Generator {
                                     Names.getPutMethod(x.getName()),
                                     imports.add(InputStream.class));
                             // TODO implement put stream
-                            p.format("%s// TODO implement\n", indent);
-                            p.format("%sreturn false;\n", indent.right());
+                            p.format("%s// TODO implement\n", indent.right());
+                            p.format("%sreturn false;\n", indent);
                             p.format("%s}\n", indent.left());
                         } else {
                             final String importedType = names.toImportedTypeNonCollection(t,
