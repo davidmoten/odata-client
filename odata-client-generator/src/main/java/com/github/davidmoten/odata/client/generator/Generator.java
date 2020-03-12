@@ -1525,7 +1525,7 @@ public final class Generator {
                                     Names.getPutMethod(x.getName()),
                                     imports.add(InputStream.class));
                             // TODO implement put stream
-                            p.format("%s// TODO implement", indent);
+                            p.format("%s// TODO implement\n", indent);
                             p.format("%sreturn false;\n", indent.right());
                             p.format("%s}\n", indent.left());
                         } else {
