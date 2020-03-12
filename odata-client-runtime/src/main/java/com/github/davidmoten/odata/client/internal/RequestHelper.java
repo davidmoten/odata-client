@@ -29,6 +29,7 @@ import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.StreamProvider;
+import com.github.davidmoten.odata.client.UploadListener;
 
 public final class RequestHelper {
 
@@ -415,6 +416,10 @@ public final class RequestHelper {
                     contentType, //
                     base64));
         }
+    }
+    
+    public static boolean uploadStream(ContextPath contextPath, String fieldName, InputStream in, UploadListener listener) {
+        return false;
     }
     
 }
