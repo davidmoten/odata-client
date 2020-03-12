@@ -730,4 +730,8 @@ public final class Names {
         return "put" + upperFirst(name);
     }
 
+    public static String getCanPutMethod(String name) {
+        return "canPut" + upperFirst(name);
+    }
+
 }
