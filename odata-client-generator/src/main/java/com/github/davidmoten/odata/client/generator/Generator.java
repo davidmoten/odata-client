@@ -1510,12 +1510,23 @@ public final class Generator {
                                     fieldName);
                             p.format("%s}\n", indent.left());
 
+                            
+                            p.format("\n%s/**", indent);
+                            p.format("\n%s * If metadata indicate that the stream is editable then uploads", indent);
+                            p.format("\n%s * bytes from the given InputStream. Returns true if and only if", indent);
+                            p.format("\n%s * upload permitted and succeeded. Returns false if upload not", indent);
+                            p.format("\n%s * permitted.", indent);
+                            p.format("\n%s *", indent);
+                            p.format("\n%s * @return true if and only if upload permitted", indent);
+                            p.format("\n%s * @throws ClientException if upload fails", indent);
+                            p.format("\n%s */", indent);
                             addPropertyAnnotation(imports, indent, p, x.getName());
-                            p.format("\n%spublic void %s(%s data) {\n", indent,
+                            p.format("\n%spublic boolean %s(%s data) {\n", indent,
                                     Names.getPutMethod(x.getName()),
                                     imports.add(InputStream.class));
                             // TODO implement put stream
-                            p.format("%s//TODO\n", indent.right());
+                            p.format("%s// TODO implement", indent);
+                            p.format("%sreturn false;\n", indent.right());
                             p.format("%s}\n", indent.left());
                         } else {
                             final String importedType = names.toImportedTypeNonCollection(t,
