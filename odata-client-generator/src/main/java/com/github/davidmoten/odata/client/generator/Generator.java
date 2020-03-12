@@ -1512,14 +1512,11 @@ public final class Generator {
                             p.format("%s}\n", indent.left());
 
                             p.format("\n%s/**", indent);
-                            p.format("\n%s * If metadata indicate that the stream is editable then uploads", indent);
-                            p.format("\n%s * bytes from the given InputStream. Returns true if and only if", indent);
-                            p.format("\n%s * upload permitted and succeeded. Returns false if upload not", indent);
-                            p.format("\n%s * permitted.", indent);
+                            p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
+                            p.format("\n%s * a {@link StreamUploader} which can be used to upload the stream", indent);
+                            p.format("\n%s * to the {@code %s} property.", indent, x.getName());
                             p.format("\n%s *", indent);
-                            p.format("\n%s * @oaram in data to upload", indent);
-                            p.format("\n%s * @return true if and only if upload permitted", indent);
-                            p.format("\n%s * @throws ClientException if upload fails", indent);
+                            p.format("\n%s * @return a StreamUploader if upload permitted", indent);
                             p.format("\n%s */", indent);
                             addPropertyAnnotation(imports, indent, p, x.getName());
                             p.format("\n%spublic %s<%s> %s() {\n", indent,
