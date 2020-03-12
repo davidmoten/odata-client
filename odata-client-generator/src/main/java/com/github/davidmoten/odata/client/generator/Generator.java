@@ -64,9 +64,9 @@ import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
+import com.github.davidmoten.odata.client.StreamUploader;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
-import com.github.davidmoten.odata.client.UploadListener;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.model.Action;
@@ -1511,15 +1511,6 @@ public final class Generator {
                                     fieldName);
                             p.format("%s}\n", indent.left());
 
-                            
-                            p.format("\n%spublic boolean %s() {\n", indent,
-                                    Names.getCanPutMethod(x.getName()));
-                            // TODO implement can put stream
-                            p.format("%s// TODO implement\n", indent.right());
-                            p.format("%sreturn false;\n", indent);
-                            p.format("%s}\n", indent.left());
-                            
-                            
                             p.format("\n%s/**", indent);
                             p.format("\n%s * If metadata indicate that the stream is editable then uploads", indent);
                             p.format("\n%s * bytes from the given InputStream. Returns true if and only if", indent);
@@ -1531,33 +1522,12 @@ public final class Generator {
                             p.format("\n%s * @throws ClientException if upload fails", indent);
                             p.format("\n%s */", indent);
                             addPropertyAnnotation(imports, indent, p, x.getName());
-                            p.format("\n%spublic boolean %s(%s data) {\n", indent,
-                                    Names.getPutMethod(x.getName()),
-                                    imports.add(InputStream.class));
-                            p.format("%sreturn %s.uploadStream(contextPath, %s, data, %s.IGNORE);\n", //
-                                    indent.right(), //
-                                    imports.add(RequestHelper.class), //
-                                    Names.getIdentifier(x.getName()), //
-                                    imports.add(UploadListener.class));
-                            p.format("%s}\n", indent.left());
-                            
-                            p.format("\n%s/**", indent);
-                            p.format("\n%s * If metadata indicate that the stream is editable then uploads", indent);
-                            p.format("\n%s * bytes from the given InputStream. Returns true if and only if", indent);
-                            p.format("\n%s * upload permitted and succeeded. Returns false if upload not", indent);
-                            p.format("\n%s * permitted.", indent);
-                            p.format("\n%s *", indent);
-                            p.format("\n%s * @oaram in data to upload", indent);
-                            p.format("\n%s * @oaram listener object to be notified of progress", indent);
-                            p.format("\n%s * @return true if and only if upload permitted", indent);
-                            p.format("\n%s * @throws ClientException if upload fails", indent);
-                            p.format("\n%s */", indent);
-                            addPropertyAnnotation(imports, indent, p, x.getName());
-                            p.format("\n%spublic boolean %s(%s data, %s listener) {\n", indent,
-                                    Names.getPutMethod(x.getName()),
-                                    imports.add(InputStream.class), //
-                                    imports.add(UploadListener.class));
-                            p.format("%sreturn %s.uploadStream(contextPath, %s, data, listener);\n", //
+                            p.format("\n%spublic %s<%s> %s() {\n", indent,
+                                    imports.add(Optional.class), //
+                                    imports.add(StreamUploader.class), //
+                                    Names.getPutMethod(x.getName())
+                                    );
+                            p.format("%sreturn %s.uploader(contextPath, %s);\n", //
                                     indent.right(), //
                                     imports.add(RequestHelper.class), //
                                     Names.getIdentifier(x.getName()));
