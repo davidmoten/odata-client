@@ -245,10 +245,11 @@ public final class RequestHelper {
         HttpService service = cp.context().service();
         final HttpResponse response = service.submitWithContent(method, url, h, json);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
-        // TODO is service returning the entity that we should use rather than the original?
+        // TODO is service returning the entity that we should use rather than the
+        // original?
         return entity;
     }
-    
+
     public static void put(ContextPath contextPath, RequestOptions options, InputStream in) {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
@@ -426,8 +427,9 @@ public final class RequestHelper {
                     base64));
         }
     }
-    
-    public static Optional<StreamUploader> uploader(ContextPath contextPath, ODataType item, String fieldName) {
+
+    public static Optional<StreamUploader> uploader(ContextPath contextPath, ODataType item,
+            String fieldName) {
         Preconditions.checkNotNull(fieldName);
         String editLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaEditLink");
         String contentType = (String) item.getUnmappedFields()
@@ -435,7 +437,7 @@ public final class RequestHelper {
         if (editLink == null) {
             return Optional.empty();
         } else {
-         // TODO support relative editLink?
+            // TODO support relative editLink?
             Context context = contextPath.context();
             if (contentType == null) {
                 contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
@@ -444,5 +446,17 @@ public final class RequestHelper {
             return Optional.of(new StreamUploader(new ContextPath(context, path), contentType));
         }
     }
-    
+
+    public static String createUploadSession(ContextPath contextPath,
+            List<RequestHeader> requestHeaders) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static void putChunk(String uploadUrl, InputStream in,
+            List<RequestHeader> requestHeaders, long startByte, long finishByte, long size) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
