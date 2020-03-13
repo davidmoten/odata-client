@@ -66,6 +66,7 @@ import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.StreamUploader;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
+import com.github.davidmoten.odata.client.UploadStrategy;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.model.Action;
@@ -1517,16 +1518,30 @@ public final class Generator {
                             p.format("\n%s *", indent);
                             p.format("\n%s * @return a StreamUploader if upload permitted", indent);
                             p.format("\n%s */", indent);
+                            
                             addPropertyAnnotation(imports, indent, p, x.getName());
                             p.format("\n%spublic %s<%s> %s() {\n", indent,
                                     imports.add(Optional.class), //
                                     imports.add(StreamUploader.class), //
                                     Names.getPutMethod(x.getName())
                                     );
-                            p.format("%sreturn %s.uploader(contextPath, this, \"%s\");\n", //
+                            p.format("%sreturn %s(%s.singleCall());\n", //
                                     indent.right(), //
-                                    imports.add(RequestHelper.class), //
-                                    Names.getIdentifier(x.getName()));
+                                    Names.getPutMethod(x.getName()),
+                                    imports.add(UploadStrategy.class) //
+                                    );
+                            p.format("%s}\n", indent.left());
+                            
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic <T> T %s(%s<T> strategy) {\n", //
+                                    indent, //
+                                    Names.getPutMethod(x.getName()), //
+                                    imports.add(UploadStrategy.class)
+                                    );
+                            p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //
+                                    indent.right(), //
+                                    x.getName()
+                                    );
                             p.format("%s}\n", indent.left());
                         } else {
                             final String importedType = names.toImportedTypeNonCollection(t,
