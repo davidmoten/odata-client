@@ -729,6 +729,10 @@ public final class Names {
     public static String getPutMethod(String name) {
         return "put" + upperFirst(name);
     }
+    
+    public static String getPutChunkedMethod(String name) {
+        return "putChunked" + upperFirst(name);
+    }
 
     public static String getCanPutMethod(String name) {
         return "canPut" + upperFirst(name);
