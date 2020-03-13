@@ -64,6 +64,7 @@ import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.StreamUploader;
+import com.github.davidmoten.odata.client.StreamUploaderChunked;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.UploadStrategy;
@@ -1518,7 +1519,6 @@ public final class Generator {
                             p.format("\n%s *", indent);
                             p.format("\n%s * @return a StreamUploader if upload permitted", indent);
                             p.format("\n%s */", indent);
-                            
                             addPropertyAnnotation(imports, indent, p, x.getName());
                             p.format("\n%spublic %s<%s> %s() {\n", indent,
                                     imports.add(Optional.class), //
@@ -1531,6 +1531,27 @@ public final class Generator {
                                     imports.add(UploadStrategy.class) //
                                     );
                             p.format("%s}\n", indent.left());
+
+                            p.format("\n%s/**", indent);
+                            p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
+                            p.format("\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream", indent);
+                            p.format("\n%s * to the {@code %s} property.", indent, x.getName());
+                            p.format("\n%s *", indent);
+                            p.format("\n%s * @return a StreamUploaderChunked if upload permitted", indent);
+                            p.format("\n%s */", indent);
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s<%s> %s() {\n", indent,
+                                    imports.add(Optional.class), //
+                                    imports.add(StreamUploaderChunked.class), //
+                                    Names.getPutChunkedMethod(x.getName())
+                                    );
+                            p.format("%sreturn %s(%s.chunked());\n", //
+                                    indent.right(), //
+                                    Names.getPutMethod(x.getName()),
+                                    imports.add(UploadStrategy.class) //
+                                    );
+                            p.format("%s}\n", indent.left());
+
                             
                             addPropertyAnnotation(imports, indent, p, x.getName());
                             p.format("\n%spublic <T> T %s(%s<T> strategy) {\n", //
