@@ -15,7 +15,7 @@ import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
@@ -52,17 +52,17 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
         return getResponse(requestHeaders, new HttpPatch(url), false, content);
     }
 
     @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content) {
         return getResponse(requestHeaders, new HttpPut(url), false, content);
     }
 
     @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content) {
         return getResponse(requestHeaders, new HttpPost(url), true, content);
     }
 
@@ -77,14 +77,14 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request,
-            boolean doInput, String content) {
+            boolean doInput, InputStream content) {
         log.debug("{} from url {}", request.getMethod(), request.getURI());
         for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
             request.addHeader(header.name(), header.value());
         }
         try {
             if (content != null && request instanceof HttpEntityEnclosingRequest) {
-                ((HttpEntityEnclosingRequest) request).setEntity(new StringEntity(content));
+                ((HttpEntityEnclosingRequest) request).setEntity(new InputStreamEntity(content));
                 log.debug("content={}", content);
             }
             log.debug("executing request");
