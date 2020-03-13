@@ -1523,7 +1523,7 @@ public final class Generator {
                                     imports.add(StreamUploader.class), //
                                     Names.getPutMethod(x.getName())
                                     );
-                            p.format("%sreturn %s.uploader(contextPath, \"%s\");\n", //
+                            p.format("%sreturn %s.uploader(contextPath, this, \"%s\");\n", //
                                     indent.right(), //
                                     imports.add(RequestHelper.class), //
                                     Names.getIdentifier(x.getName()));
