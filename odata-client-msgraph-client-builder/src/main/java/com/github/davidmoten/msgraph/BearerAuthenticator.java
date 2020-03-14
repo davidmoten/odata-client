@@ -20,7 +20,10 @@ public final class BearerAuthenticator implements Authenticator {
 
     @Override
     public List<RequestHeader> authenticate(List<RequestHeader> m) {
-        if (m.stream().anyMatch(x -> x.name().equals(AUTHORIZATION_HEADER_NAME))) {
+        // chunked upload should not add authorization header hence check on
+        // Content-Range
+        if (m.stream().anyMatch(x -> x.name().equals(AUTHORIZATION_HEADER_NAME)
+                || x.name().equals("Content-Range"))) {
             return m;
         } else {
             List<RequestHeader> m2 = new ArrayList<>(m);
