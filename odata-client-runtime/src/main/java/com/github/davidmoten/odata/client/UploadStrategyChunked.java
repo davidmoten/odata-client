@@ -14,7 +14,9 @@ public final class UploadStrategyChunked
     @Override
     public Optional<StreamUploaderChunked> builder(ContextPath contextPath, ODataType entity,
             String fieldName) {
-        return Optional.of(new StreamUploaderChunked(contextPath, entity, fieldName));
+        // TODO inspect metadata to see if can upload stream
+        String contentType = "application/octet-stream";
+        return Optional.of(new StreamUploaderChunked(contextPath, entity, fieldName, contentType));
     }
 
 }

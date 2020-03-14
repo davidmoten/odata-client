@@ -14,6 +14,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
@@ -78,14 +81,19 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
 
-    public static void checkResponseCode(ContextPath cp, HttpResponse response,
+    private static void checkResponseCode(String url, HttpResponse response,
             int expectedResponseCodeMin, int expectedResponseCodeMax) {
         if (response.getResponseCode() < expectedResponseCodeMin
                 || response.getResponseCode() > expectedResponseCodeMax) {
             throw new ClientException("responseCode=" + response.getResponseCode() + " from url="
-                    + cp.toUrl() + ", expectedResponseCode in [" + expectedResponseCodeMin + ", "
+                    + url + ", expectedResponseCode in [" + expectedResponseCodeMin + ", "
                     + expectedResponseCodeMax + "], message=\n" + response.getText());
         }
+    }
+
+    public static void checkResponseCode(ContextPath cp, HttpResponse response,
+            int expectedResponseCodeMin, int expectedResponseCodeMax) {
+        checkResponseCode(cp.toUrl(), response, expectedResponseCodeMin, expectedResponseCodeMax);
     }
 
     public static void checkResponseCode(ContextPath cp, HttpResponse response,
@@ -272,17 +280,17 @@ public final class RequestHelper {
         }
     }
 
-    public static List<RequestHeader> cleanAndSupplementRequestHeaders(RequestOptions options,
-            String contentTypeOdataMetadataValue, boolean isWrite) {
-        // remove repeated headers
+    public static List<RequestHeader> cleanAndSupplementRequestHeaders(
+            List<RequestHeader> requestHeaders, String contentTypeOdataMetadataValue,
+            boolean isWrite) {
 
         List<RequestHeader> list = new ArrayList<>();
-        list.add(new RequestHeader("OData-Version", "4.0"));
+        list.add(RequestHeader.ODATA_VERSION);
         if (isWrite) {
             list.add(RequestHeader.contentTypeJsonWithMetadata(contentTypeOdataMetadataValue));
         }
         list.add(RequestHeader.ACCEPT_JSON);
-        list.addAll(options.getRequestHeaders());
+        list.addAll(requestHeaders);
 
         // remove duplicates
         List<RequestHeader> list2 = new ArrayList<>();
@@ -310,6 +318,13 @@ public final class RequestHelper {
                 .filter(x -> !x.isAcceptJsonWithMetadata() || !m.isPresent() || x.equals(m.get()))
                 .collect(Collectors.toList());
         return list3;
+
+    }
+
+    public static List<RequestHeader> cleanAndSupplementRequestHeaders(RequestOptions options,
+            String contentTypeOdataMetadataValue, boolean isWrite) {
+        return cleanAndSupplementRequestHeaders(options.getRequestHeaders(),
+                contentTypeOdataMetadataValue, isWrite);
     }
 
     public static InputStream getStream(ContextPath contextPath, RequestOptions options,
@@ -448,15 +463,39 @@ public final class RequestHelper {
     }
 
     public static String createUploadSession(ContextPath contextPath,
-            List<RequestHeader> requestHeaders) {
-        // TODO Auto-generated method stub
-        return null;
+            List<RequestHeader> requestHeaders, String contentType) {
+        List<RequestHeader> h = cleanAndSupplementRequestHeaders(requestHeaders, contentType, true);
+        ContextPath cp = contextPath.addSegment("createUploadSession");
+        HttpResponse response = contextPath //
+                .context() //
+                .service() //
+                .post(cp.toUrl(), h, new ByteArrayInputStream(new byte[] {}));
+        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
+        ObjectMapper m = new ObjectMapper();
+        try {
+            JsonNode tree = m.readTree(response.getText());
+            JsonNode v = tree.get("uploadUrl");
+            if (v == null) {
+                throw new ClientException(
+                        "could not create upload session because response does not contain 'uploadUrl' field:\n"
+                                + response.getText());
+            } else {
+                return v.asText();
+            }
+        } catch (JsonProcessingException e) {
+            throw new ClientException(e);
+        }
     }
 
-    public static void putChunk(String uploadUrl, InputStream in,
+    public static void putChunk(HttpService service, String url, InputStream in,
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size) {
-        // TODO Auto-generated method stub
-
+        List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
+        h.add(RequestHeader.DISABLE_AUTHENTICATION);
+        h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
+        h.add(RequestHeader.create("Content-Range",
+                "bytes " + startByte + "-" + finishByte + "/" + size));
+        HttpResponse response = service.put(url, requestHeaders, in);
+        checkResponseCode(url, response, 200, 202);
     }
 
 }
