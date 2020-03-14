@@ -490,7 +490,6 @@ public final class RequestHelper {
     public static void putChunk(HttpService service, String url, InputStream in,
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
-        h.add(RequestHeader.DISABLE_AUTHENTICATION);
         h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
         h.add(RequestHeader.create("Content-Range",
                 "bytes " + startByte + "-" + finishByte + "/" + size));

@@ -13,10 +13,10 @@ public final class StreamUploaderChunked {
     private static final int BASE_BYTE_RANGE_SIZE = 327680;
 
     private final ContextPath contextPath;
-    private final ODataType entity;
     private final String fieldName;
     private final String contentType;
     private final List<RequestHeader> requestHeaders;
+    private final ODataType entity;
 
     StreamUploaderChunked(ContextPath contextPath, ODataType entity, String fieldName,
             String contentType) {
@@ -35,6 +35,7 @@ public final class StreamUploaderChunked {
         if (rem > 0 || chunkSize == 0) {
             chunkSize += chunkSize - rem;
         }
+        //TODO do we use edit url?
         String uploadUrl = RequestHelper.createUploadSession(contextPath.addSegment(fieldName),
                 requestHeaders, contentType);
 
