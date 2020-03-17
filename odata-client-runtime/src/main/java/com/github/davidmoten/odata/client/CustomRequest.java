@@ -19,7 +19,7 @@ public final class CustomRequest {
         this.context = context;
     }
 
-    public String getJson(String url, RequestHeader... headers) {
+    public String getString(String url, RequestHeader... headers) {
         return context.service().getStringUtf8(url, Arrays.asList(headers));
     }
 
