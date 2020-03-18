@@ -5,7 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +31,7 @@ import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
+import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
@@ -287,6 +290,18 @@ public class GraphServiceTest {
         System.out.println(m.getSubject());
         // mark as read
         m.withIsRead(true).patch();
+    }
+    
+    @Test
+    @Ignore
+    //TODO implement
+    public void testChunkedUpload() {
+        GraphService client = clientBuilder() //
+                .build();
+        DriveItem item = client.drives("123").items("abc").metadataNone().get();
+        byte[] bytes = "1234567890".getBytes(StandardCharsets.UTF_8);
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+        item.putChunkedContent().get().upload(in, bytes.length, 2);
     }
 
     @Test
