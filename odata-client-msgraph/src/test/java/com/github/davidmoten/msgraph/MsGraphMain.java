@@ -42,24 +42,24 @@ public class MsGraphMain {
                 .mailFolders("Drafts");
 
         // test streaming of DriveItem.content
-        String user = System.getProperty("email");
-        client.users(user).drive().items("01N6X7VZ6TXOGWV354WND3QHDNUYRXKVVH").get();
-        for (DriveItem item : client //
-                .users(user) //
-                .drive() //
-                .root() //
-                .children() //
-                .id("Attachments") //
-                .children() //
-                .metadataFull() //
-                .get()) {
-            // read content and count bytes
-            StreamProvider stream = item.getContent().get();
-            item.getUnmappedFields().entrySet().forEach(System.out::println);
-            System.out.println(stream.contentType());
-            byte[] bytes = toBytes(stream);
-            System.out.println("read " + item.getName().orElse("?") + " size=" + bytes.length);
-        }
+        String user = System.getProperty("mailbox");
+//        client.users(user).drive().items("01N6X7VZ6TXOGWV354WND3QHDNUYRXKVVH").get();
+//        for (DriveItem item : client //
+//                .users(user) //
+//                .drive() //
+//                .root() //
+//                .children() //
+//                .id("Attachments") //
+//                .children() //
+//                .metadataFull() //
+//                .get()) {
+//            // read content and count bytes
+//            StreamProvider stream = item.getContent().get();
+//            item.getUnmappedFields().entrySet().forEach(System.out::println);
+//            System.out.println(stream.contentType());
+//            byte[] bytes = toBytes(stream);
+//            System.out.println("read " + item.getName().orElse("?") + " size=" + bytes.length);
+//        }
 
         // count number of messages in Drafts
         long count = drafts.messages() //
@@ -87,6 +87,9 @@ public class MsGraphMain {
         System.out.println("saved=" + saved);
 
         // change subject
+        // Would have been nice to do like this but patch from the 
+        // path associated with saved is not supported.
+        // saved.withSubject("new subject " + id).patch();
         client //
                 .users(mailbox) //
                 .messages(saved.getId().get()) //
