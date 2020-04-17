@@ -40,17 +40,17 @@ public class CollectionPageTest {
             }
 
             @Override
-            public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String text) {
+            public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse put(String url, List<RequestHeader> requestHeaders, String text) {
+            public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse post(String url, List<RequestHeader> h, String text) {
+            public HttpResponse post(String url, List<RequestHeader> h, InputStream content) {
                 return new HttpResponse(HttpURLConnection.HTTP_CREATED, "");
             }
 

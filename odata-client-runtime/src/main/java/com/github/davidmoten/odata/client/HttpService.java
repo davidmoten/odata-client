@@ -1,6 +1,9 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
@@ -16,11 +19,11 @@ public interface HttpService extends AutoCloseable {
 
     HttpResponse get(String url, List<RequestHeader> requestHeaders);
 
-    HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content);
+    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content);
 
-    HttpResponse put(String url, List<RequestHeader> requestHeaders, String content);
+    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content);
 
-    HttpResponse post(String url, List<RequestHeader> requestHeaders, String content);
+    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content);
 
     HttpResponse delete(String url, List<RequestHeader> requestHeaders);
 
@@ -32,8 +35,32 @@ public interface HttpService extends AutoCloseable {
 
     Path getBasePath();
 
+    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
+        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
+            return patch(url, requestHeaders, in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    default HttpResponse put(String url, List<RequestHeader> requestHeaders, String content) {
+        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
+            return put(url, requestHeaders, in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content) {
+        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
+            return post(url, requestHeaders, in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, String content) {
+            List<RequestHeader> requestHeaders, InputStream content) {
         if (method == HttpMethod.PATCH) {
             return patch(url, requestHeaders, content);
         } else if (method == HttpMethod.PUT) {
@@ -43,6 +70,15 @@ public interface HttpService extends AutoCloseable {
         } else {
             throw new IllegalArgumentException(
                     method + " not permitted for a submission with content");
+        }
+    }
+
+    default HttpResponse submitWithContent(HttpMethod method, String url,
+            List<RequestHeader> requestHeaders, String content) {
+        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
+            return submitWithContent(method, url, requestHeaders, in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

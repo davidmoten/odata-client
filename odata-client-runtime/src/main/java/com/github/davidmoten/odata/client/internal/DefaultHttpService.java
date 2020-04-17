@@ -43,7 +43,7 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
         if (patchSupported) {
             try {
                 return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content);
@@ -56,7 +56,7 @@ public final class DefaultHttpService implements HttpService {
     }
 
     private HttpResponse getResponsePatchOverride(String url, List<RequestHeader> requestHeaders,
-            String content) {
+            InputStream content) {
         List<RequestHeader> list = Lists.newArrayList(requestHeaders);
         list.add(new RequestHeader("X-HTTP-Method-Override", "PATCH"));
         HttpResponse result = getResponse(url, list, HttpMethod.POST, false, content);
@@ -66,12 +66,12 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content) {
         return getResponse(url, requestHeaders, HttpMethod.PUT, false, content);
     }
 
     @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, String content) {
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content) {
         return getResponse(url, requestHeaders, HttpMethod.POST, true, content);
     }
 
@@ -86,7 +86,7 @@ public final class DefaultHttpService implements HttpService {
     }
 
     private HttpResponse getResponse(String url, List<RequestHeader> requestHeaders,
-            HttpMethod method, boolean doInput, String content) {
+            HttpMethod method, boolean doInput, InputStream content) {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
@@ -103,7 +103,11 @@ public final class DefaultHttpService implements HttpService {
             consumer.accept(c);
             if (content != null) {
                 try (OutputStream out = c.getOutputStream()) {
-                    out.write(content.getBytes(StandardCharsets.UTF_8));
+                    byte[] b = new byte[8192];
+                    int len;
+                    while ((len = content.read(b))!= -1) {
+                        out.write(b, 0, len);
+                    }
                 }
             }
             final String text;

@@ -18,7 +18,6 @@ import org.oasisopen.odata.csdl.v4.TEnumType;
 import org.oasisopen.odata.csdl.v4.TEnumTypeMember;
 import org.oasisopen.odata.csdl.v4.TFunction;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
-import org.oasisopen.odata.csdl.v4.TNavigationPropertyBinding;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -200,7 +199,7 @@ public final class Names {
                 classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
     }
-    
+
     public String getInnerType(TNavigationProperty t) {
         return getInnerType(getType(t));
     }
@@ -232,7 +231,7 @@ public final class Names {
         }
         return list.get(0);
     }
-    
+
     public String getType(TNavigationProperty x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
@@ -254,7 +253,7 @@ public final class Names {
     public boolean isCollection(TProperty x) {
         return isCollection(getType(x));
     }
-    
+
     public boolean isCollection(TNavigationProperty x) {
         return isCollection(getType(x));
     }
@@ -455,7 +454,7 @@ public final class Names {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEntityRequest();
     }
-    
+
     public String getPackageEntitySetRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEntitySet();
@@ -609,7 +608,7 @@ public final class Names {
     public String getInnerType(TProperty p) {
         return getInnerType(getType(p));
     }
-    
+
     public String getEnumInstanceName(TEnumType t, String name) {
         // ensures uniqueness
         //
@@ -719,13 +718,24 @@ public final class Names {
     }
 
     public File getClassFileEntitySet(Schema schema, String name) {
-        return new File(getDirectoryEntitySet(schema),
-                Names.toSimpleClassName(name) + ".java");
+        return new File(getDirectoryEntitySet(schema), Names.toSimpleClassName(name) + ".java");
     }
 
     public File getDirectoryEntitySet(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return toDirectory(output, o.pkg() + o.packageSuffixEntitySet());
+    }
+
+    public static String getPutMethod(String name) {
+        return "put" + upperFirst(name);
+    }
+    
+    public static String getPutChunkedMethod(String name) {
+        return "putChunked" + upperFirst(name);
+    }
+
+    public static String getCanPutMethod(String name) {
+        return "canPut" + upperFirst(name);
     }
 
 }
