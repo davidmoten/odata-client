@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>odata-client-parent</artifactId>
-    <version>0.1.8-SNAPSHOT</version>
+    <version>0.1.8</version>
 
     <name>${project.artifactId}</name>
     <description>Generates odata clients</description>
@@ -82,7 +82,7 @@
         <connection>${scm.url}</connection>
         <developerConnection>${scm.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>0.1</tag>
+        <tag>0.1.8</tag>
     </scm>
 
 
