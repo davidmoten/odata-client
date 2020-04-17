@@ -232,6 +232,9 @@ Developer instructions:
 ```bash
 cd odata-client-msgraph
 ./update-metadata.sh
+cd ..
+## check if still builds!
+mvn clean install
 ```
 Note that the latest metadata is downloaded from microsoft but that also:
 * `HasStream="true"` is added to EntityType `itemAttachment`
