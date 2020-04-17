@@ -27,10 +27,10 @@
         <m3.site.version>3.8.2</m3.site.version>
 
         <checkstyle.version>3.1.0</checkstyle.version>
-        <javadoc.version>2.10.2</javadoc.version>
-        <pmd.version>3.4</pmd.version>
-        <jdepend.version>2.0-beta-2</jdepend.version>
-        <project.info.version>2.7</project.info.version>
+        <javadoc.version>3.0.1</javadoc.version>
+        <pmd.version>3.10.0</pmd.version>
+        <jdepend.version>2.0</jdepend.version>
+        <project.info.version>3.0.0</project.info.version>
         <jxr.version>2.5</jxr.version>
         <taglist.version>2.4</taglist.version>
         <changelog.version>2.2</changelog.version>
@@ -222,6 +222,7 @@
                 <version>${javadoc.version}</version>
                 <configuration>
                     <aggregate>true</aggregate>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
             <!-- commented this plugin out because cannot run offline (e.g. 
