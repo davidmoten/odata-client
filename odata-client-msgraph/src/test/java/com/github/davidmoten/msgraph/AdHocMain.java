@@ -2,6 +2,8 @@ package com.github.davidmoten.msgraph;
 
 import java.util.concurrent.TimeUnit;
 
+import com.github.davidmoten.odata.client.RequestHeader;
+
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.ItemAttachment;
 
@@ -30,7 +32,12 @@ public final class AdHocMain {
         // "application/json;odata.metadata=full"))));
         // System.exit(0);
         // }
+        
+        String a = client._custom().getString("https://graph.microsoft.com/v1.0/users/dnex001%40amsa.gov.au/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==')/$value", RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION);
 
+        System.out.println(a);
+        System.exit(1);
+        
         String s = client.users(mailbox).messages(
                 "AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
                 .metadataFull() //

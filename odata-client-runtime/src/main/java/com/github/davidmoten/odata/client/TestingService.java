@@ -138,8 +138,9 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-                        String text) {
+                        InputStream content) {
                     log("PATCH called at " + url);
+                    String text = Util.utf8(content);
                     log(text);
                     log("Available requests:");
                     requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
@@ -168,14 +169,15 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse put(String url, List<RequestHeader> h, String json) {
-                    return patch(url, h, json);
+                public HttpResponse put(String url, List<RequestHeader> h, InputStream content) {
+                    return patch(url, h, content);
                 }
 
                 @Override
                 public HttpResponse post(String url, List<RequestHeader> requestHeaders,
-                        String text) {
+                        InputStream content) {
                     log("POST called at " + url);
+                    String text = Util.utf8(content);
                     log(text);
                     requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");

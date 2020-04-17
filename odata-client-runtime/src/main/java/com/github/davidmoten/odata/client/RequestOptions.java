@@ -23,5 +23,21 @@ public interface RequestOptions {
         }
 
     };
+    
+    public static RequestOptions create(Map<String, String> queries, List<RequestHeader> requestHeaders) {
+        return new RequestOptions() {
+
+            @Override
+            public List<RequestHeader> getRequestHeaders() {
+                return requestHeaders;
+            }
+
+            @Override
+            public Map<String, String> getQueries() {
+                return queries;
+            }
+            
+        };
+    }
 
 }

@@ -63,8 +63,11 @@ import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
+import com.github.davidmoten.odata.client.StreamUploader;
+import com.github.davidmoten.odata.client.StreamUploaderChunked;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
+import com.github.davidmoten.odata.client.UploadStrategy;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.model.Action;
@@ -203,7 +206,7 @@ public final class Generator {
             p.format("IMPORTSHERE");
 
             String baseCollectionClassName = t.getBaseCollectionRequestClassName(imports);
-            p.format("%spublic final class %s extends %s {\n", // 
+            p.format("%spublic final class %s extends %s {\n", //
                     indent, //
                     t.getSimpleClassNameEntitySet(), //
                     baseCollectionClassName);
@@ -214,7 +217,7 @@ public final class Generator {
                     imports.add(ContextPath.class));
             p.format("%ssuper(contextPath);\n", indent.right());
             p.format("%s}\n", indent.left());
-            
+
             // write navigation property bindings
             Util.filter( //
                     pair.b.getNavigationPropertyBindingOrAnnotation(), //
@@ -223,11 +226,12 @@ public final class Generator {
                         String methodName = t.getMethodName(b);
                         EntitySet referredEntitySet = t.getReferredEntitySet(b.getTarget());
                         String returnClassName = referredEntitySet.getFullClassNameEntitySet();
-                        p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName), methodName);
+                        p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName),
+                                methodName);
                         p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
                                 indent.right(), //
                                 imports.add(referredEntitySet.getFullClassNameEntitySet()), //
-                                t.getSimplifiedPath(b));
+                                b.getPath());
                         p.format("%s}\n", indent.left());
                     });
             p.format("%s}\n", indent.left());
@@ -241,7 +245,7 @@ public final class Generator {
         return schemas //
                 .stream() //
                 .flatMap(schema -> {
-                    
+
                     List<String> types = new ArrayList<>();
                     Util.types(schema, TEntityType.class) //
                             .flatMap(t -> Stream.concat(Util //
@@ -1191,11 +1195,13 @@ public final class Generator {
             // write get methods from properties
             Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
                     .forEach(x -> {
-                        EntitySet es = new EntitySet(schema, t,x, names);
+                        EntitySet es = new EntitySet(schema, t, x, names);
                         Schema sch = names.getSchema(x.getEntityType());
-                        p.format("\n%spublic %s %s() {\n", indent, imports.add(es.getFullClassNameEntitySet()),
+                        p.format("\n%spublic %s %s() {\n", indent,
+                                imports.add(es.getFullClassNameEntitySet()),
                                 Names.getIdentifier(x.getName()));
-                        p.format("%sreturn new %s(\n", indent.right(), imports.add(es.getFullClassNameEntitySet()));
+                        p.format("%sreturn new %s(\n", indent.right(),
+                                imports.add(es.getFullClassNameEntitySet()));
                         p.format("%scontextPath.addSegment(\"%s\"));\n",
                                 indent.right().right().right().right(), x.getName());
                         p.format("%s}\n", indent.left().left().left().left().left());
@@ -1505,7 +1511,59 @@ public final class Generator {
                                     indent.right(), imports.add(RequestHelper.class), x.getName(),
                                     fieldName);
                             p.format("%s}\n", indent.left());
-                            // TODO how to patch streamed content?
+
+                            p.format("\n%s/**", indent);
+                            p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
+                            p.format("\n%s * a {@link StreamUploader} which can be used to upload the stream", indent);
+                            p.format("\n%s * to the {@code %s} property.", indent, x.getName());
+                            p.format("\n%s *", indent);
+                            p.format("\n%s * @return a StreamUploader if upload permitted", indent);
+                            p.format("\n%s */", indent);
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s<%s> %s() {\n", indent,
+                                    imports.add(Optional.class), //
+                                    imports.add(StreamUploader.class), //
+                                    Names.getPutMethod(x.getName())
+                                    );
+                            p.format("%sreturn %s(%s.singleCall());\n", //
+                                    indent.right(), //
+                                    Names.getPutMethod(x.getName()),
+                                    imports.add(UploadStrategy.class) //
+                                    );
+                            p.format("%s}\n", indent.left());
+
+                            p.format("\n%s/**", indent);
+                            p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
+                            p.format("\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream", indent);
+                            p.format("\n%s * to the {@code %s} property.", indent, x.getName());
+                            p.format("\n%s *", indent);
+                            p.format("\n%s * @return a StreamUploaderChunked if upload permitted", indent);
+                            p.format("\n%s */", indent);
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s<%s> %s() {\n", indent,
+                                    imports.add(Optional.class), //
+                                    imports.add(StreamUploaderChunked.class), //
+                                    Names.getPutChunkedMethod(x.getName())
+                                    );
+                            p.format("%sreturn %s(%s.chunked());\n", //
+                                    indent.right(), //
+                                    Names.getPutMethod(x.getName()),
+                                    imports.add(UploadStrategy.class) //
+                                    );
+                            p.format("%s}\n", indent.left());
+
+                            
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic <T> T %s(%s<T> strategy) {\n", //
+                                    indent, //
+                                    Names.getPutMethod(x.getName()), //
+                                    imports.add(UploadStrategy.class)
+                                    );
+                            p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //
+                                    indent.right(), //
+                                    x.getName()
+                                    );
+                            p.format("%s}\n", indent.left());
                         } else {
                             final String importedType = names.toImportedTypeNonCollection(t,
                                     imports);
