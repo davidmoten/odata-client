@@ -30,16 +30,6 @@ public final class AdHocMain {
         // "application/json;odata.metadata=full"))));
         // System.exit(0);
         // }
-        
-        client //
-        .users(mailbox) //
-        .messages() //
-        .filter("receivedDateTime ge 2020-03-30T00:00:00.000Z") //
-        .stream() //
-        .peek(System.out::println) //
-        .findFirst();
-        
-        System.exit(0);
 
         String s = client.users(mailbox).messages(
                 "AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACvxQL4gAAAA==") //
