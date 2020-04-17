@@ -36,9 +36,9 @@
         <changelog.version>2.2</changelog.version>
 
         <jackson.version>2.10.3</jackson.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13</junit.version>
         <olingo.version>4.7.1</olingo.version>
-        <httpclient.version>4.5.11</httpclient.version>
+        <httpclient.version>4.5.12</httpclient.version>
         <slf4j.version>1.7.30</slf4j.version>
         <release.plugin.version>2.5.1</release.plugin.version>
         <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
