@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -558,12 +559,14 @@ public final class Generator {
             p.format("%s}\n", indent.left());
             p.format("%s}\n", indent.left());
 
+            Set<String> methodNames = new HashSet<>();
             // write property getter and setters
             printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
-                    t.getProperties(), true);
-            printNavigationPropertyGetters(t, imports, indent, p, t.getNavigationProperties());
+                    t.getProperties(), true, methodNames);
+            addInheritedPropertyNames(t, methodNames);
+            printNavigationPropertyGetters(t, imports, indent, p, t.getNavigationProperties(), methodNames);
 
-            addUnmappedFieldsSetterAndGetter(imports, indent, p);
+            addUnmappedFieldsSetterAndGetter(imports, indent, p, methodNames);
 
             if (t.hasStream()) {
                 p.format("\n%s/**\n", indent);
@@ -599,9 +602,9 @@ public final class Generator {
 
             writeCopyMethod(t, simpleClassName, imports, indent, p, true);
 
-            writeBoundActionMethods(t, typeActions, imports, indent, p);
+            writeBoundActionMethods(t, typeActions, imports, indent, p, methodNames);
 
-            writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
+            writeBoundFunctionMethods(t, typeFunctions, imports, indent, p, methodNames);
 
             // write toString
             writeToString(t, simpleClassName, imports, indent, p);
@@ -614,16 +617,31 @@ public final class Generator {
         }
     }
 
+    private void addInheritedPropertyNames(EntityType t, Set<String> methodNames) {
+        while (t.hasBaseType()) {
+            EntityType et = names.getEntityType(t.getBaseType());
+            et.getProperties().forEach(p -> {
+                methodNames.add(Names.getGetterMethod(p.getName()));
+                methodNames.add(Names.getWithMethod(p.getName()));
+                if (isStream(p)) {
+                    methodNames.add(Names.getPutChunkedMethod(p.getName()));
+                    methodNames.add(Names.getPutMethod(p.getName()));
+                }
+            });
+            t = et;
+        }
+    }
+
     public static final int MAX_JAVADOC_WIDTH = 80;
 
     private void writeBoundActionMethods(EntityType t, Map<String, List<Action>> typeActions,
-            Imports imports, Indent indent, PrintWriter p) {
+            Imports imports, Indent indent, PrintWriter p, Set<String> methodNames) {
         typeActions //
                 .getOrDefault(t.getFullType(), Collections.emptyList()) //
-                .forEach(action -> writeAction(imports, indent, p, action));
+                .forEach(action -> writeAction(imports, indent, p, action, methodNames));
     }
 
-    private void writeAction(Imports imports, Indent indent, PrintWriter p, Action action) {
+    private void writeAction(Imports imports, Indent indent, PrintWriter p, Action action, Set<String> methodNames) {
         p.format("\n%s@%s(name = \"%s\")\n", //
                 indent, //
                 imports.add(com.github.davidmoten.odata.client.annotation.Action.class), //
@@ -634,6 +652,7 @@ public final class Generator {
                 .stream() //
                 .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava())) //
                 .collect(Collectors.joining(", "));
+        String methodName = disambiguateMethodName(action.getActionMethodName(), methodNames, "_Action");
         if (action.hasReturnType()) {
             ReturnType returnType = action.getReturnType(imports);
             p.format("%spublic %s<%s> %s(%s) {\n", //
@@ -641,7 +660,7 @@ public final class Generator {
                     returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
                             : imports.add(ActionRequestReturningNonCollection.class), //
                     action.getReturnType(imports).innerImportedFullClassName,
-                    action.getActionMethodName(), paramsDeclaration);
+                    methodName, paramsDeclaration);
             writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
             if (returnType.isCollection) {
                 p.format(
@@ -665,7 +684,7 @@ public final class Generator {
             p.format("%spublic %s %s(%s) {\n", //
                     indent, //
                     imports.add(ActionRequestNoReturn.class), //
-                    action.getActionMethodName(), paramsDeclaration);
+                    methodName, paramsDeclaration);
             writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
             p.format("%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
                     indent, //
@@ -675,14 +694,26 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private void writeBoundFunctionMethods(EntityType t, Map<String, List<Function>> typeFunctions,
-            Imports imports, Indent indent, PrintWriter p) {
-        typeFunctions //
-                .getOrDefault(t.getFullType(), Collections.emptyList()) //
-                .forEach(function -> writeFunction(imports, indent, p, function));
+    private static String disambiguateMethodName(String methodName, Set<String> methodNames,
+            String suffix) {
+        if (methodNames.contains(methodName)) {
+            methodName = methodName + suffix;
+        }
+        while (methodNames.contains(methodName)) {
+            methodName = methodName + "_";
+        }
+        methodNames.add(methodName);
+        return methodName;
     }
 
-    private void writeFunction(Imports imports, Indent indent, PrintWriter p, Function function) {
+    private void writeBoundFunctionMethods(EntityType t, Map<String, List<Function>> typeFunctions,
+            Imports imports, Indent indent, PrintWriter p, Set<String> propertyMethodNames) {
+        typeFunctions //
+                .getOrDefault(t.getFullType(), Collections.emptyList()) //
+                .forEach(function -> writeFunction(imports, indent, p, function, propertyMethodNames));
+    }
+
+    private void writeFunction(Imports imports, Indent indent, PrintWriter p, Function function, Set<String> methodNames) {
         p.format("\n%s@%s(name = \"%s\")\n", //
                 indent, //
                 imports.add(com.github.davidmoten.odata.client.annotation.Function.class), //
@@ -694,12 +725,13 @@ public final class Generator {
                 .map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava())) //
                 .collect(Collectors.joining(", "));
         Function.ReturnType returnType = function.getReturnType(imports);
+        String methodName = disambiguateMethodName(function.getActionMethodName(), methodNames, "_Function");
         p.format("%spublic %s<%s> %s(%s) {\n", //
                 indent, //
                 returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
                         : imports.add(FunctionRequestReturningNonCollection.class), //
                 function.getReturnType(imports).innerImportedFullClassName,
-                function.getActionMethodName(), paramsDeclaration);
+                methodName, paramsDeclaration);
         writeFunctionParameterMapAndNullChecks(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
@@ -936,10 +968,11 @@ public final class Generator {
             p.format("%sreturn \"%s\";\n", indent.right(), t.getFullType());
             p.format("%s}\n", indent.left());
 
+            Set<String> methodNames = new HashSet<>();
             printPropertyGetterAndSetters(t, imports, indent, p, simpleClassName, t.getFullType(),
-                    t.getProperties(), false);
+                    t.getProperties(), false, methodNames);
 
-            addUnmappedFieldsSetterAndGetter(imports, indent, p);
+            addUnmappedFieldsSetterAndGetter(imports, indent, p, methodNames);
 
             p.format("\n%s@%s\n", indent, imports.add(Override.class));
             p.format("%spublic void postInject(boolean addKeysToContextPath) {\n", indent);
@@ -952,7 +985,7 @@ public final class Generator {
             if (t.getProperties() //
                     .stream() //
                     .filter(x -> !isCollection(x)) //
-                    .filter(x -> !"Edm.Stream".equals(names.getType(x))) //
+                    .filter(x -> !isStream(x)) //
                     .findAny() //
                     .isPresent()) {
                 writeCopyMethod(t, simpleClassName, imports, indent, p, false);
@@ -1064,8 +1097,9 @@ public final class Generator {
                         indent.left();
                     });
             indent.right();
-            writeBoundActionMethods(t, typeActions, imports, indent, p);
-            writeBoundFunctionMethods(t, typeFunctions, imports, indent, p);
+            Set<String> methodNames = new HashSet<>();
+            writeBoundActionMethods(t, typeActions, imports, indent, p, methodNames);
+            writeBoundFunctionMethods(t, typeFunctions, imports, indent, p, methodNames);
             indent.left();
             p.format("\n}\n");
             writeToFile(imports, w, t.getClassFileEntityRequest());
@@ -1236,15 +1270,16 @@ public final class Generator {
                     });
 
             // write unbound actions
+            Set<String> methodNames = new HashSet<>();
             Util //
                     .types(schema, TAction.class) //
                     .filter(x -> !x.isIsBound())
-                    .forEach(x -> writeAction(imports, indent, p, new Action(x, names)));
+                    .forEach(x -> writeAction(imports, indent, p, new Action(x, names), methodNames));
 
             Util //
                     .types(schema, TFunction.class) //
                     .filter(x -> !x.isIsBound())
-                    .forEach(x -> writeFunction(imports, indent, p, new Function(x, names)));
+                    .forEach(x -> writeFunction(imports, indent, p, new Function(x, names), methodNames));
 
             p.format("\n}\n");
             File classFile = names.getClassFileContainer(schema, t.getName());
@@ -1332,8 +1367,9 @@ public final class Generator {
                         }
                     });
 
-            writeBoundActionMethods(t, collectionTypeActions, imports, indent, p);
-            writeBoundFunctionMethods(t, collectionTypeFunctions, imports, indent, p);
+            Set<String> methodNames = new HashSet<>();
+            writeBoundActionMethods(t, collectionTypeActions, imports, indent, p, methodNames);
+            writeBoundFunctionMethods(t, collectionTypeFunctions, imports, indent, p, methodNames);
 
             indent.left();
             p.format("\n}\n");
@@ -1422,9 +1458,10 @@ public final class Generator {
     }
 
     private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent,
-            PrintWriter p) {
+            PrintWriter p, Set<String> methodNames) {
         p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
         // TODO protect "setUnmappedField" name against clashes
+        methodNames.add("setUnmappedField");
         p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
         p.format("%sif (unmappedFields == null) {\n", indent.right());
         p.format("%sunmappedFields = new %s();\n", indent.right(),
@@ -1433,6 +1470,7 @@ public final class Generator {
         p.format("%sunmappedFields.put(name, value);\n", indent);
         p.format("%s}\n", indent.left());
 
+        methodNames.add("getUnmappedField");
         p.format("\n%s@%s\n", indent, imports.add(Override.class));
         p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
         p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
@@ -1455,7 +1493,7 @@ public final class Generator {
 
     private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports,
             Indent indent, PrintWriter p, String simpleClassName, String fullType,
-            List<TProperty> properties, boolean ofEntity) {
+            List<TProperty> properties, boolean ofEntity, Set<String> methodNames) {
 
         // write getters and setters
         properties //
@@ -1467,14 +1505,17 @@ public final class Generator {
                             "property " + x.getName(), Collections.emptyMap());
                     addPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+                    String methodName = Names.getGetterMethod(x.getName());
+                    methodNames.add(methodName);
                     if (isCollection) {
                         String inner = names.getInnerType(t);
                         String importedInnerType = names.toImportedTypeNonCollection(inner,
                                 imports);
                         boolean isEntity = names.isEntityWithNamespace(inner);
+                        
                         p.format("%spublic %s<%s> %s() {\n", indent,
                                 imports.add(CollectionPage.class), importedInnerType,
-                                Names.getGetterMethod(x.getName()));
+                                methodName);
                         if (isEntity) {
                             Schema sch = names.getSchema(inner);
                             p.format(
@@ -1501,17 +1542,19 @@ public final class Generator {
                         }
                         p.format("%s}\n", indent.left());
                     } else {
-                        boolean isStream = "Edm.Stream".equals(names.getType(x));
+                        boolean isStream = isStream(x);
                         if (isStream) {
                             p.format("%spublic %s<%s> %s() {\n", indent,
                                     imports.add(Optional.class), imports.add(StreamProvider.class),
-                                    Names.getGetterMethod(x.getName()));
+                                    methodName);
                             p.format(
                                     "%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
                                     indent.right(), imports.add(RequestHelper.class), x.getName(),
                                     fieldName);
                             p.format("%s}\n", indent.left());
 
+                            String putMethodName = Names.getPutMethod(x.getName());
+                            methodNames.add(putMethodName);
                             p.format("\n%s/**", indent);
                             p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
                             p.format("\n%s * a {@link StreamUploader} which can be used to upload the stream", indent);
@@ -1523,15 +1566,16 @@ public final class Generator {
                             p.format("\n%spublic %s<%s> %s() {\n", indent,
                                     imports.add(Optional.class), //
                                     imports.add(StreamUploader.class), //
-                                    Names.getPutMethod(x.getName())
-                                    );
+                                    putMethodName);
                             p.format("%sreturn %s(%s.singleCall());\n", //
                                     indent.right(), //
-                                    Names.getPutMethod(x.getName()),
+                                    putMethodName,
                                     imports.add(UploadStrategy.class) //
                                     );
                             p.format("%s}\n", indent.left());
 
+                            String putChunkedMethodName = Names.getPutChunkedMethod(x.getName());
+                            methodNames.add(putChunkedMethodName);
                             p.format("\n%s/**", indent);
                             p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
                             p.format("\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream", indent);
@@ -1543,11 +1587,10 @@ public final class Generator {
                             p.format("\n%spublic %s<%s> %s() {\n", indent,
                                     imports.add(Optional.class), //
                                     imports.add(StreamUploaderChunked.class), //
-                                    Names.getPutChunkedMethod(x.getName())
-                                    );
+                                    putChunkedMethodName);
                             p.format("%sreturn %s(%s.chunked());\n", //
                                     indent.right(), //
-                                    Names.getPutMethod(x.getName()),
+                                    putMethodName,
                                     imports.add(UploadStrategy.class) //
                                     );
                             p.format("%s}\n", indent.left());
@@ -1556,7 +1599,7 @@ public final class Generator {
                             addPropertyAnnotation(imports, indent, p, x.getName());
                             p.format("\n%spublic <T> T %s(%s<T> strategy) {\n", //
                                     indent, //
-                                    Names.getPutMethod(x.getName()), //
+                                    putMethodName, //
                                     imports.add(UploadStrategy.class)
                                     );
                             p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //
@@ -1570,7 +1613,7 @@ public final class Generator {
                             String importedTypeWithOptional = imports.add(Optional.class) + "<"
                                     + importedType + ">";
                             p.format("%spublic %s %s() {\n", indent, importedTypeWithOptional,
-                                    Names.getGetterMethod(x.getName()));
+                                    methodName);
                             p.format("%sreturn %s.ofNullable(%s);\n", indent.right(),
                                     imports.add(Optional.class), fieldName);
                             p.format("%s}\n", indent.left());
@@ -1580,8 +1623,10 @@ public final class Generator {
                                     + "} field (as defined in service metadata)");
                             structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
                             String classSuffix = "";
+                            String withMethodName = Names.getWithMethod(x.getName());
+                            methodNames.add(withMethodName);
                             p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName,
-                                    classSuffix, Names.getWithMethod(x.getName()), importedType,
+                                    classSuffix, withMethodName, importedType,
                                     fieldName);
                             if (x.isUnicode() != null && !x.isUnicode()) {
                                 p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
@@ -1607,6 +1652,10 @@ public final class Generator {
                     }
 
                 });
+    }
+
+    private boolean isStream(TProperty x) {
+        return "Edm.Stream".equals(names.getType(x));
     }
 
     private void addPropertyAnnotation(Imports imports, Indent indent, PrintWriter p, String name) {
@@ -1650,18 +1699,20 @@ public final class Generator {
     }
 
     private void printNavigationPropertyGetters(Structure<?> structure, Imports imports,
-            Indent indent, PrintWriter p, List<TNavigationProperty> properties) {
+            Indent indent, PrintWriter p, List<TNavigationProperty> properties, Set<String> methodNames) {
         // write getters
         properties //
                 .stream() //
                 .forEach(x -> {
                     String typeName = toClassName(x, imports);
+                    String methodName = Names.getGetterMethod(x.getName());
+                    methodNames.add(methodName);
                     structure.printPropertyJavadoc(p, indent, x.getName(),
                             "navigational property " + x.getName(), Collections.emptyMap());
                     addNavigationPropertyAnnotation(imports, indent, p, x.getName());
                     p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
                     p.format("%spublic %s %s() {\n", indent, typeName,
-                            Names.getGetterMethod(x.getName()));
+                            methodName);
                     if (isCollection(x)) {
                         if (names.isEntityWithNamespace(names.getType(x))) {
                             p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
