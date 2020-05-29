@@ -138,7 +138,7 @@ GraphService client = MsGraph
 If you want to do really complicated things with proxies or http in general you can use the `.httpClientProvider` or `.httpClientBuilderExtras` methods (coupled to Apache *HttpClient*). 
 
 ### Usage example 1 - simple
-Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread:
+Here's example usage of the *odata-client-msgraph* artifact (model classes generated from the MsGraph metadata). Let's connect to the Graph API and list all messages in the Inbox that are unread. Note that paging is completely handled for you in the `.stream()` method!
 
 ```java
 String mailbox = "me";
