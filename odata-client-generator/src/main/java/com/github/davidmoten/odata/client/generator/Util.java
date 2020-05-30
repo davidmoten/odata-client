@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client.generator;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -130,11 +131,12 @@ public final class Util {
     static String replaceAlias(String alias, String namespace, String type) {
         if (type == null || alias == null) {
             return type;
-        }
-        if (type.startsWith("Collection(")) {
+        } else if (Pattern.matches("^Collection\\(" + alias + "\\.[^.]+\\)$", type)) {
             return type.replaceFirst("^Collection\\(" + alias + "\\b", "Collection(" + namespace);
-        } else {
+        } else if (Pattern.matches("^" + alias + "\\.[^.]+$", type)) {
             return type.replaceFirst("^" + alias + "\\b", namespace);
+        } else {
+            return type;
         }
     }
 

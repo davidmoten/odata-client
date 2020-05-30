@@ -19,8 +19,20 @@ public class UtilTest {
     }
 
     @Test
-    public void test3() {
+    public void testCollectionReplace() {
         assertEquals("Collection(microsoft.graph.call)",
                 Util.replaceAlias("graph", "microsoft.graph", "Collection(graph.call)"));
+    }
+
+    @Test
+    public void testDontReplaceIfAliasHasExtraQualifier() {
+        assertEquals("graph.extra.call",
+                Util.replaceAlias("graph", "microsoft.graph", "graph.extra.call"));
+    }
+
+    @Test
+    public void testCollectionDontReplaceIfAliasHasExtraQualifier() {
+        assertEquals("Collection(graph.extra.call)",
+                Util.replaceAlias("graph", "microsoft.graph", "Collection(graph.extra.call)"));
     }
 }
