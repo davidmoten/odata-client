@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -128,6 +129,7 @@ public final class Serializer {
             JsonNode tree = m.readTree(s);
             ObjectNode o = (ObjectNode) tree;
             ChangedFields cf = entity.getChangedFields();
+            Set<String> cfs = cf.toSet();
             List<String> list = new ArrayList<>();
             Iterator<String> it = o.fieldNames();
             while (it.hasNext()) {
@@ -135,7 +137,14 @@ public final class Serializer {
                 if (!cf.contains(name) && !name.equals("@odata.type")) {
                     list.add(name);
                 }
+                cfs.remove(name);
             }
+            // Make sure we add any changed fields that don't appear in the tree (i.e. the null ones)
+            it = cfs.iterator();
+            while (it.hasNext()) {
+                String name = it.next();
+                o.put(name,(String)null);
+            }            
             o.remove(list);
             return o.toString();
         } catch (IOException e) {
