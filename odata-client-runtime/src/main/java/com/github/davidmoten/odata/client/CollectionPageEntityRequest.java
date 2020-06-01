@@ -60,6 +60,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).search(clause);
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> expand(String clause) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).expand(clause);
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> filter(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).filter(clause);
     }
