@@ -20,6 +20,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     private Optional<Long> top = Optional.empty();
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
+    private Optional<String> entityType = Optional.empty();
     private String metadata = "minimal";
 
     CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
@@ -73,6 +74,11 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         return this;
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> entityType(String entityType) {
+        this.entityType = Optional.of(entityType);
+        return this;
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> metadataFull() {
         this.metadata = "full";
         return this;
@@ -91,7 +97,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand);
+                select, expand, entityType);
     }
 
     public CollectionPage<T> get() {

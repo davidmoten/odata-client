@@ -15,10 +15,12 @@ public final class CollectionRequestOptions implements RequestOptions {
     private final Optional<Long> top;
     private final Optional<String> select;
     private final Optional<String> expand;
+    private final Optional<String> entityType;
 
     public CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
-            Optional<Long> top, Optional<String> select, Optional<String> expand) {
+            Optional<Long> top, Optional<String> select, Optional<String> expand,
+            Optional<String> entityType) {
         this.requestHeaders = requestHeaders;
         this.search = search;
         this.filter = filter;
@@ -27,6 +29,13 @@ public final class CollectionRequestOptions implements RequestOptions {
         this.top = top;
         this.select = select;
         this.expand = expand;
+        this.entityType = entityType;
+    }
+
+    public CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
+            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
+            Optional<Long> top, Optional<String> select, Optional<String> expand) {
+        this(requestHeaders,search,filter,orderBy,skip,top,select,expand,null);
     }
 
     @Override
@@ -45,6 +54,10 @@ public final class CollectionRequestOptions implements RequestOptions {
         select.ifPresent(x -> map.put("$select", x));
         expand.ifPresent(x -> map.put("$expand", x));
         return map;
+    }
+
+    public Optional<String> getEntityType() {
+        return entityType;
     }
 
 }

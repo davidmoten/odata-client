@@ -24,7 +24,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     }
 
     CollectionPage<T> get(CollectionRequestOptions options) {
-        ContextPath cp = contextPath.addQueries(options.getQueries());
+        ContextPath cp = options.getEntityType().map(t -> contextPath.addSegment(t)).orElse(contextPath).addQueries(options.getQueries());
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
                 false);
         HttpResponse r = cp.context().service().get(cp.toUrl(), h);
@@ -78,6 +78,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(clause);
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> entityType(String entityType) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).entityType(entityType);
     }
 
     public CollectionEntityRequestOptionsBuilder<T, R> metadataFull() {
