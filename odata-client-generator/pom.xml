@@ -10,6 +10,7 @@
     </parent>
     <artifactId>odata-client-generator</artifactId>
     <name>${project.artifactId}</name>
+    <packaging>bundle</packaging>
     <description>OData client generator</description>
 
     <dependencies>

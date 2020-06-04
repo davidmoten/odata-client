@@ -47,6 +47,7 @@
         <release.plugin.version>2.5.1</release.plugin.version>
         <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
         <spotbugs.plugin.version>3.1.12.2</spotbugs.plugin.version>
+        <bundle.plugin.version>4.2.1</bundle.plugin.version>
     </properties>
 
     <licenses>
@@ -162,6 +163,17 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${bundle.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                    </instructions>
+                </configuration>
             </plugin>
         </plugins>
     </build>

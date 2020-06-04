@@ -10,6 +10,7 @@
     </parent>
     <artifactId>odata-client-runtime</artifactId>
     <name>${project.artifactId}</name>
+    <packaging>bundle</packaging>
     <description>OData client runtime for use with generated code</description>
 
     <dependencies>
@@ -89,5 +90,26 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Export-Package>
+                            com.github.davidmoten.odata.client,
+                            com.github.davidmoten.odata.client.annotation,
+                            com.github.davidmoten.odata.client.edm,
+                            com.github.davidmoten.odata.client.internal, <!-- Guess internal doesn't really mean internal -->
+                            com.github.davidmoten.odata.csdl.v4.extras
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -1,4 +1,4 @@
-package com.github.davidmoten.msgraph;
+package com.github.davidmoten.msgraph.builder;
 
 import com.github.davidmoten.odata.client.Context;
 
