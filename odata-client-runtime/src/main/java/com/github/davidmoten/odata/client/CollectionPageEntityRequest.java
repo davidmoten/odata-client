@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -47,6 +49,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public Stream<T> stream() {
         return get().stream();
     }
+    
+    public List<T> toList() {
+        return get().toList();
+    }
 
     public T post(T entity) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).post(entity);
@@ -61,8 +67,12 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     
     private static <T extends ODataEntityType> String odataTypeName(Class<T> cls) {
         try {
-            return cls.newInstance().odataTypeName();
-        } catch (InstantiationException | IllegalAccessException e) {
+            Constructor<T> constructor = cls.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T o = constructor.newInstance();
+            return o.odataTypeName();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
             throw new ClientException(e);
         }
     }

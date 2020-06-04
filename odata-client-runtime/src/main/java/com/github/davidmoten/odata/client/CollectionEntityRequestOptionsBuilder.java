@@ -133,4 +133,8 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         return request.post(build(), entity);
     }
 
+    public List<T> toList() {
+        return get().toList();
+    }
+
 }
