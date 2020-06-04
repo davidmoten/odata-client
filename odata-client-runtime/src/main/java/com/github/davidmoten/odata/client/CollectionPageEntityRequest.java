@@ -51,6 +51,21 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public T post(T entity) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).post(entity);
     }
+    
+    @SuppressWarnings("unchecked")
+    public <S extends T> CollectionPageEntityRequest<S, EntityRequest<S>> filter(Class<S> cls) {
+        //TODO should not allow multiple calls to filter?
+        return new CollectionPageEntityRequest<S, EntityRequest<S>>(contextPath.addSegment(odataTypeName(cls)), cls,
+                (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, schemaInfo);
+    }
+    
+    private static <T extends ODataEntityType> String odataTypeName(Class<T> cls) {
+        try {
+            return cls.newInstance().odataTypeName();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new ClientException(e);
+        }
+    }
 
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
