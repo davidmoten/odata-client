@@ -34,12 +34,16 @@ public final class Serializer {
 
     private static final ObjectMapper MAPPER = createObjectMapper();
 
-    public static ObjectMapper createObjectMapper() {
+    private static ObjectMapper createObjectMapper() {
+        return createObjectMapper(false);
+    }
+
+    private static ObjectMapper createObjectMapper(boolean includeNulls) {
         return new ObjectMapper() //
                 .registerModule(new Jdk8Module()) //
                 .registerModule(new JavaTimeModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) //
-                .setSerializationInclusion(Include.NON_NULL) //
+                .setSerializationInclusion(includeNulls ? Include.ALWAYS : Include.NON_NULL) //
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //
                 // StdDateFormat is ISO8601 since jackson 2.9
                 .setDateFormat(new StdDateFormat().withColonInTimeZone(true));
@@ -123,7 +127,7 @@ public final class Serializer {
 
     public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
         try {
-            ObjectMapper m = createObjectMapper();
+            ObjectMapper m = createObjectMapper(true);
             String s = m.writeValueAsString(entity);
             JsonNode tree = m.readTree(s);
             ObjectNode o = (ObjectNode) tree;
