@@ -59,13 +59,15 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     }
     
     /**
-     * Returns a request for only those members of the collection that are of the requested type.
-     * This is referred to in the <a href=
+     * Returns a request for only those members of the collection that are of the
+     * requested type. This is referred to in the <a href=
      * "http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html">OData
      * 4.01 specification</a> as a "restriction to instances of the derived type".
      * 
-     * @param <S> the class ("derived type") to be restricting to
-     * @param cls the class of S
+     * @param <S>
+     *            the type ("derived type") to be restricting to
+     * @param cls
+     *            the Class of the type to restrict to
      * @return a request for a collection of instances with the given type
      */
     @SuppressWarnings("unchecked")
