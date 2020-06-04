@@ -2,6 +2,8 @@ package com.github.davidmoten.msgraph;
 
 import java.util.concurrent.TimeUnit;
 
+import com.github.davidmoten.msgraph.builder.AuthenticationEndpoint;
+
 import com.github.davidmoten.odata.client.RequestHeader;
 
 import odata.msgraph.client.container.GraphService;

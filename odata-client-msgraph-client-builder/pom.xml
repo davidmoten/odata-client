@@ -10,6 +10,7 @@
     </parent>
     <artifactId>odata-client-msgraph-client-builder</artifactId>
     <name>${project.artifactId}</name>
+    <packaging>bundle</packaging>
     <description>Builds client for Microsoft Graph 1.0 and Beta, includes MsGraph authentication support</description>
 
     <dependencies>

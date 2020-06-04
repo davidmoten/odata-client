@@ -10,6 +10,7 @@
     </parent>
     <artifactId>odata-client-msgraph</artifactId>
     <name>${project.artifactId}</name>
+    <packaging>bundle</packaging>
     <description>OData client generator</description>
     <properties>
         <log4j.version>2.13.0</log4j.version>
