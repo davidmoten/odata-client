@@ -124,7 +124,7 @@ public class GraphServiceTest {
         assertEquals(6762, f.getContentBytes().get().length);
         assertEquals("lamp_thin.png", f.getContentId().get());
     }
-
+    
     @Test
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
         GraphService client = clientBuilder() //
@@ -181,6 +181,76 @@ public class GraphServiceTest {
                 .get();
         String s = new String(Util.read(a.getStream().get().get()));
         assertEquals(60, s.length());
+    }
+    
+    @Test
+    public void testCollectionTypesHonourInheritance() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
+                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments",
+                        "/response-attachments-includes-item.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .build();
+        List<Attachment> list = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages("1") //
+                .metadataFull() //
+                .get() //
+                .getAttachments() //
+                .toList();
+        assertEquals(2, list.size());
+        assertTrue(list.get(0) instanceof ItemAttachment);
+        assertTrue(list.get(1) instanceof FileAttachment);
+    }
+    
+    @Test
+    public void testCollectionWithDerivedType() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
+                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments/microsoft.graph.itemAttachment",
+                        "/response-attachments-one-item.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .build();
+        List<ItemAttachment> list = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages("1") //
+                .metadataFull() //
+                .get() //
+                .getAttachments() //
+                .filter(ItemAttachment.class)
+                .toList();
+        assertEquals(1, list.size());
+        assertTrue(list.get(0) instanceof ItemAttachment);
+    }
+    
+    @Test
+    public void testCollectionWithDerivedTypeFilterAvailableInNextBuilder() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
+                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments/microsoft.graph.itemAttachment",
+                        "/response-attachments-one-item.json", RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_NONE) //
+                .build();
+        List<ItemAttachment> list = client //
+                .users("fred") //
+                .mailFolders("inbox") //
+                .messages("1") //
+                .metadataFull() //
+                .get() //
+                .getAttachments() //
+                .metadataNone() //
+                .filter(ItemAttachment.class)
+                .toList();
+        assertEquals(1, list.size());
+        assertTrue(list.get(0) instanceof ItemAttachment);
     }
 
     @Test

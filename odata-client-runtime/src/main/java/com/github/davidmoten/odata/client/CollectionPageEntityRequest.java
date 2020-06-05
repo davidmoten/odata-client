@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -47,9 +49,43 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public Stream<T> stream() {
         return get().stream();
     }
+    
+    public List<T> toList() {
+        return get().toList();
+    }
 
     public T post(T entity) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).post(entity);
+    }
+    
+    /**
+     * Returns a request for only those members of the collection that are of the
+     * requested type. This is referred to in the <a href=
+     * "http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html">OData
+     * 4.01 specification</a> as a "restriction to instances of the derived type".
+     * 
+     * @param <S>
+     *            the type ("derived type") to be restricting to
+     * @param cls
+     *            the Class of the type to restrict to
+     * @return a request for a collection of instances with the given type
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends T> CollectionPageEntityRequest<S, EntityRequest<S>> filter(Class<S> cls) {
+        return new CollectionPageEntityRequest<S, EntityRequest<S>>(contextPath.addSegment(odataTypeName(cls)), cls,
+                (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, schemaInfo);
+    }
+    
+    private static <T extends ODataEntityType> String odataTypeName(Class<T> cls) {
+        try {
+            Constructor<T> constructor = cls.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T o = constructor.newInstance();
+            return o.odataTypeName();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new ClientException(e);
+        }
     }
 
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {

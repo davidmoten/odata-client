@@ -13,18 +13,35 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     private final CollectionPageEntityRequest<T, R> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
-    private Optional<String> search = Optional.empty();
-    private Optional<String> filter = Optional.empty();
-    private Optional<String> orderBy = Optional.empty();
-    private Optional<Long> skip = Optional.empty();
-    private Optional<Long> top = Optional.empty();
-    private Optional<String> select = Optional.empty();
-    private Optional<String> expand = Optional.empty();
-    private String metadata = "minimal";
+    private Optional<String> search;
+    private Optional<String> filter;
+    private Optional<String> orderBy;
+    private Optional<Long> skip;
+    private Optional<Long> top;
+    private Optional<String> select;
+    private Optional<String> expand;
+    private String metadata;
 
     CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
-        this.request = request;
+        this(request, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), "minimal");
     }
+    
+    private CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request, Optional<String> search,
+            Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
+            Optional<String> select, Optional<String> expand, String metadata) {
+        this.request = request;
+        this.search = search;
+        this.filter = filter;
+        this.orderBy = orderBy;
+        this.skip = skip;
+        this.top = top;
+        this.select = select;
+        this.expand = expand;
+        this.metadata = metadata;
+    }
+
+
 
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String name, String value) {
         requestHeaders.add(new RequestHeader(name, value));
@@ -87,7 +104,12 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         this.metadata = "none";
         return this;
     }
-
+    
+    public <S extends T> CollectionEntityRequestOptionsBuilder<S, EntityRequest<S>> filter(Class<S> cls) {
+        return new CollectionEntityRequestOptionsBuilder<S, EntityRequest<S>>(request.filter(cls), search, filter,
+                orderBy, skip, top, select, expand, metadata);
+    }
+    
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
@@ -109,6 +131,10 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     public T post(T entity) {
         return request.post(build(), entity);
+    }
+
+    public List<T> toList() {
+        return get().toList();
     }
 
 }

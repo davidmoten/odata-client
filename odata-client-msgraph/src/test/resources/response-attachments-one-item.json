@@ -1,0 +1,19 @@
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('user001%40mycompany.com')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments",
+	"value": [
+		{
+			"@odata.type": "#microsoft.graph.itemAttachment",
+			"@odata.id": "users('user001%40mycompany.com')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAYI_9no28PU_8T27UrnPn-Q%3D%3D')",
+			"@odata.editLink": "editLink1",
+			"id": "AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAYI_9no28PU_8T27UrnPn-Q==",
+			"lastModifiedDateTime@odata.type": "#DateTimeOffset",
+			"lastModifiedDateTime": "2020-02-07T05:25:37Z",
+			"name": "Something",
+			"contentType": null,
+			"size": 18697,
+			"isInline": false,
+			"item@odata.associationLink": "https://graph.microsoft.com/v1.0/users('user001%40mycompany.com')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAYI_9no28PU_8T27UrnPn-Q%3D%3D')/microsoft.graph.itemAttachment/item/$ref",
+			"item@odata.navigationLink": "https://graph.microsoft.com/v1.0/users('user001%40mycompany.com')/mailFolders('Inbox')/messages('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAA%3D%3D')/attachments('AQMkADQ3YjdiNWUxLTBmYWQtNDMwYy04Yzc0LTI0MDdmOWQ4NDFjNgBGAAAD4Rwe0e6XOE6Ck412HUUUTwcAUb5I0z9LnUy3cpFj0m9MUgAAAgEMAAAA3NEVJKXfYEuEjYE7msyHXwACufIe7gAAAAESABAAYI_9no28PU_8T27UrnPn-Q%3D%3D')/microsoft.graph.itemAttachment/item"
+		}
+	]
+}
