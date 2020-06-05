@@ -33,7 +33,7 @@ public class GeneratorTest {
                 "microsoft.graph.generated");
         Options options = new Options(GENERATED, Collections.singletonList(schemaOptions));
         Generator g = new Generator(options,
-                Collections.singletonList(t.getDataServices().getSchema().get(0)));
+                t.getDataServices().getSchema());
         g.generate();
         File file = new File(GENERATED + "/microsoft/graph/generated/entity/FileAttachment.java");
         Files.copy(file.toPath(), new File("../src/docs/FileAttachment.java").toPath(),
