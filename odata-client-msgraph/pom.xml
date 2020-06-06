@@ -75,6 +75,10 @@
                                     <namespace>microsoft.graph</namespace>
                                     <packageName>odata.msgraph.client</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.callRecords</namespace>
+                                    <packageName>odata.msgraph.client.callrecords</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

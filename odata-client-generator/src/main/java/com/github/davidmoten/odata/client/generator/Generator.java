@@ -71,6 +71,7 @@ import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.UploadStrategy;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
+import com.github.davidmoten.odata.client.generator.Names.SchemaAndType;
 import com.github.davidmoten.odata.client.generator.model.Action;
 import com.github.davidmoten.odata.client.generator.model.Action.Parameter;
 import com.github.davidmoten.odata.client.generator.model.Action.ReturnType;
@@ -110,6 +111,16 @@ public final class Generator {
         schemas //
                 .stream() //
                 .forEach(s -> log("  " + s.getNamespace()));
+        
+        schemas //
+        .stream() //
+        .flatMap(s -> Util
+                .filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
+                .map(t -> new SchemaAndType<TEntityType>(s, t))) //
+        .map(x -> names.toTypeWithNamespace(x.schema, x.type.getName())
+                ) //
+        .forEach(System.out::println);
+        
         log("-----------------------------------");
         log("replacing aliases");
         Util.replaceAliases(schemas);
