@@ -40,13 +40,13 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${release.plugin.version}</version>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
                 <configuration>
-                    <skip>true</skip>
+                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
                 </configuration>
-            </plugin>        
+            </plugin>   
             <plugin>
                 <groupId>com.github.davidmoten</groupId>
                 <artifactId>odata-client-maven-plugin</artifactId>
