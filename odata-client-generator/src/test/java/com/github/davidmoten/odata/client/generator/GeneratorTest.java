@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.oasisopen.odata.csdl.v4.TDataServices;
 import org.oasisopen.odata.csdl.v4.TEdmx;
 
+import com.github.davidmoten.guavamini.Lists;
+
 public class GeneratorTest {
 
     private static final String GENERATED = "target/generated-sources/odata";
@@ -29,9 +31,11 @@ public class GeneratorTest {
         TEdmx t = unmarshaller.unmarshal(
                 new StreamSource(new FileInputStream("src/main/odata/msgraph-metadata.xml")),
                 TEdmx.class).getValue();
-        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph",
+        SchemaOptions schemaOptions1 = new SchemaOptions("microsoft.graph",
                 "microsoft.graph.generated");
-        Options options = new Options(GENERATED, Collections.singletonList(schemaOptions));
+        SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords",
+                "microsoft.graph.callrecords.generated");
+        Options options = new Options(GENERATED, Lists.newArrayList(schemaOptions1, schemaOptions2));
         Generator g = new Generator(options,
                 t.getDataServices().getSchema());
         g.generate();

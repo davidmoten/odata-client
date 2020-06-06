@@ -13,7 +13,6 @@ import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.container.GraphService;
-import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.BodyType;
