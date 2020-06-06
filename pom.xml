@@ -48,6 +48,7 @@
         <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
         <spotbugs.plugin.version>3.1.12.2</spotbugs.plugin.version>
         <bundle.plugin.version>4.2.1</bundle.plugin.version>
+        <nexus.staging.plugin.version>1.6.8</nexus.staging.version>
     </properties>
 
     <licenses>
