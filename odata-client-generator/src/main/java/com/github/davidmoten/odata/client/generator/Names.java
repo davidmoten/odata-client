@@ -388,7 +388,7 @@ public final class Names {
         return toDirectory(output, o.pkg() + o.packageSuffixEntity());
     }
 
-    private static final class SchemaAndType<T> {
+    static final class SchemaAndType<T> {
         final Schema schema;
         final T type;
 
@@ -494,7 +494,7 @@ public final class Names {
         return Names.toSimpleClassName(name + o.entityRequestClassSuffix());
     }
 
-    private String toTypeWithNamespace(Schema schema, String simpleType) {
+    String toTypeWithNamespace(Schema schema, String simpleType) {
         return schema.getNamespace() + "." + simpleType;
     }
 
