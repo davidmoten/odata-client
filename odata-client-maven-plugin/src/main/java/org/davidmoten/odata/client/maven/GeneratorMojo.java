@@ -111,6 +111,7 @@ public class GeneratorMojo extends AbstractMojo {
                         } else if (!autoPackage) {
                             return Stream.empty();
                         } else {
+                            getLog().info("schema options not found so autogenerating for namespace=" + schema.getNamespace());
                             return Stream.of(new SchemaOptions(schema.getNamespace(),
                                     blankIfNull(autoPackagePrefix)
                                             + toPackage(schema.getNamespace())));
