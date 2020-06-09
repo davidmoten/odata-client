@@ -44,13 +44,13 @@ public class SerializerTest {
     static final class Person implements ODataEntityType {
 
         @JsonProperty("UserName")
-        public String userName;
+        protected String userName;
 
         @JsonProperty("FirstName")
-        String firstName;
+        protected String firstName;
 
         @JsonProperty("LastName")
-        String lastName;
+        protected String lastName;
 
         ChangedFields changedFields;
 
