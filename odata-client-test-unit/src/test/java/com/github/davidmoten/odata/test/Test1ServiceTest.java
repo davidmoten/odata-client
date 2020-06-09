@@ -36,9 +36,12 @@ public class Test1ServiceTest {
     }
 
     @Test
-    public void testFieldsChangedToNull() throws JsonProcessingException {
+    public void testFieldChangedToNull() throws JsonProcessingException {
         Product p = Product.builder().ID(12).name("bingo").build();
         Product p2 = p.withName(null);
+        // note that changed fields hasn't been reset yet so all fields still appear to
+        // have been changed. A unit test for using withXXX on an object returned from 
+        // a post is a different matter though (see odata-client-test-unit module).
         assertEquals("{\"@odata.type\":\"Test1.A.Product\",\"ID\":12,\"Name\":null}",
                 Serializer.INSTANCE.serializeChangesOnly(p2));
     }
