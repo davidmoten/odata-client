@@ -524,7 +524,7 @@ public final class Generator {
             p.format("IMPORTSHERE");
 
             t.printJavadoc(p, indent);
-            printJsonIncludeNonNull(imports, p);
+            // printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n", simpleClassName,
                     t.getExtendsClause(imports), imports.add(ODataEntityType.class));
@@ -879,11 +879,6 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private void printJsonIncludeNonNull(Imports imports, PrintWriter p) {
-        p.format("\n@%s(%s.NON_NULL)\n", imports.add(JsonInclude.class),
-                imports.add(Include.class));
-    }
-
     private void writePatchAndPutMethods(EntityType t, String simpleClassName, Imports imports,
             Indent indent, PrintWriter p) {
         // write patch() method
@@ -956,7 +951,7 @@ public final class Generator {
             p.format("IMPORTSHERE");
 
             t.printJavadoc(p, indent);
-            printJsonIncludeNonNull(imports, p);
+            // printJsonIncludeNonNull(imports, p);
             printPropertyOrder(imports, p, t.getProperties());
             p.format("public class %s%s implements %s {\n\n", simpleClassName,
                     t.getExtendsClause(imports), imports.add(ODataType.class));
