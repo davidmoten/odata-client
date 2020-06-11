@@ -260,7 +260,7 @@ CollectionPage<User> users = client.users().get();
 ```
 `CollectionPage` has methods `currentPage` and `nextPage`.
 
-So what if you want to have some sort of paging in your UI? If you do, remember that you have no control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. See issue #3 for a discussion. I might add a convenience method to the API to help with this case.
+So what if you want to have some sort of paging in your UI? If you do, remember that you have no control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. See issue [#3](https://github.com/davidmoten/odata-client/issues/3) for a discussion. I might add a convenience method to the API to help with this case.
 
 ### Updating Microsoft Graph metadata
 Developer instructions:
