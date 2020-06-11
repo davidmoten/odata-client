@@ -227,6 +227,41 @@ drafts //
     .messages(saved.getId().get()) //
     .delete();
 ```
+### Collections and paging
+*odata-client* handles the annoying paging stuff under the covers so you don't have to worry about. Let's look at some examples.
+
+We'll get the list of users:
+
+```java
+List<User> users = client.users().toList();
+```
+That was easy wasn't it! Under the covers *odata-client* kept calling pages (using `@odata.nextLink`) and building the list to return. This won't always be a good idea because the Collection might be very big and you might not want all the data anyway. What are some alternatives?
+
+`client.users()` is itself an `Iterable` so you can do this:
+
+```java
+for (User user: client.users()) 
+  System.out.println(user);
+```
+
+You can use `.stream()`:
+
+```java
+client.users()
+  .stream() 
+  .forEach(System.out::println);
+```
+Again, all paging is taking care of. When the current page runs out the library requests another one.
+
+If you do want to do explicit paging then you can do this:
+
+```java
+CollectionPage<User> users = client.users().get();
+```
+`CollectionPage` has methods `currentPage` and `nextPage`.
+
+So what if you want to have some sort of paging in your UI? If you do, remember that you have no control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. See issue #3 for a discussion. I might add a convenience method to the API to help with this case.
+
 ### Updating Microsoft Graph metadata
 Developer instructions:
 ```bash
