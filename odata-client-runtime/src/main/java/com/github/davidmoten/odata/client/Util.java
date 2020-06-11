@@ -5,6 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class Util {
 
@@ -32,5 +39,31 @@ public class Util {
 
     public static String utf8(InputStream in) {
         return new String(toByteArray(in), StandardCharsets.UTF_8);
+    }
+
+    public static <T> Stream<List<T>> buffer(Stream<T> stream, int size) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(buffer(stream.iterator(), size), 0), false);
+    }
+
+    public static <T> Iterator<List<T>> buffer(Iterator<T> it, int size) {
+        return new Iterator<List<T>>() {
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public List<T> next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                List<T> list = new ArrayList<>();
+                for (long v = 0; v < size && hasNext(); v++) {
+                    list.add(it.next());
+                }
+                return list;
+            }
+        };
     }
 }
