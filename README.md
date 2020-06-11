@@ -243,6 +243,12 @@ That was easy wasn't it! Under the covers *odata-client* kept calling pages (usi
 for (User user: client.users()) 
   System.out.println(user);
 ```
+or 
+```java
+Iterator<User> it = client.users().iterator();
+while (it.hasNext()) 
+  System.out.println(it.next());
+```
 
 You can use `.stream()`:
 
@@ -260,12 +266,11 @@ CollectionPage<User> users = client.users().get();
 ```
 `CollectionPage` has methods `currentPage` and `nextPage`.
 
-So what if you want to have some sort of paging in your UI? If you do, remember that you have no control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. *odata-client* has two utility methods to help you out. One is for iterators and the other for streams:
+So what if you want to have some sort of paging in your UI? If you do, remember that you have no control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. *odata-client* has two utility methods to help you out. Let's chop the stream of User into pages of 15 elements:
 
 ```java
 import com.github.davidmoten.odata.client.Util;
 
-// Suppose you want the collection chopped into pages of 15 elements
 Iterator<List<User>> it = Util.buffer(client.users().iterator(), 15);
 ```
 or with streams:
