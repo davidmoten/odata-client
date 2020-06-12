@@ -80,6 +80,7 @@ public class GraphServiceTest {
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
+        assertEquals("https://graph.microsoft.com/v1.0/me/contacts?$skip=10", c.nextLink().get());
         assertTrue(c.nextPage().isPresent());
         c = c.nextPage().get();
         assertEquals(10, c.currentPage().size());
