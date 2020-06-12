@@ -30,6 +30,10 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     public List<T> currentPage() {
         return list;
     }
+    
+    public Optional<String> nextLink() {
+        return nextLink;
+    }
 
     @Override
     public Optional<CollectionPage<T>> nextPage() {
