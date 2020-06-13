@@ -20,6 +20,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
     private String metadata = "minimal";
+    private Optional<String> urlOverride = Optional.empty();
 
     CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request) {
         this.request = request;
@@ -86,11 +87,16 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.metadata = "none";
         return this;
     }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> urlOverride(String urlOverride) {
+        this.urlOverride = Optional.ofNullable(urlOverride);
+        return this;
+    }
 
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand);
+                select, expand, urlOverride);
     }
 
     public CollectionPage<T> get() {
