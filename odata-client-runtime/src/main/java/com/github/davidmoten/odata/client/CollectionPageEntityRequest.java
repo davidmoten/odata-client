@@ -29,7 +29,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         ContextPath cp = contextPath.addQueries(options.getQueries());
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
                 false);
-        HttpResponse r = cp.context().service().get(cp.toUrl(), h);
+        HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h);
         RequestHelper.checkResponseCode(cp, r, 200, 299);
         return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp,
                 schemaInfo, h);

@@ -46,4 +46,9 @@ public final class EntityRequestOptions<T extends ODataEntityType> implements Re
         return map;
     }
 
+    @Override
+    public Optional<String> getUrlOverride() {
+        return Optional.empty();
+    }
+
 }
