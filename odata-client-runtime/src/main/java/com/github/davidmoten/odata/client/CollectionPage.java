@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 //TODO merge CollectionPageNonEntity and CollectionPageEntity into CollectionPage
 @JsonIgnoreType
@@ -44,8 +45,9 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
+            RequestHelper.checkResponseCode(contextPath, response, 200, 299);
             return Optional
-                    .of(contextPath.context().serializer().deserializeCollectionPageNonEntity(
+                    .of(contextPath.context().serializer().deserializeCollectionPage(
                             response.getText(), cls, contextPath, schemaInfo, requestHeaders));
         } else {
             return Optional.empty();

@@ -34,6 +34,13 @@ public class MsGraphMain {
                 .clientSecret(System.getProperty("clientSecret")) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
+        
+        
+        client.users().stream().forEach(user -> System.out.println(user.getUserPrincipalName()));
+        
+        
+        System.exit(0);
+        System.out.println(client.users().top(200).skip(100).get().currentPage().size());
 
         String mailbox = System.getProperty("mailbox");
         MailFolderRequest drafts = client //

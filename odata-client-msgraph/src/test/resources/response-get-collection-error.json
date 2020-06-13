@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "Authorization_RequestDenied",
+    "message": "Insufficient privileges to complete the operation.",
+    "innerError": {
+      "date": "2020-06-13T00:48:55",
+      "request-id": "31c91f39-f97b-4f8b-8f6f-c4c00c1a8fe9"
+    }
+  }
+}
