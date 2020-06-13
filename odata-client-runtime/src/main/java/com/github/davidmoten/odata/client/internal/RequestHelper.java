@@ -81,7 +81,7 @@ public final class RequestHelper {
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
     }
 
-    private static void checkResponseCode(String url, HttpResponse response,
+    public static void checkResponseCode(String url, HttpResponse response,
             int expectedResponseCodeMin, int expectedResponseCodeMax) {
         if (response.getResponseCode() < expectedResponseCodeMin
                 || response.getResponseCode() > expectedResponseCodeMax) {

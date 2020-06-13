@@ -13,10 +13,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Sets;
+import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
@@ -114,6 +116,21 @@ public class GraphServiceTest {
         CollectionPage<Contact> c = client.me().contacts().top(200).skip(3).get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
+    }
+    
+    @Test
+    public void testGetCollectionThrowsInformativeError() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users", "/response-get-collection-error.json", HttpMethod.GET,
+                        403, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .build();
+        try {
+            client.users().get().currentPage();
+            Assert.fail();
+        } catch (ClientException e) {
+            assertTrue(e.getMessage().contains("Insufficient privileges"));
+        }
     }
     
     @Test

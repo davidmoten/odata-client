@@ -68,7 +68,7 @@ public class CollectionPageNonEntityRequest<T> {
         return cp //
                 .context() //
                 .serializer() //
-                .deserializeCollectionPageNonEntity( //
+                .deserializeCollectionPage( //
                         r.getText(), //
                         cls, //
                         cp, //
