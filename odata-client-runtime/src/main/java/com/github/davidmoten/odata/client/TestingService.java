@@ -52,6 +52,11 @@ public final class TestingService {
         public Response(String text) {
             this(text, HttpURLConnection.HTTP_OK);
         }
+
+        @Override
+        public String toString() {
+            return "Response [resource=" + resource + ", statusCode=" + statusCode + "]";
+        }
     }
 
     public static abstract class BuilderBase<T extends BuilderBase<?, R>, R> {
