@@ -88,6 +88,35 @@ public class GraphServiceTest {
     }
 
     @Test
+    public void testGetCollectionGetNextLink() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/me/contacts", "/response-contacts.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                // TODO what request header should be specified for next page?
+                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Contact> c = client.me().contacts().get();
+        assertNotNull(c);
+        assertEquals(10, c.currentPage().size());
+        assertEquals("https://graph.microsoft.com/v1.0/me/contacts?$skip=10", c.nextLink().get());
+    }
+    
+    @Test
+    public void testGetCollectionUsingSkip() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/me/contacts?$skip=3&$top=200", "/response-contacts.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                // TODO what request header should be specified for next page?
+                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Contact> c = client.me().contacts().top(200).skip(3).get();
+        assertNotNull(c);
+        assertEquals(10, c.currentPage().size());
+    }
+    
+    @Test
     public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
         GraphService client = createClient("/me/messages/1", "/response-message.json",
                 RequestHeader.ODATA_VERSION, //
