@@ -39,9 +39,28 @@ public final class TestingService {
     public static Builder builder() {
         return new Builder();
     }
+    
+    public static final class Response {
+        public String resource;
+        public final int statusCode;
+
+        public Response(String resource, int statusCode) {
+            this.resource = resource;
+            this.statusCode = statusCode;
+        }
+        
+        public Response(String text) {
+            this(text, HttpURLConnection.HTTP_OK);
+        }
+
+        @Override
+        public String toString() {
+            return "Response [resource=" + resource + ", statusCode=" + statusCode + "]";
+        }
+    }
 
     public static abstract class BuilderBase<T extends BuilderBase<?, R>, R> {
-        Map<String, String> responses = new HashMap<>();
+        Map<String, Response> responses = new HashMap<>();
         Map<String, String> requests = new HashMap<>();
 
         String baseUrl = "https://testing.com";
@@ -65,11 +84,16 @@ public final class TestingService {
         }
 
         @SuppressWarnings("unchecked")
-        public T expectResponse(String path, String responseResourceName, HttpMethod method,
+        public T expectResponse(String path, String responseResourceName, HttpMethod method, int statusCode,
                 RequestHeader... requestHeaders) {
             responses.put(toKey(method, baseUrl + path, asList(requestHeaders)),
-                    responseResourceName);
+                    new Response(responseResourceName, statusCode));
             return (T) this;
+        }
+        
+        public T expectResponse(String path, String responseResourceName, HttpMethod method,
+                RequestHeader... requestHeaders) {
+            return expectResponse(path, responseResourceName, method, HttpURLConnection.HTTP_OK, requestHeaders);
         }
 
         @SuppressWarnings("unchecked")
@@ -88,7 +112,7 @@ public final class TestingService {
             requests.put(toKey(method, baseUrl + path, asList(requestHeaders)),
                     requestResourceName);
             responses.put(toKey(method, baseUrl + path, asList(requestHeaders)),
-                    responseResourceName);
+                    new Response(responseResourceName));
             return (T) this;
         }
 
@@ -118,7 +142,8 @@ public final class TestingService {
                     responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
-                    String resourceName = responses.get(key);
+                    Response response = responses.get(key);
+                    String resourceName = response.resource;
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url
                                 + ", headers=" + requestHeaders);
@@ -130,7 +155,7 @@ public final class TestingService {
                                     "resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
-                        return new HttpResponse(HttpURLConnection.HTTP_OK, text);
+                        return new HttpResponse(response.statusCode, text);
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
@@ -192,7 +217,7 @@ public final class TestingService {
                         String requestExpected = readResource(url, requestResourceName);
                         if (Serializer.INSTANCE.matches(requestExpected, text)) {
                             String responseResourceName = responses
-                                    .get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders));
+                                    .get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders)).resource;
                             String responseExpected = readResource(url, responseResourceName);
                             int responseCode = url.contains("delta") ? HttpURLConnection.HTTP_OK
                                     : HttpURLConnection.HTTP_CREATED;
