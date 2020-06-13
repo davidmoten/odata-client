@@ -1,16 +1,10 @@
 package com.github.davidmoten.odata.test;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.RequestHeader;
