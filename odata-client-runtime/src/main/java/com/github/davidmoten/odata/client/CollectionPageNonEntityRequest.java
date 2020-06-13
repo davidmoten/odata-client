@@ -119,5 +119,9 @@ public class CollectionPageNonEntityRequest<T> {
     public CollectionNonEntityRequestOptionsBuilder<T> metadataNone() {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).metadataNone();
     }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> urlOverride(String urlOverride) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).urlOverride(urlOverride);
+    }
 
 }

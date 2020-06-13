@@ -132,5 +132,9 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public CollectionEntityRequestOptionsBuilder<T, R> metadataNone() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).metadataNone();
     }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> urlOverride(String urlOverride) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).urlOverride(urlOverride);
+    }
 
 }

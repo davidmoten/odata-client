@@ -134,6 +134,17 @@ public class GraphServiceTest {
     }
     
     @Test
+    public void testGetCollectionUrlOverride() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/me/contacts?$skipToken=ABC", "/response-contacts.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Contact> c = client.me().contacts().urlOverride("https://graph.microsoft.com/v1.0/me/contacts?$skipToken=ABC").get();
+        assertNotNull(c);
+        assertEquals(10, c.currentPage().size());
+    }
+    
+    @Test
     public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
         GraphService client = createClient("/me/messages/1", "/response-message.json",
                 RequestHeader.ODATA_VERSION, //
