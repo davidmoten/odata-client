@@ -83,7 +83,15 @@ public class CollectionPageNonEntityRequest<T> {
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
-
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(RequestHeader header) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(header);
+    }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> maxPageSize(int maxPageSize) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).maxPageSize(maxPageSize);
+    }
+    
     public CollectionNonEntityRequestOptionsBuilder<T> search(String clause) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).search(clause);
     }

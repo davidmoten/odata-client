@@ -143,7 +143,7 @@ public final class TestingService {
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
                     Response response = responses.get(key);
-                    String resourceName = response.resource;
+                    String resourceName = response == null? null: response.resource;
                     if (resourceName == null) {
                         throw new RuntimeException("GET response not found for url=" + url
                                 + ", headers=" + requestHeaders);

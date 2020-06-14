@@ -69,6 +69,17 @@ public class GraphServiceTest {
         assertEquals(31, c.currentPage().size());
         assertFalse(c.nextPage().isPresent());
     }
+    
+    @Test
+    public void testGetEntityCollectionWithMaxPageSize() {
+        int maxPageSize = 50;
+        GraphService client = createClient("/users", "/response-users.json",
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION,
+                RequestHeader.maxPageSize(maxPageSize));
+        CollectionPage<User> c = client.users().maxPageSize(maxPageSize).get();
+        assertNotNull(c);
+        assertEquals(31, c.currentPage().size());
+    }
 
     @Test
     public void testGetEntityCollectionWithNextPage() {
