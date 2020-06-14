@@ -47,6 +47,7 @@ public final class Imports {
 
     @Override
     public String toString() {
+        String pkgFullClassName = pkg(fullClassName);
         String x = map //
                 .values() //
                 .stream() //
@@ -61,7 +62,7 @@ public final class Imports {
                 .filter(c -> !c.equals(fullClassName))
                 // ensure that if in same pkg as fullClassName that we don't need
                 // to specify an import
-                .filter(c -> !pkg(c).equals(pkg(fullClassName))) //
+                .filter(c -> !pkg(c).equals(pkgFullClassName)) //
                 .map(new Function<String,String>() {
 
                     String previous;
