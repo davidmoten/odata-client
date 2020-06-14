@@ -351,4 +351,3 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * implement `CollectionPageNonEntity`
 * remove context property "modify.stream.edit.link" from MsGraph client once they support their own @odata.mediaEditLink!
 * allow user to specify by-request read and data timeouts 
-* support EntitySet.NavigationPropertyBinding
