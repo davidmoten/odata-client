@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -95,9 +96,19 @@ public class GraphServiceTest {
         assertEquals(10, c.currentPage().size());
         assertEquals("https://graph.microsoft.com/v1.0/me/contacts?$skip=10", c.nextLink().get());
         assertTrue(c.nextPage().isPresent());
+        Optional<String> nextLink = c.nextLink();
         c = c.nextPage().get();
         assertEquals(10, c.currentPage().size());
         assertEquals("Justin", c.currentPage().get(9).getGivenName().get());
+        assertEquals("Justin", client //
+                .me() //
+                .contacts() //
+                .urlOverride(nextLink.get()) //
+                .get() //
+                .currentPage() //
+                .get(9) //
+                .getGivenName() //
+                .get());
     }
 
     @Test
