@@ -55,7 +55,9 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     } 
     
     /**
-     * Sets the odata.maxpagesize request header value. Is a preference only and may not be honoured by the service.
+     * Sets the odata.maxpagesize request header value. Is a preference only and may
+     * not be honoured by the service.
+     * 
      * @param size max page size
      * @return this
      */
