@@ -48,6 +48,20 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         requestHeaders.add(new RequestHeader(name, value));
         return this;
     }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(RequestHeader header) {
+        requestHeaders.add(header);
+        return this;
+    } 
+    
+    /**
+     * Sets the odata.maxpagesize request header value. Is a preference only and may not be honoured by the service.
+     * @param size max page size
+     * @return this
+     */
+    public CollectionEntityRequestOptionsBuilder<T, R> maxPageSize(int size) {
+        return requestHeader(RequestHeader.maxPageSize(size));
+    }
 
     public CollectionEntityRequestOptionsBuilder<T, R> search(String clause) {
         Preconditions.checkNotNull(clause);
