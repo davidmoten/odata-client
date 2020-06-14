@@ -59,6 +59,8 @@ public final class Imports {
                 .filter(c -> !c.equals("int")) //
                 .filter(c -> !c.equals("byte")) //
                 .filter(c -> !c.equals(fullClassName))
+                // ensure that if in same pkg as fullClassName that we don't need
+                // to specify an import
                 .filter(c -> !pkg(c).equals(pkg(fullClassName))) //
                 .map(new Function<String,String>() {
 
