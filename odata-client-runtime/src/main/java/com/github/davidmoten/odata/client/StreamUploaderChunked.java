@@ -16,12 +16,10 @@ public final class StreamUploaderChunked {
     private final String fieldName;
     private final String contentType;
     private final List<RequestHeader> requestHeaders;
-    private final ODataType entity;
 
-    StreamUploaderChunked(ContextPath contextPath, ODataType entity, String fieldName,
+    StreamUploaderChunked(ContextPath contextPath, String fieldName,
             String contentType) {
         this.contextPath = contextPath;
-        this.entity = entity;
         this.fieldName = fieldName;
         this.contentType = contentType;
         this.requestHeaders = new ArrayList<>();

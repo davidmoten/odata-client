@@ -207,6 +207,7 @@ public final class RequestHelper {
         return patchOrPut(entity, contextPath, options, HttpMethod.PUT);
     }
 
+    @SuppressWarnings("unused")
     private static <T extends ODataEntityType> T patchOrPut(T entity, ContextPath contextPath,
             RequestOptions options, HttpMethod method) {
         Preconditions.checkArgument(method == HttpMethod.PUT || method == HttpMethod.PATCH);
