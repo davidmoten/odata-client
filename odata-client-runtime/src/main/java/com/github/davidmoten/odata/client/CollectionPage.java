@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-//TODO merge CollectionPageNonEntity and CollectionPageEntity into CollectionPage
 @JsonIgnoreType
 public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 
