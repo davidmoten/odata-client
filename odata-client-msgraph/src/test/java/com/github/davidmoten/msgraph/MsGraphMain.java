@@ -1,13 +1,7 @@
 package com.github.davidmoten.msgraph;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import com.github.davidmoten.odata.client.StreamProvider;
 
 import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.ItemBody;
@@ -21,13 +15,6 @@ public class MsGraphMain {
 
     public static void main(String[] args) {
 
-        // this system integration test
-        // counts the messages in Drafts folder
-        // adds a new message to the Drafts folder
-        // changes the subject of the new message
-        // checks that the count of messages has increased by one
-        // deletes the message
-
         GraphService client = MsGraph //
                 .tenantName(System.getProperty("tenantName")) //
                 .clientId(System.getProperty("clientId")) //
@@ -35,12 +22,9 @@ public class MsGraphMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
         
-        
         client.users().stream().forEach(user -> System.out.println(user.getUserPrincipalName()));
         
-        
         System.exit(0);
-        System.out.println(client.users().top(200).skip(100).get().currentPage().size());
 
         String mailbox = System.getProperty("mailbox");
         MailFolderRequest drafts = client //
@@ -48,7 +32,7 @@ public class MsGraphMain {
                 .mailFolders("Drafts");
 
         // test streaming of DriveItem.content
-        String user = System.getProperty("mailbox");
+//        String user = System.getProperty("mailbox");
 //        client.users(user).drive().items("01N6X7VZ6TXOGWV354WND3QHDNUYRXKVVH").get();
 //        for (DriveItem item : client //
 //                .users(user) //
@@ -67,6 +51,13 @@ public class MsGraphMain {
 //            System.out.println("read " + item.getName().orElse("?") + " size=" + bytes.length);
 //        }
 
+        // this system integration test
+        // counts the messages in Drafts folder
+        // adds a new message to the Drafts folder
+        // changes the subject of the new message
+        // checks that the count of messages has increased by one
+        // deletes the message
+        
         // count number of messages in Drafts
         long count = drafts.messages() //
                 .metadataNone() //
@@ -127,19 +118,4 @@ public class MsGraphMain {
                 .delete();
 
     }
-
-    private static byte[] toBytes(StreamProvider stream) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        byte[] b = new byte[8192];
-        try (InputStream is = stream.get()) {
-            int n;
-            while ((n = is.read(b)) != -1) {
-                bytes.write(b, 0, n);
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return bytes.toByteArray();
-    }
-
 }
