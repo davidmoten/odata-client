@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class RequestHeader {
 
     public static final RequestHeader ODATA_VERSION = create("OData-Version", "4.0");
@@ -33,7 +35,12 @@ public final class RequestHeader {
     public static RequestHeader contentTypeJsonWithMetadata(String metadata) {
         return new RequestHeader("Content-Type", "application/json;odata.metadata=" + metadata);
     }
-
+    
+    public static RequestHeader maxPageSize(int size) {
+        Preconditions.checkArgument(size > 0, "maxPageSize must be > 0");
+        return new RequestHeader("Prefer", "odata.maxpagesize=" + size);
+    }
+    
     public static RequestHeader ACCEPT_JSON_METADATA_MINIMAL = acceptJsonWithMetadata("minimal");
 
     public static final RequestHeader CONTENT_TYPE_JSON_METADATA_MINIMAL = contentTypeJsonWithMetadata(
