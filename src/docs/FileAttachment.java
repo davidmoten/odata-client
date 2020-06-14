@@ -18,8 +18,6 @@ import com.github.davidmoten.odata.client.internal.UnmappedFields;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import microsoft.graph.generated.entity.Attachment;
-
 @JsonPropertyOrder({
     "@odata.type", 
     "contentId", 

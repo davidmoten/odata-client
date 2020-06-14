@@ -14,6 +14,7 @@ public final class Imports {
         add(fullClassName);
     }
 
+    // simpleName to fullClassName
     private final Map<String, String> map = new HashMap<>();
 
     public String add(Class<?> cls) {
@@ -58,6 +59,7 @@ public final class Imports {
                 .filter(c -> !c.equals("int")) //
                 .filter(c -> !c.equals("byte")) //
                 .filter(c -> !c.equals(fullClassName))
+                .filter(c -> !pkg(c).equals(pkg(fullClassName))) //
                 .map(new Function<String,String>() {
 
                     String previous;
@@ -75,6 +77,15 @@ public final class Imports {
             x = x + "\n\n";
         }
         return x;
+    }
+    
+    private static String pkg(String fullClassName) {
+        int i = fullClassName.lastIndexOf('.');
+        if (i == -1) {
+            return "";
+        } else {
+            return fullClassName.substring(0, i);
+        }
     }
     
     private static String firstSegment(String s) {
