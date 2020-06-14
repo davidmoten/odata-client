@@ -340,7 +340,6 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support OpenType (arbitrary extra fields get written)
 * support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
 * support precision, scale (maybe)
-* support NavigationPropertyBindings (just a documentation nicety? Looks like it's just to indicate contains relationships)
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
 * support unbound actions
