@@ -228,7 +228,7 @@ drafts //
     .delete();
 ```
 ### Collections and paging
-*odata-client* handles the annoying paging stuff under the covers so you don't have to worry about. Let's look at some examples.
+*odata-client* handles the annoying paging stuff under the covers so you don't have to worry about it. Let's look at some examples.
 
 We'll get the list of users:
 
