@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
@@ -14,6 +15,11 @@ public final class ActionRequestNoReturn extends ActionFunctionRequestBase<Actio
 
     public void call() {
         RequestHelper.post(ParameterMap.toMap(parameters), contextPath, this);
+    }
+
+    @Override
+    public Optional<String> getUrlOverride() {
+        return Optional.empty();
     }
 
 }

@@ -29,7 +29,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         ContextPath cp = contextPath.addQueries(options.getQueries());
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
                 false);
-        HttpResponse r = cp.context().service().get(cp.toUrl(), h);
+        HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h);
         RequestHelper.checkResponseCode(cp, r, 200, 299);
         return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp,
                 schemaInfo, h);
@@ -92,6 +92,14 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
     }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(RequestHeader header) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(header);
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> maxPageSize(int size) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).maxPageSize(size);
+    }
 
     public CollectionEntityRequestOptionsBuilder<T, R> search(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).search(clause);
@@ -131,6 +139,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     public CollectionEntityRequestOptionsBuilder<T, R> metadataNone() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).metadataNone();
+    }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> urlOverride(String urlOverride) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).urlOverride(urlOverride);
     }
 
 }
