@@ -267,7 +267,12 @@ CollectionPage<User> users = client.users().get();
 `CollectionPage` has methods `currentPage` and `nextPage`.
 
 #### Your own page size
-So what if you want to have some sort of paging in your UI? If you do, remember that you don't have guaranteed control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. *odata-client* has two utility methods to help you out. Let's chop the stream of User into pages of 15 elements:
+You can request a different page size than the default via a special HTTP request header but the server *may choose to ignore your request*:
+
+```java
+List<User> users = client.users().maxPageSize(200).get().currentPage();
+```
+So what if you want to receive the collection in custom size pages regardless of the page size being delivered by the server? *odata-client* has two utility methods to help you out. Let's chop the stream of User into pages of 15 elements:
 
 ```java
 import com.github.davidmoten.odata.client.Util;
@@ -277,12 +282,6 @@ Iterator<List<User>> it = Util.buffer(client.users().iterator(), 15);
 or with streams:
 ```java
 Stream<List<User>> users = Util.buffer(client.users().stream(), 15);
-```
-
-You can request a different page size than the default but the server may choose to ignore your request:
-
-```java
-List<User> users = client.users().maxPageSize(200).get().currentPage();
 ```
 
 #### Getting a collection from a link
