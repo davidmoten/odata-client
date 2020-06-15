@@ -46,4 +46,9 @@ public final class NonEntityRequestOptions<T> implements RequestOptions {
         return map;
     }
 
+    @Override
+    public Optional<String> getUrlOverride() {
+        return Optional.empty();
+    }
+
 }

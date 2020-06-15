@@ -21,15 +21,17 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     private Optional<String> select;
     private Optional<String> expand;
     private String metadata;
+    // used to override the url for the situation where someone has a nextLink they want to load up later
+    private Optional<String> urlOverride;
 
     CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
         this(request, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), "minimal");
+                Optional.empty(), Optional.empty(), "minimal", Optional.empty());
     }
     
     private CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
-            Optional<String> select, Optional<String> expand, String metadata) {
+            Optional<String> select, Optional<String> expand, String metadata, Optional<String> urlOverride) {
         this.request = request;
         this.search = search;
         this.filter = filter;
@@ -39,13 +41,28 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         this.select = select;
         this.expand = expand;
         this.metadata = metadata;
+        this.urlOverride = urlOverride;
     }
-
-
 
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String name, String value) {
         requestHeaders.add(new RequestHeader(name, value));
         return this;
+    }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(RequestHeader header) {
+        requestHeaders.add(header);
+        return this;
+    } 
+    
+    /**
+     * Sets the odata.maxpagesize request header value. Is a preference only and may
+     * not be honoured by the service.
+     * 
+     * @param size max page size
+     * @return this
+     */
+    public CollectionEntityRequestOptionsBuilder<T, R> maxPageSize(int size) {
+        return requestHeader(RequestHeader.maxPageSize(size));
     }
 
     public CollectionEntityRequestOptionsBuilder<T, R> search(String clause) {
@@ -105,21 +122,26 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         return this;
     }
     
+    public CollectionEntityRequestOptionsBuilder<T, R> urlOverride(String url) {
+        this.urlOverride = Optional.ofNullable(url);
+        return this;
+    }
+    
     public <S extends T> CollectionEntityRequestOptionsBuilder<S, EntityRequest<S>> filter(Class<S> cls) {
         return new CollectionEntityRequestOptionsBuilder<S, EntityRequest<S>>(request.filter(cls), search, filter,
-                orderBy, skip, top, select, expand, metadata);
+                orderBy, skip, top, select, expand, metadata, urlOverride);
     }
     
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand);
+                select, expand, urlOverride);
     }
 
     public CollectionPage<T> get() {
         return request.get(build());
     }
-
+    
     @Override
     public Iterator<T> iterator() {
         return get().iterator();

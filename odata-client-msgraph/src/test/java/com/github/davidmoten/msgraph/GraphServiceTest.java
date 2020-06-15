@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -69,6 +70,17 @@ public class GraphServiceTest {
         assertEquals(31, c.currentPage().size());
         assertFalse(c.nextPage().isPresent());
     }
+    
+    @Test
+    public void testGetEntityCollectionWithMaxPageSize() {
+        int maxPageSize = 50;
+        GraphService client = createClient("/users", "/response-users.json",
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION,
+                RequestHeader.maxPageSize(maxPageSize));
+        CollectionPage<User> c = client.users().maxPageSize(maxPageSize).get();
+        assertNotNull(c);
+        assertEquals(31, c.currentPage().size());
+    }
 
     @Test
     public void testGetEntityCollectionWithNextPage() {
@@ -84,9 +96,19 @@ public class GraphServiceTest {
         assertEquals(10, c.currentPage().size());
         assertEquals("https://graph.microsoft.com/v1.0/me/contacts?$skip=10", c.nextLink().get());
         assertTrue(c.nextPage().isPresent());
+        Optional<String> nextLink = c.nextLink();
         c = c.nextPage().get();
         assertEquals(10, c.currentPage().size());
         assertEquals("Justin", c.currentPage().get(9).getGivenName().get());
+        assertEquals("Justin", client //
+                .me() //
+                .contacts() //
+                .urlOverride(nextLink.get()) //
+                .get() //
+                .currentPage() //
+                .get(9) //
+                .getGivenName() //
+                .get());
     }
 
     @Test
@@ -131,6 +153,17 @@ public class GraphServiceTest {
         } catch (ClientException e) {
             assertTrue(e.getMessage().contains("Insufficient privileges"));
         }
+    }
+    
+    @Test
+    public void testGetCollectionUrlOverride() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/me/contacts?$skipToken=ABC", "/response-contacts.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Contact> c = client.me().contacts().urlOverride("https://graph.microsoft.com/v1.0/me/contacts?$skipToken=ABC").get();
+        assertNotNull(c);
+        assertEquals(10, c.currentPage().size());
     }
     
     @Test

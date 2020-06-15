@@ -15,10 +15,11 @@ public final class CollectionRequestOptions implements RequestOptions {
     private final Optional<Long> top;
     private final Optional<String> select;
     private final Optional<String> expand;
+    private final Optional<String> urlOverride;
 
     public CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
-            Optional<Long> top, Optional<String> select, Optional<String> expand) {
+            Optional<Long> top, Optional<String> select, Optional<String> expand, Optional<String> urlOverride) {
         this.requestHeaders = requestHeaders;
         this.search = search;
         this.filter = filter;
@@ -27,6 +28,7 @@ public final class CollectionRequestOptions implements RequestOptions {
         this.top = top;
         this.select = select;
         this.expand = expand;
+        this.urlOverride = urlOverride;
     }
 
     @Override
@@ -47,4 +49,9 @@ public final class CollectionRequestOptions implements RequestOptions {
         return map;
     }
 
+    @Override
+    public Optional<String> getUrlOverride() {
+        return urlOverride;
+    }
+    
 }

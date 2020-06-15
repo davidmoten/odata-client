@@ -20,6 +20,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
     private String metadata = "minimal";
+    private Optional<String> urlOverride = Optional.empty();
 
     CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request) {
         this.request = request;
@@ -28,6 +29,22 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String name, String value) {
         requestHeaders.add(new RequestHeader(name, value));
         return this;
+    }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(RequestHeader header) {
+        requestHeaders.add(header);
+        return this;
+    } 
+    
+    /**
+     * Sets the odata.maxpagesize request header value. Is a preference only and may
+     * not be honoured by the service.
+     * 
+     * @param size max page size
+     * @return this
+     */
+    public CollectionNonEntityRequestOptionsBuilder<T> maxPageSize(int size) {
+        return requestHeader(RequestHeader.maxPageSize(size));
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> search(String clause) {
@@ -86,11 +103,16 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.metadata = "none";
         return this;
     }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> urlOverride(String urlOverride) {
+        this.urlOverride = Optional.ofNullable(urlOverride);
+        return this;
+    }
 
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand);
+                select, expand, urlOverride);
     }
 
     public CollectionPage<T> get() {

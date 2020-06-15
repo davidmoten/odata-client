@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -99,6 +100,11 @@ public final class CustomRequest {
         @Override
         public Map<String, String> getQueries() {
             return queries;
+        }
+
+        @Override
+        public Optional<String> getUrlOverride() {
+            return Optional.empty();
         }
     }
 }

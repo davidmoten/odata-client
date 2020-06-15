@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
@@ -27,6 +28,11 @@ public final class FunctionRequestReturningNonCollection<T>
                 returnClass, //
                 this, //
                 schemaInfo);
+    }
+
+    @Override
+    public Optional<String> getUrlOverride() {
+        return Optional.empty();
     }
 
 }

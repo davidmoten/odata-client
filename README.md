@@ -266,7 +266,8 @@ CollectionPage<User> users = client.users().get();
 ```
 `CollectionPage` has methods `currentPage` and `nextPage`.
 
-So what if you want to have some sort of paging in your UI? If you do, remember that you have no control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. *odata-client* has two utility methods to help you out. Let's chop the stream of User into pages of 15 elements:
+#### Your own page size
+So what if you want to have some sort of paging in your UI? If you do, remember that you don't have guaranteed control over the page size returned by MsGraph but you can chop the stream up into pages that match your UI's notion of a page. *odata-client* has two utility methods to help you out. Let's chop the stream of User into pages of 15 elements:
 
 ```java
 import com.github.davidmoten.odata.client.Util;
@@ -277,6 +278,25 @@ or with streams:
 ```java
 Stream<List<User>> users = Util.buffer(client.users().stream(), 15);
 ```
+
+You can request a different page size than the default but the server may choose to ignore your request:
+
+```java
+List<User> users = client.users().maxPageSize(200).get().currentPage();
+```
+
+#### Getting a collection from a link
+Some users need stateless paging so want to recommence the next page from the `odata.nextLink` value in the page json. Here's an example: 
+
+```java
+String nextLink = "https://...";
+List<User> users = client
+  .users()
+  .urlOverride(nextLink)
+  .get()
+  .currentPage();
+```
+
 ### Updating Microsoft Graph metadata
 Developer instructions:
 ```bash
@@ -333,7 +353,6 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support OpenType (arbitrary extra fields get written)
 * support EntityContainer inheritance (maybe, no sample that I've found uses it so far)
 * support precision, scale (maybe)
-* support NavigationPropertyBindings (just a documentation nicety? Looks like it's just to indicate contains relationships)
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
 * support unbound actions
