@@ -304,6 +304,14 @@ CollectionPage<User> page = client.users().get();
 String json = page.toJsonMinimal();
 ```
 
+#### Filtering a collection by type
+To only return items of a certain type from a collection request (this is called "restriction to instances of the derived type" in the OData specification):
+
+```java
+
+client.directoryObjects().filter(User.class).get().stream(System.out::println);
+```
+
 ### Updating Microsoft Graph metadata
 Developer instructions:
 ```bash
