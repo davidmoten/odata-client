@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
@@ -70,6 +73,18 @@ public class GraphServiceTest {
         assertEquals(31, c.currentPage().size());
         assertFalse(c.nextPage().isPresent());
     }
+
+    static final class MyPage<T> {
+        @JsonProperty(value="@odata.nextLink")
+        final String nextLink;
+        @JsonProperty(value="value")
+        final List<T> value;
+        
+        MyPage( List<T> value, String nextLink) {
+            this.nextLink = nextLink;
+            this.value = value;
+        }
+    }
     
     @Test
     public void testGetEntityCollectionWithMaxPageSize() {
@@ -110,6 +125,25 @@ public class GraphServiceTest {
                 .getGivenName() //
                 .get());
     }
+    
+    @Test
+    public void testJsonMinimal() throws IOException {
+        GraphService client = clientBuilder() //
+                .expectResponse("/me/contacts", "/response-contacts.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                // TODO what request header should be specified for next page?
+                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Contact> c = client.me().contacts().get();
+        assertNotNull(c);
+        ObjectMapper m = new ObjectMapper();
+        try (InputStream expected = GraphServiceTest.class.getResourceAsStream("/response-contacts-minimal-json.json")) {
+            assertEquals(m.readTree(expected), m.readTree(c.toJsonMinimal()));
+        }
+    }
+    
+    
 
     @Test
     public void testGetCollectionGetNextLink() {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.github.davidmoten.odata.client.internal.MinimalPage;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 @JsonIgnoreType
@@ -34,7 +35,18 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     public Optional<String> nextLink() {
         return nextLink;
     }
-
+    
+    /**
+     * Returns the list of items in odata collection formatted json but with one
+     * optionally present {@code @odata.nextLink} entry. The list of items is
+     * represented by an array with field name {@code value}.
+     * 
+     * @return json for the list plus nextLink
+     */
+    public String toJsonMinimal() {
+        return Serializer.INSTANCE.serialize(new MinimalPage<T>(list, nextLink));
+    }
+    
     @Override
     public Optional<CollectionPage<T>> nextPage() {
         if (nextLink.isPresent()) {
