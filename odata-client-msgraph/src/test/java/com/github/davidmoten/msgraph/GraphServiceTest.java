@@ -39,6 +39,7 @@ import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.FileAttachment;
+import odata.msgraph.client.entity.Group;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
@@ -198,6 +199,18 @@ public class GraphServiceTest {
         CollectionPage<Contact> c = client.me().contacts().urlOverride("https://graph.microsoft.com/v1.0/me/contacts?$skipToken=ABC").get();
         assertNotNull(c);
         assertEquals(10, c.currentPage().size());
+    }
+
+    @Test
+    public void testGetCollectionWithSelect() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/groups?$select=id%2CgroupTypes", "/response-groups-select.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Group> c = client.groups().select("id,groupTypes").get();
+        assertNotNull(c);
+        assertEquals(49, c.currentPage().size());
+        assertEquals("02bd9fd6-8f93-4758-87c3-1fb73740a315", c.currentPage().get(0).getId().get());
     }
     
     @Test
