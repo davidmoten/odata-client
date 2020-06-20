@@ -297,10 +297,11 @@ List<User> users = client
 ```
 
 #### Getting json for the collection
-Some users want to do a passthrough of Graph API responses in JSON format through to their clients. You can obtain a simplified collection response as JSON like this:
+Some users want to do a passthrough of Graph API responses in JSON format through to their clients. You can obtain a simplified collection page response as JSON like this:
 
 ```java
-client.users().get().toJsonMinimal();
+CollectionPage<User> page = client.users().get();
+String json = page.toJsonMinimal();
 ```
 
 ### Updating Microsoft Graph metadata
