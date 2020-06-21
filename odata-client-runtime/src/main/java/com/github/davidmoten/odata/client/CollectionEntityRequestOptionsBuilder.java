@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -157,6 +158,10 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     public List<T> toList() {
         return get().toList();
+    }
+    
+    public Set<T> toSet() {
+        return get().toSet();
     }
 
 }
