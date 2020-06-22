@@ -25,6 +25,8 @@ public final class AdHocMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .authenticationEndpoint(AuthenticationEndpoint.GLOBAL) // is default
                 .build();
+        
+        client.users(mailbox).messages().get().currentPage().stream().forEach(System.out::println);
 
         // if (false) {
         // String url =
