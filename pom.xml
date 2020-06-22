@@ -32,10 +32,9 @@
 
         <checkstyle.version>3.1.1</checkstyle.version>
         <javadoc.version>3.2.0</javadoc.version>
-        <pmd.version>3.10.0</pmd.version>
-        <jdepend.version>2.0</jdepend.version>
-        <project.info.version>3.0.0</project.info.version>
-        <jxr.version>2.5</jxr.version>
+        <pmd.version>3.13.0</pmd.version>
+        <project.info.version>3.1.0</project.info.version>
+        <jxr.version>3.0.0</jxr.version>
         <taglist.version>2.4</taglist.version>
         <changelog.version>2.2</changelog.version>
 
@@ -46,7 +45,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <release.plugin.version>2.5.1</release.plugin.version>
         <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
-        <spotbugs.plugin.version>3.1.12.2</spotbugs.plugin.version>
+        <spotbugs.plugin.version>4.0.4</spotbugs.plugin.version>
         <bundle.plugin.version>4.2.1</bundle.plugin.version>
         <log4j.version>2.13.3</log4j.version>
     </properties>
@@ -213,11 +212,6 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${spotbugs.plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-                <version>${jdepend.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
