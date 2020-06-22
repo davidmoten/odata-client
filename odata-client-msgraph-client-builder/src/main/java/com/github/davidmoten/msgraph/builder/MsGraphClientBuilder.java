@@ -14,9 +14,11 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.Context;
@@ -348,10 +350,18 @@ public final class MsGraphClientBuilder<T> {
                 .setConnectTimeout((int) connectTimeoutMs) //
                 .setSocketTimeout((int) readTimeoutMs) //
                 .build();
+        
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        // Set soTimeout here to affect socketRead in the phase of ssl handshake. Note that
+        // the RequestConfig.setSocketTimeout will take effect only after the ssl handshake completed.
+        cm.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout((int) readTimeoutMs).build());
+        
         HttpClientBuilder b = HttpClientBuilder //
                 .create() //
                 .useSystemProperties() //
-                .setDefaultRequestConfig(config);
+                .setDefaultRequestConfig(config) //
+                .setConnectionManager(cm);
+        
         if (proxyHost.isPresent()) {
             HttpHost proxy = new HttpHost(proxyHost.get(), proxyPort.get());
             if (proxyUsername.isPresent()) {
