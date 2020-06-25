@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -130,7 +131,7 @@ public class ApacheHttpClientHttpService implements HttpService {
             if (!isOk(statusCode)) {
                 try {
                     String msg = Util.readString(in, StandardCharsets.UTF_8);
-                    throw new ClientException("getStream returned HTTP " + statusCode + "\n" //
+                    throw new ClientException(statusCode,"getStream returned HTTP " + statusCode + "\n" //
                             + "url=" + url + "\n" //
                             + "headers=" + requestHeaders + "\n" + "response:\n" //
                             + msg);
