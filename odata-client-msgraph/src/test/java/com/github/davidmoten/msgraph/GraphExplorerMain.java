@@ -1,6 +1,7 @@
 package com.github.davidmoten.msgraph;
 
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.User;
 
 public class GraphExplorerMain {
@@ -8,9 +9,21 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer();
-        
-        client.me().messages().delta().get().stream().limit(3).forEach(System.out::println);
-        
+
+        String id = client.me().messages().select("id").stream().limit(1).findFirst().get().getId()
+                .get();
+
+        client //
+                .me() //
+                .messages(id) //
+                .attachments() //
+                .select("name,size") //
+                .stream() //
+                .filter(att -> att instanceof FileAttachment) //
+                .limit(2) //
+                .map(att -> att.getName().orElse("") + " " + att.getSize().orElse(0) + "B") //
+                .forEach(System.out::println);
+
         System.exit(0);
 
         client //
