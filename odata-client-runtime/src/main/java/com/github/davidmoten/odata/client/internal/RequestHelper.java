@@ -85,7 +85,7 @@ public final class RequestHelper {
             int expectedResponseCodeMin, int expectedResponseCodeMax) {
         if (response.getResponseCode() < expectedResponseCodeMin
                 || response.getResponseCode() > expectedResponseCodeMax) {
-            throw new ClientException("responseCode=" + response.getResponseCode() + " from url="
+            throw new ClientException(response.getResponseCode(), "responseCode=" + response.getResponseCode() + " from url="
                     + url + ", expectedResponseCode in [" + expectedResponseCodeMin + ", "
                     + expectedResponseCodeMax + "], message=\n" + response.getText());
         }

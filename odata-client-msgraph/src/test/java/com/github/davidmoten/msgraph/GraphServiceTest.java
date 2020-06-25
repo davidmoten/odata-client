@@ -194,6 +194,7 @@ public class GraphServiceTest {
             Assert.fail();
         } catch (ClientException e) {
             assertTrue(e.getMessage().contains("Insufficient privileges"));
+            assertEquals(403, (int) e.getStatusCode().get());
         }
     }
     
