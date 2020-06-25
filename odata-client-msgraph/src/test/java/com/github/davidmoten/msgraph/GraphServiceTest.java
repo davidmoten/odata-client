@@ -143,8 +143,6 @@ public class GraphServiceTest {
             assertEquals(m.readTree(expected), m.readTree(c.toJsonMinimal()));
         }
     }
-    
-    
 
     @Test
     public void testGetCollectionGetNextLink() {
