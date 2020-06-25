@@ -118,6 +118,51 @@ GraphService client = MsGraph
     .build();
 ```
 
+## Create a client for the Graph Explorer
+There's a web test page for queries called the [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer). You can use the client against this service for experiments. Bear in mind that the Graph Explorer service doesn't support lots but it is still a good place to get a feel for it.
+
+```java
+GraphService client = MsGraph.explorer().build();
+```
+
+or behind a proxy:
+
+```java
+GraphService client = MsGraph
+  .explorer()
+  .proxyHost(proxyHost)
+  .proxyPort(8080)
+  .build();
+```
+Here's an example:
+
+```java
+client 
+  .users()
+  .select("displayName")
+  .stream() 
+  .limit(10)
+  .map(user -> user.getDisplayName().orElse("?"))
+  .forEach(System.out::println);
+```
+
+output:
+
+```
+Conf Room Adams
+Adele Vance
+MOD Administrator
+Alex Wilber
+Allan Deyoung
+Conf Room Baker
+Ben Walters
+Brian Johnson (TAILSPIN)
+Christie Cline
+Conf Room Crystal
+```
+
+
+
 ### Specify the authentication endpoint
 This client supports Client Credential authentication only at the moment. Raise an issue if you need a different sort.
 
