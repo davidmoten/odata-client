@@ -8,7 +8,7 @@ public class GraphExplorerMain {
 
     public static void main(String[] args) {
 
-        GraphService client = MsGraph.explorer();
+        GraphService client = MsGraph.explorer().build();
 
         String id = client.me().messages().select("id").stream().limit(1).findFirst().get().getId()
                 .get();
