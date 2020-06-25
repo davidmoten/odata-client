@@ -32,11 +32,8 @@ public final class Serializer {
         // prevent instantiation
     }
 
-    private static final ObjectMapper MAPPER = createObjectMapper();
-
-    private static ObjectMapper createObjectMapper() {
-        return createObjectMapper(false);
-    }
+    private static final ObjectMapper MAPPER_EXCLUDE_NULLS = createObjectMapper(false);
+    private static final ObjectMapper MAPPER_INCLUDE_NULLS = createObjectMapper(true);
 
     private static ObjectMapper createObjectMapper(boolean includeNulls) {
         return new ObjectMapper() //
@@ -53,7 +50,7 @@ public final class Serializer {
             boolean addKeysToContextPath) {
         try {
             if (contextPath != null) {
-                ObjectMapper m = createObjectMapper();
+                ObjectMapper m = MAPPER_EXCLUDE_NULLS.copy();
                 Std iv = new InjectableValues.Std() //
                         .addValue(ContextPath.class, contextPath) //
                         .addValue(ChangedFields.class, new ChangedFields()) //
@@ -65,7 +62,7 @@ public final class Serializer {
                 }
                 return t;
             } else {
-                return MAPPER.readValue(text, cls);
+                return MAPPER_EXCLUDE_NULLS.readValue(text, cls);
             }
         } catch (IOException e) {
             System.out.println(text);
@@ -77,10 +74,10 @@ public final class Serializer {
             Class<? extends S> parametricTypeClass, ContextPath contextPath,
             boolean addKeysToContextPath) {
         try {
-            JavaType type = MAPPER.getTypeFactory().constructParametricType(cls,
+            ObjectMapper m = MAPPER_EXCLUDE_NULLS.copy();
+            JavaType type = m.getTypeFactory().constructParametricType(cls,
                     parametricTypeClass);
             if (contextPath != null) {
-                ObjectMapper m = createObjectMapper();
                 Std iv = new InjectableValues.Std() //
                         .addValue(ContextPath.class, contextPath) //
                         .addValue(ChangedFields.class, new ChangedFields()) //
@@ -92,10 +89,9 @@ public final class Serializer {
                 }
                 return t;
             } else {
-                return MAPPER.readValue(text, type);
+                return MAPPER_EXCLUDE_NULLS.readValue(text, type);
             }
         } catch (IOException e) {
-            System.out.println(text);
             throw new RuntimeException(e);
         }
     }
@@ -117,9 +113,8 @@ public final class Serializer {
     }
 
     public String serialize(Object entity) {
-        ObjectMapper m = createObjectMapper();
         try {
-            return m.writeValueAsString(entity);
+            return MAPPER_EXCLUDE_NULLS.writeValueAsString(entity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -127,7 +122,7 @@ public final class Serializer {
 
     public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
         try {
-            ObjectMapper m = createObjectMapper(true);
+            ObjectMapper m = MAPPER_INCLUDE_NULLS;
             String s = m.writeValueAsString(entity);
             JsonNode tree = m.readTree(s);
             ObjectNode o = (ObjectNode) tree;
@@ -157,7 +152,7 @@ public final class Serializer {
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
         try {
-            ObjectMapper m = MAPPER;
+            ObjectMapper m = MAPPER_EXCLUDE_NULLS;
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
@@ -187,8 +182,8 @@ public final class Serializer {
     }
 
     public boolean matches(String expectedJson, String actualJson) throws IOException {
-        JsonNode expectedTree = MAPPER.readTree(expectedJson);
-        JsonNode textTree = MAPPER.readTree(actualJson);
+        JsonNode expectedTree = MAPPER_EXCLUDE_NULLS.readTree(expectedJson);
+        JsonNode textTree = MAPPER_EXCLUDE_NULLS.readTree(actualJson);
         return expectedTree.equals(textTree);
     }
 
