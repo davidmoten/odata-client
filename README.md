@@ -356,7 +356,6 @@ To only return items of a certain type from a collection request (this is called
 client
   .directoryObjects()
   .filter(User.class)
-  .stream()
   .forEach(System.out::println);
 ```
 
