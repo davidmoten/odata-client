@@ -1,9 +1,11 @@
 package com.github.davidmoten.odata.client;
 
 import java.net.HttpURLConnection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -12,7 +14,7 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
 
 @JsonIgnoreType
-public class CollectionPageNonEntityRequest<T> {
+public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
@@ -81,12 +83,21 @@ public class CollectionPageNonEntityRequest<T> {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).get();
     }
     
+    public void forEach(Consumer<? super T> consumer) {
+        stream().forEach(consumer);
+    }
+    
     public Stream<T> stream() {
         return get().stream();
     }
     
     public List<T> toList() {
         return get().toList();
+    }
+    
+    @Override
+    public Iterator<T> iterator() {
+        return get().iterator();
     }
     
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {

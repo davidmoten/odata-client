@@ -35,6 +35,7 @@ import odata.msgraph.client.complex.IdentitySet;
 import odata.msgraph.client.complex.InvitationParticipantInfo;
 import odata.msgraph.client.complex.ServiceHostedMediaConfig;
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.Application;
 import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
@@ -195,6 +196,18 @@ public class GraphServiceTest {
         } catch (ClientException e) {
             assertTrue(e.getMessage().contains("Insufficient privileges"));
             assertEquals(403, (int) e.getStatusCode().get());
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    @Test
+    public void testCollectionPageRequestIsIterable() {
+        //don't run, just check that compiles
+        if (false) {
+            GraphService client = clientBuilder().build();
+            for (Application a : client.applications()) {
+                // do nothing
+            }
         }
     }
     
