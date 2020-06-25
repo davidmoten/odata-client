@@ -4,6 +4,7 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -78,6 +79,14 @@ public class CollectionPageNonEntityRequest<T> {
 
     public CollectionPage<T> get() {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).get();
+    }
+    
+    public Stream<T> stream() {
+        return get().stream();
+    }
+    
+    public List<T> toList() {
+        return get().toList();
     }
     
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
