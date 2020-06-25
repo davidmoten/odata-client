@@ -4,10 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.github.davidmoten.odata.client.internal.MinimalPage;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
+/**
+ * Note this object has been annotated with JsonProperty declarations but the
+ * user should not try to unmarshall a CollectionPage from json because it will
+ * be missing critical fields to operate correctly.
+ *
+ * @param <T> item type
+ */
 @JsonIgnoreType
+@JsonPropertyOrder({"@odata.nextLink","value"})
 public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 
     private final ContextPath contextPath;
@@ -28,10 +37,12 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     }
 
     @Override
+    @JsonProperty(value = "value")
     public List<T> currentPage() {
         return list;
     }
     
+    @JsonProperty(value = "@odata.nextLink")
     public Optional<String> nextLink() {
         return nextLink;
     }
@@ -44,7 +55,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
      * @return json for the list plus nextLink
      */
     public String toJsonMinimal() {
-        return Serializer.INSTANCE.serialize(new MinimalPage<T>(list, nextLink));
+        return Serializer.INSTANCE.serialize(this);
     }
     
     @Override
