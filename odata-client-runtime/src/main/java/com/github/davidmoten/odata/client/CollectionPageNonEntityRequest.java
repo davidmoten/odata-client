@@ -79,7 +79,7 @@ public class CollectionPageNonEntityRequest<T> {
     public CollectionPage<T> get() {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).get();
     }
-
+    
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
