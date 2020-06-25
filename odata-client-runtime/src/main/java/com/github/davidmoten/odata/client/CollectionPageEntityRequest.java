@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 @JsonIgnoreType
-public class CollectionPageEntityRequest<T extends ODataEntityType, R extends EntityRequest<T>> {
+public class CollectionPageEntityRequest<T extends ODataEntityType, R extends EntityRequest<T>> implements Iterable<T> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
@@ -46,7 +47,12 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public CollectionPage<T> get() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).get();
     }
-
+    
+    @Override
+    public Iterator<T> iterator() {
+        return get().iterator();
+    }
+    
     public Stream<T> stream() {
         return get().stream();
     }
