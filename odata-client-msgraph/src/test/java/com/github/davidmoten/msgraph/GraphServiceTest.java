@@ -129,6 +129,13 @@ public class GraphServiceTest {
     }
     
     @Test
+    public void testSerializeShouldNotIncludeNulls() {
+        User user = User.builderUser().id("12345").build();
+        String json = Serializer.INSTANCE.serialize(user);
+        assertEquals("{\"@odata.type\":\"microsoft.graph.user\",\"id\":\"12345\"}", json);
+    }
+    
+    @Test
     public void testJsonMinimal() throws IOException {
         GraphService client = clientBuilder() //
                 .expectResponse("/me/contacts", "/response-contacts.json",
