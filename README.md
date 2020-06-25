@@ -52,6 +52,8 @@ Use this dependency:
 </dependency>
 ```
 
+You can also use artifactId *odata-client-msgraph-beta* to access the beta endpoint (and they have different package names so you can use both clients in the same project if you want).
+
 If you are running on less than Java 11 then you can exclude some dependencies:
 ```xml
 <dependency>
