@@ -9,6 +9,16 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+        
+        client //
+        .users() //
+        .select("displayName") //
+        .stream() //
+        .limit(10) //
+        .map(user -> user.getDisplayName().orElse("?")) //
+        .forEach(System.out::println);
+        
+        System.exit(0);
 
         String id = client.me().messages().select("id").stream().limit(1).findFirst().get().getId()
                 .get();
