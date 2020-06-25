@@ -27,6 +27,7 @@ import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
+import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
 import odata.msgraph.client.complex.Identity;
@@ -142,6 +143,7 @@ public class GraphServiceTest {
         try (InputStream expected = GraphServiceTest.class.getResourceAsStream("/response-contacts-minimal-json.json")) {
             assertEquals(m.readTree(expected), m.readTree(c.toJsonMinimal()));
         }
+        assertTrue(Serializer.INSTANCE.serializePrettyPrint(c).contains("@odata.nextLink"));
     }
 
     @Test
