@@ -119,11 +119,33 @@ public final class Serializer {
             throw new RuntimeException(e);
         }
     }
+    
+    public String serializePrettyPrint(Object entity) {
+        try {
+            return MAPPER_EXCLUDE_NULLS.writerWithDefaultPrettyPrinter().writeValueAsString(entity);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public <T extends ODataEntityType> String serializeChangesOnlyPrettyPrint(T entity) {
+        return serializeChangesOnly(entity, true);
+    }
+    
     public <T extends ODataEntityType> String serializeChangesOnly(T entity) {
+        return serializeChangesOnly(entity, false);
+    }
+    
+    public <T extends ODataEntityType> String serializeChangesOnly(T entity, boolean prettyPrint) {
         try {
             ObjectMapper m = MAPPER_INCLUDE_NULLS;
-            String s = m.writeValueAsString(entity);
+            final String s;
+            if (prettyPrint) {
+                s = m.writerWithDefaultPrettyPrinter().writeValueAsString(entity);    
+            } else {
+                s = m.writeValueAsString(entity);
+            }
+            
             JsonNode tree = m.readTree(s);
             ObjectNode o = (ObjectNode) tree;
             ChangedFields cf = entity.getChangedFields();
