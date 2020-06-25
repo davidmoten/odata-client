@@ -353,7 +353,11 @@ To only return items of a certain type from a collection request (this is called
 
 ```java
 
-client.directoryObjects().filter(User.class).get().stream(System.out::println);
+client
+  .directoryObjects()
+  .filter(User.class)
+  .stream()
+  .forEach(System.out::println);
 ```
 
 ### Updating Microsoft Graph metadata
