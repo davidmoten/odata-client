@@ -88,37 +88,7 @@ As slf4j is used for logging you may wish to exclude the *slf4j-api* dependency 
 	</exclusion>
 ```
 
-### Create a client
-The first step is to create a client that will be used for all calls in your application.
-
-```java
-GraphService client = MsGraph 
-    .tenantName(tenantName) 
-    .clientId(clientId) 
-    .clientSecret(clientSecret) 
-    .connectTimeout(30, TimeUnit.SECONDS)
-    .readTimeout(60, TimeUnit.SECONDS)
-    .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
-    .build();
-```
-### Create a client behind a proxy
-
-```java
-GraphService client = MsGraph 
-    .tenantName(tenantName) 
-    .clientId(clientId) 
-    .clientSecret(clientSecret) 
-    .connectTimeout(30, TimeUnit.SECONDS)
-    .readTimeout(60, TimeUnit.SECONDS)
-    .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
-    .proxyHost(proxyHost)
-    .proxyPort(proxyPort)
-    .proxyUsername(proxyUsername)
-    .proxyPassword(proxyPassword)
-    .build();
-```
-
-## Create a client for the Graph Explorer
+### Create a client for the Graph Explorer
 There's a web test page for queries called the [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer). You can use the client against this service for experiments. Bear in mind that the Graph Explorer service doesn't support lots but it is still a good place to get a feel for it.
 
 ```java
@@ -162,6 +132,35 @@ Conf Room Crystal
 ```
 
 
+### Create a client
+The first step is to create a client that will be used for all calls in your application.
+
+```java
+GraphService client = MsGraph 
+    .tenantName(tenantName) 
+    .clientId(clientId) 
+    .clientSecret(clientSecret) 
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
+    .build();
+```
+### Create a client behind a proxy
+
+```java
+GraphService client = MsGraph 
+    .tenantName(tenantName) 
+    .clientId(clientId) 
+    .clientSecret(clientSecret) 
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
+    .proxyHost(proxyHost)
+    .proxyPort(proxyPort)
+    .proxyUsername(proxyUsername)
+    .proxyPassword(proxyPassword)
+    .build();
+```
 
 ### Specify the authentication endpoint
 This client supports Client Credential authentication only at the moment. Raise an issue if you need a different sort.
