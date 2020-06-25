@@ -46,7 +46,8 @@ public final class MsGraphClientBuilder<T> {
     private Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
             .empty();
     private String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
-    public Authenticator authenticator;
+    private Function<? super HttpService, ? extends HttpService> httpServiceTransformer = x -> x;
+    public Optional<AccessTokenProvider> accessTokenProvider = Optional.empty();
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
@@ -136,11 +137,11 @@ public final class MsGraphClientBuilder<T> {
             return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs,
                     b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint);
+                    b.authenticationEndpoint, b.httpServiceTransformer);
         }
 
     }
-
+    
     public Builder<T> tenantName(String tenantName) {
         this.tenantName = tenantName;
         return new Builder<T>(this);
@@ -203,6 +204,16 @@ public final class MsGraphClientBuilder<T> {
 
         public Builder3<T> proxyPort(int proxyPort) {
             b.proxyPort = Optional.of(proxyPort);
+            return this;
+        }
+        
+        public Builder3<T> httpServiceTransformer(Function<? super HttpService, ? extends HttpService> transformer) {
+            b.httpServiceTransformer = transformer;
+            return this;
+        }
+        
+        public Builder3<T> accessTokenProvider (AccessTokenProvider atp){
+            b.accessTokenProvider = Optional.of(atp);
             return this;
         }
 
@@ -276,7 +287,7 @@ public final class MsGraphClientBuilder<T> {
                     b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
                     b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint);
+                    b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider);
         }
 
     }
@@ -288,22 +299,27 @@ public final class MsGraphClientBuilder<T> {
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
-            Creator<T> creator, String authenticationEndpoint) {
-        ClientCredentialsAccessTokenProvider accessTokenProvider = ClientCredentialsAccessTokenProvider //
-                .tenantName(tenantName) //
-                .clientId(clientId) //
-                .clientSecret(clientSecret) //
-                .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
-                .readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
-                .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
-                .authenticationEndpoint(authenticationEndpoint) //
-                .build();
+            Creator<T> creator, //
+            String authenticationEndpoint, //
+            Function<? super HttpService, ? extends HttpService> httpServiceTransformer,
+            Optional<AccessTokenProvider> accessTokenProviderOverride) {
+        
+        final AccessTokenProvider accessTokenProvider = accessTokenProviderOverride
+                .orElseGet(() -> ClientCredentialsAccessTokenProvider //
+                        .tenantName(tenantName) //
+                        .clientId(clientId) //
+                        .clientSecret(clientSecret) //
+                        .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
+                        .readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
+                        .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
+                        .authenticationEndpoint(authenticationEndpoint) //
+                        .build());
 
         Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
 
         return createService(baseUrl, authenticator, connectTimeoutMs, readTimeoutMs, proxyHost,
                 proxyPort, proxyUsername, proxyPassword, supplier,
-                httpClientBuilderExtras, creator, authenticationEndpoint);
+                httpClientBuilderExtras, creator, authenticationEndpoint, httpServiceTransformer);
     }
 
     private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs,
@@ -321,13 +337,15 @@ public final class MsGraphClientBuilder<T> {
         return clientSupplier;
     }
 
+    @SuppressWarnings("resource")
     private static <T> T createService(String baseUrl, Authenticator authenticator,
             long connectTimeoutMs, long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
-            Creator<T> creator, String authenticationEndpoint) {
+            Creator<T> creator, String authenticationEndpoint, //
+            Function<? super HttpService, ? extends HttpService> httpServiceTransformer) {
         final Supplier<CloseableHttpClient> clientSupplier = createClientSupplier(connectTimeoutMs,
                 readTimeoutMs, proxyHost, proxyPort, proxyUsername, proxyPassword, supplier,
                 httpClientBuilderExtras);
@@ -336,6 +354,7 @@ public final class MsGraphClientBuilder<T> {
                 basePath, //
                 clientSupplier, //
                 authenticator::authenticate);
+        httpService = httpServiceTransformer.apply(httpService);
         Map<String, Object> properties = new HashMap<>();
         properties.put("modify.stream.edit.link", "true");
         properties.put("attempt.stream.when.no.metadata", "true");
