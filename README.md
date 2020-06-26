@@ -134,6 +134,30 @@ Christie Cline
 Conf Room Crystal
 ```
 
+Here's a contrived example with Graph Explorer that gets 5 attachment names from messages and their sizes. The example makes good use of the streaming capabilities of the odata-client API:
+
+```java
+GraphService client = MsGraph.explorer().build();
+client
+  .me()
+  .messages()
+  .select("id")
+  .stream()
+  .flatMap(m -> m.getAttachments().select("name, size").stream())
+  .limit(5)
+  .map(a -> a.getName().orElse("?") + " " + a.getSize().orElse(-1) + "B")
+  .forEach(System.out::println);
+```
+
+output:
+```
+analytics_icon.png 2281B
+lock_circle_teal.png 2713B
+collab_hero_left_2x.png 6496B
+ProfileImage_320_48d31887-5fad-4d73-a9f5-3c356e68a038.png 335675B
+collab_hero_right_2x.png 6611B
+```
+
 
 ### Create a client
 The first step is to create a client that will be used for all calls in your application.
