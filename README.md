@@ -18,7 +18,7 @@ Status : *released to Maven Central*
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Paging is handled for you automatically when iterating large collections
 * Bound actions and functions are supported (unbound in the [TODO] list)
-* Generated code is very clean - well formatted, no redundant imports
+* Generated code is very clean - well formatted, no redundant imports ([example](src/docs/FileAttachment.java))
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
 * Graph Explorer support (test endpoint)
