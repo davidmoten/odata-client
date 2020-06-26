@@ -1,11 +1,13 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 /**
@@ -28,9 +30,14 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 
     public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
             Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
+        Preconditions.checkNotNull(contextPath);
+        Preconditions.checkNotNull(cls);
+        Preconditions.checkNotNull(nextLink);
+        Preconditions.checkNotNull(schemaInfo);
+        Preconditions.checkNotNull(requestHeaders);
         this.contextPath = contextPath;
         this.cls = cls;
-        this.list = list;
+        this.list = list == null ? Collections.emptyList() : list;
         this.nextLink = nextLink;
         this.schemaInfo = schemaInfo;
         this.requestHeaders = requestHeaders;

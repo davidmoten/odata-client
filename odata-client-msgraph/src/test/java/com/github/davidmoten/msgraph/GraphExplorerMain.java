@@ -1,7 +1,12 @@
 package com.github.davidmoten.msgraph;
 
+import com.github.davidmoten.odata.client.CollectionPage;
+import com.github.davidmoten.odata.client.Serializer;
+
+import odata.msgraph.client.complex.InternetMessageHeader;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.FileAttachment;
+import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
 
 public class GraphExplorerMain {
@@ -9,6 +14,15 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+        Message m = client.me().messages().stream().findFirst().get();
+        System.out.println(m.getSubject());
+        CollectionPage<InternetMessageHeader> c = m.getInternetMessageHeaders();
+        System.out.println(c.currentPage().size());
+        System.out.println(c.nextPage().isPresent());
+        System.out.println(Serializer.INSTANCE.serialize(c));
+        m.getInternetMessageHeaders().forEach(System.out::println);
+        
+        System.exit(0);
 
         client //
                 .users() //
