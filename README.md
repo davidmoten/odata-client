@@ -403,6 +403,9 @@ URLs are:
 * https://graph.microsoft.com/v1.0/$metadata 
 * https://graph.microsoft.com/beta/$metadata
 
+## Serialization
+*odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with an odata service. If you want to serialize returned objects back to JSON then you will probably want to customize that serialization to exclude nulls (the objects are not annotated by default for this to happen, at least not since 0.1.15). 
+
 ## Usage Notes
 ### Streams
 To find the read url for a property that is of type `Edm.Stream` you generally need to read the entity containing the stream property with the `Accept: odata.metadata=full` request header (set `.metadataFull()` before calling `get()` on an entity).
