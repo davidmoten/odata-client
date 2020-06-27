@@ -150,7 +150,7 @@ public final class RequestHelper {
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
         String json = Serializer.INSTANCE.serialize(object);
-
+        
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
 
         // get the response
