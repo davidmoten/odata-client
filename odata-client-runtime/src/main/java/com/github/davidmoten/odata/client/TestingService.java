@@ -181,7 +181,7 @@ public final class TestingService {
                         String expected = new String(Files.readAllBytes(
                                 Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
-                        if (Serializer.INSTANCE.matches(expected, text)) {
+                        if (Serializer.matches(expected, text)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
                             throw new RuntimeException(
@@ -215,7 +215,7 @@ public final class TestingService {
                     }
                     try {
                         String requestExpected = readResource(url, requestResourceName);
-                        if (Serializer.INSTANCE.matches(requestExpected, text)) {
+                        if (Serializer.matches(requestExpected, text)) {
                             String responseResourceName = responses
                                     .get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders)).resource;
                             String responseExpected = readResource(url, responseResourceName);

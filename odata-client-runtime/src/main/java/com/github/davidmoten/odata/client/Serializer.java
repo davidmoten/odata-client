@@ -2,11 +2,13 @@ package com.github.davidmoten.odata.client;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,10 +18,13 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
@@ -32,16 +37,35 @@ public final class Serializer {
         // prevent instantiation
     }
 
+    // must instantiate this before MAPPER_*
+    private static final JacksonAnnotationIntrospector IGNORE_JSON_INCLUDE_ANNOTATION = new JacksonAnnotationIntrospector() {
+
+        private static final long serialVersionUID = 4940526677740939988L;
+
+        @Override
+        protected <A extends Annotation> A _findAnnotation(final Annotated annotated,
+                final Class<A> annoClass) {
+            if (!annotated.hasAnnotation(JsonInclude.class)) {
+                return super._findAnnotation(annotated, annoClass);
+            } else {
+                return null;
+            }
+        }
+    };
+    
     private static final ObjectMapper MAPPER_EXCLUDE_NULLS = createObjectMapper(false);
     private static final ObjectMapper MAPPER_INCLUDE_NULLS = createObjectMapper(true);
 
-    private static ObjectMapper createObjectMapper(boolean includeNulls) {
+    @VisibleForTesting
+    static ObjectMapper createObjectMapper(boolean includeNulls) {
         return new ObjectMapper() //
+                .setAnnotationIntrospector(IGNORE_JSON_INCLUDE_ANNOTATION) //
                 .registerModule(new Jdk8Module()) //
                 .registerModule(new JavaTimeModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) //
                 .setSerializationInclusion(includeNulls ? Include.ALWAYS : Include.NON_NULL) //
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //
+                
                 // StdDateFormat is ISO8601 since jackson 2.9
                 .setDateFormat(new StdDateFormat().withColonInTimeZone(true));
     }
@@ -89,7 +113,7 @@ public final class Serializer {
                 }
                 return t;
             } else {
-                return MAPPER_EXCLUDE_NULLS.readValue(text, type);
+                return m.readValue(text, type);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -203,7 +227,7 @@ public final class Serializer {
         }
     }
 
-    public boolean matches(String expectedJson, String actualJson) throws IOException {
+    public static boolean matches(String expectedJson, String actualJson) throws IOException {
         JsonNode expectedTree = MAPPER_EXCLUDE_NULLS.readTree(expectedJson);
         JsonNode textTree = MAPPER_EXCLUDE_NULLS.readTree(actualJson);
         return expectedTree.equals(textTree);

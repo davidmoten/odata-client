@@ -39,6 +39,8 @@ import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Lists;
@@ -523,6 +525,7 @@ public final class Generator {
 
             t.printJavadoc(p, indent);
             printPropertyOrder(imports, p, t.getProperties());
+            printJsonIncludesNonNull(indent, imports, p);
             p.format("public class %s%s implements %s {\n", simpleClassName,
                     t.getExtendsClause(imports), imports.add(ODataEntityType.class));
 
@@ -623,6 +626,10 @@ public final class Generator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void printJsonIncludesNonNull(Indent indent, Imports imports, PrintWriter p) {
+        p.format("%s@%s(%s.NON_NULL)\n", indent, imports.add(JsonInclude.class), imports.add(Include.class));        
     }
 
     private void addInheritedPropertyNames(EntityType t, Set<String> methodNames) {
@@ -949,6 +956,7 @@ public final class Generator {
 
             t.printJavadoc(p, indent);
             printPropertyOrder(imports, p, t.getProperties());
+            printJsonIncludesNonNull(indent, imports, p);
             p.format("public class %s%s implements %s {\n\n", simpleClassName,
                     t.getExtendsClause(imports), imports.add(ODataType.class));
 

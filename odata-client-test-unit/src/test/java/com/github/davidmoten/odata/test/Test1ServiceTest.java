@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.RequestHeader;
@@ -58,6 +59,13 @@ public class Test1ServiceTest {
         Product p3 = p2.withName(null);
         assertEquals("{\"@odata.type\":\"Test1.A.Product\",\"Name\":null}",
                 Serializer.INSTANCE.serializeChangesOnly(p3));
+    }
+    
+    @Test
+    public void testSimpleObjectMapperExcludesNulls() throws JsonProcessingException {
+        ObjectMapper o = new ObjectMapper();
+        Product p = Product.builder().name("bingo").build();
+        System.out.println(o.writeValueAsString(p));
     }
 
     @Test
