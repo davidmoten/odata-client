@@ -31,12 +31,6 @@ import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Serializer {
 
-    public static final Serializer INSTANCE = new Serializer();
-
-    private Serializer() {
-        // prevent instantiation
-    }
-
     // must instantiate this before MAPPER_*
     private static final JacksonAnnotationIntrospector IGNORE_JSON_INCLUDE_ANNOTATION = new JacksonAnnotationIntrospector() {
 
@@ -56,6 +50,12 @@ public final class Serializer {
     private static final ObjectMapper MAPPER_EXCLUDE_NULLS = createObjectMapper(false);
     private static final ObjectMapper MAPPER_INCLUDE_NULLS = createObjectMapper(true);
 
+    public static final Serializer INSTANCE = new Serializer();
+
+    private Serializer() {
+        // prevent instantiation
+    }
+    
     @VisibleForTesting
     static ObjectMapper createObjectMapper(boolean includeNulls) {
         return new ObjectMapper() //
@@ -227,7 +227,7 @@ public final class Serializer {
         }
     }
 
-    public static boolean matches(String expectedJson, String actualJson) throws IOException {
+    public boolean matches(String expectedJson, String actualJson) throws IOException {
         JsonNode expectedTree = MAPPER_EXCLUDE_NULLS.readTree(expectedJson);
         JsonNode textTree = MAPPER_EXCLUDE_NULLS.readTree(actualJson);
         return expectedTree.equals(textTree);
