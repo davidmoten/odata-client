@@ -2,13 +2,20 @@ package com.github.davidmoten.odata.client;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.annotation.Annotation;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 
 public class SerializerTest {
@@ -33,6 +40,35 @@ public class SerializerTest {
     public void testSerializeChangesOnly() {
         Person person = new Person("user",null,"last").setFirstName("first");
         assertEquals("{\"FirstName\":\"first\"}",Serializer.INSTANCE.serializeChangesOnly(person));
+    }
+    
+    @Test
+    public void testOverrideJsonIncludeAnnotation() throws JsonProcessingException {
+        ObjectMapper m = new ObjectMapper();
+        m.setSerializationInclusion(Include.ALWAYS);
+        m.setAnnotationIntrospector(IGNORE_JSON_INCLUDE_ANNOTATION);
+        String json = m.writeValueAsString(new Thing());
+        assertEquals("{\"name\":\"Bert\",\"address\":null}", json);
+    }
+    
+    private static final JacksonAnnotationIntrospector IGNORE_JSON_INCLUDE_ANNOTATION = new JacksonAnnotationIntrospector() {
+
+        @Override
+        protected <A extends Annotation> A _findAnnotation(final Annotated annotated, final Class<A> annoClass) {
+            if (!annotated.hasAnnotation(JsonInclude.class)) {
+                return super._findAnnotation(annotated, annoClass);
+            }
+            return null;
+        }
+    };
+    
+    @JsonInclude(Include.NON_NULL)
+    static final class Thing {
+        @JsonProperty
+        String name = "Bert";
+        
+        @JsonProperty
+        String address = null;
     }
 
     @Test
