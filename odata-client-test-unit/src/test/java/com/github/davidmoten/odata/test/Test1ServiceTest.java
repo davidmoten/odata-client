@@ -65,7 +65,7 @@ public class Test1ServiceTest {
     public void testSimpleObjectMapperExcludesNulls() throws JsonProcessingException {
         ObjectMapper o = new ObjectMapper();
         Product p = Product.builder().name("bingo").build();
-        System.out.println(o.writeValueAsString(p));
+        assertEquals("{\"@odata.type\":\"Test1.A.Product\",\"Name\":\"bingo\"}", o.writeValueAsString(p));
     }
 
     @Test
