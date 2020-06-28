@@ -404,7 +404,7 @@ URLs are:
 * https://graph.microsoft.com/beta/$metadata
 
 ## Serialization
-*odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with an odata service. If you want to serialize returned objects back to JSON then you will probably want to customize that serialization to exclude nulls (the objects are not annotated by default for this to happen, at least not since 0.1.15). 
+*odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
 
 ## Usage Notes
 ### Streams
