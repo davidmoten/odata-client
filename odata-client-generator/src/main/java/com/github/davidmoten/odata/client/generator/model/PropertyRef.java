@@ -2,7 +2,6 @@ package com.github.davidmoten.odata.client.generator.model;
 
 import org.oasisopen.odata.csdl.v4.TPropertyRef;
 
-import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 
 public class PropertyRef {
