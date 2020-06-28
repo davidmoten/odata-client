@@ -7,7 +7,6 @@ public class SchemaOptions {
     public final String packageSuffixEntity;
     public final String packageSuffixComplexType;
     public final String packageSuffixEntityRequest;
-    public final String packageSuffixActionRequest;
     public final String packageSuffixCollectionRequest;
     public final String packageSuffixContainer;
     public final String packageSuffixSchema;
@@ -23,7 +22,7 @@ public class SchemaOptions {
     public SchemaOptions(String namespace, String pkg, String packageSuffixEnum,
             String packageSuffixEntity, String packageSuffixComplexType,
             String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
-            String packageSuffixActionRequest, String packageSuffixContainer,
+            String packageSuffixContainer,
             String packageSuffixSchema, String simpleClassNameSchema,
             String collectionRequestClassSuffix, String entityRequestClassSuffix,
             String actionRequestClassSuffix, boolean pageComplexTypes) {
@@ -34,7 +33,6 @@ public class SchemaOptions {
         this.packageSuffixComplexType = packageSuffixComplexType;
         this.packageSuffixEntityRequest = packageSuffixEntityRequest;
         this.packageSuffixCollectionRequest = packageSuffixCollectionRequest;
-        this.packageSuffixActionRequest = packageSuffixActionRequest;
         this.packageSuffixContainer = packageSuffixContainer;
         this.packageSuffixSchema = packageSuffixSchema;
         this.simpleClassNameSchema = simpleClassNameSchema;
@@ -45,7 +43,7 @@ public class SchemaOptions {
     }
 
     public SchemaOptions(String namespace, String pkg) {
-        this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request", ".action.request",
+        this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request",
                 ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", "ActionRequest", true);
     }
 
@@ -81,10 +79,6 @@ public class SchemaOptions {
         return packageSuffixSchema;
     }
 
-    public String packageSuffixActionRequest() {
-        return packageSuffixActionRequest;
-    }
-
     public String simpleClassNameSchema() {
         return simpleClassNameSchema;
     }
@@ -95,10 +89,6 @@ public class SchemaOptions {
 
     public String entityRequestClassSuffix() {
         return entityRequestClassSuffix;
-    }
-
-    public String actionRequestClassSuffix() {
-        return actionRequestClassSuffix;
     }
 
     public boolean pageComplexTypes() {

@@ -10,7 +10,6 @@ public class Schema {
     public String packageSuffixComplexType = ".complex";
     public String packageSuffixEntityRequest = ".entity.request";
     public String packageSuffixCollectionRequest = ".entity.collection.request";
-    public String packageSuffixActionRequest = ".action.request";
     public String packageSuffixContainer = ".container";
     public String packageSuffixSchema = ".schema";
     public String simpleClassNameSchema = "SchemaInfo";

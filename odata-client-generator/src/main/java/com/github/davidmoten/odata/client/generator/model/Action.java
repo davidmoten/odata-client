@@ -26,20 +26,8 @@ public final class Action implements Method {
         this.names = names;
     }
 
-    public String getSimpleClassNameActionRequest() {
-        return names.getSimpleClassNameActionRequest(schema(), action.getName());
-    }
-
     public Schema schema() {
         return names.getSchema(action);
-    }
-
-    public String getFullClassNameActionRequest() {
-        return names.getFullClassNameActionRequest(schema(), action.getName());
-    }
-
-    public Object getPackageActionRequest() {
-        return names.getPackageActionRequest(schema());
     }
 
     public String getFullClassNameActionReturnType() {
@@ -53,10 +41,6 @@ public final class Action implements Method {
             return names.getFullClassNameFromTypeWithNamespace(
                     names.getInnerType(returnParameter.get()));
         }
-    }
-
-    public File getClassFileActionRequest() {
-        return names.getClassFileActionRequest(schema(), action.getName());
     }
 
     public Optional<String> getActionReturnType() {

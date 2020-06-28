@@ -623,25 +623,6 @@ public final class Names {
         return getPackageContainer(schema) + "." + getSimpleClassNameContainer(name);
     }
 
-    public File getDirectoryActionRequest(Schema schema) {
-        SchemaOptions o = getOptions(schema);
-        return toDirectory(output, o.pkg() + o.packageSuffixActionRequest());
-    }
-
-    public String getSimpleClassNameActionRequest(Schema schema, String name) {
-        return Names.toSimpleClassName(name + getOptions(schema).actionRequestClassSuffix());
-    }
-
-    public String getFullClassNameActionRequest(Schema schema, String name) {
-        return getPackageActionRequest(schema) + "."
-                + getSimpleClassNameActionRequest(schema, name);
-    }
-
-    public String getPackageActionRequest(Schema schema) {
-        SchemaOptions o = getOptions(schema);
-        return o.pkg() + o.packageSuffixActionRequest();
-    }
-
     public String getInnerType(TActionFunctionReturnType x) {
         List<String> list = x.getType();
         if (list.size() != 1) {
@@ -649,11 +630,6 @@ public final class Names {
                     "function return type must have one and only one type but was: " + x.getType());
         }
         return getInnerType(list.get(0));
-    }
-
-    public File getClassFileActionRequest(Schema schema, String name) {
-        return new File(getDirectoryActionRequest(schema),
-                getSimpleClassNameActionRequest(schema, name) + ".java");
     }
 
     public Documentation getDocumentation() {
