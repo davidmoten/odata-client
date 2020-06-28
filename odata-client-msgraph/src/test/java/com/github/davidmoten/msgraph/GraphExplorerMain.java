@@ -1,12 +1,7 @@
 package com.github.davidmoten.msgraph;
 
-import com.github.davidmoten.odata.client.CollectionPage;
-import com.github.davidmoten.odata.client.Serializer;
-
-import odata.msgraph.client.complex.InternetMessageHeader;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.FileAttachment;
-import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
 
 public class GraphExplorerMain {
