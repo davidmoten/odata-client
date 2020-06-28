@@ -160,19 +160,7 @@ public final class Names {
         return new File(path);
     }
 
-    public String getSimpleClassNameEnum(String name) {
-        return Names.toSimpleClassName(name);
-    }
-
-    public String getSimpleClassNameEntity(String name) {
-        return Names.toSimpleClassName(name);
-    }
-
     public String getSimpleClassNameContainer(String name) {
-        return Names.toSimpleClassName(name);
-    }
-
-    public String getSimpleClassNameComplexType(String name) {
         return Names.toSimpleClassName(name);
     }
 
@@ -198,10 +186,6 @@ public final class Names {
         return Preconditions.checkNotNull(
                 classNamesFromNamespacedType.get(schema.getNamespace() + "." + type),
                 "class name not found for " + type);
-    }
-
-    public String getInnerType(TNavigationProperty t) {
-        return getInnerType(getType(t));
     }
 
     public String getInnerType(String type) {
@@ -268,15 +252,6 @@ public final class Names {
 
     public String toImportedFullClassName(TActionFunctionParameter x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);
-    }
-
-    public String toImportedFullClassName(TActionFunctionReturnType x, Imports imports) {
-        return toImportedFullClassName(getType(x), imports, List.class);
-    }
-
-    public String toImportedTypeNonCollection(TProperty x, Imports imports) {
-        Preconditions.checkArgument(!isCollection(x));
-        return toImportedTypeNonCollection(getType(x), imports);
     }
 
     public String toImportedTypeNonCollection(String t, Imports imports) {
@@ -396,18 +371,6 @@ public final class Names {
             this.schema = schema;
             this.type = type;
         }
-
-        @Override
-        public String toString() {
-            final String typeName;
-            if (type instanceof TEntityType) {
-                typeName = ((TEntityType) type).getName();
-            } else {
-                typeName = ((TComplexType) type).getName();
-            }
-            return "SchemaAndType [schema=" + schema + ", type.name=" + typeName + "]";
-        }
-
     }
 
     public Schema getSchema(TEntityType entityType) {
@@ -453,11 +416,6 @@ public final class Names {
     public String getPackageEntityRequest(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEntityRequest();
-    }
-
-    public String getPackageEntitySetRequest(Schema schema) {
-        SchemaOptions o = getOptions(schema);
-        return o.pkg() + o.packageSuffixEntitySet();
     }
 
     public File getClassFileComplexType(Schema schema, String name) {
@@ -605,10 +563,6 @@ public final class Names {
         return new EntityType(entityTypesFromNamespacedType.get(typeWithNamespace), this);
     }
 
-    public String getInnerType(TProperty p) {
-        return getInnerType(getType(p));
-    }
-
     public String getEnumInstanceName(TEnumType t, String name) {
         // ensures uniqueness
         //
@@ -707,11 +661,6 @@ public final class Names {
         return docs;
     }
 
-    public Optional<String> getJavadoc(TEnumType t) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
-    }
-
     public String getPackageEntitySet(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixEntitySet();
@@ -732,10 +681,6 @@ public final class Names {
     
     public static String getPutChunkedMethod(String name) {
         return "putChunked" + upperFirst(name);
-    }
-
-    public static String getCanPutMethod(String name) {
-        return "canPut" + upperFirst(name);
     }
 
 }
