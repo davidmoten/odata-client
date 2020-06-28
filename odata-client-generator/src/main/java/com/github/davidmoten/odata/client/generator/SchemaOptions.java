@@ -45,21 +45,8 @@ public class SchemaOptions {
     }
 
     public SchemaOptions(String namespace, String pkg) {
-        this.namespace = namespace;
-        this.pkg = pkg;
-        this.packageSuffixEnum = ".enums";
-        this.packageSuffixEntity = ".entity";
-        this.packageSuffixComplexType = ".complex";
-        this.packageSuffixEntityRequest = ".entity.request";
-        this.packageSuffixCollectionRequest = ".collection.request";
-        this.packageSuffixActionRequest = ".action.request";
-        this.packageSuffixContainer = ".container";
-        this.packageSuffixSchema = ".schema";
-        this.simpleClassNameSchema = "SchemaInfo";
-        this.collectionRequestClassSuffix = "CollectionRequest";
-        this.entityRequestClassSuffix = "EntityRequest";
-        this.actionRequestClassSuffix = "ActionRequest";
-        this.pageComplexTypes = true;
+        this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request", ".action.request",
+                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", "ActionRequest", true);
     }
 
     public String pkg() {
