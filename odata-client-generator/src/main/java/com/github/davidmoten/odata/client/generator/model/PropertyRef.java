@@ -40,9 +40,4 @@ public class PropertyRef {
                 .get();
     }
 
-    public String getImportedClassNameForReferredPropertyType(Imports imports) {
-        // note that type should not be collection because is a key property
-        return names.toImportedTypeNonCollection(getReferredProperty().getValue(), imports);
-    }
-
 }
