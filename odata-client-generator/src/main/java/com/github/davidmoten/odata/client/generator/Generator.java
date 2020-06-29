@@ -679,7 +679,7 @@ public final class Generator {
             writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
             if (returnType.isCollection) {
                 p.format(
-                        "%sreturn %s.forAction(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                        "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                         indent, //
                         imports.add(CollectionPageNonEntityRequest.class), //
                         action.getFullType(), //
@@ -687,7 +687,7 @@ public final class Generator {
                         returnType.schemaInfoFullClassName);
             } else {
                 p.format(
-                        "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                        "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                         indent, //
                         imports.add(ActionRequestReturningNonCollection.class), //
                         returnType.innerImportedFullClassName, //
@@ -701,7 +701,7 @@ public final class Generator {
                     imports.add(ActionRequestNoReturn.class), //
                     methodName, paramsDeclaration);
             writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
-            p.format("%sreturn new %s(this.contextPath.addSegment(\"%s\"), _parameters);\n", //
+            p.format("%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
                     indent, //
                     imports.add(ActionRequestNoReturn.class), //
                     action.getFullType());
@@ -720,7 +720,7 @@ public final class Generator {
         methodNames.add(methodName);
         return methodName;
     }
-
+    
     private void writeBoundFunctionMethods(EntityType t, Map<String, List<Function>> typeFunctions,
             Imports imports, Indent indent, PrintWriter p, Set<String> propertyMethodNames) {
         typeFunctions //
@@ -750,7 +750,7 @@ public final class Generator {
         writeFunctionParameterMapAndNullChecks(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
-                    "%sreturn %s.forAction(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                     indent, //
                     imports.add(CollectionPageNonEntityRequest.class), //
                     function.getFullType(), //
@@ -758,7 +758,7 @@ public final class Generator {
                     returnType.schemaInfoFullClassName);
         } else {
             p.format(
-                    "%sreturn new %s<%s>(this.contextPath.addSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                     indent, //
                     imports.add(FunctionRequestReturningNonCollection.class), //
                     returnType.innerImportedFullClassName, //

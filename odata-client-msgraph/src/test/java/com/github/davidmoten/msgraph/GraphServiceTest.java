@@ -23,6 +23,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Sets;
+import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
@@ -259,7 +260,7 @@ public class GraphServiceTest {
         //TODO it is unknown yet whether the path segment should be /microsoft.graph.getByIds or /getByIds. GraphExplorer expects /getByIds
         // test built according to https://docs.microsoft.com/en-us/graph/api/directoryobject-getbyids?view=graph-rest-1.0&tabs=http
         GraphService client = clientBuilder() //
-                .expectRequestAndResponse("/directoryObjects/microsoft.graph.getByIds", //
+                .expectRequestAndResponse("/directoryObjects/getByIds", //
                         "/request-directory-objects-get-by-ids.json", //
                         "/response-directory-objects-get-by-ids.json", //
                         HttpMethod.POST, //
@@ -449,7 +450,7 @@ public class GraphServiceTest {
     public void testFunctionBoundToCollection() {
         GraphService client = clientBuilder() //
                 .expectRequestAndResponse(
-                        "/users/fred/mailFolders/inbox/messages/microsoft.graph.delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
+                        "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
                         "/request-messages-delta.json", //
                         "/response-messages-delta.json", //
                         HttpMethod.POST, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
@@ -477,7 +478,7 @@ public class GraphServiceTest {
                         "/response-messages-expand-attachments-minimal-metadata.json",
                         RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .expectRequestAndResponse(
-                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/move", //
                         "/request-post-action-move.json", //
                         "/response-message-move.json", //
                         HttpMethod.POST, //
@@ -581,7 +582,7 @@ public class GraphServiceTest {
                 .test() //
                 .baseUrl("https://graph.microsoft.com/v1.0") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
-                .addProperty("modify.stream.edit.link", "true");
+                .addProperties(MsGraphClientBuilder.createProperties());
     }
 
     private static GraphService createClient(String path, String resource,
