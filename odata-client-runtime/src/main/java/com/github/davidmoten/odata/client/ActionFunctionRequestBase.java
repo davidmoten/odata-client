@@ -8,7 +8,7 @@ import java.util.Map;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.TypedObject;
 
-public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>>
+abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>>
         implements RequestOptions {
 
     protected final ContextPath contextPath;
@@ -18,13 +18,9 @@ public abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestB
     protected final List<RequestHeader> requestHeaders = new ArrayList<>();
     protected final Map<String, String> queries = new HashMap<>();
 
-    public ActionFunctionRequestBase(Map<String, TypedObject> parameters, ContextPath contextPath) {
+    ActionFunctionRequestBase(Map<String, TypedObject> parameters, ContextPath contextPath) {
         this.parameters = parameters;
         this.contextPath = contextPath;
-    }
-
-    public T requestHeader(String key, String value) {
-        return requestHeader(new RequestHeader(key, value));
     }
 
     @SuppressWarnings("unchecked")
