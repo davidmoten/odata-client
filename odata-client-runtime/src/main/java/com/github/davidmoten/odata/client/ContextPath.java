@@ -16,6 +16,20 @@ public final class ContextPath {
     public ContextPath addSegment(String segment) {
         return new ContextPath(context, path.addSegment(segment));
     }
+    
+    public ContextPath addActionOrFunctionSegment(String fullyQualifiedName) {
+        boolean useSimpleNameOnly = "true".equalsIgnoreCase(String.valueOf(context.getProperty("action.or.function.segment.simple.name")));
+        if (useSimpleNameOnly) {
+            int i = fullyQualifiedName.lastIndexOf(".");
+            if (i == -1) {
+                return addSegment(fullyQualifiedName);
+            } else {
+                return addSegment(fullyQualifiedName.substring(i + 1, fullyQualifiedName.length()));
+            }
+        } else {
+            return addSegment(fullyQualifiedName);
+        }
+    }
 
     public ContextPath addKeys(NameValue... keys) {
         return new ContextPath(context, path.addKeys(keys));

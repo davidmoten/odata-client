@@ -355,10 +355,16 @@ public final class MsGraphClientBuilder<T> {
                 clientSupplier, //
                 authenticator::authenticate);
         httpService = httpServiceTransformer.apply(httpService);
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("modify.stream.edit.link", "true");
-        properties.put("attempt.stream.when.no.metadata", "true");
-        return creator.create(new Context(Serializer.INSTANCE, httpService, properties));
+        
+        return creator.create(new Context(Serializer.INSTANCE, httpService, createProperties()));
+    }
+    
+    public static Map<String, Object> createProperties() {
+        Map<String, Object> p = new HashMap<>();
+        p.put("modify.stream.edit.link", "true");
+        p.put("attempt.stream.when.no.metadata", "true");
+        p.put("action.or.function.segment.simple.name", "true");
+        return p;
     }
 
     private static CloseableHttpClient createHttpClient(long connectTimeoutMs, long readTimeoutMs,

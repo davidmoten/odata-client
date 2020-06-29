@@ -288,6 +288,11 @@ public final class TestingService {
             return this;
         }
 
+        public ContainerBuilder<T> addProperties(Map<String, Object> p) {
+            properties.putAll(p);
+            return this;
+        }
+
     }
 
     public static final class Builder extends BuilderBase<Builder, HttpService> {
