@@ -1,8 +1,14 @@
 package com.github.davidmoten.odata.client.internal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public final class TypedObject {
 
     private final String typeWithNamespace;
+    
+    @JsonProperty("object")
+    @JsonValue
     private final Object object;
 
     public TypedObject(String typeWithNamespace, Object object) {
@@ -17,5 +23,5 @@ public final class TypedObject {
     public Object object() {
         return object;
     }
-
+    
 }

@@ -2,6 +2,8 @@ package com.github.davidmoten.odata.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.HttpURLConnection;
+
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,8 +52,9 @@ public class Test1ServiceTest {
                         RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
                         RequestHeader.ODATA_VERSION) //
                 .expectResponse("/Products", "/response-post.json", HttpMethod.POST,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        HttpURLConnection.HTTP_CREATED, //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
+                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = Product.builder().name("bingo").build();

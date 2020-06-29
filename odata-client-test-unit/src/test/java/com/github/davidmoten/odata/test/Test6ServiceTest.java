@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 
 import org.junit.Ignore;
@@ -53,10 +54,14 @@ public class Test6ServiceTest {
         Test6Service client = Test6Service.test() //
                 .expectResponse("/Products/1", "/response-product-1.json",
                         RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL)
-                .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions",
-                        "/request-revoke-sessions.json", "/response-revoke-sessions.json",
-                        HttpMethod.POST, RequestHeader.ODATA_VERSION,
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, RequestHeader.ACCEPT_JSON) //
+                .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions", //
+                        "/request-revoke-sessions.json", //
+                        "/response-revoke-sessions.json",
+                        HttpMethod.POST,//
+                        HttpURLConnection.HTTP_CREATED, //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
+                        RequestHeader.ACCEPT_JSON) //
                 .build();
         assertTrue(client.products(1).get().revokeSessions().get().value());
     }
@@ -67,7 +72,10 @@ public class Test6ServiceTest {
         Test6Service client = Test6Service.test() //
                 .expectRequestAndResponse("/Products/1/Test6.A.revokeSessions",
                         "/request-revoke-sessions.json", "/response-revoke-sessions.json",
-                        HttpMethod.POST, RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION,
+                        HttpMethod.POST, //
+                        HttpURLConnection.HTTP_CREATED, //
+                        RequestHeader.ACCEPT_JSON, //
+                        RequestHeader.ODATA_VERSION, //
                         RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
                 .build();
         assertTrue(client.products(1).revokeSessions().get().value());
