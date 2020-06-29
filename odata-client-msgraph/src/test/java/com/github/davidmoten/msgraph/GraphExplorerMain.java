@@ -1,6 +1,9 @@
 package com.github.davidmoten.msgraph;
 
+import java.util.Arrays;
+
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.DirectoryObject;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.User;
 
@@ -9,6 +12,11 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+
+        DirectoryObject u = client.directoryObjects().getByIds(Arrays.asList("6e7b768e-07e2-4810-8459-485f84f8f204"), Arrays.asList("user")).stream().findFirst().get();
+        System.out.println(u);
+        System.exit(0);
+        
         client //
                 .me() //
                 .messages() //

@@ -61,7 +61,7 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
-                false);
+                method != HttpMethod.GET);
         if (method == HttpMethod.GET) {
             r = cp.context().service().get(cp.toUrl(), h);
         } else {

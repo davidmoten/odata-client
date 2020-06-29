@@ -283,11 +283,11 @@ public final class RequestHelper {
 
     public static List<RequestHeader> cleanAndSupplementRequestHeaders(
             List<RequestHeader> requestHeaders, String contentTypeOdataMetadataValue,
-            boolean isWrite) {
+            boolean hasPayload) {
 
         List<RequestHeader> list = new ArrayList<>();
         list.add(RequestHeader.ODATA_VERSION);
-        if (isWrite) {
+        if (hasPayload) {
             list.add(RequestHeader.contentTypeJsonWithMetadata(contentTypeOdataMetadataValue));
         }
         list.add(RequestHeader.ACCEPT_JSON);
@@ -323,9 +323,9 @@ public final class RequestHelper {
     }
 
     public static List<RequestHeader> cleanAndSupplementRequestHeaders(RequestOptions options,
-            String contentTypeOdataMetadataValue, boolean isWrite) {
+            String contentTypeOdataMetadataValue, boolean hasPayload) {
         return cleanAndSupplementRequestHeaders(options.getRequestHeaders(),
-                contentTypeOdataMetadataValue, isWrite);
+                contentTypeOdataMetadataValue, hasPayload);
     }
 
     public static InputStream getStream(ContextPath contextPath, RequestOptions options,
