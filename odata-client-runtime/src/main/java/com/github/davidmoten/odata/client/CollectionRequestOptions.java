@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public final class CollectionRequestOptions implements RequestOptions {
+final class CollectionRequestOptions implements RequestOptions {
 
     private final List<RequestHeader> requestHeaders;
     private final Optional<String> search;
@@ -17,7 +17,7 @@ public final class CollectionRequestOptions implements RequestOptions {
     private final Optional<String> expand;
     private final Optional<String> urlOverride;
 
-    public CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
+    CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
             Optional<Long> top, Optional<String> select, Optional<String> expand, Optional<String> urlOverride) {
         this.requestHeaders = requestHeaders;
