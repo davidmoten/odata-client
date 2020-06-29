@@ -1,13 +1,11 @@
-package com.github.davidmoten.odata.client;
+package com.github.davidmoten.odata.client.internal;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
-//TODO rename because used by Action/Function parameters not just entity fields
-public final class EntityPreconditions {
+public final class Checks {
     
-    private EntityPreconditions() {
+    private Checks() {
         // prevent instantiation
     }
 
@@ -22,13 +20,6 @@ public final class EntityPreconditions {
     public static List<String> checkIsAscii(List<String> list) {
         list.forEach(v -> checkIsAscii(v));
         return list;
-    }
-
-    public static Optional<String> checkIsAscii(Optional<String> v) {
-        if (v.isPresent()) {
-            checkIsAscii(v.get());
-        }
-        return v;
     }
 
 }
