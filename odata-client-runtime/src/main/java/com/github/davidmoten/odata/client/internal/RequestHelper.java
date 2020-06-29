@@ -288,7 +288,7 @@ public final class RequestHelper {
         List<RequestHeader> list = new ArrayList<>();
         list.add(RequestHeader.ODATA_VERSION);
         if (hasPayload) {
-            list.add(RequestHeader.contentTypeJsonWithMetadata(contentTypeOdataMetadataValue));
+            list.add(RequestHeader.CONTENT_TYPE_JSON);
         }
         list.add(RequestHeader.ACCEPT_JSON);
         list.addAll(requestHeaders);

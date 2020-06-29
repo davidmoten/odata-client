@@ -72,6 +72,7 @@ public final class Function implements Method {
                 .collect(Collectors.toList());
     }
 
+    //TODO looks the same as Action.Parameter?
     public static final class Parameter implements HasNameJavaHasNullable {
         public final String name;
         private final String nameJava;
@@ -80,6 +81,7 @@ public final class Function implements Method {
         public final boolean isCollection;
         public String typeWithNamespace;
         private final boolean isNullable;
+        private final boolean isAscii;
 
         public Parameter(TActionFunctionParameter p, Names names, Imports imports) {
             this.name = p.getName();
@@ -88,6 +90,7 @@ public final class Function implements Method {
             this.isCollection = names.isCollection(p);
             this.typeWithNamespace = p.getType().get(0);
             this.isNullable = p.isNullable() == null ? false : p.isNullable();
+            this.isAscii = p.isUnicode() != null && !p.isUnicode();
         }
 
         @Override
@@ -98,6 +101,10 @@ public final class Function implements Method {
         @Override
         public boolean isNullable() {
             return isNullable;
+        }
+        
+        public boolean isAscii() {
+            return isAscii;
         }
     }
 
