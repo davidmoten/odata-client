@@ -53,7 +53,6 @@ import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.CollectionPageNonEntityRequest;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
-import com.github.davidmoten.odata.client.EntityPreconditions;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.HasContext;
@@ -86,6 +85,7 @@ import com.github.davidmoten.odata.client.generator.model.Method;
 import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.generator.model.Structure.FieldName;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+import com.github.davidmoten.odata.client.internal.Checks;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
@@ -789,7 +789,7 @@ public final class Generator {
     private static String formatParameterPut(Imports imports, Indent indent, Parameter par) {
         final String expression;
         if (par.isAscii()) {
-            expression = String.format("%s.checkIsAscii(%s)", imports.add(EntityPreconditions.class), par.nameJava());
+            expression = String.format("%s.checkIsAscii(%s)", imports.add(Checks.class), par.nameJava());
         } else {
             expression = par.nameJava();
         }
@@ -803,7 +803,7 @@ public final class Generator {
     private static String formatParameterPut(Imports imports, Indent indent, Function.Parameter par) {
         final String expression;
         if (par.isAscii()) {
-            expression = String.format("%s.checkIsAscii(%s)", imports.add(EntityPreconditions.class), par.nameJava());
+            expression = String.format("%s.checkIsAscii(%s)", imports.add(Checks.class), par.nameJava());
         } else {
             expression = par.nameJava();
         }
@@ -1663,7 +1663,7 @@ public final class Generator {
                                     fieldName);
                             if (x.isUnicode() != null && !x.isUnicode()) {
                                 p.format("%s%s.checkIsAscii(%s);\n", indent.right(),
-                                        imports.add(EntityPreconditions.class), fieldName,
+                                        imports.add(Checks.class), fieldName,
                                         fieldName);
                                 indent.left();
                             }
