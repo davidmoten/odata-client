@@ -676,7 +676,7 @@ public final class Generator {
                             : imports.add(ActionRequestReturningNonCollection.class), //
                     action.getReturnType(imports).innerImportedFullClassName,
                     methodName, paramsDeclaration);
-            writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
+            writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
             if (returnType.isCollection) {
                 p.format(
                         "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
@@ -700,7 +700,7 @@ public final class Generator {
                     indent, //
                     imports.add(ActionRequestNoReturn.class), //
                     methodName, paramsDeclaration);
-            writeActionParameterMapAndNullChecks(imports, indent, p, parameters);
+            writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
             p.format("%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
                     indent, //
                     imports.add(ActionRequestNoReturn.class), //
@@ -747,7 +747,7 @@ public final class Generator {
                         : imports.add(FunctionRequestReturningNonCollection.class), //
                 function.getReturnType(imports).innerImportedFullClassName,
                 methodName, paramsDeclaration);
-        writeFunctionParameterMapAndNullChecks(imports, indent, p, parameters);
+        writeFunctionParameterMapAndNullChecksAndAsciiCheck(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
                     "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
@@ -768,7 +768,7 @@ public final class Generator {
         p.format("%s}\n", indent.left());
     }
 
-    private static void writeActionParameterMapAndNullChecks(Imports imports, Indent indent,
+    private static void writeActionParameterMapAndNullChecksAndAsciiChecks(Imports imports, Indent indent,
             PrintWriter p, List<Parameter> parameters) {
         indent.right();
         writeParameterNullChecks(imports, indent, p, parameters);
@@ -781,13 +781,39 @@ public final class Generator {
                 parameters.isEmpty() ? String.format(".empty()")
                         : parameters //
                                 .stream() //
-                                .map(par -> String.format("\n%s.put(\"%s\", \"%s\", %s)", //
-                                        indent.copy().right(), par.name, //
-                                        par.typeWithNamespace, //
-                                        par.nameJava())) //
+                                .map(par -> formatParameterPut(imports, indent, par)) //
                                 .collect(Collectors.joining()) + "\n" + indent.copy().right()
                                 + ".build()");
     }
+
+    private static String formatParameterPut(Imports imports, Indent indent, Parameter par) {
+        final String expression;
+        if (par.isAscii()) {
+            expression = String.format("%s.checkIsAscii(%s)", imports.add(EntityPreconditions.class), par.nameJava());
+        } else {
+            expression = par.nameJava();
+        }
+        return String.format("\n%s.put(\"%s\", \"%s\", %s)", //
+                indent.copy().right(), //
+                par.name, //
+                par.typeWithNamespace, //
+                expression);
+    }
+    
+    private static String formatParameterPut(Imports imports, Indent indent, Function.Parameter par) {
+        final String expression;
+        if (par.isAscii()) {
+            expression = String.format("%s.checkIsAscii(%s)", imports.add(EntityPreconditions.class), par.nameJava());
+        } else {
+            expression = par.nameJava();
+        }
+        return String.format("\n%s.put(\"%s\", \"%s\", %s)", //
+                indent.copy().right(), //
+                par.name, //
+                par.typeWithNamespace, //
+                expression);
+    }
+
 
     private static void writeParameterNullChecks(Imports imports, Indent indent, PrintWriter p,
             List<? extends HasNameJavaHasNullable> parameters) {
@@ -801,7 +827,7 @@ public final class Generator {
                         x.nameJava()));
     }
 
-    private static void writeFunctionParameterMapAndNullChecks(Imports imports, Indent indent,
+    private static void writeFunctionParameterMapAndNullChecksAndAsciiCheck(Imports imports, Indent indent,
             PrintWriter p, List<Function.Parameter> parameters) {
         indent.right();
         writeParameterNullChecks(imports, indent, p, parameters);
@@ -814,10 +840,7 @@ public final class Generator {
                 parameters.isEmpty() ? String.format(".empty()")
                         : parameters //
                                 .stream() //
-                                .map(par -> String.format("\n%s.put(\"%s\", \"%s\", %s)", //
-                                        indent.copy().right(), par.name, //
-                                        par.typeWithNamespace, //
-                                        par.nameJava())) //
+                                .map(par -> formatParameterPut(imports, indent, par)) //
                                 .collect(Collectors.joining()) + "\n" + indent.copy().right()
                                 + ".build()");
     }

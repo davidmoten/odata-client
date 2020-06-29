@@ -91,6 +91,7 @@ public final class Action implements Method {
         public final String typeWithNamespace;
 
         private final boolean isNullable;
+        private final boolean isAscii;
 
         public Parameter(TActionFunctionParameter p, Names names, Imports imports) {
             this.name = p.getName();
@@ -99,6 +100,7 @@ public final class Action implements Method {
             this.isCollection = names.isCollection(p);
             this.typeWithNamespace = p.getType().get(0);
             this.isNullable = p.isNullable() == null ? true : p.isNullable();
+            this.isAscii = p.isUnicode()!= null && !p.isUnicode();
         }
 
         @Override
@@ -109,6 +111,10 @@ public final class Action implements Method {
         @Override
         public boolean isNullable() {
             return isNullable;
+        }
+        
+        public boolean isAscii() {
+            return isAscii; 
         }
     }
 

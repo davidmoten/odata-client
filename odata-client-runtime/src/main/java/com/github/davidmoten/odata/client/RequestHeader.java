@@ -32,10 +32,6 @@ public final class RequestHeader {
         return new RequestHeader("Accept", "application/json;odata.metadata=" + metadata);
     }
 
-    public static RequestHeader contentTypeJsonWithMetadata(String metadata) {
-        return new RequestHeader("Content-Type", "application/json;odata.metadata=" + metadata);
-    }
-    
     public static RequestHeader maxPageSize(int size) {
         Preconditions.checkArgument(size > 0, "maxPageSize must be > 0");
         return new RequestHeader("Prefer", "odata.maxpagesize=" + size);
@@ -43,18 +39,11 @@ public final class RequestHeader {
     
     public static RequestHeader ACCEPT_JSON_METADATA_MINIMAL = acceptJsonWithMetadata("minimal");
 
-    public static final RequestHeader CONTENT_TYPE_JSON_METADATA_MINIMAL = contentTypeJsonWithMetadata(
-            "minimal");
-
     public static RequestHeader ACCEPT_JSON_METADATA_FULL = acceptJsonWithMetadata("full");
-
-    public static final RequestHeader CONTENT_TYPE_JSON_METADATA_FULL = contentTypeJsonWithMetadata(
-            "full");
 
     public static RequestHeader ACCEPT_JSON_METADATA_NONE = acceptJsonWithMetadata("none");
 
-    public static final RequestHeader CONTENT_TYPE_JSON_METADATA_NONE = contentTypeJsonWithMetadata(
-            "none");
+    public static final RequestHeader CONTENT_TYPE_JSON = RequestHeader.create("Content-Type", "application/json");
 
     public boolean isAcceptJsonWithMetadata() {
         return name.equals("Accept") && value.contains("application/json;odata.metadata=");

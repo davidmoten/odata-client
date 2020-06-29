@@ -266,6 +266,7 @@ public class GraphServiceTest {
                         HttpMethod.POST, //
                         200, //
                         RequestHeader.ODATA_VERSION, //
+                        RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .build();
         CollectionPage<DirectoryObject> page = client.directoryObjects()
@@ -453,7 +454,9 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
                         "/request-messages-delta.json", //
                         "/response-messages-delta.json", //
-                        HttpMethod.POST, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        HttpMethod.POST, //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
+                        RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Message m = client //
@@ -485,7 +488,7 @@ public class GraphServiceTest {
                         HttpURLConnection.HTTP_CREATED, //
                         RequestHeader.ODATA_VERSION, //
                         RequestHeader.ACCEPT_JSON_METADATA_FULL, //
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
+                        RequestHeader.CONTENT_TYPE_JSON) //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -512,7 +515,7 @@ public class GraphServiceTest {
                 .expectRequest(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
                         "/request-patch-message-is-read.json", HttpMethod.PATCH,
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON) //
                 .build();
 
