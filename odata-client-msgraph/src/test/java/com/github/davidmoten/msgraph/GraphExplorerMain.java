@@ -13,8 +13,18 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
 
-        DirectoryObject u = client.directoryObjects().getByIds(Arrays.asList("6e7b768e-07e2-4810-8459-485f84f8f204"), Arrays.asList("user")).stream().findFirst().get();
+        DirectoryObject u = client //
+                .directoryObjects() //
+                .getByIds( //
+                        Arrays.asList("6e7b768e-07e2-4810-8459-485f84f8f204"), //
+                        Arrays.asList("user")) //
+                .select("id,mail") //
+                .stream() //
+                .findFirst() //
+                .get();
+        
         System.out.println(u);
+        
         System.exit(0);
         
         client //
