@@ -49,12 +49,12 @@ public class Test1ServiceTest {
                 .test() //
                 .expectRequest("/Products", "/request-post.json", HttpMethod.POST,
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ODATA_VERSION) //
                 .expectResponse("/Products", "/response-post.json", HttpMethod.POST,
                         HttpURLConnection.HTTP_CREATED, //
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
+                        RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = Product.builder().name("bingo").build();
@@ -76,7 +76,7 @@ public class Test1ServiceTest {
         Test1Service client = Test1Service //
                 .test() //
                 .expectDelete("/Products/1", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ODATA_VERSION) //
                 .build();
         client.products().id("1").delete();

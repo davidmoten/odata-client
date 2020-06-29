@@ -60,7 +60,7 @@ public class Test6ServiceTest {
                         HttpMethod.POST,//
                         HttpURLConnection.HTTP_CREATED, //
                         RequestHeader.ODATA_VERSION, //
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL, //
+                        RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ACCEPT_JSON) //
                 .build();
         assertTrue(client.products(1).get().revokeSessions().get().value());
@@ -76,7 +76,7 @@ public class Test6ServiceTest {
                         HttpURLConnection.HTTP_CREATED, //
                         RequestHeader.ACCEPT_JSON, //
                         RequestHeader.ODATA_VERSION, //
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
+                        RequestHeader.CONTENT_TYPE_JSON) //
                 .build();
         assertTrue(client.products(1).revokeSessions().get().value());
     }

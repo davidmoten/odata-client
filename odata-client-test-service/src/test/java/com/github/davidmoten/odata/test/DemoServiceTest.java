@@ -111,10 +111,10 @@ public class DemoServiceTest {
     public void testEntityPatch() {
         DemoService client = serviceBuilder()
                 .expectResponse("/Products(1)", "/response-product.json",
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH,
-                        RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = Product //
@@ -131,7 +131,7 @@ public class DemoServiceTest {
                 .expectResponse("/Products(1)", "/response-product.json",
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH,
-                        RequestHeader.ACCEPT_JSON, RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL,
+                        RequestHeader.ACCEPT_JSON, RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = client.products(1).get();
