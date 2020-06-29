@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +40,7 @@ import odata.msgraph.client.entity.Application;
 import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
+import odata.msgraph.client.entity.DirectoryObject;
 import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.Group;
@@ -251,6 +253,24 @@ public class GraphServiceTest {
                 "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages/$entity",
                 m.getUnmappedFields().get("@odata.context"));
     }
+    
+    @Test
+    public void testActionDirectoryObjectsGetByIds() {
+        //TODO it is unknown yet whether the path segment should be /microsoft.graph.getByIds or /getByIds. GraphExplorer expects /getByIds
+        // test built according to https://docs.microsoft.com/en-us/graph/api/directoryobject-getbyids?view=graph-rest-1.0&tabs=http
+        GraphService client = clientBuilder() //
+                .expectRequestAndResponse("/directoryObjects/microsoft.graph.getByIds", //
+                        "/request-directory-objects-get-by-ids.json", //
+                        "/response-directory-objects-get-by-ids.json", //
+                        HttpMethod.POST, //
+                        200, //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .build();
+        CollectionPage<DirectoryObject> page = client.directoryObjects()
+                .getByIds(Arrays.asList("a", "b"), Arrays.asList("c", "d")).get();
+        assertTrue(page.currentPage().get(0).getId().get().startsWith("84b80893"));
+    }
 
     @Test
     public void testEntityCollectionNotFromEntityContainer() {
@@ -460,8 +480,10 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/microsoft.graph.move", //
                         "/request-post-action-move.json", //
                         "/response-message-move.json", //
-                        HttpMethod.POST, RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_FULL,
+                        HttpMethod.POST, //
+                        HttpURLConnection.HTTP_CREATED, //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL, //
                         RequestHeader.CONTENT_TYPE_JSON_METADATA_MINIMAL) //
                 .build();
         Message m = client //

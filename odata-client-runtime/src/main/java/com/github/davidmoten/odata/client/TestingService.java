@@ -39,7 +39,7 @@ public final class TestingService {
     public static Builder builder() {
         return new Builder();
     }
-    
+
     public static final class Response {
         public String resource;
         public final int statusCode;
@@ -48,7 +48,7 @@ public final class TestingService {
             this.resource = resource;
             this.statusCode = statusCode;
         }
-        
+
         public Response(String text) {
             this(text, HttpURLConnection.HTTP_OK);
         }
@@ -78,8 +78,7 @@ public final class TestingService {
             return (T) this;
         }
 
-        public T expectResponse(String path, String responseResourceName,
-                RequestHeader... requestHeaders) {
+        public T expectResponse(String path, String responseResourceName, RequestHeader... requestHeaders) {
             return expectResponse(path, responseResourceName, HttpMethod.GET, requestHeaders);
         }
 
@@ -90,7 +89,7 @@ public final class TestingService {
                     new Response(responseResourceName, statusCode));
             return (T) this;
         }
-        
+
         public T expectResponse(String path, String responseResourceName, HttpMethod method,
                 RequestHeader... requestHeaders) {
             return expectResponse(path, responseResourceName, method, HttpURLConnection.HTTP_OK, requestHeaders);
@@ -99,34 +98,37 @@ public final class TestingService {
         @SuppressWarnings("unchecked")
         public T expectRequest(String path, String requestResourceName, HttpMethod method,
                 RequestHeader... requestHeaders) {
-            Preconditions.checkArgument(method != HttpMethod.GET,
-                    "GET not expected for a request with content");
-            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)),
-                    requestResourceName);
+            Preconditions.checkArgument(method != HttpMethod.GET, "GET not expected for a request with content");
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
-        public T expectRequestAndResponse(String path, String requestResourceName,
-                String responseResourceName, HttpMethod method, RequestHeader... requestHeaders) {
-            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)),
-                    requestResourceName);
+        public T expectRequestAndResponse(String path, String requestResourceName, String responseResourceName,
+                HttpMethod method, RequestHeader... requestHeaders) {
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
+            responses.put(toKey(method, baseUrl + path, asList(requestHeaders)), new Response(responseResourceName));
+            return (T) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public T expectRequestAndResponse(String path, String requestResourceName, String responseResourceName,
+                HttpMethod method, int statusCode, RequestHeader... requestHeaders) {
+            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
             responses.put(toKey(method, baseUrl + path, asList(requestHeaders)),
-                    new Response(responseResourceName));
+                    new Response(responseResourceName, statusCode));
             return (T) this;
         }
 
         @SuppressWarnings("unchecked")
         public T expectDelete(String path, RequestHeader... requestHeaders) {
-            requests.put(toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders)),
-                    "DELETE");
+            requests.put(toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders)), "DELETE");
             return (T) this;
         }
 
-        private static String toKey(HttpMethod method, String url,
-                Collection<RequestHeader> requestHeaders) {
-            return method + "\n  " + url + "\n  " + requestHeaders.stream()
-                    .map(x -> x.name() + "=" + x.value()).sorted().collect(Collectors.joining("|"));
+        private static String toKey(HttpMethod method, String url, Collection<RequestHeader> requestHeaders) {
+            return method + "\n  " + url + "\n  " + requestHeaders.stream().map(x -> x.name() + "=" + x.value())
+                    .sorted().collect(Collectors.joining("|"));
         }
 
         private static final void log(Object o) {
@@ -143,16 +145,15 @@ public final class TestingService {
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
                     Response response = responses.get(key);
-                    String resourceName = response == null? null: response.resource;
+                    String resourceName = response == null ? null : response.resource;
                     if (resourceName == null) {
-                        throw new RuntimeException("GET response not found for url=" + url
-                                + ", headers=" + requestHeaders);
+                        throw new RuntimeException(
+                                "GET response not found for url=" + url + ", headers=" + requestHeaders);
                     }
                     try {
                         URL resource = TestingService.class.getResource(resourceName);
                         if (resource == null) {
-                            throw new RuntimeException(
-                                    "resource not found on classpath: " + resourceName);
+                            throw new RuntimeException("resource not found on classpath: " + resourceName);
                         }
                         String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
                         return new HttpResponse(response.statusCode, text);
@@ -162,8 +163,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-                        InputStream content) {
+                public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
                     log("PATCH called at " + url);
                     String text = Util.utf8(content);
                     log(text);
@@ -174,19 +174,18 @@ public final class TestingService {
                     log(key);
                     String resourceName = requests.get(key);
                     if (resourceName == null) {
-                        throw new RuntimeException("PATCH response not found for url=" + url
-                                + ", headers=" + requestHeaders);
+                        throw new RuntimeException(
+                                "PATCH response not found for url=" + url + ", headers=" + requestHeaders);
                     }
                     try {
-                        String expected = new String(Files.readAllBytes(
-                                Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                        String expected = new String(
+                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
 
                         if (Serializer.INSTANCE.matches(expected, text)) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
-                            throw new RuntimeException(
-                                    "request does not match expected.\n==== Recieved ====\n" + text
-                                            + "\n==== Expected =====\n" + expected);
+                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
+                                    + "\n==== Expected =====\n" + expected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -199,8 +198,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse post(String url, List<RequestHeader> requestHeaders,
-                        InputStream content) {
+                public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content) {
                     log("POST called at " + url);
                     String text = Util.utf8(content);
                     log(text);
@@ -210,22 +208,26 @@ public final class TestingService {
                     log(key);
                     String requestResourceName = requests.get(key);
                     if (requestResourceName == null) {
-                        throw new RuntimeException("POST request not expected for url=" + url
-                                + ", headers=" + requestHeaders);
+                        throw new RuntimeException(
+                                "POST request not expected for url=" + url + ", headers=" + requestHeaders);
                     }
                     try {
                         String requestExpected = readResource(url, requestResourceName);
                         if (Serializer.INSTANCE.matches(requestExpected, text)) {
-                            String responseResourceName = responses
-                                    .get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders)).resource;
+                            Response resp = responses.get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders));
+                            String responseResourceName = resp.resource;
                             String responseExpected = readResource(url, responseResourceName);
-                            int responseCode = url.contains("delta") ? HttpURLConnection.HTTP_OK
-                                    : HttpURLConnection.HTTP_CREATED;
-                            return new HttpResponse(responseCode, responseExpected);
+//                            final int responseCode;
+//                            if (resp.statusCode != HttpURLConnection.HTTP_OK) {
+//                                responseCode = resp.statusCode;
+//                            } else {
+//                                responseCode = url.contains("delta") ? HttpURLConnection.HTTP_OK
+//                                        : HttpURLConnection.HTTP_CREATED;
+//                            }
+                            return new HttpResponse(resp.statusCode, responseExpected);
                         } else {
-                            throw new RuntimeException(
-                                    "request does not match expected.\n==== Received ====\n" + text
-                                            + "\n==== Expected =====\n" + requestExpected);
+                            throw new RuntimeException("request does not match expected.\n==== Received ====\n" + text
+                                    + "\n==== Expected =====\n" + requestExpected);
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -242,8 +244,8 @@ public final class TestingService {
 
                     String resourceName = requests.get(key);
                     if (resourceName == null) {
-                        throw new RuntimeException("DELETE request not expected for url=" + url
-                                + ", headers=" + requestHeaders);
+                        throw new RuntimeException(
+                                "DELETE request not expected for url=" + url + ", headers=" + requestHeaders);
                     }
                     return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                 }
@@ -296,13 +298,11 @@ public final class TestingService {
         }
     }
 
-    private static String readResource(String url, String resourceName)
-            throws IOException, URISyntaxException {
+    private static String readResource(String url, String resourceName) throws IOException, URISyntaxException {
         if (resourceName == null) {
             throw new RuntimeException("resource not found for url=" + url);
         }
-        return new String(Files
-                .readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+        return new String(Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
     }
 
 }
