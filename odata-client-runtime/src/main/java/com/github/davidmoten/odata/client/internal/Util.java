@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 
 import com.github.davidmoten.odata.client.ClientException;
-import com.github.davidmoten.odata.client.ODataEntityType;
+import com.github.davidmoten.odata.client.ODataType;
 
 public final class Util {
 
@@ -30,7 +30,7 @@ public final class Util {
         }
     }
     
-    public static <T extends ODataEntityType> String odataTypeName(Class<T> cls) {
+    public static <T extends ODataType> String odataTypeName(Class<T> cls) {
         try {
             Constructor<T> constructor = cls.getDeclaredConstructor();
             constructor.setAccessible(true);
@@ -39,6 +39,14 @@ public final class Util {
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
             throw new ClientException(e);
+        }
+    }
+    
+    public static <T> String odataTypeNameFromAny(Class<T> cls) {
+        if (ODataType.class.isAssignableFrom(cls)) {
+            return odataTypeName((Class<? extends ODataType>) cls);
+        } else {
+            return EdmSchemaInfo.INSTANCE.getTypeWithNamespaceFromClass(cls);
         }
     }
 
