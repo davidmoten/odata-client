@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
@@ -17,9 +18,10 @@ public enum EdmSchemaInfo implements SchemaInfo {
     INSTANCE;
 
     private final Map<String, Class<?>> map;
+    private final Map<Class<?>, String> reverseMap;
 
     private EdmSchemaInfo() {
-        map = new HashMap<String, Class<?>>();
+        map = new HashMap<>();
         map.put("Edm.String", String.class);
         map.put("Edm.Boolean", Boolean.class);
         map.put("Edm.DateTimeOffset", OffsetDateTime.class);
@@ -40,6 +42,10 @@ public enum EdmSchemaInfo implements SchemaInfo {
         map.put("Edm.Stream", String.class);
         map.put("Edm.GeographyPoint", GeographyPoint.class);
         map.put("Edm.Decimal", BigDecimal.class);
+        reverseMap = new HashMap<>();
+        for (Entry<String, Class<?>> entry:map.entrySet()) {
+            reverseMap.put(entry.getValue(), entry.getKey());
+        }
     }
 
     @Override
@@ -49,6 +55,14 @@ public enum EdmSchemaInfo implements SchemaInfo {
             throw new RuntimeException("unhandled type: " + name);
         }
         return cls;
+    }
+    
+    public String getTypeWithNamespaceFromClass(Class<?> cls) {
+        String t = reverseMap.get(cls);
+        if (t == null) {
+            throw new IllegalArgumentException(cls + " not mappable to Edm type");
+        }
+        return t;
     }
 
 }

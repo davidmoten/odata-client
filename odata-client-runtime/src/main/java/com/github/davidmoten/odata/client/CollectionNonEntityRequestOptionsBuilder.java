@@ -12,31 +12,59 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class CollectionNonEntityRequestOptionsBuilder<T> {
 
     private final CollectionPageNonEntityRequest<T> request;
-    private final List<RequestHeader> requestHeaders = new ArrayList<>();
-    private Optional<String> search = Optional.empty();
-    private Optional<String> filter = Optional.empty();
-    private Optional<String> orderBy = Optional.empty();
-    private Optional<Long> skip = Optional.empty();
-    private Optional<Long> top = Optional.empty();
-    private Optional<String> select = Optional.empty();
-    private Optional<String> expand = Optional.empty();
-    private String metadata = "minimal";
-    private Optional<String> urlOverride = Optional.empty();
+    private final List<RequestHeader> requestHeaders;
+    private Optional<String> search;
+    private Optional<String> filter;
+    private Optional<String> orderBy;
+    private Optional<Long> skip;
+    private Optional<Long> top;
+    private Optional<String> select;
+    private Optional<String> expand;
+    private String metadata;
+    private Optional<String> urlOverride;
 
     CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request) {
+        this(request, //
+                new ArrayList<>(), //
+                Optional.empty(), //
+                Optional.empty(), //
+                Optional.empty(), //
+                Optional.empty(), //
+                Optional.empty(), // 
+                Optional.empty(), //
+                Optional.empty(), //
+                "minimal", //
+                Optional.empty());
+    }
+
+    private CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request,
+            List<RequestHeader> requestHeaders, Optional<String> search, Optional<String> filter,
+            Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
+            Optional<String> select, Optional<String> expand, String metadata,
+            Optional<String> urlOverride) {
         this.request = request;
+        this.requestHeaders = requestHeaders;
+        this.search = search;
+        this.filter = filter;
+        this.orderBy = orderBy;
+        this.skip = skip;
+        this.top = top;
+        this.select = select;
+        this.expand = expand;
+        this.metadata = metadata;
+        this.urlOverride = urlOverride;
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String name, String value) {
         requestHeaders.add(new RequestHeader(name, value));
         return this;
     }
-    
+
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(RequestHeader header) {
         requestHeaders.add(header);
         return this;
-    } 
-    
+    }
+
     /**
      * Sets the odata.maxpagesize request header value. Is a preference only and may
      * not be honoured by the service.
@@ -64,6 +92,23 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         Preconditions.checkNotNull(clause);
         this.filter = Optional.of(clause);
         return this;
+    }
+
+    /**
+     * Returns a request builder for those members of the collection that are of the
+     * requested type. This is referred to in the <a href=
+     * "http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html">OData
+     * 4.01 specification</a> as a "restriction to instances of the derived type".
+     * 
+     * @param <S>
+     *            the type ("derived type") to be restricting to
+     * @param cls
+     *            the Class of the type to restrict to
+     * @return a request builder for a collection of instances restricted to the given type
+     */
+    public <S extends T> CollectionNonEntityRequestOptionsBuilder<S> filter(Class<S> cls) {
+        return new CollectionNonEntityRequestOptionsBuilder<S>(request.filter(cls), requestHeaders,
+                search, filter, orderBy, skip, top, select, expand, metadata, urlOverride);
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> orderBy(String clause) {
@@ -104,7 +149,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.metadata = "none";
         return this;
     }
-    
+
     public CollectionNonEntityRequestOptionsBuilder<T> urlOverride(String urlOverride) {
         this.urlOverride = Optional.ofNullable(urlOverride);
         return this;
@@ -127,7 +172,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     public Stream<T> stream() {
         return get().stream();
     }
-    
+
     public List<T> toList() {
         return get().toList();
     }

@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import static com.github.davidmoten.odata.client.internal.Util.odataTypeNameFromAny;
+
 import java.net.HttpURLConnection;
 import java.util.Iterator;
 import java.util.List;
@@ -100,6 +102,24 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         return get().iterator();
     }
     
+
+    /**
+     * Returns a request for only those members of the collection that are of the
+     * requested type. This is referred to in the <a href=
+     * "http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html">OData
+     * 4.01 specification</a> as a "restriction to instances of the derived type".
+     * 
+     * @param <S>
+     *            the type ("derived type") to be restricting to
+     * @param cls
+     *            the Class of the type to restrict to
+     * @return a request for a collection of instances with the given type
+     */
+    public <S extends T> CollectionPageNonEntityRequest<S> filter(Class<S> cls) {
+        return new CollectionPageNonEntityRequest<S>( //
+                contextPath.addSegment(odataTypeNameFromAny(cls)), cls, schemaInfo);
+    }
+
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
