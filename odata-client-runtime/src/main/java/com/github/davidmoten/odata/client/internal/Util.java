@@ -3,7 +3,12 @@ package com.github.davidmoten.odata.client.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+
+import com.github.davidmoten.odata.client.ClientException;
+import com.github.davidmoten.odata.client.ODataEntityType;
 
 public final class Util {
 
@@ -22,6 +27,18 @@ public final class Util {
             return url.substring(0, url.length() - 2);
         } else {
             return url;
+        }
+    }
+    
+    public static <T extends ODataEntityType> String odataTypeName(Class<T> cls) {
+        try {
+            Constructor<T> constructor = cls.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T o = constructor.newInstance();
+            return o.odataTypeName();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new ClientException(e);
         }
     }
 
