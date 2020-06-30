@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import static com.github.davidmoten.odata.client.internal.Util.odataTypeName;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -83,18 +85,6 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
                 (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, schemaInfo);
     }
     
-    private static <T extends ODataEntityType> String odataTypeName(Class<T> cls) {
-        try {
-            Constructor<T> constructor = cls.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            T o = constructor.newInstance();
-            return o.odataTypeName();
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            throw new ClientException(e);
-        }
-    }
-
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
     }
