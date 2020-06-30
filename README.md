@@ -21,7 +21,7 @@ Status : *released to Maven Central*
 * Generated code is very clean - well formatted, no redundant imports ([example](src/docs/FileAttachment.java))
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
-* Graph Explorer support (test endpoint)
+* Graph Explorer client (test endpoint)
 * More generated clients can be added, just raise an issue
 * Runs on Java 8+ (including Java 11+). When running <11 the jaxb dependencies can be excluded from odata-client-runtime. 
 
