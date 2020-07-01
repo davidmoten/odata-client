@@ -614,7 +614,7 @@ public class GraphServiceTest {
 						.emailAddress(EmailAddress.builder() //
 								.address("danas@contoso.onmicrosoft.com").build()).build())) //
 				.build();
-		GraphService client = null;
+		GraphService client = clientBuilder().build();
 		client.me().sendMail(message, false).call();
     	
     }

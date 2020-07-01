@@ -1,6 +1,5 @@
 package com.github.davidmoten.odata.client.generator.model;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
