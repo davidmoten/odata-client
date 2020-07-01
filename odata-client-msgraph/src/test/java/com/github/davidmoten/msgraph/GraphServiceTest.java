@@ -32,9 +32,12 @@ import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
+import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.Identity;
 import odata.msgraph.client.complex.IdentitySet;
 import odata.msgraph.client.complex.InvitationParticipantInfo;
+import odata.msgraph.client.complex.ItemBody;
+import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.complex.ServiceHostedMediaConfig;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Application;
@@ -48,6 +51,7 @@ import odata.msgraph.client.entity.Group;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
+import odata.msgraph.client.enums.BodyType;
 import odata.msgraph.client.enums.Importance;
 import odata.msgraph.client.enums.Modality;
 
@@ -548,6 +552,56 @@ public class GraphServiceTest {
         item.putChunkedContent().get().upload(in, bytes.length, 2);
     }
 
+    @Test
+    @Ignore
+    public void testSendEmailCompiles() {
+//    	Message message = new Message();
+//    	message.subject = "Meet for lunch?";
+//    	ItemBody body = new ItemBody();
+//    	body.contentType = BodyType.TEXT;
+//    	body.content = "The new cafeteria is open.";
+//    	message.body = body;
+//    	LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
+//    	Recipient toRecipients = new Recipient();
+//    	EmailAddress emailAddress = new EmailAddress();
+//    	emailAddress.address = "fannyd@contoso.onmicrosoft.com";
+//    	toRecipients.emailAddress = emailAddress;
+//    	toRecipientsList.add(toRecipients);
+//    	message.toRecipients = toRecipientsList;
+//    	LinkedList<Recipient> ccRecipientsList = new LinkedList<Recipient>();
+//    	Recipient ccRecipients = new Recipient();
+//    	EmailAddress emailAddress1 = new EmailAddress();
+//    	emailAddress1.address = "danas@contoso.onmicrosoft.com";
+//    	ccRecipients.emailAddress = emailAddress1;
+//    	ccRecipientsList.add(ccRecipients);
+//    	message.ccRecipients = ccRecipientsList;
+//
+//    	boolean saveToSentItems = false;
+//
+//    	graphClient.me()
+//    		.sendMail(message,saveToSentItems)
+//    		.buildRequest()
+//    		.post();
+		Message message = Message //
+				.builderMessage() //
+				.subject("Meet for lunch?") //
+				.body(ItemBody.builder() //
+						.contentType(BodyType.TEXT) // 
+						.content("The new cafeteria is open.") //
+						.build()) //
+				.toRecipients(Arrays.asList(Recipient.builder() //
+						.emailAddress(EmailAddress.builder() //
+								.address("fannd@contosolonnmicrosoft.com").build()).build())) //
+				.ccRecipients(Arrays.asList(Recipient.builder() //
+						.emailAddress(EmailAddress.builder() //
+								.address("danas@contoso.onmicrosoft.com").build()).build())) //
+				.build();
+		GraphService client = null;
+		client.me().sendMail(message, false).call();
+    	
+    }
+    
+    
     @Test
     @Ignore
     public void testCallCompiles() {
