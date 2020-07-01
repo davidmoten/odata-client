@@ -8,6 +8,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1465,6 +1466,16 @@ public final class Generator {
             p.format("%sthis.changedFields = changedFields.add(\"%s\");\n", indent, f.name);
             p.format("%sreturn this;\n", indent);
             p.format("%s}\n", indent.left());
+            if (f.isCollection) {
+            	// add overload with T... parameters instead of List<T>
+                t.printPropertyJavadoc(p, indent, f.name, "{@code this} (for method chaining)", map);
+                p.format("\n%spublic Builder %s(%s... %s) {\n", indent, f.fieldName, imports.add(f.innerFullClassName),
+                        f.fieldName);
+                p.format("%sthis.%s = %s.asList(%s);\n", indent.right(), f.fieldName, imports.add(Arrays.class), f.fieldName);
+                p.format("%sthis.changedFields = changedFields.add(\"%s\");\n", indent, f.name);
+                p.format("%sreturn this;\n", indent);
+                p.format("%s}\n", indent.left());
+            }
         });
 
         p.format("\n%spublic %s build() {\n", indent, simpleClassName);
