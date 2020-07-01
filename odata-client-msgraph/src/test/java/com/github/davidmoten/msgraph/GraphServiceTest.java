@@ -544,10 +544,16 @@ public class GraphServiceTest {
     
     @Test
     @Ignore
+    public void testToMethodCompilesWithLambda() {
+    	GraphService client = clientBuilder().build();
+    	client.users().to(x ->x).currentPage();
+    }
+    
+    @Test
+    @Ignore
     //TODO implement
     public void testChunkedUpload() {
-        GraphService client = clientBuilder() //
-                .build();
+        GraphService client = clientBuilder().build();
         DriveItem item = client.drives("123").items("abc").metadataNone().get();
         byte[] bytes = "1234567890".getBytes(StandardCharsets.UTF_8);
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
