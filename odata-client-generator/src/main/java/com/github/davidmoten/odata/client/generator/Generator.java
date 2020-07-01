@@ -1471,9 +1471,7 @@ public final class Generator {
                 t.printPropertyJavadoc(p, indent, f.name, "{@code this} (for method chaining)", map);
                 p.format("\n%spublic Builder %s(%s... %s) {\n", indent, f.fieldName, imports.add(f.innerFullClassName),
                         f.fieldName);
-                p.format("%sthis.%s = %s.asList(%s);\n", indent.right(), f.fieldName, imports.add(Arrays.class), f.fieldName);
-                p.format("%sthis.changedFields = changedFields.add(\"%s\");\n", indent, f.name);
-                p.format("%sreturn this;\n", indent);
+                p.format("%sreturn %s(%s.asList(%s));\n", indent.right(), f.fieldName, imports.add(Arrays.class), f.fieldName);
                 p.format("%s}\n", indent.left());
             }
         });
