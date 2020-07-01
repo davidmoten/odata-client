@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,7 @@ import odata.msgraph.client.complex.Identity;
 import odata.msgraph.client.complex.IdentitySet;
 import odata.msgraph.client.complex.InvitationParticipantInfo;
 import odata.msgraph.client.complex.ItemBody;
+import odata.msgraph.client.complex.PasswordCredential;
 import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.complex.ServiceHostedMediaConfig;
 import odata.msgraph.client.container.GraphService;
@@ -300,6 +302,16 @@ public class GraphServiceTest {
         assertEquals(6762, f.getContentBytes().get().length);
         assertEquals("lamp_thin.png", f.getContentId().get());
     }
+    
+	@Test
+	public void testIssue28DoesNotThrowNPE() {
+		Application application = Application.builderApplication() //
+				.passwordCredentials(PasswordCredential.builder() //
+						.secretText("Application secret Text") //
+						.build()) //
+				.build();
+		application.getPasswordCredentials();
+	}
     
     @Test
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
