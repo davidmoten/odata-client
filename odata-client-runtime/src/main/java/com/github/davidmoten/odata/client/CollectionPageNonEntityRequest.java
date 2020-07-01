@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -91,6 +92,10 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
     
     public Stream<T> stream() {
         return get().stream();
+    }
+    
+    public <S> S to(Function<? super CollectionPage<T>,? extends S> function) {
+    	return function.apply(get());
     }
     
     public List<T> toList() {

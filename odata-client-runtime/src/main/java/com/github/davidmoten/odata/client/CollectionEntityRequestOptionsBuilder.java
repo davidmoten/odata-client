@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -150,6 +151,10 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     public Stream<T> stream() {
         return get().stream();
+    }
+    
+    public <S> S to(Function<? super CollectionPage<T>,? extends S> function) {
+    	return function.apply(get());
     }
 
     public T post(T entity) {

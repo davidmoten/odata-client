@@ -46,6 +46,8 @@ public enum EdmSchemaInfo implements SchemaInfo {
         for (Entry<String, Class<?>> entry:map.entrySet()) {
             reverseMap.put(entry.getValue(), entry.getKey());
         }
+        // override String mapping because there are two
+        reverseMap.put(String.class, "Edm.String");
     }
 
     @Override

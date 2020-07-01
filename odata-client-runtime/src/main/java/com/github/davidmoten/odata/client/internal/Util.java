@@ -32,17 +32,24 @@ public final class Util {
     
     public static <T extends ODataType> String odataTypeName(Class<T> cls) {
         try {
-            Constructor<T> constructor = cls.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            T o = constructor.newInstance();
+        	Constructor c = null;
+        	Constructor<?>[] constructors = cls.getDeclaredConstructors();
+            for (Constructor<?> constructor : constructors) {
+            	if (constructor.getParameterCount() == 0) {
+            	    constructor.setAccessible(true);
+            	    c = constructor;
+            	}
+            }
+            T o = (T) c.newInstance();
             return o.odataTypeName();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
+                | SecurityException e) {
             throw new ClientException(e);
         }
     }
     
-    public static <T> String odataTypeNameFromAny(Class<T> cls) {
+    @SuppressWarnings("unchecked")
+	public static <T> String odataTypeNameFromAny(Class<T> cls) {
         if (ODataType.class.isAssignableFrom(cls)) {
             return odataTypeName((Class<? extends ODataType>) cls);
         } else {
