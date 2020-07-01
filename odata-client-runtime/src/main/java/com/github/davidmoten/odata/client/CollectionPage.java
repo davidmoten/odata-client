@@ -30,7 +30,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 
     public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
             Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
-        Preconditions.checkNotNull(contextPath);
+    	Preconditions.checkArgument(!nextLink.isPresent() || contextPath != null, "if nextLink is present contextPath must be non-null");
         Preconditions.checkNotNull(cls);
         Preconditions.checkNotNull(nextLink);
         Preconditions.checkNotNull(schemaInfo);
