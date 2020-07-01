@@ -113,17 +113,25 @@ public abstract class Structure<T> {
         return Names.getIdentifier(x.getName());
     }
 
-    private final Stream<Field> toFields(TProperty x, Imports imports) {
-        Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
-                names.toImportedFullClassName(x, imports));
-        if (names.isCollection(x) && !names.isEntityWithNamespace(names.getType(x))) {
-            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink",
-                    x.getName() + "@nextLink", imports.add(String.class));
-            return Stream.of(a, b);
-        } else {
-            return Stream.of(a);
-        }
-    }
+	private final Stream<Field> toFields(TProperty x, Imports imports) {
+		boolean isCollection = names.isCollection(x);
+		final String innerFullClassName;
+		if (isCollection) {
+			String t = names.getInnerType(names.getType(x));
+			innerFullClassName = names.toImportedFullClassName(t, imports, List.class);
+		} else {
+			innerFullClassName = null;
+		}
+		Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
+				names.toImportedFullClassName(x, imports), isCollection, innerFullClassName);
+		if (isCollection && !names.isEntityWithNamespace(names.getType(x))) {
+			Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
+					imports.add(String.class), false, null);
+			return Stream.of(a, b);
+		} else {
+			return Stream.of(a);
+		}
+	}
 
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {

@@ -573,6 +573,7 @@ public class GraphServiceTest {
     @Test
     @Ignore
     public void testSendEmailCompiles() {
+// // This is how msgraph-java-sdk does it:
 //    	Message message = new Message();
 //    	message.subject = "Meet for lunch?";
 //    	ItemBody body = new ItemBody();
@@ -600,6 +601,7 @@ public class GraphServiceTest {
 //    		.sendMail(message,saveToSentItems)
 //    		.buildRequest()
 //    		.post();
+    	GraphService client = clientBuilder().build();
 		Message message = Message //
 				.builderMessage() //
 				.subject("Meet for lunch?") //
@@ -607,16 +609,14 @@ public class GraphServiceTest {
 						.contentType(BodyType.TEXT) // 
 						.content("The new cafeteria is open.") //
 						.build()) //
-				.toRecipients(Arrays.asList(Recipient.builder() //
+				.toRecipients(Recipient.builder() //
 						.emailAddress(EmailAddress.builder() //
-								.address("fannd@contosolonnmicrosoft.com").build()).build())) //
-				.ccRecipients(Arrays.asList(Recipient.builder() //
+								.address("fannd@contosolonnmicrosoft.com").build()).build()) //
+				.ccRecipients(Recipient.builder() //
 						.emailAddress(EmailAddress.builder() //
-								.address("danas@contoso.onmicrosoft.com").build()).build())) //
+								.address("danas@contoso.onmicrosoft.com").build()).build()) //
 				.build();
-		GraphService client = clientBuilder().build();
 		client.me().sendMail(message, false).call();
-    	
     }
     
     
