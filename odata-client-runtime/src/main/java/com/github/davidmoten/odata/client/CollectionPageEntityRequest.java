@@ -2,10 +2,9 @@ package com.github.davidmoten.odata.client;
 
 import static com.github.davidmoten.odata.client.internal.Util.odataTypeName;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -57,6 +56,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     
     public Stream<T> stream() {
         return get().stream();
+    }
+    
+    public <S> S to(Function<? super CollectionPage<T>,? extends S> function) {
+    	return function.apply(get());
     }
     
     public List<T> toList() {

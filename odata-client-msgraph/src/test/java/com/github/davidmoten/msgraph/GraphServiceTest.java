@@ -1,5 +1,6 @@
 package com.github.davidmoten.msgraph;
 
+import static com.github.davidmoten.odata.client.internal.Util.odataTypeNameFromAny;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -44,6 +45,7 @@ import odata.msgraph.client.entity.Application;
 import odata.msgraph.client.entity.Attachment;
 import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
+import odata.msgraph.client.entity.Device;
 import odata.msgraph.client.entity.DirectoryObject;
 import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.FileAttachment;
@@ -550,6 +552,16 @@ public class GraphServiceTest {
         byte[] bytes = "1234567890".getBytes(StandardCharsets.UTF_8);
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         item.putChunkedContent().get().upload(in, bytes.length, 2);
+    }
+    
+    @Test
+    public void testGetODataNameFromEntity() {
+    	assertEquals("microsoft.graph.message", odataTypeNameFromAny(Message.class));
+    }
+    
+    @Test
+    public void testGetODataNameFromComplexType() {
+    	assertEquals("microsoft.graph.device", odataTypeNameFromAny(Device.class));
     }
 
     @Test

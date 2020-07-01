@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -36,6 +37,10 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
 
     default Stream<T> stream() {
         return StreamSupport.stream(this.spliterator(), false);
+    }
+    
+    default <S> S to(Function<? super Paged<T, R>,? extends S> function) {
+    	return function.apply(this);
     }
 
     @Override
