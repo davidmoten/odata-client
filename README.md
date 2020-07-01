@@ -17,7 +17,7 @@ Status : *released to Maven Central*
 * Http calls using java.net.URLConnection or using Apache HttpClient
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Paging is handled for you automatically when iterating collections
-* Bound actions and functions are supported (unbound in the [TODO] list)
+* Bound and unbound actions and functions are supported
 * Generated code is very clean - well formatted, no redundant imports ([example](src/docs/FileAttachment.java))
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
@@ -447,8 +447,6 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support precision, scale (maybe)
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
-* support unbound actions
-* support unbound functions
 * support function composition
 * support `count`
 * support `raw`
