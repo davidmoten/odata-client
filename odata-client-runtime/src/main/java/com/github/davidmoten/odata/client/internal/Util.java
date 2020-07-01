@@ -30,9 +30,10 @@ public final class Util {
         }
     }
     
-    public static <T extends ODataType> String odataTypeName(Class<T> cls) {
+    @SuppressWarnings("unchecked")
+	public static <T extends ODataType> String odataTypeName(Class<T> cls) {
         try {
-        	Constructor c = null;
+        	Constructor<?> c = null;
         	Constructor<?>[] constructors = cls.getDeclaredConstructors();
             for (Constructor<?> constructor : constructors) {
             	if (constructor.getParameterCount() == 0) {
