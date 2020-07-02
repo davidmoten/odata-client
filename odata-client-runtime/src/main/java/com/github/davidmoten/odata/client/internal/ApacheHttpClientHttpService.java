@@ -8,20 +8,24 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
+import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
@@ -47,28 +51,28 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
-        return getResponse(requestHeaders, new HttpGet(url), true, null);
+    public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return getResponse(requestHeaders, new HttpGet(url), true, null, options);
     }
 
     @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
-        return getResponse(requestHeaders, new HttpPatch(url), false, content);
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+        return getResponse(requestHeaders, new HttpPatch(url), false, content, options);
     }
 
     @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content) {
-        return getResponse(requestHeaders, new HttpPut(url), false, content);
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+        return getResponse(requestHeaders, new HttpPut(url), false, content, options);
     }
 
     @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content) {
-        return getResponse(requestHeaders, new HttpPost(url), true, content);
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+        return getResponse(requestHeaders, new HttpPost(url), true, content, options);
     }
 
     @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
-        return getResponse(requestHeaders, new HttpDelete(url), false, null);
+    public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return getResponse(requestHeaders, new HttpDelete(url), false, null, options);
     }
 
     @Override
@@ -76,8 +80,9 @@ public class ApacheHttpClientHttpService implements HttpService {
         return basePath;
     }
 
-    private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpUriRequest request,
-            boolean doInput, InputStream content) {
+    private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpRequestBase request,
+            boolean doInput, InputStream content, HttpRequestOptions options) {
+    	Preconditions.checkNotNull(options);
         log.debug("{} from url {}", request.getMethod(), request.getURI());
         for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
             request.addHeader(header.name(), header.value());
@@ -87,6 +92,13 @@ public class ApacheHttpClientHttpService implements HttpService {
                 ((HttpEntityEnclosingRequest) request).setEntity(new InputStreamEntity(content));
                 log.debug("content={}", content);
             }
+            RequestConfig config = com.github.davidmoten.odata.client.Util.nvl(request.getConfig(), RequestConfig.DEFAULT);
+            Builder builder = RequestConfig //
+            		.copy(config);
+            options.requestConnectTimeoutMs().ifPresent(x -> builder.setConnectTimeout(x.intValue()));
+            options.requestReadTimeoutMs().ifPresent(x -> builder.setSocketTimeout(x.intValue()));
+            config = builder.build();
+            request.setConfig(config);
             log.debug("executing request");
             try (CloseableHttpResponse response = client.execute(request)) {
                 log.debug("executed request, code={}", response.getStatusLine().getStatusCode());
@@ -113,7 +125,7 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     @Override
-    public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+    public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
         // note follow redirects by default
         HttpGet request = new HttpGet(url);
         log.debug("{} from url {}", request.getMethod(), request.getURI());

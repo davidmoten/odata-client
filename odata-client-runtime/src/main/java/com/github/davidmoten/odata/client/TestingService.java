@@ -139,7 +139,7 @@ public final class TestingService {
             return new HttpService() {
 
                 @Override
-                public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
+                public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
                     log("Available responses:");
                     responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
@@ -163,7 +163,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
+                public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
                     log("PATCH called at " + url);
                     String text = Util.utf8(content);
                     log(text);
@@ -193,12 +193,12 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse put(String url, List<RequestHeader> h, InputStream content) {
-                    return patch(url, h, content);
+                public HttpResponse put(String url, List<RequestHeader> h, InputStream content, HttpRequestOptions options) {
+                    return patch(url, h, content, options);
                 }
 
                 @Override
-                public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content) {
+                public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
                     log("POST called at " + url);
                     String text = Util.utf8(content);
                     log(text);
@@ -235,7 +235,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
+                public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
                     log("DELETE called at " + url);
                     requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");
@@ -261,8 +261,8 @@ public final class TestingService {
                 }
 
                 @Override
-                public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
-                    HttpResponse h = get(url, requestHeaders);
+                public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+                    HttpResponse h = get(url, requestHeaders, options);
                     return new ByteArrayInputStream(h.getText().getBytes(StandardCharsets.UTF_8));
                 }
 

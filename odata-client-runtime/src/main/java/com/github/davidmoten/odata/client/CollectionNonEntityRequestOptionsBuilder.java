@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -23,6 +24,8 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     private Optional<String> expand;
     private String metadata;
     private Optional<String> urlOverride;
+    private Optional<Long> connectTimeoutMs;
+    private Optional<Long> readTimeoutMs;
 
     CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request) {
         this(request, //
@@ -35,6 +38,8 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
                 Optional.empty(), //
                 Optional.empty(), //
                 "minimal", //
+                Optional.empty(), //
+                Optional.empty(), //
                 Optional.empty());
     }
 
@@ -42,7 +47,8 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
             List<RequestHeader> requestHeaders, Optional<String> search, Optional<String> filter,
             Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
             Optional<String> select, Optional<String> expand, String metadata,
-            Optional<String> urlOverride) {
+            Optional<String> urlOverride, Optional<Long> connectTimeoutMs, //
+            Optional<Long> readTimeoutMs) {
         this.request = request;
         this.requestHeaders = requestHeaders;
         this.search = search;
@@ -54,6 +60,8 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.expand = expand;
         this.metadata = metadata;
         this.urlOverride = urlOverride;
+        this.connectTimeoutMs = connectTimeoutMs;
+        this.readTimeoutMs = readTimeoutMs;
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String name, String value) {
@@ -94,6 +102,18 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.filter = Optional.of(clause);
         return this;
     }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> connectTimeout(long duration, TimeUnit unit) {
+        Preconditions.checkNotNull(unit);
+        this.connectTimeoutMs = Optional.of(unit.toMillis(duration));
+        return this;
+    }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> readTimeout(long duration, TimeUnit unit) {
+        Preconditions.checkNotNull(unit);
+        this.readTimeoutMs = Optional.of(unit.toMillis(duration));
+        return this;
+    }
 
     /**
      * Returns a request builder for those members of the collection that are of the
@@ -109,7 +129,8 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
      */
     public <S extends T> CollectionNonEntityRequestOptionsBuilder<S> filter(Class<S> cls) {
         return new CollectionNonEntityRequestOptionsBuilder<S>(request.filter(cls), requestHeaders,
-                search, filter, orderBy, skip, top, select, expand, metadata, urlOverride);
+                search, filter, orderBy, skip, top, select, expand, metadata, urlOverride, //
+                connectTimeoutMs, readTimeoutMs);
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> orderBy(String clause) {
@@ -159,7 +180,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand, urlOverride);
+                select, expand, urlOverride, connectTimeoutMs, readTimeoutMs);
     }
 
     public CollectionPage<T> get() {

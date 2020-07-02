@@ -1,7 +1,6 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.Map;
-import java.util.Optional;
 
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
@@ -27,13 +26,8 @@ public final class ActionRequestReturningNonCollection<T>
                 contextPath, //
                 ODataValue.class, //
                 returnClass, //
-                this, //
+                options(), //
                 schemaInfo);
-    }
-
-    @Override
-    public Optional<String> getUrlOverride() {
-       return Optional.empty();
     }
 
 }
