@@ -22,7 +22,7 @@ public class MsGraphMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
         
-        client.users().stream().forEach(user -> System.out.println(user.getUserPrincipalName()));
+        client.users().select("userPrincipalName").stream().forEach(user -> System.out.println(user.getUserPrincipalName()));
         
         System.exit(0);
 

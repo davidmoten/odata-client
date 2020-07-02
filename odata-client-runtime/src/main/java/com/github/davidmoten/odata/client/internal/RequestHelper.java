@@ -22,6 +22,7 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.HttpMethod;
+import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntityType;
@@ -67,7 +68,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", false);
 
         // get the response
-        HttpResponse response = cp.context().service().get(cp.toUrl(), h);
+        HttpResponse response = cp.context().service().get(cp.toUrl(), h, options);
 
         checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
 
@@ -109,7 +110,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", false);
 
         // get the response
-        HttpResponse response = cp.context().service().get(cp.toUrl(), h);
+        HttpResponse response = cp.context().service().get(cp.toUrl(), h, options);
 
         checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
 
@@ -139,7 +140,7 @@ public final class RequestHelper {
 
         // get the response
         HttpService service = cp.context().service();
-        final HttpResponse response = service.post(url, h, json);
+        final HttpResponse response = service.post(url, h, json, options);
 
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
@@ -154,7 +155,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
 
         // get the response
-        HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
+        HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
 
         // deserialize
         checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
@@ -178,7 +179,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
 
         // get the response
-        HttpResponse response = cp.context().service().post(cp.toUrl(), h, json);
+        HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
 
         checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
@@ -198,7 +199,7 @@ public final class RequestHelper {
     public static <T extends ODataEntityType> void delete(ContextPath cp, RequestOptions options) {
         String url = cp.toUrl();
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
-        HttpResponse response = cp.context().service().delete(url, h);
+        HttpResponse response = cp.context().service().delete(url, h, options);
         checkResponseCode(cp, response, HttpURLConnection.HTTP_NO_CONTENT);
     }
 
@@ -252,7 +253,7 @@ public final class RequestHelper {
         }
         // get the response
         HttpService service = cp.context().service();
-        final HttpResponse response = service.submitWithContent(method, url, h, json);
+        final HttpResponse response = service.submitWithContent(method, url, h, json, options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
         // TODO is service returning the entity that we should use rather than the
         // original?
@@ -263,7 +264,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
-        final HttpResponse response = service.put(cp.toUrl(), h, in);
+        final HttpResponse response = service.put(cp.toUrl(), h, in, options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
 
@@ -335,7 +336,7 @@ public final class RequestHelper {
         } else {
             ContextPath cp = contextPath.addQueries(options.getQueries());
             return contextPath.context().service().getStream(cp.toUrl(),
-                    options.getRequestHeaders());
+                    options.getRequestHeaders(), options);
         }
     }
 
@@ -464,13 +465,13 @@ public final class RequestHelper {
     }
 
     public static String createUploadSession(ContextPath contextPath,
-            List<RequestHeader> requestHeaders, String contentType) {
+            List<RequestHeader> requestHeaders, String contentType, HttpRequestOptions options) {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(requestHeaders, contentType, true);
         ContextPath cp = contextPath.addSegment("createUploadSession");
         HttpResponse response = contextPath //
                 .context() //
                 .service() //
-                .post(cp.toUrl(), h, new ByteArrayInputStream(new byte[] {}));
+                .post(cp.toUrl(), h, new ByteArrayInputStream(new byte[] {}), options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
         ObjectMapper m = new ObjectMapper();
         try {
@@ -489,12 +490,12 @@ public final class RequestHelper {
     }
 
     public static void putChunk(HttpService service, String url, InputStream in,
-            List<RequestHeader> requestHeaders, long startByte, long finishByte, long size) {
+            List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
         h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
         h.add(RequestHeader.create("Content-Range",
                 "bytes " + startByte + "-" + finishByte + "/" + size));
-        HttpResponse response = service.put(url, requestHeaders, in);
+        HttpResponse response = service.put(url, requestHeaders, in, options);
         checkResponseCode(url, response, 200, 202);
     }
 

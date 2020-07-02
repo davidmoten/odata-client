@@ -1,6 +1,7 @@
 package com.github.davidmoten.msgraph;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.DirectoryObject;
@@ -19,6 +20,7 @@ public class GraphExplorerMain {
                         Arrays.asList("6e7b768e-07e2-4810-8459-485f84f8f204"), //
                         Arrays.asList("user")) //
                 .select("id,mail") //
+                .connectTimeout(1, TimeUnit.MILLISECONDS) //
                 .stream() //
                 .findFirst() //
                 .get();

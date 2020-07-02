@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 final class CollectionRequestOptions implements RequestOptions {
 
     private final List<RequestHeader> requestHeaders;
@@ -16,10 +18,16 @@ final class CollectionRequestOptions implements RequestOptions {
     private final Optional<String> select;
     private final Optional<String> expand;
     private final Optional<String> urlOverride;
+    private final Optional<Long> connectTimeoutMs;
+    private final Optional<Long> readTimeoutMs;
 
     CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
-            Optional<Long> top, Optional<String> select, Optional<String> expand, Optional<String> urlOverride) {
+            Optional<Long> top, Optional<String> select, Optional<String> expand, //
+            Optional<String> urlOverride, Optional<Long> connectTimeoutMs, //
+            Optional<Long> readTimeoutMs) {
+    	Preconditions.checkNotNull(connectTimeoutMs);
+    	Preconditions.checkNotNull(readTimeoutMs);
         this.requestHeaders = requestHeaders;
         this.search = search;
         this.filter = filter;
@@ -29,6 +37,8 @@ final class CollectionRequestOptions implements RequestOptions {
         this.select = select;
         this.expand = expand;
         this.urlOverride = urlOverride;
+        this.connectTimeoutMs = connectTimeoutMs;
+        this.readTimeoutMs = readTimeoutMs;
     }
 
     @Override
@@ -53,5 +63,14 @@ final class CollectionRequestOptions implements RequestOptions {
     public Optional<String> getUrlOverride() {
         return urlOverride;
     }
-    
+
+	@Override
+	public Optional<Long> requestConnectTimeoutMs() {
+		return connectTimeoutMs;
+	}
+
+	@Override
+	public Optional<Long> requestReadTimeoutMs() {
+		return readTimeoutMs;
+	}
 }

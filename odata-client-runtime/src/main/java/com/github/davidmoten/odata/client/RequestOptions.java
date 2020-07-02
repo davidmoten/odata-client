@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface RequestOptions {
+public interface RequestOptions  extends HttpRequestOptions {
 
     List<RequestHeader> getRequestHeaders();
 
@@ -30,9 +30,19 @@ public interface RequestOptions {
             return Optional.empty();
         }
 
+		@Override
+		public Optional<Long> requestConnectTimeoutMs() {
+			return Optional.empty();
+		}
+
+		@Override
+		public Optional<Long> requestReadTimeoutMs() {
+			return Optional.empty();
+		}
+
     };
     
-    public static RequestOptions create(Map<String, String> queries, List<RequestHeader> requestHeaders) {
+    public static RequestOptions create(Map<String, String> queries, List<RequestHeader> requestHeaders, Optional<Long> connectTimeoutMs, Optional<Long> readTimeoutMs) {
         return new RequestOptions() {
 
             @Override
@@ -49,6 +59,16 @@ public interface RequestOptions {
             public Optional<String> getUrlOverride() {
                 return Optional.empty();
             }
+
+			@Override
+			public Optional<Long> requestConnectTimeoutMs() {
+				return connectTimeoutMs;
+			}
+
+			@Override
+			public Optional<Long> requestReadTimeoutMs() {
+				return readTimeoutMs;
+			}
             
         };
     }

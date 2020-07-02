@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
@@ -35,36 +36,36 @@ public final class GraphExplorerHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
-        return s.get(convert(url), requestHeaders);
+    public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return s.get(convert(url), requestHeaders, options);
     }
 
     @Override
     public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-            InputStream content) {
-        return s.patch(convert(url), requestHeaders, content);
+            InputStream content, HttpRequestOptions options) {
+        return s.patch(convert(url), requestHeaders, content, options);
     }
 
     @Override
     public HttpResponse put(String url, List<RequestHeader> requestHeaders,
-            InputStream content) {
-        return s.put(convert(url), requestHeaders, content);
+            InputStream content, HttpRequestOptions options) {
+        return s.put(convert(url), requestHeaders, content, options);
     }
 
     @Override
     public HttpResponse post(String url, List<RequestHeader> requestHeaders,
-            InputStream content) {
-        return s.post(convert(url), requestHeaders, content);
+            InputStream content, HttpRequestOptions options) {
+        return s.post(convert(url), requestHeaders, content, options);
     }
 
     @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
-        return s.delete(convert(url), requestHeaders);
+    public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return s.delete(convert(url), requestHeaders, options);
     }
 
     @Override
-    public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
-        return s.getStream(convert(url), requestHeaders);
+    public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return s.getStream(convert(url), requestHeaders, options);
     }
 
     @Override
