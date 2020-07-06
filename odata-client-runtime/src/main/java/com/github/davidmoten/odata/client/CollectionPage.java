@@ -27,20 +27,23 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     private final Optional<String> nextLink;
     private final SchemaInfo schemaInfo;
     private final List<RequestHeader> requestHeaders;
+	private final HttpRequestOptions options;
 
     public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
-            Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders) {
+            Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
     	Preconditions.checkArgument(!nextLink.isPresent() || contextPath != null, "if nextLink is present contextPath must be non-null");
         Preconditions.checkNotNull(cls);
         Preconditions.checkNotNull(nextLink);
         Preconditions.checkNotNull(schemaInfo);
         Preconditions.checkNotNull(requestHeaders);
+        Preconditions.checkNotNull(options);
         this.contextPath = contextPath;
         this.cls = cls;
         this.list = list == null ? Collections.emptyList() : list;
         this.nextLink = nextLink;
         this.schemaInfo = schemaInfo;
         this.requestHeaders = requestHeaders;
+        this.options = options;
     }
 
     @Override
@@ -70,14 +73,14 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         if (nextLink.isPresent()) {
             // TODO handle relative nextLink?
             HttpResponse response = contextPath.context().service().get(nextLink.get(),
-                    requestHeaders);
+                    requestHeaders, options);
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
             RequestHelper.checkResponseCode(contextPath, response, 200, 299);
             return Optional
                     .of(contextPath.context().serializer().deserializeCollectionPage(
-                            response.getText(), cls, contextPath, schemaInfo, requestHeaders));
+                            response.getText(), cls, contextPath, schemaInfo, requestHeaders, options));
         } else {
             return Optional.empty();
         }

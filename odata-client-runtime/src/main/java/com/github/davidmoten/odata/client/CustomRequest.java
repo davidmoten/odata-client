@@ -20,46 +20,46 @@ public final class CustomRequest {
         this.context = context;
     }
 
-    public String getString(String url, RequestHeader... headers) {
-        return context.service().getStringUtf8(url, Arrays.asList(headers));
+    public String getString(String url, RequestOptions options, RequestHeader... headers) {
+        return context.service().getStringUtf8(url, Arrays.asList(headers), options);
     }
 
-    public InputStream getStream(String url, RequestHeader... headers) {
-        return context.service().getStream(url, Arrays.asList(headers));
+    public InputStream getStream(String url, RequestOptions options, RequestHeader... headers) {
+        return context.service().getStream(url, Arrays.asList(headers), options);
     }
 
-    public <T> T get(String url, Class<T> responseCls, SchemaInfo responseSchemaInfo,
+    public <T> T get(String url, Class<T> responseCls, SchemaInfo responseSchemaInfo, HttpRequestOptions options,
             RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers);
+        UrlInfo info = getInfo(context, url, headers, options);
         return RequestHelper.get(info.contextPath, responseCls, info, responseSchemaInfo);
     }
 
     public <T extends ODataEntityType> void post(String url, Class<T> contentClass, T content,
-            SchemaInfo schemaInfo, RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers);
+            SchemaInfo schemaInfo, HttpRequestOptions options, RequestHeader... headers) {
+        UrlInfo info = getInfo(context, url, headers, options);
         RequestHelper.post(content, info.contextPath, contentClass, info, schemaInfo);
     }
 
     public <T> T post(String url, Object content, Class<T> responseClass,
-            SchemaInfo responseSchemaInfo, RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers);
+            SchemaInfo responseSchemaInfo, HttpRequestOptions options, RequestHeader... headers) {
+        UrlInfo info = getInfo(context, url, headers, options);
         return RequestHelper.postAny(context, info.contextPath, responseClass, info,
                 responseSchemaInfo);
     }
 
-    public void postJson(String url, String contentJson, RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers);
-        context.service().post(url, info.requestHeaders, contentJson);
+    public void postJson(String url, String contentJson, RequestOptions options, RequestHeader... headers) {
+        UrlInfo info = getInfo(context, url, headers, options);
+        context.service().post(url, info.requestHeaders, contentJson, options);
     }
 
-    public String postJsonReturnsJson(String url, String contentJson, RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers);
-        HttpResponse response = context.service().post(url, info.requestHeaders, contentJson);
+    public String postJsonReturnsJson(String url, String contentJson, RequestOptions options, RequestHeader... headers) {
+        UrlInfo info = getInfo(context, url, headers, options);
+        HttpResponse response = context.service().post(url, info.requestHeaders, contentJson, options);
         RequestHelper.checkResponseCode(info.contextPath, response, 200, 299);
         return response.getText();
     }
 
-    private static UrlInfo getInfo(Context context, String url, RequestHeader[] requestHeaders) {
+    private static UrlInfo getInfo(Context context, String url, RequestHeader[] requestHeaders, HttpRequestOptions options) {
         final String urlPath;
         final String urlQuery;
         int i = url.indexOf('?');
@@ -77,19 +77,21 @@ public final class CustomRequest {
                 .stream() //
                 .peek(x -> System.out.println("pair=" + x)) //
                 .collect(Collectors.toMap(pair -> pair.getName(), pair -> pair.getValue()));
-        return new UrlInfo(contextPath, queries, Arrays.asList(requestHeaders));
+        return new UrlInfo(contextPath, queries, Arrays.asList(requestHeaders), options);
     }
 
     private static final class UrlInfo implements RequestOptions {
         final ContextPath contextPath;
         final List<RequestHeader> requestHeaders;
         final Map<String, String> queries;
+		final HttpRequestOptions options;
 
         UrlInfo(ContextPath contextPath, Map<String, String> queries,
-                List<RequestHeader> requestHeaders) {
+                List<RequestHeader> requestHeaders, HttpRequestOptions options) {
             this.contextPath = contextPath;
             this.queries = queries;
             this.requestHeaders = requestHeaders;
+			this.options = options;
         }
 
         @Override
@@ -106,5 +108,15 @@ public final class CustomRequest {
         public Optional<String> getUrlOverride() {
             return Optional.empty();
         }
+
+		@Override
+		public Optional<Long> requestConnectTimeoutMs() {
+			return options.requestConnectTimeoutMs();
+		}
+
+		@Override
+		public Optional<Long> requestReadTimeoutMs() {
+			return options.requestReadTimeoutMs();
+		}
     }
 }

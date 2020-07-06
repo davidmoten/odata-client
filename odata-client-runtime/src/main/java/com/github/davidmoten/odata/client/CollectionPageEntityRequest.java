@@ -4,6 +4,7 @@ import static com.github.davidmoten.odata.client.internal.Util.odataTypeName;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -31,10 +32,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         ContextPath cp = contextPath.addQueries(options.getQueries());
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
                 false);
-        HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h);
+        HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h, options);
         RequestHelper.checkResponseCode(cp, r, 200, 299);
         return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp,
-                schemaInfo, h);
+                schemaInfo, h, options);
     }
 
     T post(CollectionRequestOptions options, T entity) {
@@ -142,6 +143,14 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     
     public CollectionEntityRequestOptionsBuilder<T, R> urlOverride(String urlOverride) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).urlOverride(urlOverride);
+    }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> connectTimeout(long duration, TimeUnit unit) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).connectTimeout(duration, unit);
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> readTimeout(long duration, TimeUnit unit) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).readTimeout(duration, unit);
     }
 
 }
