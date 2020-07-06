@@ -17,17 +17,17 @@ import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
 public interface HttpService extends AutoCloseable {
 
-    HttpResponse get(String url, List<RequestHeader> requestHeaders);
+    HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
-    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content);
+    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options);
 
-    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content);
+    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options);
 
-    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content);
+    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options);
 
-    HttpResponse delete(String url, List<RequestHeader> requestHeaders);
+    HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
-    InputStream getStream(String url, List<RequestHeader> requestHeaders);
+    InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
     default Optional<Proxy> getProxy() {
         return Optional.empty();
@@ -35,38 +35,38 @@ public interface HttpService extends AutoCloseable {
 
     Path getBasePath();
 
-    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content) {
+    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
         try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return patch(url, requestHeaders, in);
+            return patch(url, requestHeaders, in, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    default HttpResponse put(String url, List<RequestHeader> requestHeaders, String content) {
+    default HttpResponse put(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
         try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return put(url, requestHeaders, in);
+            return put(url, requestHeaders, in, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content) {
+    default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
         try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return post(url, requestHeaders, in);
+            return post(url, requestHeaders, in, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, InputStream content) {
+            List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
         if (method == HttpMethod.PATCH) {
-            return patch(url, requestHeaders, content);
+            return patch(url, requestHeaders, content, options);
         } else if (method == HttpMethod.PUT) {
-            return put(url, requestHeaders, content);
+            return put(url, requestHeaders, content, options);
         } else if (method == HttpMethod.POST) {
-            return put(url, requestHeaders, content);
+            return put(url, requestHeaders, content, options);
         } else {
             throw new IllegalArgumentException(
                     method + " not permitted for a submission with content");
@@ -74,36 +74,36 @@ public interface HttpService extends AutoCloseable {
     }
 
     default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, String content) {
+            List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
         try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return submitWithContent(method, url, requestHeaders, in);
+            return submitWithContent(method, url, requestHeaders, in, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    default HttpResponse get(String url) {
-        return get(url, Collections.emptyList());
+    default HttpResponse get(String url, HttpRequestOptions options) {
+        return get(url, Collections.emptyList(), options);
     }
 
-    default InputStream getStream(String url) {
-        return getStream(url, Collections.emptyList());
+    default InputStream getStream(String url, HttpRequestOptions options) {
+        return getStream(url, Collections.emptyList(), options);
     }
 
-    default byte[] getBytes(String url) {
-        return getBytes(url, Collections.emptyList());
+    default byte[] getBytes(String url, HttpRequestOptions options) {
+        return getBytes(url, Collections.emptyList(), options);
     }
 
-    default byte[] getBytes(String url, List<RequestHeader> requestHeaders) {
-        return Util.toByteArray(getStream(url, requestHeaders));
+    default byte[] getBytes(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return Util.toByteArray(getStream(url, requestHeaders, options));
     }
 
-    default String getStringUtf8(String url) {
-        return getStringUtf8(url, Collections.emptyList());
+    default String getStringUtf8(String url, HttpRequestOptions options) {
+        return getStringUtf8(url, Collections.emptyList(), options);
     }
 
-    default String getStringUtf8(String url, List<RequestHeader> requestHeaders) {
-        return new String(getBytes(url, requestHeaders), StandardCharsets.UTF_8);
+    default String getStringUtf8(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return new String(getBytes(url, requestHeaders, options), StandardCharsets.UTF_8);
     }
 
     public static HttpService createDefaultService(Path path,

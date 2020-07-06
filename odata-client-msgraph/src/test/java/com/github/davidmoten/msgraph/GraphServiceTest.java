@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
@@ -29,6 +29,7 @@ import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
+import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Serializer;
@@ -111,6 +112,22 @@ public class GraphServiceTest {
         assertEquals(31, c.currentPage().size());
     }
 
+    @Test
+    public void testGetEntityCollectionWithTimeouts() {
+        int maxPageSize = 50;
+        GraphService client = createClient("/users", "/response-users.json",
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION,
+                RequestHeader.maxPageSize(maxPageSize));
+        CollectionPage<User> c = client //
+        		.users() //
+        		.maxPageSize(maxPageSize) //
+        		.connectTimeout(10, TimeUnit.SECONDS) //
+        		.readTimeout(30, TimeUnit.SECONDS) //
+        		.get();
+        assertNotNull(c);
+        assertEquals(31, c.currentPage().size());
+    }
+    
     @Test
     public void testGetEntityCollectionWithNextPage() {
         GraphService client = clientBuilder() //
@@ -312,6 +329,19 @@ public class GraphServiceTest {
 				.build();
 		application.getPasswordCredentials();
 	}
+	
+	@Test
+	public void testCoverageOfHttpRequestOptionsOnPropertyCollection() {
+		Application application = Application.builderApplication() //
+				.passwordCredentials(PasswordCredential.builder() //
+						.secretText("Application secret Text") //
+						.build()) //
+				.build();
+		assertEquals(1,
+				application.getPasswordCredentials(
+						HttpRequestOptions.connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS))
+						.currentPage().size());
+	}
     
     @Test
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
@@ -369,6 +399,32 @@ public class GraphServiceTest {
                 .get();
         String s = new String(Util.read(a.getStream().get().get()));
         assertEquals(60, s.length());
+    }
+    
+    @Test
+    public void testTimeoutsOnNonEntityCollection() {
+        GraphService client = clientBuilder() //
+                .expectResponse(
+                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
+                        "/response-messages-with-item-attachment.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments",
+                        "/response-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_FULL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectResponse(
+                        "/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
+                        "/response-item-attachment-raw.txt") //
+                .build();
+        Message m = client //
+                .users("fred") //
+                .mailFolders("Inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .orderBy("createdDateTime") //
+                .metadataMinimal() //
+                .iterator() //
+                .next();
+        assertEquals(1, m.getToRecipients(HttpRequestOptions.EMPTY).toList().size());
     }
     
     @Test

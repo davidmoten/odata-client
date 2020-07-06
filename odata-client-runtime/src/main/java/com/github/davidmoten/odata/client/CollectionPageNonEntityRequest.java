@@ -66,9 +66,9 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
                 method != HttpMethod.GET);
         if (method == HttpMethod.GET) {
-            r = cp.context().service().get(cp.toUrl(), h);
+            r = cp.context().service().get(cp.toUrl(), h, options);
         } else {
-            r = cp.context().service().post(cp.toUrl(), h, content.get());
+            r = cp.context().service().post(cp.toUrl(), h, content.get(), options);
         }
         RequestHelper.checkResponseCode(cp, r, expectedResponseCode);
         return cp //
@@ -79,7 +79,8 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
                         cls, //
                         cp, //
                         schemaInfo, //
-                        h);
+                        h, //
+                        options);
     }
 
     public CollectionPage<T> get() {

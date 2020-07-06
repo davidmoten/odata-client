@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -14,6 +15,8 @@ public final class NonEntityRequestOptionsBuilder<T> {
     private Optional<String> expand = Optional.empty();
     private boolean useCaches = false;
     private String metadata = "minimal";
+    private Optional<Long> connectTimeoutMs = Optional.empty();
+    private Optional<Long> readTimeoutMs = Optional.empty();
 
     NonEntityRequestOptionsBuilder(NonEntityRequest<T> request) {
         this.request = request;
@@ -59,11 +62,21 @@ public final class NonEntityRequestOptionsBuilder<T> {
         this.metadata = "minimal";
         return this;
     }
-
+    
     public NonEntityRequestOptionsBuilder<T> metadataFull() {
         this.metadata = "full";
         return this;
     }
+
+    public NonEntityRequestOptionsBuilder<T> connectTimeout(long duration, TimeUnit unit) {
+    	this.connectTimeoutMs = Optional.of(unit.toMillis(duration));
+    	return this;
+    }
+    
+    public NonEntityRequestOptionsBuilder<T> readTimeout(long duration, TimeUnit unit) {
+    	this.readTimeoutMs = Optional.of(unit.toMillis(duration));
+    	return this;
+    } 
 
     public T get() {
         return request.get(build());
@@ -71,7 +84,7 @@ public final class NonEntityRequestOptionsBuilder<T> {
 
     private NonEntityRequestOptions<T> build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
-        return new NonEntityRequestOptions<T>(requestHeaders, select, expand, useCaches);
+        return new NonEntityRequestOptions<T>(requestHeaders, select, expand, useCaches, connectTimeoutMs, readTimeoutMs);
     }
 
 }

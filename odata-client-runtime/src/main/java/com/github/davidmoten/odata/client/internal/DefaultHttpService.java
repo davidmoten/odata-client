@@ -14,6 +14,7 @@ import java.util.function.Function;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.HttpMethod;
+import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
@@ -38,12 +39,12 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders) {
+    public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.GET, true, null);
     }
 
     @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
         if (patchSupported) {
             try {
                 return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content);
@@ -66,17 +67,17 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content) {
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.PUT, false, content);
     }
 
     @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content) {
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.POST, true, content);
     }
 
     @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders) {
+    public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.DELETE, false, null);
     }
 
@@ -130,7 +131,7 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public InputStream getStream(String url, List<RequestHeader> requestHeaders) {
+    public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
