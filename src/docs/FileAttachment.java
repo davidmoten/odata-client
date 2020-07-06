@@ -153,8 +153,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         private final T caller;
         protected final List<String> list = new ArrayList<String>();
 
-        
-protected SelectBuilderBase(T caller) {
+        protected SelectBuilderBase(T caller) {
             this.caller = caller;
         }
 
@@ -162,10 +161,12 @@ protected SelectBuilderBase(T caller) {
             list.add("contentId");
             return this;
         }
+
         public SelectBuilderBase<T> contentLocation() {
             list.add("contentLocation");
             return this;
         }
+
         public SelectBuilderBase<T> contentBytes() {
             list.add("contentBytes");
             return this;

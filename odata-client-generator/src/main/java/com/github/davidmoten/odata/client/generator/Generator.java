@@ -614,7 +614,7 @@ public final class Generator {
 		// methods
 		for (TProperty t:properties) {
 			String fieldName = Names.getIdentifier(t.getName());
-	        p.format("%s\npublic SelectBuilderBase<T> %s() {\n" , indent, fieldName);
+	        p.format("\n%spublic SelectBuilderBase<T> %s() {\n" , indent, fieldName);
 	        indent.right();
 	        p.format("%slist.add(\"%s\");\n", indent, fieldName);
 	        p.format("%sreturn this;\n", indent);
