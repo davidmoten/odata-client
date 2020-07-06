@@ -604,17 +604,17 @@ public final class Generator {
 		
 		// fields
 		p.format("%sprivate final T caller;\n", indent);
-		p.format("%sprotected final %s<%s> list = new %s<%s>();\n\n", indent, imports.add(List.class), imports.add(String.class), imports.add(ArrayList.class), imports.add(String.class));
+		p.format("%sprotected final %s<%s> list = new %s<%s>();\n", indent, imports.add(List.class), imports.add(String.class), imports.add(ArrayList.class), imports.add(String.class));
 		
 		// constructor
-		p.format("%s\nprotected SelectBuilderBase(T caller) {\n", indent);
+		p.format("\n%sprotected SelectBuilderBase(T caller) {\n", indent);
 		p.format("%sthis.caller = caller;\n", indent.right());
-		p.format("%s}\n\n", indent.left());
+		p.format("%s}\n", indent.left());
 		
 		// methods
 		for (TProperty t:properties) {
 			String fieldName = Names.getIdentifier(t.getName());
-	        p.format("%spublic SelectBuilderBase<T> %s() {\n" , indent, fieldName);
+	        p.format("%s\npublic SelectBuilderBase<T> %s() {\n" , indent, fieldName);
 	        indent.right();
 	        p.format("%slist.add(\"%s\");\n", indent, fieldName);
 	        p.format("%sreturn this;\n", indent);
