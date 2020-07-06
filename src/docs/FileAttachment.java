@@ -18,6 +18,8 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @JsonPropertyOrder({
@@ -144,6 +146,33 @@ public class FileAttachment extends Attachment implements ODataEntityType {
             _x.contentLocation = contentLocation;
             _x.contentBytes = contentBytes;
             return _x;
+        }
+    }
+
+    static abstract class SelectBuilderBase<T> {
+        private final T caller;
+        protected final List<String> list = new ArrayList<String>();
+
+        
+protected SelectBuilderBase(T caller) {
+            this.caller = caller;
+        }
+
+        public SelectBuilderBase<T> contentId() {
+            list.add("contentId");
+            return this;
+        }
+        public SelectBuilderBase<T> contentLocation() {
+            list.add("contentLocation");
+            return this;
+        }
+        public SelectBuilderBase<T> contentBytes() {
+            list.add("contentBytes");
+            return this;
+        }
+
+        public T build() {
+             return caller;
         }
     }
 

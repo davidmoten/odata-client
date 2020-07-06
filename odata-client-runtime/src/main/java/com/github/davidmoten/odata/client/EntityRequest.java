@@ -53,7 +53,7 @@ public abstract class EntityRequest<T extends ODataEntityType> {
     public EntityRequestOptionsBuilder<T> select(String clause) {
         return new EntityRequestOptionsBuilder<T>(this).select(clause);
     }
-
+    
     public EntityRequestOptionsBuilder<T> expand(String clause) {
         return new EntityRequestOptionsBuilder<T>(this).expand(clause);
     }

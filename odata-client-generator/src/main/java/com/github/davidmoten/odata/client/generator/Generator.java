@@ -522,11 +522,13 @@ public final class Generator {
 
 			// add other fields
 			printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
-
+			
 			// write constructor
 			writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
 
 			writeBuilder(t, simpleClassName, imports, indent, p);
+			
+			printSelectBuilder(imports, indent, p, t.getProperties());
 
 			p.format("\n%s@%s\n", indent, imports.add(Override.class));
 			p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
@@ -594,6 +596,36 @@ public final class Generator {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void printSelectBuilder(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties) {
+		p.format("\n%sstatic abstract class SelectBuilderBase<T> {\n", indent);
+		indent.right();
+		
+		// fields
+		p.format("%sprivate final T caller;\n", indent);
+		p.format("%sprotected final %s<%s> list = new %s<%s>();\n\n", indent, imports.add(List.class), imports.add(String.class), imports.add(ArrayList.class), imports.add(String.class));
+		
+		// constructor
+		p.format("%s\nprotected SelectBuilderBase(T caller) {\n", indent);
+		p.format("%sthis.caller = caller;\n", indent.right());
+		p.format("%s}\n\n", indent.left());
+		
+		// methods
+		for (TProperty t:properties) {
+			String fieldName = Names.getIdentifier(t.getName());
+	        p.format("%spublic SelectBuilderBase<T> %s() {\n" , indent, fieldName);
+	        indent.right();
+	        p.format("%slist.add(\"%s\");\n", indent, fieldName);
+	        p.format("%sreturn this;\n", indent);
+	        indent.left();
+	        p.format("%s}\n", indent);
+		}
+		p.format("\n%spublic T build() {\n", indent);
+		indent.right();
+		p.format("%s return caller;\n", indent);
+		p.format("%s}\n", indent.left());
+		p.format("%s}\n", indent.left());
 	}
 
 	private static void printJsonIncludesNonNull(Indent indent, Imports imports, PrintWriter p) {
