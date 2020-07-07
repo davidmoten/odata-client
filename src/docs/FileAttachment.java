@@ -10,6 +10,7 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
+import com.github.davidmoten.odata.client.SelectBuilder;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.Util;
 import com.github.davidmoten.odata.client.annotation.Property;
@@ -149,25 +150,25 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         }
     }
 
-    static abstract class SelectBuilderBase<T> {
+    public static final class Select<T> implements SelectBuilder<FileAttachment> {
         private final T caller;
         protected final List<String> list = new ArrayList<String>();
 
-        protected SelectBuilderBase(T caller) {
+        public Select(T caller) {
             this.caller = caller;
         }
 
-        public SelectBuilderBase<T> contentId() {
+        public Select<T> contentId() {
             list.add("contentId");
             return this;
         }
 
-        public SelectBuilderBase<T> contentLocation() {
+        public Select<T> contentLocation() {
             list.add("contentLocation");
             return this;
         }
 
-        public SelectBuilderBase<T> contentBytes() {
+        public Select<T> contentBytes() {
             list.add("contentBytes");
             return this;
         }

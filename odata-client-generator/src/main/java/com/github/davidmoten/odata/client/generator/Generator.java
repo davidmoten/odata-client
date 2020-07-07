@@ -608,7 +608,7 @@ public final class Generator {
 		p.format("%sprotected final %s<%s> list = new %s<%s>();\n", indent, imports.add(List.class), imports.add(String.class), imports.add(ArrayList.class), imports.add(String.class));
 		
 		// constructor
-		p.format("\n%public Select(T caller) {\n", indent);
+		p.format("\n%spublic Select(T caller) {\n", indent);
 		p.format("%sthis.caller = caller;\n", indent.right());
 		p.format("%s}\n", indent.left());
 		
