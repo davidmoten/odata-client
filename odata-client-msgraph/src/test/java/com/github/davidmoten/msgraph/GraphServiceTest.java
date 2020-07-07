@@ -77,6 +77,17 @@ public class GraphServiceTest {
         assertEquals(1, user.getBusinessPhones().currentPage().size());
         assertEquals("+61 2 1234567", user.getBusinessPhones().currentPage().get(0));
     }
+    
+    @Test
+    public void testGetEntityWithSelectBuilder() {
+        GraphService client = createClient("/users/1?$select=displayName%2CbusinessPhones", "/response-user-select.json", //
+                RequestHeader.ODATA_VERSION, //
+                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
+        User user = client.users("1").selectBuilder().displayName().businessPhones().build().get();
+        assertEquals("Conf Room Adams", user.getDisplayName().get());
+        assertEquals(1, user.getBusinessPhones().currentPage().size());
+        assertEquals("+61 2 1234567", user.getBusinessPhones().currentPage().get(0));
+    }
 
     @Test
     public void testGetEntityCollectionWithoutNextPage() {
@@ -252,18 +263,6 @@ public class GraphServiceTest {
 
     @Test
     public void testGetCollectionWithSelect() {
-        GraphService client = clientBuilder() //
-                .expectResponse("/groups?$select=id%2CgroupTypes", "/response-groups-select.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .build();
-        CollectionPage<Group> c = client.groups().select("id,groupTypes").get();
-        assertNotNull(c);
-        assertEquals(49, c.currentPage().size());
-        assertEquals("02bd9fd6-8f93-4758-87c3-1fb73740a315", c.currentPage().get(0).getId().get());
-    }
-    
-    @Test
-    public void testGetCollectionWithSelectBuilder() {
         GraphService client = clientBuilder() //
                 .expectResponse("/groups?$select=id%2CgroupTypes", "/response-groups-select.json",
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
