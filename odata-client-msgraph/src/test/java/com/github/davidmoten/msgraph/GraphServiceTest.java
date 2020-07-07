@@ -84,7 +84,13 @@ public class GraphServiceTest {
         		"/response-user-select.json", //
                 RequestHeader.ODATA_VERSION, //
                 RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
-        User user = client.users("1").selectBuilder().displayName().businessPhones().build().get();
+        User user = client //
+        		.users("1") //
+        		.selectBuilder() //
+        		.displayName() //
+        		.businessPhones() //
+        		.build() //
+        		.get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
         assertEquals(1, user.getBusinessPhones().currentPage().size());
         assertEquals("+61 2 1234567", user.getBusinessPhones().currentPage().get(0));
