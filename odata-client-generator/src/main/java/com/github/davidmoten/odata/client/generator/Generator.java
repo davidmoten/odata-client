@@ -64,6 +64,7 @@ import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
+import com.github.davidmoten.odata.client.SelectBuilder;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.StreamUploader;
 import com.github.davidmoten.odata.client.StreamUploaderChunked;
@@ -528,7 +529,7 @@ public final class Generator {
 
 			writeBuilder(t, simpleClassName, imports, indent, p);
 			
-			printSelectBuilder(imports, indent, p, t.getProperties());
+			printSelectBuilder(imports, indent, p, t.getProperties(), true, simpleClassName);
 
 			p.format("\n%s@%s\n", indent, imports.add(Override.class));
 			p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
@@ -598,8 +599,8 @@ public final class Generator {
 		}
 	}
 
-	private void printSelectBuilder(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties) {
-		p.format("\n%sstatic abstract class SelectBuilderBase<T> {\n", indent);
+	private void printSelectBuilder(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties, boolean isEntity, String className) {
+		p.format("\n%spublic static final class Select<T> implements %s<%s> {\n", indent, imports.add(SelectBuilder.class), className);
 		indent.right();
 		
 		// fields
@@ -607,14 +608,14 @@ public final class Generator {
 		p.format("%sprotected final %s<%s> list = new %s<%s>();\n", indent, imports.add(List.class), imports.add(String.class), imports.add(ArrayList.class), imports.add(String.class));
 		
 		// constructor
-		p.format("\n%sprotected SelectBuilderBase(T caller) {\n", indent);
+		p.format("\n%public Select(T caller) {\n", indent);
 		p.format("%sthis.caller = caller;\n", indent.right());
 		p.format("%s}\n", indent.left());
 		
 		// methods
 		for (TProperty t:properties) {
 			String fieldName = Names.getIdentifier(t.getName());
-	        p.format("\n%spublic SelectBuilderBase<T> %s() {\n" , indent, fieldName);
+	        p.format("\n%spublic Select<T> %s() {\n" , indent, fieldName);
 	        indent.right();
 	        p.format("%slist.add(\"%s\");\n", indent, fieldName);
 	        p.format("%sreturn this;\n", indent);
@@ -704,8 +705,7 @@ public final class Generator {
 			p.format("%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
 					indent, //
 					imports.add(ActionRequestNoReturn.class), //
-					action.getFullType(), //
-					imports.add(HttpRequestOptions.class));
+					action.getFullType());
 		}
 		p.format("%s}\n", indent.left());
 	}
