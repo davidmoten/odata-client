@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.odata.client.ClientException;
+import com.github.davidmoten.odata.client.HasSelect;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
@@ -22,6 +23,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @JsonPropertyOrder({
     "@odata.type", 
@@ -150,7 +152,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         }
     }
 
-    public static final class Select<T> implements SelectBuilder<FileAttachment> {
+    public static final class Select<T extends HasSelect<S>, S> implements SelectBuilder<FileAttachment> {
         private final T caller;
         protected final List<String> list = new ArrayList<String>();
 
@@ -158,23 +160,23 @@ public class FileAttachment extends Attachment implements ODataEntityType {
             this.caller = caller;
         }
 
-        public Select<T> contentId() {
+        public Select<T, S> contentId() {
             list.add("contentId");
             return this;
         }
 
-        public Select<T> contentLocation() {
+        public Select<T, S> contentLocation() {
             list.add("contentLocation");
             return this;
         }
 
-        public Select<T> contentBytes() {
+        public Select<T, S> contentBytes() {
             list.add("contentBytes");
             return this;
         }
 
-        public T build() {
-             return caller;
+        public S build() {
+            return caller.select(list.stream().collect(Collectors.joining(",")));
         }
     }
 

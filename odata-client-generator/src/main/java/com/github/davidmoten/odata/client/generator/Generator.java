@@ -55,8 +55,10 @@ import com.github.davidmoten.odata.client.CollectionPageNonEntityRequest;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityRequest;
+import com.github.davidmoten.odata.client.EntityRequestOptionsBuilder;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.HasContext;
+import com.github.davidmoten.odata.client.HasSelect;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
@@ -600,7 +602,8 @@ public final class Generator {
 	}
 
 	private void printSelectBuilder(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties, boolean isEntity, String className) {
-		p.format("\n%spublic static final class Select<T> implements %s<%s> {\n", indent, imports.add(SelectBuilder.class), className);
+		p.format("\n%spublic static final class Select<T extends %s<S>, S> implements %s<%s> {\n", indent, //
+				imports.add(HasSelect.class), imports.add(SelectBuilder.class), className);
 		indent.right();
 		
 		// fields
@@ -615,16 +618,16 @@ public final class Generator {
 		// methods
 		for (TProperty t:properties) {
 			String fieldName = Names.getIdentifier(t.getName());
-	        p.format("\n%spublic Select<T> %s() {\n" , indent, fieldName);
+	        p.format("\n%spublic Select<T, S> %s() {\n" , indent, fieldName);
 	        indent.right();
 	        p.format("%slist.add(\"%s\");\n", indent, fieldName);
 	        p.format("%sreturn this;\n", indent);
 	        indent.left();
 	        p.format("%s}\n", indent);
 		}
-		p.format("\n%spublic T build() {\n", indent);
+		p.format("\n%spublic S build() {\n", indent);
 		indent.right();
-		p.format("%s return caller;\n", indent);
+		p.format("%sreturn caller.select(list.stream().collect(%s.joining(\",\")));\n", indent, imports.add(Collectors.class));
 		p.format("%s}\n", indent.left());
 		p.format("%s}\n", indent.left());
 	}
@@ -1121,6 +1124,23 @@ public final class Generator {
 			Set<String> methodNames = new HashSet<>();
 			writeBoundActionMethods(t, typeActions, imports, indent, p, methodNames);
 			writeBoundFunctionMethods(t, typeFunctions, imports, indent, p, methodNames);
+
+			// write select builder
+			p.format("\n%spublic %s.Select<%s, %s<%s>> selectBuilder() {\n", //
+					indent, //
+					imports.add(t.getFullClassNameEntity()), //
+					simpleClassName, //
+					imports.add(EntityRequestOptionsBuilder.class), //
+					imports.add(t.getFullClassNameEntity()));
+			// caller.select(list.stream().collect(Collectors.joining(",")));
+			p.format("%sreturn new %s.Select<%s, %s<%s>>(this);\n",  //
+					indent.right(), //
+					imports.add(t.getFullClassNameEntity()), //
+					simpleClassName, //
+					imports.add(EntityRequestOptionsBuilder.class), //
+					imports.add(t.getFullClassNameEntity()));
+			p.format("%s}\n", indent.left());
+
 			indent.left();
 			p.format("\n}\n");
 			writeToFile(imports, w, t.getClassFileEntityRequest());

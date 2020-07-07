@@ -263,6 +263,18 @@ public class GraphServiceTest {
     }
     
     @Test
+    public void testGetCollectionWithSelectBuilder() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/groups?$select=id%2CgroupTypes", "/response-groups-select.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<Group> c = client.groups().select("id,groupTypes").get();
+        assertNotNull(c);
+        assertEquals(49, c.currentPage().size());
+        assertEquals("02bd9fd6-8f93-4758-87c3-1fb73740a315", c.currentPage().get(0).getId().get());
+    }
+    
+    @Test
     public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
         GraphService client = createClient("/me/messages/1", "/response-message.json",
                 RequestHeader.ODATA_VERSION, //
