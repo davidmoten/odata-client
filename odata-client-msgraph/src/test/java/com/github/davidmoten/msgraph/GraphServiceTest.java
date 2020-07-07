@@ -80,7 +80,8 @@ public class GraphServiceTest {
     
     @Test
     public void testGetEntityWithSelectBuilder() {
-        GraphService client = createClient("/users/1?$select=displayName%2CbusinessPhones", "/response-user-select.json", //
+        GraphService client = createClient("/users/1?$select=displayName%2CbusinessPhones", //
+        		"/response-user-select.json", //
                 RequestHeader.ODATA_VERSION, //
                 RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
         User user = client.users("1").selectBuilder().displayName().businessPhones().build().get();
