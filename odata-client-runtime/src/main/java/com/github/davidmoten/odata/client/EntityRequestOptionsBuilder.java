@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
+public final class EntityRequestOptionsBuilder<T extends ODataEntityType> implements HasSelect<EntityRequestOptionsBuilder<T>> {
 
     private final EntityRequest<T> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
@@ -27,12 +27,13 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
         return this;
     }
 
+    @Override
     public EntityRequestOptionsBuilder<T> select(String clause) {
         Preconditions.checkNotNull(clause);
         this.select = Optional.of(clause);
         return this;
     }
-
+    
     public EntityRequestOptionsBuilder<T> expand(String clause) {
         Preconditions.checkNotNull(clause);
         this.expand = Optional.of(clause);

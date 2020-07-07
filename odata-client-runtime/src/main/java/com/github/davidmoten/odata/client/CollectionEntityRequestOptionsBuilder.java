@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityType, R extends EntityRequest<T>>
-        implements Iterable<T> {
+        implements Iterable<T>, HasSelect<CollectionEntityRequestOptionsBuilder<T, R>> {
 
     private final CollectionPageEntityRequest<T, R> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
@@ -109,6 +109,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         return this;
     }
 
+    @Override
     public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
         Preconditions.checkNotNull(clause);
         this.select = Optional.of(clause);
