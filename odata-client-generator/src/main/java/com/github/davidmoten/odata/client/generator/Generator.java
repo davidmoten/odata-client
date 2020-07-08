@@ -625,6 +625,10 @@ public final class Generator {
 	        indent.left();
 	        p.format("%s}\n", indent);
 		}
+		p.format("\n%spublic <R extends %s<S>> Select<R, S> withCaller(R caller) {\n", indent, imports.add(HasSelect.class));
+		p.format("%sreturn new Select<R, S>(caller);\n", indent.right());
+		p.format("%s}\n",  indent.left());
+
 		p.format("\n%spublic S build() {\n", indent);
 		indent.right();
 		p.format("%sreturn caller.select(list.stream().collect(%s.joining(\",\")));\n", indent, imports.add(Collectors.class));

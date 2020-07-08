@@ -175,6 +175,10 @@ public class FileAttachment extends Attachment implements ODataEntityType {
             return this;
         }
 
+        public <R extends HasSelect<S>> Select<R, S> withCaller(R caller) {
+            return new Select<R, S>(caller);
+        }
+
         public S build() {
             return caller.select(list.stream().collect(Collectors.joining(",")));
         }
