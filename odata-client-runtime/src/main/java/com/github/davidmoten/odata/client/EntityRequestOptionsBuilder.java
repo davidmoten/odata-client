@@ -18,7 +18,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> implem
     private Optional<Long> connectTimeoutMs = Optional.empty();
     private Optional<Long> readTimeoutMs = Optional.empty();
 
-    EntityRequestOptionsBuilder(EntityRequest<T> request) {
+    public EntityRequestOptionsBuilder(EntityRequest<T> request) {
         this.request = request;
     }
 

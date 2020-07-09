@@ -152,7 +152,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         }
     }
 
-    public static final class Select<T extends HasSelect<S>, S> implements SelectBuilder<FileAttachment> {
+    public static final class Select<T extends HasSelect<T>> implements SelectBuilder<FileAttachment> {
         private final T caller;
         protected final List<String> list = new ArrayList<String>();
 
@@ -160,26 +160,24 @@ public class FileAttachment extends Attachment implements ODataEntityType {
             this.caller = caller;
         }
 
-        public Select<T, S> contentId() {
-            list.add("contentId");
+        private Select<T> add(String s) {
+            list.add(s);
             return this;
         }
 
-        public Select<T, S> contentLocation() {
-            list.add("contentLocation");
-            return this;
+        public Select<T> contentId() {
+            return add("contentId");
         }
 
-        public Select<T, S> contentBytes() {
-            list.add("contentBytes");
-            return this;
+        public Select<T> contentLocation() {
+            return add("contentLocation");
         }
 
-        public <R extends HasSelect<S>> Select<R, S> withCaller(R caller) {
-            return new Select<R, S>(caller);
+        public Select<T> contentBytes() {
+            return add("contentBytes");
         }
 
-        public S build() {
+        public T build() {
             return caller.select(list.stream().collect(Collectors.joining(",")));
         }
     }

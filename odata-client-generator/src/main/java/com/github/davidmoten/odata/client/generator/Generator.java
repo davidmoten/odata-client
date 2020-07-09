@@ -602,7 +602,7 @@ public final class Generator {
 	}
 
 	private void printSelectBuilder(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties, boolean isEntity, String className) {
-		p.format("\n%spublic static final class Select<T extends %s<S>, S> implements %s<%s> {\n", indent, //
+		p.format("\n%spublic static final class Select<T extends %s<T>> implements %s<%s> {\n", indent, //
 				imports.add(HasSelect.class), imports.add(SelectBuilder.class), className);
 		indent.right();
 		
@@ -615,21 +615,22 @@ public final class Generator {
 		p.format("%sthis.caller = caller;\n", indent.right());
 		p.format("%s}\n", indent.left());
 		
+		p.format("\n%sprivate Select<T> add(String s) {\n", indent);
+		p.format("%slist.add(s);\n", indent.right());
+		p.format("%sreturn this;\n", indent);
+		p.format("%s}\n", indent.left());
+		
 		// methods
 		for (TProperty t:properties) {
 			String fieldName = Names.getIdentifier(t.getName());
-	        p.format("\n%spublic Select<T, S> %s() {\n" , indent, fieldName);
+	        p.format("\n%spublic Select<T> %s() {\n" , indent, fieldName);
 	        indent.right();
-	        p.format("%slist.add(\"%s\");\n", indent, fieldName);
-	        p.format("%sreturn this;\n", indent);
+	        p.format("%sreturn add(\"%s\");\n", indent, fieldName);
 	        indent.left();
 	        p.format("%s}\n", indent);
 		}
-		p.format("\n%spublic <R extends %s<S>> Select<R, S> withCaller(R caller) {\n", indent, imports.add(HasSelect.class));
-		p.format("%sreturn new Select<R, S>(caller);\n", indent.right());
-		p.format("%s}\n",  indent.left());
 
-		p.format("\n%spublic S build() {\n", indent);
+		p.format("\n%spublic T build() {\n", indent);
 		indent.right();
 		p.format("%sreturn caller.select(list.stream().collect(%s.joining(\",\")));\n", indent, imports.add(Collectors.class));
 		p.format("%s}\n", indent.left());
@@ -1129,18 +1130,14 @@ public final class Generator {
 			writeBoundActionMethods(t, typeActions, imports, indent, p, methodNames);
 			writeBoundFunctionMethods(t, typeFunctions, imports, indent, p, methodNames);
 
-			// write select builder
-			p.format("\n%spublic %s.Select<%s, %s<%s>> selectBuilder() {\n", //
+			p.format("\n%spublic %s.Select<%s<%s>> selectBuilder() {\n", //
 					indent, //
 					imports.add(t.getFullClassNameEntity()), //
-					simpleClassName, //
 					imports.add(EntityRequestOptionsBuilder.class), //
 					imports.add(t.getFullClassNameEntity()));
-			// caller.select(list.stream().collect(Collectors.joining(",")));
-			p.format("%sreturn new %s.Select<%s, %s<%s>>(this);\n",  //
+			p.format("%sreturn new %s.Select<>(new %s<%s>(this));\n", //
 					indent.right(), //
 					imports.add(t.getFullClassNameEntity()), //
-					simpleClassName, //
 					imports.add(EntityRequestOptionsBuilder.class), //
 					imports.add(t.getFullClassNameEntity()));
 			p.format("%s}\n", indent.left());
