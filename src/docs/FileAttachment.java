@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
+import com.github.davidmoten.odata.client.Property;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.Util;
-import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
@@ -41,6 +41,24 @@ public class FileAttachment extends Attachment implements ODataEntityType {
 
     @JsonProperty("contentBytes")
     protected byte[] contentBytes;
+
+    public enum Property implements Property<FileAttachment> {
+        CONTENT_ID("contentId"),
+        CONTENT_LOCATION("contentLocation"),
+        CONTENT_BYTES("contentBytes");
+
+
+        private String propertyName;
+
+        private Property(String propertyName) {
+            this.propertyName = propertyName;
+        }
+
+        @Override
+        public String propertyName() {
+            return propertyName;
+        }
+    }
 
     protected FileAttachment() {
         super();
@@ -160,7 +178,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         }
     }
 
-    @Property(name="contentId")
+    @com.github.davidmoten.odata.client.annotation.Property(name="contentId")
     @JsonIgnore
     public Optional<String> getContentId() {
         return Optional.ofNullable(contentId);
@@ -174,7 +192,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
-    @Property(name="contentLocation")
+    @com.github.davidmoten.odata.client.annotation.Property(name="contentLocation")
     @JsonIgnore
     public Optional<String> getContentLocation() {
         return Optional.ofNullable(contentLocation);
@@ -188,7 +206,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
-    @Property(name="contentBytes")
+    @com.github.davidmoten.odata.client.annotation.Property(name="contentBytes")
     @JsonIgnore
     public Optional<byte[]> getContentBytes() {
         return Optional.ofNullable(contentBytes);
