@@ -522,27 +522,28 @@ public final class Generator {
 
 			// add other fields
 			printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
-
-			p.format("\n%spublic enum Property implements %s<%s> {\n", indent, imports.add(com.github.davidmoten.odata.client.Property.class), simpleClassName);
-			indent.right();
-			String enums = t //
-					.getProperties() //
-					.stream() //
-					.map(prop -> String.format("%s%s(\"%s\")", indent, Names.toConstant(prop.getName()), prop.getName())) //
-					.collect(Collectors.joining(",\n"));
-			p.print(enums);
-			p.println(";\n");
-			p.format("\n%sprivate String propertyName;\n", indent);
-			p.format("\n%sprivate Property(String propertyName) {\n", indent);
-			p.format("%sthis.propertyName = propertyName;\n", indent.right());
-			p.format("%s}\n", indent.left());
-
-			p.format("\n%s@%s\n", indent, imports.add(Override.class));
-			p.format("%spublic String propertyName() {\n", indent);
-			p.format("%sreturn propertyName;\n", indent.right());
-			p.format("%s}\n", indent.left());
-
-			p.format("%s}\n", indent.left());
+			
+// TODO move to its own class
+//			p.format("\n%spublic enum Property implements %s<%s> {\n", indent, com.github.davidmoten.odata.client.Property.class.getCanonicalName(), simpleClassName);
+//			indent.right();
+//			String enums = t //
+//					.getProperties() //
+//					.stream() //
+//					.map(prop -> String.format("%s%s(\"%s\")", indent, Names.toConstant(prop.getName()), prop.getName())) //
+//					.collect(Collectors.joining(",\n"));
+//			p.print(enums);
+//			p.println(";\n");
+//			p.format("\n%sprivate final String propertyName;\n", indent);
+//			p.format("\n%sprivate Property(String propertyName) {\n", indent);
+//			p.format("%sthis.propertyName = propertyName;\n", indent.right());
+//			p.format("%s}\n", indent.left());
+//
+//			p.format("\n%s@%s\n", indent, imports.add(Override.class));
+//			p.format("%spublic String propertyName() {\n", indent);
+//			p.format("%sreturn propertyName;\n", indent.right());
+//			p.format("%s}\n", indent.left());
+//
+//			p.format("%s}\n", indent.left());
 
 			// write constructor
 			writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
