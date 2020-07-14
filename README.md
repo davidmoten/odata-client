@@ -458,5 +458,3 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support TypeDefinition
 * only generate classes that are actually used (e.g. not every Entity or ComplexType needs a corresponding Collection request)
 * remove context property "modify.stream.edit.link" from MsGraph client once they support their own @odata.mediaEditLink!
-* allow user to specify by-request read and data timeouts 
-* add overload for actions with HttpRequestOptions parameter
