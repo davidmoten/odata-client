@@ -26,7 +26,7 @@ public final class AdHocMain {
                 .authenticationEndpoint(AuthenticationEndpoint.GLOBAL) // is default
                 .build();
         
-        client.users(mailbox).messages().get().currentPage().stream().forEach(System.out::println);
+        client.users(mailbox).messages().get().currentPage().forEach(System.out::println);
 
         // if (false) {
         // String url =
