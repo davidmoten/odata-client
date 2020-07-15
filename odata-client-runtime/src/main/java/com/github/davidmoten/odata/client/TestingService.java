@@ -132,7 +132,7 @@ public final class TestingService {
         }
 
         private static final void log(Object o) {
-            System.out.println(String.valueOf(o));
+            System.out.println(o);
         }
 
         protected HttpService createService() {
@@ -276,7 +276,7 @@ public final class TestingService {
 
         public abstract T _create(Context context);
 
-        private Map<String, Object> properties = new HashMap<>();
+        private final Map<String, Object> properties = new HashMap<>();
 
         @Override
         public T build() {

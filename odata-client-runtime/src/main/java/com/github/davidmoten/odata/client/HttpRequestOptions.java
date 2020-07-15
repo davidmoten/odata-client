@@ -21,21 +21,21 @@ public interface HttpRequestOptions {
 	 */
 	Optional<Long> requestReadTimeoutMs();
 
-	public static final HttpRequestOptions EMPTY = new HttpRequestOptionsImpl(Optional.empty(), Optional.empty());
+	HttpRequestOptions EMPTY = new HttpRequestOptionsImpl(Optional.empty(), Optional.empty());
 
-	public static HttpRequestOptions create(Optional<Long> connectTimeoutMs, Optional<Long> readTimeoutMs) {
+	static HttpRequestOptions create(Optional<Long> connectTimeoutMs, Optional<Long> readTimeoutMs) {
 		return new HttpRequestOptionsImpl(connectTimeoutMs, readTimeoutMs);
 	}
 
-	public static Builder connectTimeout(long duration, TimeUnit unit) {
+	static Builder connectTimeout(long duration, TimeUnit unit) {
 		return new Builder(unit.toMillis(duration));
 	}
 
-	public static HttpRequestOptions readTimeout(long duration, TimeUnit unit) {
+	static HttpRequestOptions readTimeout(long duration, TimeUnit unit) {
 		return create(Optional.empty(), Optional.of(unit.toMillis(duration)));
 	}
 
-	public static final class Builder {
+	final class Builder {
 
 		private final long connectTimeoutMs;
 

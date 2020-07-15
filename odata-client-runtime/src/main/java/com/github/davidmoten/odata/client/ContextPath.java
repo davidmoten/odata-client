@@ -24,7 +24,7 @@ public final class ContextPath {
             if (i == -1) {
                 return addSegment(fullyQualifiedName);
             } else {
-                return addSegment(fullyQualifiedName.substring(i + 1, fullyQualifiedName.length()));
+                return addSegment(fullyQualifiedName.substring(i + 1));
             }
         } else {
             return addSegment(fullyQualifiedName);

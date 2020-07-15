@@ -20,7 +20,7 @@ public enum EdmSchemaInfo implements SchemaInfo {
     private final Map<String, Class<?>> map;
     private final Map<Class<?>, String> reverseMap;
 
-    private EdmSchemaInfo() {
+    EdmSchemaInfo() {
         map = new HashMap<>();
         map.put("Edm.String", String.class);
         map.put("Edm.Boolean", Boolean.class);

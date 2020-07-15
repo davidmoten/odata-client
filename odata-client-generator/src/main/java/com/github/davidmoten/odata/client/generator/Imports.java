@@ -40,7 +40,7 @@ public final class Imports {
         if (i == -1) {
             simpleName = className;
         } else {
-            simpleName = className.substring(i + 1, className.length());
+            simpleName = className.substring(i + 1);
         }
         return simpleName;
     }

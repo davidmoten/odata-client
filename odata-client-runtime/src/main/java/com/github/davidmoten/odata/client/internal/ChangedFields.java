@@ -27,7 +27,7 @@ public final class ChangedFields implements Iterable<String> {
         // return a custom iterator that does not allow removal
         return new Iterator<String>() {
 
-            Iterator<String> it = set.iterator();
+            final Iterator<String> it = set.iterator();
 
             @Override
             public boolean hasNext() {

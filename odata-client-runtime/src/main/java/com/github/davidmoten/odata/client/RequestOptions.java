@@ -13,7 +13,7 @@ public interface RequestOptions  extends HttpRequestOptions {
     
     Optional<String> getUrlOverride();
 
-    public static final RequestOptions EMPTY = new RequestOptions() {
+    RequestOptions EMPTY = new RequestOptions() {
 
         @Override
         public List<RequestHeader> getRequestHeaders() {
@@ -42,7 +42,7 @@ public interface RequestOptions  extends HttpRequestOptions {
 
     };
     
-    public static RequestOptions create(Map<String, String> queries, List<RequestHeader> requestHeaders, Optional<Long> connectTimeoutMs, Optional<Long> readTimeoutMs) {
+    static RequestOptions create(Map<String, String> queries, List<RequestHeader> requestHeaders, Optional<Long> connectTimeoutMs, Optional<Long> readTimeoutMs) {
         return new RequestOptions() {
 
             @Override

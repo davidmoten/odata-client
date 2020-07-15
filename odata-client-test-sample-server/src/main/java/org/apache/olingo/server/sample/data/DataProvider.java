@@ -184,7 +184,7 @@ public class DataProvider {
 
     private URI createId(String entitySetName, Object id) {
         try {
-            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+            return new URI(entitySetName + "(" + id + ")");
         } catch (URISyntaxException e) {
             throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
         }

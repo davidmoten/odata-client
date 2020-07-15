@@ -17,8 +17,8 @@ import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Action implements Method {
 
-    private TAction action;
-    private Names names;
+    private final TAction action;
+    private final Names names;
 
     public Action(TAction action, Names names) {
         this.action = action;

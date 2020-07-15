@@ -6,11 +6,11 @@ public interface UploadStrategy<T> {
 
     T builder(ContextPath contextPath, ODataType entity, String fieldName);
     
-    public static UploadStrategy<Optional<StreamUploader>> singleCall() {
+    static UploadStrategy<Optional<StreamUploader>> singleCall() {
         return UploadStrategySingleCall.INSTANCE;
     }
 
-    public static UploadStrategy<Optional<StreamUploaderChunked>> chunked() {
+    static UploadStrategy<Optional<StreamUploaderChunked>> chunked() {
         return UploadStrategyChunked.INSTANCE;
     }
 

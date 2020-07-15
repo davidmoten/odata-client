@@ -9,7 +9,7 @@ import org.oasisopen.odata.csdl.v4.TAnnotations;
 public final class Annotations {
 
     private final TAnnotations annotations;
-    private List<Annotation> list;
+    private final List<Annotation> list;
 
     public Annotations(TAnnotations annotations) {
         this.annotations = annotations;
