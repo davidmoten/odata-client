@@ -257,64 +257,64 @@ public final class Generator {
 					Util.types(schema, TEntityType.class) //
 							.flatMap(t -> Stream.concat(Util //
 									.filter(t.getKeyOrPropertyOrNavigationProperty(), TProperty.class) //
-									.filter(x -> names.isCollection(x)) //
-									.map(x -> names.getType(x)),
+									.filter(names::isCollection) //
+									.map(names::getType),
 									Util //
 											.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class)
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)))) //
+											.filter(names::isCollection) //
+											.map(names::getType))) //
 							.forEach(x -> types.add(x));
 					Util.types(schema, TComplexType.class) //
 							.flatMap(t -> Stream.concat(//
 									Util //
 											.filter(t.getPropertyOrNavigationPropertyOrAnnotation(), TProperty.class)
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)),
+											.filter(names::isCollection) //
+											.map(names::getType),
 									Util //
 											.filter(t.getPropertyOrNavigationPropertyOrAnnotation(),
 													TNavigationProperty.class)
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)))) //
-							.forEach(x -> types.add(x));
+											.filter(names::isCollection) //
+											.map(names::getType))) //
+							.forEach(types::add);
 					Util.types(schema, TAction.class) //
 							.flatMap(t -> Stream.concat( //
 									Util //
 											.filter(t.getParameterOrAnnotationOrReturnType(),
 													TActionFunctionParameter.class) //
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)),
+											.filter(names::isCollection) //
+											.map(names::getType),
 									Util //
 											.filter(t.getParameterOrAnnotationOrReturnType(),
 													TActionFunctionReturnType.class)
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)))) //
-							.forEach(x -> types.add(x));
+											.filter(names::isCollection) //
+											.map(names::getType))) //
+							.forEach(types::add);
 					Util.types(schema, TFunction.class) //
 							.flatMap(t -> Stream.concat( //
 									Util //
 											.filter(t.getParameterOrAnnotation(), TActionFunctionParameter.class) //
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)),
+											.filter(names::isCollection) //
+											.map(names::getType),
 									Util //
 											.filter(t.getParameterOrAnnotation(), TActionFunctionReturnType.class)
-											.filter(x -> names.isCollection(x)) //
-											.map(x -> names.getType(x)))) //
-							.forEach(x -> types.add(x));
+											.filter(names::isCollection) //
+											.map(names::getType))) //
+							.forEach(types::add);
 					Util.types(schema, TEntityContainer.class) //
 							.flatMap(t -> Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class)) //
 							.flatMap(t -> Stream.concat(Stream.of(t.getEntityType()), Util //
 									.filter(t.getNavigationPropertyBindingOrAnnotation(),
 											TNavigationPropertyBinding.class) //
 									.map(x -> x.getPath())))
-							.forEach(x -> types.add(x));
+							.forEach(types::add);
 					return types.stream();
 				}) //
-				.map(x -> names.getInnerType(x)) //
+				.map(names::getInnerType) //
 				.collect(Collectors.toSet());
 	}
 
 	private void log(Object s) {
-		System.out.println(String.valueOf(s));
+		System.out.println(s);
 	}
 
 	private Map<String, List<Action>> createTypeActions(Schema schema, Names names, boolean collectionsOnly) {

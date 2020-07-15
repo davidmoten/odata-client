@@ -68,7 +68,7 @@ public final class CustomRequest {
             urlQuery = "";
         } else {
             urlPath = url.substring(0, i);
-            urlQuery = url.substring(i, url.length());
+            urlQuery = url.substring(i);
         }
         Path path = new Path(urlPath, context.service().getBasePath().style());
         ContextPath contextPath = new ContextPath(context, path);

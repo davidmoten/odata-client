@@ -106,9 +106,9 @@ public interface HttpService extends AutoCloseable {
         return new String(getBytes(url, requestHeaders, options), StandardCharsets.UTF_8);
     }
 
-    public static HttpService createDefaultService(Path path,
-            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier,
-            Consumer<HttpURLConnection> consumer) {
+    static HttpService createDefaultService(Path path,
+                                            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier,
+                                            Consumer<HttpURLConnection> consumer) {
         return new DefaultHttpService(path, requestHeadersModifier, consumer);
     }
 

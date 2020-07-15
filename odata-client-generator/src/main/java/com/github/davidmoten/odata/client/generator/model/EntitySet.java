@@ -85,7 +85,7 @@ public final class EntitySet {
         if (i == -1) {
             return s;
         } else {
-            return s.substring(i + 1, s.length());
+            return s.substring(i + 1);
         }
     }
 

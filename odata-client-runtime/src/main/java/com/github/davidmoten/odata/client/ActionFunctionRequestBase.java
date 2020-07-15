@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.TypedObject;
@@ -63,6 +64,16 @@ abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>>
 
 	public T top(long top) {
 		return query("$top", String.valueOf(top));
+	}
+
+	public T connectTimeout(long duration, TimeUnit unit) {
+		this.connectTimeoutMs = Optional.of(unit.toMillis(duration));
+		return (T) this;
+	}
+
+	public T readTimeout(long duration, TimeUnit unit) {
+		this.readTimeoutMs = Optional.of(unit.toMillis(duration));
+		return (T) this;
 	}
 
 	public T useCaches() {

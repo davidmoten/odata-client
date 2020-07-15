@@ -116,11 +116,11 @@ public final class Names {
     }
 
     private static String upperFirst(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     private static String lowerFirst(String name) {
-        return name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
+        return name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
     public static String toConstant(String name) {
@@ -172,7 +172,7 @@ public final class Names {
         if (i == -1) {
             return name;
         } else {
-            return name.substring(i + 1, name.length());
+            return name.substring(i + 1);
         }
     }
 
@@ -196,7 +196,7 @@ public final class Names {
     }
 
     public boolean isEntityWithNamespace(String type) {
-        return entityClassNamesFromNamespacedType.keySet().contains(getInnerType(type));
+        return entityClassNamesFromNamespacedType.containsKey(getInnerType(type));
     }
 
     public static String getGetterMethodWithoutGet(String name) {

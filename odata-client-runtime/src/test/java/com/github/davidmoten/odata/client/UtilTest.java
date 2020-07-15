@@ -31,13 +31,13 @@ public class UtilTest {
 
     @Test
     public void testBufferIteratorEmpty() {
-        Iterator<List<Object>> it = Util.buffer(Collections.emptyList().iterator(), 2);
+        Iterator<List<Object>> it = Util.buffer(Collections.emptyIterator(), 2);
         assertFalse(it.hasNext());
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testBufferIteratorCallNextAfterFinishThrows() {
-        Iterator<List<Object>> it = Util.buffer(Collections.emptyList().iterator(), 2);
+        Iterator<List<Object>> it = Util.buffer(Collections.emptyIterator(), 2);
         it.next();
     }
 

@@ -10,9 +10,9 @@ public enum AuthenticationEndpoint {
     GERMANY("https://login.microsoftonline.de/"), //
     US_GOVERNMENT("https://login.microsoftonline.us/");
 
-    private String url;
+    private final String url;
 
-    private AuthenticationEndpoint(String url) {
+    AuthenticationEndpoint(String url) {
         Preconditions.checkArgument(url.endsWith("/"));
         this.url = url;
     }

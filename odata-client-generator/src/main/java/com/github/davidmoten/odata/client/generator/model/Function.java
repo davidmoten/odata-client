@@ -17,8 +17,8 @@ import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Function implements Method {
 
-    private TFunction function;
-    private Names names;
+    private final TFunction function;
+    private final Names names;
 
     public Function(TFunction function, Names names) {
         this.function = function;

@@ -63,7 +63,7 @@ public final class MsGraphClientBuilder<T> {
     public static final class BuilderCustomAuthenticator<T> {
 
         private final Authenticator authenticator;
-        private MsGraphClientBuilder<T> b;
+        private final MsGraphClientBuilder<T> b;
 
         BuilderCustomAuthenticator(MsGraphClientBuilder<T> b, Authenticator authenticator) {
             this.authenticator = authenticator;
