@@ -17,9 +17,8 @@ public final class MsGraph {
     }
 
     public static MsGraphClientBuilder.Builder<GraphService> tenantName(String tenantName) {
-        return new MsGraphClientBuilder<GraphService> //
-        (MSGRAPH_1_0_BASE_URL, //
-                context -> new GraphService(context)).tenantName(tenantName);
+        return new MsGraphClientBuilder<> //
+                (MSGRAPH_1_0_BASE_URL, GraphService::new).tenantName(tenantName);
     }
 
     public static Builder3<GraphService> explorer() {
@@ -29,6 +28,6 @@ public final class MsGraph {
                 .clientSecret("unused") //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .accessTokenProvider(() -> "{token:https://graph.microsoft.com/}") //
-                .httpServiceTransformer(s -> new GraphExplorerHttpService(s));
+                .httpServiceTransformer(GraphExplorerHttpService::new);
     }
 }
