@@ -104,6 +104,12 @@
         <Member Name="other" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
       </EnumType>
+      <EnumType Name="workbookOperationStatus">
+        <Member Name="notStarted" Value="0"/>
+        <Member Name="running" Value="1"/>
+        <Member Name="succeeded" Value="2"/>
+        <Member Name="failed" Value="3"/>
+      </EnumType>
       <EnumType Name="attendeeType">
         <Member Name="required" Value="0"/>
         <Member Name="optional" Value="1"/>
@@ -3293,6 +3299,7 @@
         <NavigationProperty Name="worksheets" Type="Collection(graph.workbookWorksheet)" ContainsTarget="true"/>
         <NavigationProperty Name="comments" Type="Collection(graph.workbookComment)" ContainsTarget="true"/>
         <NavigationProperty Name="functions" Type="graph.workbookFunctions" ContainsTarget="true"/>
+        <NavigationProperty Name="operations" Type="Collection(graph.workbookOperation)" ContainsTarget="true"/>
       </EntityType>
       <ComplexType Name="audio">
         <Property Name="album" Type="Edm.String"/>
@@ -3493,11 +3500,21 @@
         <NavigationProperty Name="replies" Type="Collection(graph.workbookCommentReply)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="workbookFunctions" BaseType="graph.entity"/>
+      <EntityType Name="workbookOperation" BaseType="graph.entity">
+        <Property Name="status" Type="graph.workbookOperationStatus" Nullable="false"/>
+        <Property Name="resourceLocation" Type="Edm.String"/>
+        <Property Name="error" Type="graph.workbookOperationError"/>
+      </EntityType>
       <ComplexType Name="workbookSessionInfo">
         <Property Name="id" Type="Edm.String"/>
         <Property Name="persistChanges" Type="Edm.Boolean"/>
       </ComplexType>
       <ComplexType Name="Json"/>
+      <ComplexType Name="workbookOperationError">
+        <Property Name="code" Type="Edm.String"/>
+        <Property Name="message" Type="Edm.String"/>
+        <Property Name="innerError" Type="graph.workbookOperationError"/>
+      </ComplexType>
       <EntityType Name="workbookChart" BaseType="graph.entity">
         <Property Name="height" Type="Edm.Double" Nullable="false"/>
         <Property Name="left" Type="Edm.Double" Nullable="false"/>
@@ -7580,6 +7597,11 @@
         <Parameter Name="types" Type="Collection(Edm.String)" Unicode="false"/>
         <ReturnType Type="Collection(graph.directoryObject)" Nullable="false"/>
       </Action>
+      <Action Name="getAvailableExtensionProperties" IsBound="true" EntitySetPath="bindingParameter">
+        <Parameter Name="bindingParameter" Type="Collection(graph.directoryObject)" Nullable="false"/>
+        <Parameter Name="isSyncedFromOnPremises" Type="Edm.Boolean"/>
+        <ReturnType Type="Collection(graph.extensionProperty)" Nullable="false"/>
+      </Action>
       <Action Name="validateProperties" IsBound="true" EntitySetPath="bindingParameter">
         <Parameter Name="bindingParameter" Type="Collection(graph.directoryObject)" Nullable="false"/>
         <Parameter Name="entityType" Type="Edm.String" Unicode="false"/>
@@ -7796,6 +7818,11 @@
       <Action Name="refreshSession" IsBound="true">
         <Parameter Name="this" Type="graph.workbook"/>
       </Action>
+      <Function Name="sessionInfoResource" IsBound="true">
+        <Parameter Name="bindparameter" Type="graph.workbook"/>
+        <Parameter Name="key" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <ReturnType Type="graph.workbookSessionInfo"/>
+      </Function>
       <Action Name="calculate" IsBound="true">
         <Parameter Name="bindparameter" Type="graph.workbookApplication"/>
         <Parameter Name="calculationType" Type="Edm.String" Nullable="false" Unicode="false"/>
@@ -12596,6 +12623,20 @@
         </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
         <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.workbook/operations">
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="microsoft.graph.outlookUser/masterCategories">
         <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
