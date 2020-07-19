@@ -113,7 +113,7 @@ public abstract class Structure<T> {
         return Names.getIdentifier(x.getName());
     }
 
-	private final Stream<Field> toFields(TProperty x, Imports imports) {
+	private Stream<Field> toFields(TProperty x, Imports imports) {
 		boolean isCollection = names.isCollection(x);
 		final String innerFullClassName;
 		if (isCollection) {
@@ -155,7 +155,7 @@ public abstract class Structure<T> {
                 parameterDoc);
     }
 
-    private final void printJavadoc(PrintWriter p, Indent indent, String key,
+    private void printJavadoc(PrintWriter p, Indent indent, String key,
             Optional<String> preamble, Optional<String> returns, Map<String, String> parameterDoc) {
         Optional<String> text = names.getDocumentation().getDescription(key);
         List<Annotation> list = names.getDocumentation().getNonDescriptionAnnotations(key);
