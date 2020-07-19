@@ -131,7 +131,7 @@ public final class TestingService {
                     .sorted().collect(Collectors.joining("|"));
         }
 
-        private static final void log(Object o) {
+        private static void log(Object o) {
             System.out.println(o);
         }
 
