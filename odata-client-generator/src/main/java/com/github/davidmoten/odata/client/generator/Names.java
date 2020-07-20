@@ -456,6 +456,7 @@ public final class Names {
     }
 
     public Schema getSchema(String typeWithNamespace) {
+        //noinspection RedundantTypeArguments
         return schemas //
                 .stream() //
                 .flatMap(s -> Util
