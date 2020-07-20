@@ -671,8 +671,7 @@ public final class Generator {
 			p.format("%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
 					indent, //
 					imports.add(ActionRequestNoReturn.class), //
-					action.getFullType(), //
-					imports.add(HttpRequestOptions.class));
+					action.getFullType());
 		}
 		p.format("%s}\n", indent.left());
 	}
@@ -1015,8 +1014,7 @@ public final class Generator {
 			indent.right();
 
 			// add constructor
-			p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
-					imports.add(String.class));
+			p.format("%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
 			p.format("%ssuper(%s.class, contextPath, %s.INSTANCE);\n", //
 					indent.right(), //
 					imports.add(t.getFullClassNameEntity()), //
@@ -1288,8 +1286,7 @@ public final class Generator {
 			addContextPathField(imports, indent, p);
 
 			// add constructor
-			p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class),
-					imports.add(String.class));
+			p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
 			p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp), %s.INSTANCE);\n", indent.right(),
 					imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
 					imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
@@ -1572,11 +1569,11 @@ public final class Generator {
 									withMethodName, importedType, fieldName);
 							if (x.isUnicode() != null && !x.isUnicode()) {
 								p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(Checks.class),
-										fieldName, fieldName);
+										fieldName);
 								indent.left();
 							}
 							// use _x as identifier so doesn't conflict with any field name
-							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName, simpleClassName);
+							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
 							if (ofEntity) {
 								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
 							}
