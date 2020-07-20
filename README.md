@@ -403,6 +403,31 @@ URLs are:
 * https://graph.microsoft.com/v1.0/$metadata 
 * https://graph.microsoft.com/beta/$metadata
 
+### Timeouts
+Connect and read timeouts can be specified when creating the client and apply globally:
+
+```java
+GraphService client = MsGraph
+    .tenantName(tenantName)
+    .clientId(clientId)
+    .clientSecret(clientSecret)
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(60, TimeUnit.SECONDS)
+    .refreshBeforeExpiry(5, TimeUnit.MINUTES)
+    .authenticationEndpoint(AuthenticationEndpoint.GERMANY)
+    .build();
+``` 
+
+Global timeouts can be overriden by request:
+
+```java
+List<User> users = client
+  .users()
+  .connectTimeout(10, TimeUnit.SECONDS)
+  .readTimeout(30, Timeout.SECONDS)
+  .toList();
+```
+
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
 
