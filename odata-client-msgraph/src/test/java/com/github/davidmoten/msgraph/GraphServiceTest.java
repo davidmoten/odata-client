@@ -627,6 +627,13 @@ public class GraphServiceTest {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         item.putChunkedContent().get().upload(in, bytes.length, 2);
     }
+
+    @Test
+    @Ignore
+    public void testSetTimeoutsForRequestForReadMe() {
+        GraphService client = clientBuilder().build();
+        client.users().connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).toList();
+    }
     
     @Test
     public void testGetODataNameFromEntity() {
