@@ -66,13 +66,16 @@ abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>>
 		return query("$top", String.valueOf(top));
 	}
 
+	@SuppressWarnings("unchecked")
 	public T connectTimeout(long duration, TimeUnit unit) {
 		this.connectTimeoutMs = Optional.of(unit.toMillis(duration));
 		return (T) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T readTimeout(long duration, TimeUnit unit) {
 		this.readTimeoutMs = Optional.of(unit.toMillis(duration));
+		//noinspection unchecked
 		return (T) this;
 	}
 
