@@ -42,4 +42,8 @@ public class PathTest {
         assertEquals("http://base?x=ab%20cd", a.addQuery("x", "ab cd").toString());
     }
 
+    @Test
+    public void testPathDelimiterAppliedWhenStyleIsRoundBrackets() {
+        assertEquals("http://base(age%3D23%2Cheight%3D186)", a.addKeys(new NameValue("age", "23"), new NameValue("height", "186")).toString());
+    }
 }

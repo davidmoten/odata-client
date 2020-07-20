@@ -62,13 +62,13 @@ public class Path {
                     Preconditions.checkNotNull(key);
                     if (!first) {
                         u = append(u, ",");
-                        first = false;
                     }
                     if (keys.length == 1) {
                         u = append(u, key.value());
                     } else {
                         u = append(u, key.name().map(x -> x + "=").orElse("") + key.value());
                     }
+                    first = false;
                 }
                 u = append(u, ")");
             }
