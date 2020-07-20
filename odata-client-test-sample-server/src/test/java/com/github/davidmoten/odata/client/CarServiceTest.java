@@ -43,8 +43,7 @@ public class CarServiceTest {
 
         // test get collection
         List<Car> list = c.cars().get().toList();
-        list.stream()
-                .forEach(car -> System.out
+        list.forEach(car -> System.out
                         .println(car.getModel().orElse("") + " at $" + car.getCurrency().orElse("")
                                 + " " + car.getPrice().map(BigDecimal::toString).orElse("?")));
         assertEquals(5, list.size());

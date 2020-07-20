@@ -80,13 +80,12 @@ public abstract class Structure<T> {
     }
 
     public final List<Field> getFields(Imports imports) {
-        List<Field> list = getHeirarchy() //
+        return getHeirarchy() //
                 .stream() //
                 .flatMap(z -> z.getProperties() //
                         .stream() //
                         .flatMap(x -> toFields(x, imports)))
                 .collect(Collectors.toList());
-        return list;
     }
 
     public static final class FieldName {

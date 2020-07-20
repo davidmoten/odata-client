@@ -78,6 +78,7 @@ public class GeneratorTest {
     }
 
     public static void main(String[] args) throws JAXBException, IOException {
+        //noinspection InfiniteLoopStatement
         while (true) {
             new GeneratorTest().testGenerateMsgraph();
         }
