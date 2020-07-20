@@ -202,7 +202,6 @@ public abstract class Structure<T> {
             if (returns.isPresent()) {
                 if (first) {
                     p.format("%s * \n", indent);
-                    first = false;
                 }
                 p.format("%s * @return %s\n", indent, returns.get());
             }
