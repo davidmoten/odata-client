@@ -111,7 +111,6 @@ public final class Generator {
 		log("-----------------------------------");
 		log("Generating code for namespaces:");
 		schemas //
-				.stream() //
 				.forEach(s -> log("  " + s.getNamespace()));
 
 		schemas //
@@ -747,7 +746,7 @@ public final class Generator {
 				imports.add(String.class), //
 				imports.add(TypedObject.class), //
 				imports.add(ParameterMap.class), //
-				parameters.isEmpty() ? String.format(".empty()")
+				parameters.isEmpty() ? ".empty()" //
 						: parameters //
 								.stream() //
 								.map(par -> formatParameterPut(imports, indent, par)) //
@@ -804,7 +803,7 @@ public final class Generator {
 				imports.add(String.class), //
 				imports.add(TypedObject.class), //
 				imports.add(ParameterMap.class), //
-				parameters.isEmpty() ? String.format(".empty()")
+				parameters.isEmpty() ? ".empty()" //
 						: parameters //
 								.stream() //
 								.map(par -> formatParameterPut(imports, indent, par)) //
@@ -819,7 +818,7 @@ public final class Generator {
 		p.format("%sb.append(\"%s[\");\n", indent, simpleClassName);
 		boolean[] first = new boolean[1];
 		first[0] = true;
-		t.getFieldNames().stream().forEach(f -> {
+		t.getFieldNames().forEach(f -> {
 			if (first[0]) {
 				first[0] = false;
 			} else {
@@ -980,9 +979,7 @@ public final class Generator {
 			if (t.getProperties() //
 					.stream() //
 					.filter(x -> !isCollection(x)) //
-					.filter(x -> !isStream(x)) //
-					.findAny() //
-					.isPresent()) {
+					.anyMatch(x -> !isStream(x))) {
 				writeCopyMethod(t, simpleClassName, imports, indent, p, false);
 			}
 
@@ -1302,7 +1299,6 @@ public final class Generator {
 
 			// write fields from properties
 			t.getNavigationProperties() //
-					.stream() //
 					.forEach(x -> {
 						Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
 						p.println();
@@ -1557,7 +1553,6 @@ public final class Generator {
 							p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //
 									indent.right(), //
 									x.getName());
-							p.format("%s}\n", indent.left());
 						} else {
 							final String importedType = names.toImportedTypeNonCollection(t, imports);
 							String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
@@ -1591,8 +1586,8 @@ public final class Generator {
 									fullType);
 							p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
 							p.format("%sreturn _x;\n", indent);
-							p.format("%s}\n", indent.left());
 						}
+						p.format("%s}\n", indent.left());
 					}
 
 				});
@@ -1651,7 +1646,7 @@ public final class Generator {
 			p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), "@odata.type");
 			p.format("%sprotected %s %s;\n", indent, imports.add(String.class), "odataType");
 		}
-		properties.stream().forEach(x -> {
+		properties.forEach(x -> {
 			p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
 			p.format("%sprotected %s %s;\n", indent, names.toImportedFullClassName(x, imports),
 					Names.getIdentifier(x.getName()));
@@ -1668,7 +1663,6 @@ public final class Generator {
 			List<TNavigationProperty> properties, Set<String> methodNames) {
 		// write getters
 		properties //
-				.stream() //
 				.forEach(x -> {
 					String typeName = toClassName(x, imports);
 					String methodName = Names.getGetterMethod(x.getName());

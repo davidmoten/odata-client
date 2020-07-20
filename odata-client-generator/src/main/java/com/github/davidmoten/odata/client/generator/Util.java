@@ -63,22 +63,20 @@ public final class Util {
             // mutate types to use alias
             p.setBaseType(replaceAlias(schema, p.getBaseType()));
             p.getKeyOrPropertyOrNavigationProperty() //
-                    .stream() //
                     .forEach(y -> replaceAlias(schema, y));
         } else if (x instanceof TComplexType) {
             TComplexType p = (TComplexType) x;
             // mutate types to use alias
             p.setBaseType(replaceAlias(schema, p.getBaseType()));
             p.getPropertyOrNavigationPropertyOrAnnotation() //
-                    .stream() //
                     .forEach(y -> replaceAlias(schema, y));
         } else if (x instanceof TAction) {
             TAction a = (TAction) x;
-            a.getParameterOrAnnotationOrReturnType().stream() //
+            a.getParameterOrAnnotationOrReturnType() //
                     .forEach(y -> replaceAlias(schema, y));
         } else if (x instanceof TFunction) {
             TFunction a = (TFunction) x;
-            a.getParameterOrAnnotation().stream() //
+            a.getParameterOrAnnotation() //
                     .forEach(y -> replaceAlias(schema, y));
             replaceAlias(schema, a.getReturnType());
         } else if (x instanceof TActionFunctionParameter) {
@@ -92,15 +90,6 @@ public final class Util {
             replaceAlias(schema, p.getType());
         } else if (x instanceof TNavigationProperty) {
             TNavigationProperty p = (TNavigationProperty) x;
-            replaceAlias(schema, p.getType());
-        } else if (x instanceof TAction) {
-            TAction a = (TAction) x;
-            a.getParameterOrAnnotationOrReturnType().forEach(y -> replaceAlias(schema, y));
-        } else if (x instanceof TActionFunctionParameter) {
-            TActionFunctionParameter p = (TActionFunctionParameter) x;
-            replaceAlias(schema, p.getType());
-        } else if (x instanceof TActionFunctionReturnType) {
-            TActionFunctionReturnType p = (TActionFunctionReturnType) x;
             replaceAlias(schema, p.getType());
         } else if (x instanceof TAnnotations) {
             TAnnotations a = (TAnnotations) x;

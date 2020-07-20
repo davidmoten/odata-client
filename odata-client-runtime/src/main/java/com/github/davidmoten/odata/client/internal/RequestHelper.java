@@ -306,7 +306,7 @@ public final class RequestHelper {
 
         // remove overriden accept header
         if (list2.contains(RequestHeader.ACCEPT_JSON) && list2.stream()
-                .filter(x -> x.isAcceptJsonWithMetadata()).findFirst().isPresent()) {
+                .anyMatch(x -> x.isAcceptJsonWithMetadata())) {
             list2.remove(RequestHeader.ACCEPT_JSON);
         }
 
@@ -316,10 +316,9 @@ public final class RequestHelper {
                 .filter(x -> x.isAcceptJsonWithMetadata()) //
                 .reduce((x, y) -> y);
 
-        List<RequestHeader> list3 = list2.stream()
+        return list2.stream()
                 .filter(x -> !x.isAcceptJsonWithMetadata() || !m.isPresent() || x.equals(m.get()))
                 .collect(Collectors.toList());
-        return list3;
 
     }
 
