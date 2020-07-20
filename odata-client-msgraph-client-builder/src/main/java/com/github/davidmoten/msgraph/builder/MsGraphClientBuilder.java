@@ -337,7 +337,6 @@ public final class MsGraphClientBuilder<T> {
         return clientSupplier;
     }
 
-    @SuppressWarnings("resource")
     private static <T> T createService(String baseUrl, Authenticator authenticator,
             long connectTimeoutMs, long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
