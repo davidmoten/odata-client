@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client.generator.model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ public final class Annotations {
         this.list = annotations //
                 .getAnnotation() //
                 .stream() //
-                .map(x -> new Annotation(x)) //
+                .map(Annotation::new) //
                 .collect(Collectors.toList());
     }
 
@@ -29,8 +30,8 @@ public final class Annotations {
                 .getAnnotation() //
                 .stream() //
                 .filter(x -> annotationType.equals(x.getTerm())) //
-                .map(x -> x.getString()) //
-                .filter(x -> x != null) //
+                .map(org.oasisopen.odata.csdl.v4.Annotation::getString) //
+                .filter(Objects::nonNull) //
                 .findFirst();
     }
 

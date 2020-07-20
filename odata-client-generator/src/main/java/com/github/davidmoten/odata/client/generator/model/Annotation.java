@@ -30,7 +30,7 @@ public final class Annotation {
     public List<String> getRecords() {
         List<String> bools = Util
                 .filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
-                .map(x -> x.getValue()) //
+                .map(JAXBElement::getValue) //
                 .filter(x -> x instanceof TRecordExpression) //
                 .map(x -> (TRecordExpression) x) //
                 .flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
@@ -39,7 +39,7 @@ public final class Annotation {
                 .collect(Collectors.toList());
         List<String> enums = Util
                 .filter(annotation.getAnnotationOrBinaryOrBool(), JAXBElement.class) //
-                .map(x -> x.getValue()) //
+                .map(JAXBElement::getValue) //
                 .filter(x -> x instanceof TRecordExpression) //
                 .map(x -> (TRecordExpression) x) //
                 .flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //

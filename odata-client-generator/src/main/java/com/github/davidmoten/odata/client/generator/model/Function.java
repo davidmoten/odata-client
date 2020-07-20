@@ -51,7 +51,7 @@ public final class Function implements Method {
         } else {
             // TODO what does EntitySetPath mean?
             return Util.filter(function.getParameterOrAnnotation(), TActionFunctionParameter.class)
-                    .map(x -> names.getInnerType(x)) //
+                    .map(names::getInnerType) //
                     .findFirst();
         }
     }
@@ -79,7 +79,7 @@ public final class Function implements Method {
         public final String importedFullClassName;
 
         public final boolean isCollection;
-        public String typeWithNamespace;
+        public final String typeWithNamespace;
         private final boolean isNullable;
         private final boolean isAscii;
 
@@ -148,7 +148,7 @@ public final class Function implements Method {
     }
 
     public boolean isBoundToCollection() {
-        return getBoundType().map(x -> Names.isCollection(x)).orElse(false);
+        return getBoundType().map(Names::isCollection).orElse(false);
     }
 
     public Optional<String> getBoundType() {

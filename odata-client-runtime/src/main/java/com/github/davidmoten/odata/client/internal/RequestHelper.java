@@ -306,14 +306,14 @@ public final class RequestHelper {
 
         // remove overriden accept header
         if (list2.contains(RequestHeader.ACCEPT_JSON) && list2.stream()
-                .anyMatch(x -> x.isAcceptJsonWithMetadata())) {
+                .anyMatch(RequestHeader::isAcceptJsonWithMetadata)) {
             list2.remove(RequestHeader.ACCEPT_JSON);
         }
 
         // only use the last accept with metadata request header
         Optional<RequestHeader> m = list2 //
                 .stream() //
-                .filter(x -> x.isAcceptJsonWithMetadata()) //
+                .filter(RequestHeader::isAcceptJsonWithMetadata) //
                 .reduce((x, y) -> y);
 
         return list2.stream()

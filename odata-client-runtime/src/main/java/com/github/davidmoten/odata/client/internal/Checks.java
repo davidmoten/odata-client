@@ -18,7 +18,7 @@ public final class Checks {
     }
     
     public static List<String> checkIsAscii(List<String> list) {
-        list.forEach(v -> checkIsAscii(v));
+        list.forEach(Checks::checkIsAscii);
         return list;
     }
 
