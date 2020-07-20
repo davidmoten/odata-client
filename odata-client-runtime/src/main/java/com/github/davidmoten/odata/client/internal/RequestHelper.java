@@ -494,7 +494,7 @@ public final class RequestHelper {
         h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
         h.add(RequestHeader.create("Content-Range",
                 "bytes " + startByte + "-" + finishByte + "/" + size));
-        HttpResponse response = service.put(url, requestHeaders, in, options);
+        HttpResponse response = service.put(url, h, in, options);
         checkResponseCode(url, response, 200, 202);
     }
 
