@@ -123,7 +123,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
                 if (proxyUsername.isPresent()) {
                     String usernameAndPassword = proxyUsername.get() + ":" + proxyPassword.get();
                     String authString = "Basic " + Base64.getEncoder()
-                            .encode(usernameAndPassword.getBytes(StandardCharsets.UTF_8));
+                            .encodeToString(usernameAndPassword.getBytes(StandardCharsets.UTF_8));
                     con.setRequestProperty("Proxy-Authorization", authString);
                 }
                 // TODO support NTLM?
