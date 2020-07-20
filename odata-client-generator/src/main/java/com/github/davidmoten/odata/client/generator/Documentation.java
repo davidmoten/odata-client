@@ -26,7 +26,7 @@ public final class Documentation {
         return schemas //
                 .stream() //
                 .flatMap(schema -> Util.types(schema, TAnnotations.class)) //
-                .map(a -> new Annotations(a)) //
+                .map(Annotations::new) //
                 .collect(Collectors.toMap(a -> a.value().getTarget(), a -> a));
 
     }

@@ -38,7 +38,7 @@ public final class ParameterMap {
                 .entrySet() //
                 .stream() //
                 .collect(Collectors.toMap( //
-                        entry -> entry.getKey(), //
+                        Map.Entry::getKey, //
                         entry -> entry.getValue().object()));
     }
 

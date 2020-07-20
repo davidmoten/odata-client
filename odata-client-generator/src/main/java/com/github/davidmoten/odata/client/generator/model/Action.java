@@ -46,7 +46,7 @@ public final class Action implements Method {
         return Util
                 .filter(action.getParameterOrAnnotationOrReturnType(),
                         TActionFunctionReturnType.class) //
-                .map(x -> names.getInnerType(x)) //
+                .map(names::getInnerType) //
                 .findFirst();
     }
 
@@ -58,7 +58,7 @@ public final class Action implements Method {
             return Util
                     .filter(action.getParameterOrAnnotationOrReturnType(),
                             TActionFunctionParameter.class)
-                    .map(x -> names.getInnerType(x)) //
+                    .map(names::getInnerType) //
                     .findFirst();
         }
     }
@@ -167,7 +167,7 @@ public final class Action implements Method {
     }
 
     public boolean isBoundToCollection() {
-        return getBoundType().map(x -> Names.isCollection(x)).orElse(false);
+        return getBoundType().map(Names::isCollection).orElse(false);
     }
 
     public Optional<String> getBoundType() {

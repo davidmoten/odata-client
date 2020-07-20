@@ -30,7 +30,7 @@ public final class Util {
     @SuppressWarnings("unchecked")
     public static <T> Stream<T> filter(Collection<?> c, Class<T> cls) {
         return (Stream<T>) (c.stream() //
-                .filter(x -> cls.isInstance(x)));
+                .filter(cls::isInstance));
     }
 
     static void replaceAliases(List<Schema> schemas) {

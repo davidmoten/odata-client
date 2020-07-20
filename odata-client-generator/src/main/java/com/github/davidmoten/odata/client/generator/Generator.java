@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.github.davidmoten.odata.client.generator.model.*;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
@@ -73,18 +74,8 @@ import com.github.davidmoten.odata.client.UploadStrategy;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.Names.SchemaAndType;
-import com.github.davidmoten.odata.client.generator.model.Action;
 import com.github.davidmoten.odata.client.generator.model.Action.Parameter;
 import com.github.davidmoten.odata.client.generator.model.Action.ReturnType;
-import com.github.davidmoten.odata.client.generator.model.ComplexType;
-import com.github.davidmoten.odata.client.generator.model.EntitySet;
-import com.github.davidmoten.odata.client.generator.model.EntityType;
-import com.github.davidmoten.odata.client.generator.model.Field;
-import com.github.davidmoten.odata.client.generator.model.Function;
-import com.github.davidmoten.odata.client.generator.model.HasNameJavaHasNullable;
-import com.github.davidmoten.odata.client.generator.model.KeyElement;
-import com.github.davidmoten.odata.client.generator.model.Method;
-import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.generator.model.Structure.FieldName;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.Checks;
@@ -262,7 +253,7 @@ public final class Generator {
 											.filter(t.getKeyOrPropertyOrNavigationProperty(), TNavigationProperty.class)
 											.filter(names::isCollection) //
 											.map(names::getType))) //
-							.forEach(x -> types.add(x));
+							.forEach(types::add);
 					Util.types(schema, TComplexType.class) //
 							.flatMap(t -> Stream.concat(//
 									Util //
@@ -304,7 +295,7 @@ public final class Generator {
 							.flatMap(t -> Stream.concat(Stream.of(t.getEntityType()), Util //
 									.filter(t.getNavigationPropertyBindingOrAnnotation(),
 											TNavigationPropertyBinding.class) //
-									.map(x -> x.getPath())))
+									.map(TNavigationPropertyBinding::getPath)))
 							.forEach(types::add);
 					return types.stream();
 				}) //
@@ -1120,7 +1111,7 @@ public final class Generator {
 		String typedParams = key //
 				.getPropertyRefs() //
 				.stream() //
-				.map(z -> z.getReferredProperty()) //
+				.map(PropertyRef::getReferredProperty) //
 				.map(z -> String.format("%s %s", z.getImportedType(imports), z.getFieldName())) //
 				.collect(Collectors.joining(", "));
 
@@ -1137,7 +1128,7 @@ public final class Generator {
 		String addKeys = et.getFirstKey() //
 				.getPropertyRefs() //
 				.stream() //
-				.map(z -> z.getReferredProperty()) //
+				.map(PropertyRef::getReferredProperty) //
 				.map(z -> {
 					if (key.getPropertyRefs().size() > 1) {
 						return String.format("new %s(\"%s\", %s)", imports.add(NameValue.class), z.getName(),
@@ -1365,9 +1356,7 @@ public final class Generator {
 
 		// write builder fields
 		fields //
-				.forEach(f -> {
-					p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName);
-				});
+				.forEach(f -> p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName));
 		if (!fields.isEmpty()) {
 			p.format("%sprivate %s changedFields = new %s();\n", indent, imports.add(ChangedFields.class),
 					imports.add(ChangedFields.class));
@@ -1628,7 +1617,7 @@ public final class Generator {
 
 	private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties) {
 		String props = Stream.concat( //
-				Stream.of("@odata.type"), properties.stream().map(x -> x.getName())) //
+				Stream.of("@odata.type"), properties.stream().map(TProperty::getName)) //
 				.map(x -> "\n    \"" + x + "\"") //
 				.collect(Collectors.joining(", "));
 		p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);

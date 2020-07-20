@@ -71,14 +71,7 @@ public class CollectionPageTest {
             }
 
         };
-        SchemaInfo schemaInfo = new SchemaInfo() {
-
-            @Override
-            public Class<? extends ODataType> getClassFromTypeWithNamespace(String name) {
-                return Person.class;
-            }
-
-        };
+        SchemaInfo schemaInfo = name -> Person.class;
 
         Context context = new Context(serializer, service);
         CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,

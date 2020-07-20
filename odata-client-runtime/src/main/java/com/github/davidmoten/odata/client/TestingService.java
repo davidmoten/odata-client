@@ -41,7 +41,7 @@ public final class TestingService {
     }
 
     public static final class Response {
-        public String resource;
+        public final String resource;
         public final int statusCode;
 
         public Response(String resource, int statusCode) {
@@ -60,8 +60,8 @@ public final class TestingService {
     }
 
     public static abstract class BuilderBase<T extends BuilderBase<?, R>, R> {
-        Map<String, Response> responses = new HashMap<>();
-        Map<String, String> requests = new HashMap<>();
+        final  Map<String, Response> responses = new HashMap<>();
+        final Map<String, String> requests = new HashMap<>();
 
         String baseUrl = "https://testing.com";
         PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
@@ -141,7 +141,7 @@ public final class TestingService {
                 @Override
                 public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
                     log("Available responses:");
-                    responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    responses.forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
                     Response response = responses.get(key);
@@ -168,7 +168,7 @@ public final class TestingService {
                     String text = Util.utf8(content);
                     log(text);
                     log("Available requests:");
-                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    requests.forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.PATCH, url, requestHeaders);
                     log(key);
@@ -202,7 +202,7 @@ public final class TestingService {
                     log("POST called at " + url);
                     String text = Util.utf8(content);
                     log(text);
-                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    requests.forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.POST, url, requestHeaders);
                     log(key);
@@ -237,7 +237,7 @@ public final class TestingService {
                 @Override
                 public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
                     log("DELETE called at " + url);
-                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    requests.forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.DELETE, url, requestHeaders);
                     log(key);

@@ -150,7 +150,7 @@ public class GeneratorMojo extends AbstractMojo {
     @VisibleForTesting
     static String toPackage(String s) {
         String result = s.chars() //
-                .map(ch -> Character.toLowerCase(ch)) //
+                .map(Character::toLowerCase) //
                 .filter(ch -> Character.isDigit(ch) || (ch >= 'a' && ch <= 'z') || ch == '_'
                         || ch == '.') //
                 .mapToObj(ch -> Character.toString((char) ch)) //

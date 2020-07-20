@@ -37,11 +37,11 @@ public final class RequestHeader {
         return new RequestHeader("Prefer", "odata.maxpagesize=" + size);
     }
     
-    public static RequestHeader ACCEPT_JSON_METADATA_MINIMAL = acceptJsonWithMetadata("minimal");
+    public static final RequestHeader ACCEPT_JSON_METADATA_MINIMAL = acceptJsonWithMetadata("minimal");
 
-    public static RequestHeader ACCEPT_JSON_METADATA_FULL = acceptJsonWithMetadata("full");
+    public static final RequestHeader ACCEPT_JSON_METADATA_FULL = acceptJsonWithMetadata("full");
 
-    public static RequestHeader ACCEPT_JSON_METADATA_NONE = acceptJsonWithMetadata("none");
+    public static final RequestHeader ACCEPT_JSON_METADATA_NONE = acceptJsonWithMetadata("none");
 
     public static final RequestHeader CONTENT_TYPE_JSON = RequestHeader.create("Content-Type", "application/json");
 
