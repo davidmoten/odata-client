@@ -8,6 +8,7 @@ import odata.msgraph.client.complex.AttachmentItem;
 import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.Recipient;
+import odata.msgraph.client.complex.UploadSession;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.request.MailFolderRequest;
@@ -42,10 +43,10 @@ public class MsGraphMain {
                     .build();
             m = drafts.messages().post(m);
             AttachmentItem a = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
-                    .name("attachment.txt").size(50L).build();
-            String url = client.users(mailbox).messages(m.getId().get()).attachments().createUploadSession(a).get()
-                    .value().getUploadUrl().get();
-            System.out.println(url);
+                    .name("attachment.txt").size(5000000L).build();
+            UploadSession session = client.users(mailbox).messages(m.getId().get()).attachments().createUploadSession(a).get();
+            System.out.println(session.getUploadUrl());
+            // {"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#microsoft.graph.uploadSession","uploadUrl":"https://outlook.office.com/api/v2.0/Users('783d0188-1d5d-440b-944f-daa46ca1fcb0@7d14b925-2921-4d30-8f2f-a6a3c1245f6d')/Messages('AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACf7pAADh3MOyvFF4RJgQOjzBK-sdAANghbkOAAA=')/AttachmentSessions('AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNYAADh3MOyvFF4RJgQOjzBK-sdAANghRKsAAA=')?authtoken=eyJhbGciOiJSUzI1NiIsImtpZCI6IktmYUNIUlN6bllHMmNIdDRobk9JQnpndlU5MD0iLCJ4NXQiOiJKaGg0RkVpMnpsLUlFalBYQUQ1OVRmQzR0S0kiLCJ0eXAiOiJKV1QifQ.eyJyc2NvcGVsZW4iOiI0NTgiLCJ2ZXIiOiJSZXNvdXJjZUxvb3BiYWNrLkFwcC5WMSIsInJvbGVzIjoiQXR0YWNobWVudFNlc3Npb24uV3JpdGUiLCJyZXNvdXJjZV9zY29wZSI6IntcIlVSTFwiOlwidVBHQjR4RDNMY2o0bmFETkFDalh2dytEc2hWT1B3SmU5K3IxNU56VUxKMD1cIn0iLCJjb3JyaWQiOiIyZGRiMmE0NS0xNmRkLTQ5ZTUtYjJiNS1jYmE0MjcwMjUxMGYiLCJhcHBpZCI6IjAwMDAwMDAzLTAwMDAtMDAwMC1jMDAwLTAwMDAwMDAwMDAwMCIsImFwcGlkYWNyIjoiMCIsInRpZCI6IjdkMTRiOTI1LTI5MjEtNGQzMC04ZjJmLWE2YTNjMTI0NWY2ZCIsImlhdCI6MTU5NTMwOTE4NywibmJmIjoxNTk1MzA5MTg3LCJleHAiOjE1OTUzMTk5ODcsImlzcyI6Imh0dHBzOi8vcmVzb3VyY2Uuc2VsZi8iLCJhdWQiOiJodHRwczovL291dGxvb2sub2ZmaWNlLmNvbS9hcGkvIn0.Uv9G5JBfEqaj-RTlSynNQ2fuJSidC2qUIYbeA2TSpiQi_WGcmiyT2e7n47j8LOxu6fcY_mRAumzoCpXZ4vDfJQFVCQzw038WmsNvDbprEXzF10tPCZs1g02HeaTMPq1WW1KfraLMJrqKYJRSAPP6aAoqUu_dX4GKFtDaQXhCrlQHAb-gzHAGBDpSXGPrLaYfDgbtsTNQvfxKn1L6KLj-wsvPkrmYGP4rzjXrjrsU92QjXawtXsVTvP-cTxHvrmvQp0zd251iyx3vvjs08-yZ6rgFcgDQnfOpz1pzDuFgsZc-hHn3JgVV8xBeN0mSoRnr0HflXzBspGpQ51PL3ByA2Q","expirationDateTime":"2020-07-21T07:26:27.6837661Z","nextExpectedRanges":["0-"]}
         }
         
         System.exit(0);

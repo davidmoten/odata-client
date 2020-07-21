@@ -42,7 +42,7 @@ public final class RequestHeader {
     public static final RequestHeader ACCEPT_JSON_METADATA_FULL = acceptJsonWithMetadata("full");
 
     public static final RequestHeader ACCEPT_JSON_METADATA_NONE = acceptJsonWithMetadata("none");
-
+    
     public static final RequestHeader CONTENT_TYPE_JSON = RequestHeader.create("Content-Type", "application/json");
 
     public boolean isAcceptJsonWithMetadata() {
