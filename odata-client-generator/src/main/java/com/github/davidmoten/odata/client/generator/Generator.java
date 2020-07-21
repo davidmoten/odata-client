@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.davidmoten.odata.client.generator.model.*;
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TAction;
 import org.oasisopen.odata.csdl.v4.TActionFunctionParameter;
@@ -49,6 +48,7 @@ import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ActionRequestNoReturn;
 import com.github.davidmoten.odata.client.ActionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.ActionRequestReturningNonCollectionUnwrapped;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
@@ -57,6 +57,7 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
+import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollectionUnwrapped;
 import com.github.davidmoten.odata.client.HasContext;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpService;
@@ -74,8 +75,19 @@ import com.github.davidmoten.odata.client.UploadStrategy;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.generator.Names.SchemaAndType;
+import com.github.davidmoten.odata.client.generator.model.Action;
 import com.github.davidmoten.odata.client.generator.model.Action.Parameter;
 import com.github.davidmoten.odata.client.generator.model.Action.ReturnType;
+import com.github.davidmoten.odata.client.generator.model.ComplexType;
+import com.github.davidmoten.odata.client.generator.model.EntitySet;
+import com.github.davidmoten.odata.client.generator.model.EntityType;
+import com.github.davidmoten.odata.client.generator.model.Field;
+import com.github.davidmoten.odata.client.generator.model.Function;
+import com.github.davidmoten.odata.client.generator.model.HasNameJavaHasNullable;
+import com.github.davidmoten.odata.client.generator.model.KeyElement;
+import com.github.davidmoten.odata.client.generator.model.Method;
+import com.github.davidmoten.odata.client.generator.model.PropertyRef;
+import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.generator.model.Structure.FieldName;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.Checks;
@@ -626,13 +638,14 @@ public final class Generator {
 				.map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava())) //
 				.collect(Collectors.joining(", "));
 		String methodName = disambiguateMethodName(action.getActionMethodName(), methodNames, "_Action");
-		// TODO add overload for actions with HttpRequestOptions parameter?
 		if (action.hasReturnType()) {
 			ReturnType returnType = action.getReturnType(imports);
+			boolean isNonCollectionEdm = !returnType.isCollection && returnType.innerType.startsWith("Edm.");
 			p.format("%spublic %s<%s> %s(%s) {\n", //
 					indent, //
 					returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
-							: imports.add(ActionRequestReturningNonCollection.class), //
+							: isNonCollectionEdm ? imports.add(ActionRequestReturningNonCollection.class) //
+					: imports.add(ActionRequestReturningNonCollectionUnwrapped.class), //
 					action.getReturnType(imports).innerImportedFullClassName, methodName, paramsDeclaration);
 			writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
 			if (returnType.isCollection) {
@@ -644,15 +657,15 @@ public final class Generator {
 						returnType.innerImportedFullClassName, //
 						returnType.schemaInfoFullClassName);
 			} else {
-				p.format(
-						"%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
-						indent, //
-						imports.add(ActionRequestReturningNonCollection.class), //
-						returnType.innerImportedFullClassName, //
-						action.getFullType(), //
-						returnType.innerImportedFullClassName, //
-						returnType.schemaInfoFullClassName);
-			}
+                p.format(
+                        "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                        indent, //
+                        isNonCollectionEdm ? imports.add(ActionRequestReturningNonCollection.class) : imports.add(ActionRequestReturningNonCollectionUnwrapped.class), //
+                        returnType.innerImportedFullClassName, //
+                        action.getFullType(), //
+                        returnType.innerImportedFullClassName, //
+                        returnType.schemaInfoFullClassName);
+            } 
 		} else {
 			p.format("%spublic %s %s(%s) {\n", //
 					indent, //
@@ -698,31 +711,34 @@ public final class Generator {
 				.map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava())) //
 				.collect(Collectors.joining(", "));
 		Function.ReturnType returnType = function.getReturnType(imports);
+		boolean isNonCollectionEdm = !returnType.isCollection && returnType.innerType.startsWith("Edm.");
 		String methodName = disambiguateMethodName(function.getActionMethodName(), methodNames, "_Function");
 		p.format("%spublic %s<%s> %s(%s) {\n", //
 				indent, //
 				returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
-						: imports.add(FunctionRequestReturningNonCollection.class), //
+						: isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
+						        : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class), //
 				function.getReturnType(imports).innerImportedFullClassName, methodName, paramsDeclaration);
 		writeFunctionParameterMapAndNullChecksAndAsciiCheck(imports, indent, p, parameters);
-		if (returnType.isCollection) {
-			p.format(
-					"%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
-					indent, //
-					imports.add(CollectionPageNonEntityRequest.class), //
-					function.getFullType(), //
-					returnType.innerImportedFullClassName, //
-					returnType.schemaInfoFullClassName);
-		} else {
-			p.format(
-					"%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
-					indent, //
-					imports.add(FunctionRequestReturningNonCollection.class), //
-					returnType.innerImportedFullClassName, //
-					function.getFullType(), //
-					returnType.innerImportedFullClassName, //
-					returnType.schemaInfoFullClassName);
-		}
+        if (returnType.isCollection) {
+            p.format(
+                    "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    indent, //
+                    imports.add(CollectionPageNonEntityRequest.class), //
+                    function.getFullType(), //
+                    returnType.innerImportedFullClassName, //
+                    returnType.schemaInfoFullClassName);
+        } else {
+            p.format(
+                    "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    indent, //
+                    isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
+                            : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class), //
+                    returnType.innerImportedFullClassName, //
+                    function.getFullType(), //
+                    returnType.innerImportedFullClassName, //
+                    returnType.schemaInfoFullClassName);
+        }
 		p.format("%s}\n", indent.left());
 	}
 
