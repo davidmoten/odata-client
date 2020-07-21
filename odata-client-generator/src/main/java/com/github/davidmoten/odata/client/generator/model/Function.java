@@ -109,13 +109,15 @@ public final class Function implements Method {
     }
 
     public static final class ReturnType {
+        public final String innerType;
         public final String innerImportedFullClassName;
         public final boolean isCollection;
 
         public final String schemaInfoFullClassName;
 
-        public ReturnType(boolean isCollection, String innerImportedFullClassName,
+        public ReturnType(String innerType, boolean isCollection, String innerImportedFullClassName,
                 String schemaInfoFullClassName) {
+            this.innerType = innerType;
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
             this.schemaInfoFullClassName = schemaInfoFullClassName;
@@ -132,6 +134,7 @@ public final class Function implements Method {
         }
 
         return new ReturnType( //
+                innerType, 
                 names.isCollection(function.getReturnType()), //
                 names.toImportedTypeNonCollection(names.getInnerType(function.getReturnType()),
                         imports), //

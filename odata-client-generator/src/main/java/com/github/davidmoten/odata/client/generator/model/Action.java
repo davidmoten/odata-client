@@ -120,11 +120,12 @@ public final class Action implements Method {
     public static final class ReturnType {
         public final String innerImportedFullClassName;
         public final boolean isCollection;
-
         public final String schemaInfoFullClassName;
+        public final String innerType;
 
-        public ReturnType(boolean isCollection, String innerImportedFullClassName,
+        public ReturnType(String innerType, boolean isCollection, String innerImportedFullClassName,
                 String schemaInfoFullClassName) {
+            this.innerType = innerType;
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
             this.schemaInfoFullClassName = schemaInfoFullClassName;
@@ -155,6 +156,7 @@ public final class Action implements Method {
                     }
 
                     return new ReturnType( //
+                            innerType, //
                             names.isCollection(x), //
                             names.toImportedTypeNonCollection(names.getInnerType(x), imports), //
                             schemaInfoClassName);
