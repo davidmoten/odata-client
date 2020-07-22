@@ -33,7 +33,7 @@ import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.StreamProvider;
-import com.github.davidmoten.odata.client.StreamUploader;
+import com.github.davidmoten.odata.client.StreamUploaderSingleCall;
 
 public final class RequestHelper {
 
@@ -444,7 +444,7 @@ public final class RequestHelper {
         }
     }
 
-    public static Optional<StreamUploader> uploader(ContextPath contextPath, ODataType item,
+    public static Optional<StreamUploaderSingleCall> uploader(ContextPath contextPath, ODataType item,
             String fieldName) {
         Preconditions.checkNotNull(fieldName);
         String editLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaEditLink");
@@ -459,7 +459,7 @@ public final class RequestHelper {
                 contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
             Path path = new Path(editLink, contextPath.path().style()).addSegment(fieldName);
-            return Optional.of(new StreamUploader(new ContextPath(context, path), contentType));
+            return Optional.of(new StreamUploaderSingleCall(new ContextPath(context, path), contentType));
         }
     }
 

@@ -68,6 +68,7 @@ import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.StreamUploader;
+import com.github.davidmoten.odata.client.StreamUploaderSingleCall;
 import com.github.davidmoten.odata.client.StreamUploaderChunked;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
@@ -1519,7 +1520,7 @@ public final class Generator {
 							p.format("\n%s */", indent);
 							addPropertyAnnotation(imports, indent, p, x.getName());
 							p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class), //
-									imports.add(StreamUploader.class), //
+									imports.add(StreamUploaderSingleCall.class), //
 									putMethodName);
 							p.format("%sreturn %s(%s.singleCall());\n", //
 									indent.right(), //
@@ -1548,8 +1549,9 @@ public final class Generator {
 							p.format("%s}\n", indent.left());
 
 							addPropertyAnnotation(imports, indent, p, x.getName());
-							p.format("\n%spublic <T> T %s(%s<T> strategy) {\n", //
+							p.format("\n%spublic <T extends %s<T>> Optional<T> %s(%s<T> strategy) {\n", //
 									indent, //
+									imports.add(StreamUploader.class), //
 									putMethodName, //
 									imports.add(UploadStrategy.class));
 							p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //

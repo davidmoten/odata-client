@@ -3,7 +3,7 @@ package com.github.davidmoten.odata.client;
 import java.util.Optional;
 
 public final class UploadStrategyChunked
-        implements UploadStrategy<Optional<StreamUploaderChunked>> {
+        implements UploadStrategy<StreamUploaderChunked> {
 
     static final UploadStrategyChunked INSTANCE = new UploadStrategyChunked();
 
