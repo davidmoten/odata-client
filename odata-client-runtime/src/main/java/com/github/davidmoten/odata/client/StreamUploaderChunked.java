@@ -2,9 +2,11 @@ package com.github.davidmoten.odata.client;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
@@ -40,6 +42,10 @@ public final class StreamUploaderChunked {
     }
     
     public void upload(InputStream in, long size, int chunkSize) {
+        upload(in, size, chunkSize, Retries.NONE);
+    }
+
+    public void upload(InputStream in, long size, int chunkSize, Retries retries) {
         // see
         // https://docs.microsoft.com/en-us/graph/api/driveitem-createuploadsession?view=graph-rest-1.0
         Preconditions.checkArgument(chunkSize >= 0);
@@ -54,10 +60,40 @@ public final class StreamUploaderChunked {
 
         // get the post url and then send each chunk to the post url
         // without Authorization header
+
         for (int i = 0; i < size; i += chunkSize) {
-            RequestHelper.putChunk(contextPath.context().service(), uploadUrl, in, requestHeaders,
-                    i, Math.min(size, i + chunkSize), size, options);
+            int attempt = 0;
+            Throwable error = null;
+            Function<? super Throwable, Boolean> keepGoingIf = retries.keepGoingIf().get();
+            Iterator<Long> intervalsMs = retries.retryIntervalsMs().iterator();
+            while (true) {
+                if (attempt > retries.maxRetries()) {
+                    if (error != null) {
+                        throw new RetryException("attempts greater than maxRetries", error);
+                    } else {
+                        throw new RetryException("attempts greater than maxRetries");
+                    }
+                }
+                try {
+                    RequestHelper.putChunk(contextPath.context().service(), uploadUrl, in, requestHeaders,
+                            i, Math.min(size, i + chunkSize), size, options);
+                    break;
+                } catch (Throwable e) {
+                    error = e;
+                    if (!keepGoingIf.apply(e)) {
+                        throw new RetryException("exception not retryable", e);
+                    }
+                    if (!intervalsMs.hasNext()) {
+                        throw new RetryException("stopping retries because no more intervals specified");
+                    }
+                    try {
+                        Thread.sleep(intervalsMs.next());
+                    } catch (InterruptedException interruptedException) {
+                        throw new RetryException("interrupted", interruptedException);
+                    }
+                }
+                attempt++;
+            }
         }
     }
-
 }

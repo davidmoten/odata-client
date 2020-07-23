@@ -12,11 +12,13 @@ import java.util.function.Supplier;
 
 public final class Retries {
 
+    public static final Retries NONE = Retries.builder().maxRetries(0).keepGoingIf(t -> false).build();
+
     private final long maxRetries;
     private final Iterable<Long> retryIntervalsMs;
     private final Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf;
 
-    Retries(long maxRetries, Iterable<Long> retryIntervalMs, Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf){
+    Retries(long maxRetries, Iterable<Long> retryIntervalMs, Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf) {
         Preconditions.checkArgument(maxRetries >=0);
         Preconditions.checkNotNull(retryIntervalMs);
         Preconditions.checkNotNull(keepGoingIf);
@@ -25,12 +27,20 @@ public final class Retries {
         this.keepGoingIf = keepGoingIf;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public long maxRetries() {
         return maxRetries;
     }
 
     public Iterable<Long> retryIntervalsMs() {
         return retryIntervalsMs;
+    }
+
+    public Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf() {
+        return keepGoingIf;
     }
 
     public static final class Builder {
