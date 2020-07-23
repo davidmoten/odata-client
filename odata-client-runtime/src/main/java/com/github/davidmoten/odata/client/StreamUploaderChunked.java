@@ -10,8 +10,12 @@ import java.util.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class StreamUploaderChunked {
+
+    private static final Logger log = LoggerFactory.getLogger(StreamUploaderChunked.class);
 
     // TODO MsGraph restriction only? Make configurable via property?
     private static final int BASE_BYTE_RANGE_SIZE = 327680;
@@ -75,11 +79,13 @@ public final class StreamUploaderChunked {
                     }
                 }
                 try {
+                    log.debug("putting chunk");
                     RequestHelper.putChunk(contextPath.context().service(), uploadUrl, in, requestHeaders,
                             i, Math.min(size, i + chunkSize), size, options);
                     break;
                 } catch (Throwable e) {
                     error = e;
+                    log.debug(e.getMessage(), e);
                     if (!keepGoingIf.apply(e)) {
                         throw new RetryException("exception not retryable", e);
                     }
@@ -87,7 +93,9 @@ public final class StreamUploaderChunked {
                         throw new RetryException("stopping retries because no more intervals specified");
                     }
                     try {
-                        Thread.sleep(intervalsMs.next());
+                        long waitMs = intervalsMs.next();
+                        log.debug("sleeping " + waitMs + "ms");
+                        Thread.sleep(waitMs);
                     } catch (InterruptedException interruptedException) {
                         throw new RetryException("interrupted", interruptedException);
                     }
