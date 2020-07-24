@@ -2,15 +2,15 @@ package com.github.davidmoten.odata.client;
 
 import java.util.Optional;
 
-public interface UploadStrategy<T> {
+public interface UploadStrategy<T extends StreamUploader<T>> {
 
-    T builder(ContextPath contextPath, ODataType entity, String fieldName);
+    Optional<T> builder(ContextPath contextPath, ODataType entity, String fieldName);
     
-    static UploadStrategy<Optional<StreamUploader>> singleCall() {
+    static UploadStrategy<StreamUploaderSingleCall> singleCall() {
         return UploadStrategySingleCall.INSTANCE;
     }
 
-    static UploadStrategy<Optional<StreamUploaderChunked>> chunked() {
+    static UploadStrategy<StreamUploaderChunked> chunked() {
         return UploadStrategyChunked.INSTANCE;
     }
 
