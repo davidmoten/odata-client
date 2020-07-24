@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
-final class UploadStrategySingleCall implements UploadStrategy<Optional<StreamUploader>> {
+final class UploadStrategySingleCall implements UploadStrategy<StreamUploaderSingleCall> {
 
     static final UploadStrategySingleCall INSTANCE = new UploadStrategySingleCall();
 
@@ -13,7 +13,7 @@ final class UploadStrategySingleCall implements UploadStrategy<Optional<StreamUp
     }
 
     @Override
-    public Optional<StreamUploader> builder(ContextPath contextPath, ODataType entity,
+    public Optional<StreamUploaderSingleCall> builder(ContextPath contextPath, ODataType entity,
             String fieldName) {
         return RequestHelper.uploader(contextPath, entity, fieldName);
     }
