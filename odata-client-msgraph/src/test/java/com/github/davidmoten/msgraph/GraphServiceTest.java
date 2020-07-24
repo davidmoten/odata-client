@@ -270,6 +270,10 @@ public class GraphServiceTest {
         UploadSession u = client.users("me").messages("1").attachments().createUploadSession(item).get();
         assertNotNull(u);
         assertTrue(u.getUploadUrl().isPresent());
+        
+        // perform upload using new method
+        InputStream in = new ByteArrayInputStream("hello".getBytes(StandardCharsets.UTF_8));
+        u.put().get().readTimeout(10, TimeUnit.SECONDS).upload(in);
     }
 
     @Test
