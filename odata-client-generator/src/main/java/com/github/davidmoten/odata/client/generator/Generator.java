@@ -64,6 +64,7 @@ import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
+import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
@@ -1592,6 +1593,31 @@ public final class Generator {
 							p.format("%sreturn _x;\n", indent);
 						}
 						p.format("%s}\n", indent.left());
+						
+						// add special convenience method to write stream to upload url. Supports Ms Graph.
+						if (structure.getSimpleClassName().equals("UploadSession") && x.getName().equals("uploadUrl")) {
+						    addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic <T extends %s<T>> %s<T> put(%s<T> strategy) {\n", //
+                                    indent, //
+                                    imports.add(StreamUploader.class), //
+                                    imports.add(Optional.class), //
+                                    imports.add(UploadStrategy.class));
+                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"\");\n", //
+                                    indent.right(), //
+                                    imports.add(ContextPath.class), //
+                                    imports.add(Path.class));
+                            p.format("%s}\n", indent.left());
+                            
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s<%s> putChunked() {\n", indent, imports.add(Optional.class), imports.add(StreamUploaderChunked.class));
+                            p.format("%sreturn put(%s.chunked());\n", indent.right(), imports.add(UploadStrategy.class));
+                            p.format("%s}\n", indent.left());
+                            
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s<%s> put() {\n", indent, imports.add(Optional.class), imports.add(StreamUploaderSingleCall.class));
+                            p.format("%sreturn put(%s.singleCall());\n", indent.right(), imports.add(UploadStrategy.class));
+                            p.format("%s}\n", indent.left());
+						}
 					}
 
 				});
