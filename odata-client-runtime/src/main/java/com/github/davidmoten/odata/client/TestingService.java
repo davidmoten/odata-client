@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class TestingService {
@@ -190,8 +191,14 @@ public final class TestingService {
                     try {
                         String expected = new String(
                                 Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
-
-                        if (Serializer.INSTANCE.matches(expected, text)) {
+                        
+                        boolean matches;
+                        try {
+                        	matches = Serializer.INSTANCE.matches(expected, text);
+                        } catch (JsonParseException e) {
+                        	matches = expected.equals(text);
+                        }
+                        if (matches) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
                             throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
