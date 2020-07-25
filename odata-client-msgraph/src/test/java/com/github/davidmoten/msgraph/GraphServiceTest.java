@@ -280,7 +280,7 @@ public class GraphServiceTest {
         // perform upload using new method
         //https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345
         InputStream in = new ByteArrayInputStream("hello".getBytes(StandardCharsets.UTF_8));
-        u.put().get().readTimeout(10, TimeUnit.SECONDS).upload(in);
+        u.put().readTimeout(10, TimeUnit.SECONDS).upload(in);
     }
 
     @Test
