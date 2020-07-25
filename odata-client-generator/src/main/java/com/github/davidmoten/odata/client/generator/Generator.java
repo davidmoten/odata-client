@@ -1555,8 +1555,9 @@ public final class Generator {
 									imports.add(StreamUploader.class), //
 									putMethodName, //
 									imports.add(UploadStrategy.class));
-							p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //
+							p.format("%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\");\n", //
 									indent.right(), //
+									x.getName(), //
 									x.getName());
 						} else {
 							final String importedType = names.toImportedTypeNonCollection(t, imports);
