@@ -164,7 +164,7 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
-                    log("PATCH called at " + url);
+                    log("PATCH/PUT called at " + url);
                     String text = Util.utf8(content);
                     log(text);
                     log("Available requests:");
@@ -175,7 +175,7 @@ public final class TestingService {
                     String resourceName = requests.get(key);
                     if (resourceName == null) {
                         throw new RuntimeException(
-                                "PATCH response not found for url=" + url + ", headers=" + requestHeaders);
+                                "PATCH/PUT response not found for url=" + url + ", headers=" + requestHeaders);
                     }
                     try {
                         String expected = new String(

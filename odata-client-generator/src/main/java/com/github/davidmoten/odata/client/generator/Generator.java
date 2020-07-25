@@ -954,7 +954,7 @@ public final class Generator {
 
 			indent.right();
 			if (!t.hasBaseType()) {
-				addContextPathField(imports, indent, p);
+				addContextPathInjectableField(imports, indent, p);
 			}
 
 			addUnmappedFieldsField(imports, indent, p);
@@ -1602,8 +1602,9 @@ public final class Generator {
                                     imports.add(StreamUploader.class), //
                                     imports.add(Optional.class), //
                                     imports.add(UploadStrategy.class));
-                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"\");\n", //
-                                    indent.right(), //
+                            p.format("%sthis.unmappedFields.put(\"uploadUrl@odata.mediaEditLink\", uploadUrl);\n", indent.right());
+                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"uploadUrl\");\n", //
+                                    indent, //
                                     imports.add(ContextPath.class), //
                                     imports.add(Path.class));
                             p.format("%s}\n", indent.left());
