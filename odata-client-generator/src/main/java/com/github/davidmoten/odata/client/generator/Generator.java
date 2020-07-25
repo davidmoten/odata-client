@@ -949,7 +949,7 @@ public final class Generator {
 			t.printJavadoc(p, indent);
 			printPropertyOrder(imports, p, t.getProperties());
 			printJsonIncludesNonNull(indent, imports, p);
-			p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
+			p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
 					imports.add(ODataType.class));
 
 			indent.right();
