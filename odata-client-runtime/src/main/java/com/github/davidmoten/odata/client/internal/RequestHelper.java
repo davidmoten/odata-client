@@ -461,7 +461,7 @@ public final class RequestHelper {
             if (contentType == null) {
                 contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
-            Path path = new Path(editLink, contextPath.path().style()).addSegment(fieldName);
+            Path path = new Path(editLink, contextPath.path().style());
             return Optional.of(new StreamUploaderSingleCall(new ContextPath(context, path), contentType));
         }
     }
