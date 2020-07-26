@@ -282,7 +282,7 @@ public class GraphServiceTest {
         InputStream in = new ByteArrayInputStream("hello".getBytes(StandardCharsets.UTF_8));
         u.put().readTimeout(10, TimeUnit.SECONDS).upload(in);
     }
-
+    
     @Test
     public void testGetCollectionWithSelect() {
         GraphService client = clientBuilder() //
