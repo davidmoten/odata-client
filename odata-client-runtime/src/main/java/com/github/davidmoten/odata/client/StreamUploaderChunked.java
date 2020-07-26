@@ -20,16 +20,13 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
     private static final int BASE_BYTE_RANGE_SIZE = 327680;
 
     private final ContextPath contextPath;
-    private final String fieldName;
     private final String contentType;
     private final List<RequestHeader> requestHeaders;
 	private Optional<Long> connectTimeoutMs = Optional.empty();
 	private Optional<Long> readTimeoutMs = Optional.empty();
 
-    StreamUploaderChunked(ContextPath contextPath, String fieldName,
-            String contentType) {
+    StreamUploaderChunked(ContextPath contextPath, String contentType) {
         this.contextPath = contextPath;
-        this.fieldName = fieldName;
         this.contentType = contentType;
         this.requestHeaders = new ArrayList<>();
     }
