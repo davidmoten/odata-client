@@ -1,5 +1,6 @@
 package com.github.davidmoten.msgraph;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,7 @@ public class MsGraphMain {
             AttachmentItem a = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
                     .name("attachment.txt").size((long) attachmentSize).build();
             UploadSession session = client.users(mailbox).messages(m.getId().get()).attachments().createUploadSession(a).get();
-            session.put().upload(new ByteArrayinputStream(new byte[attachmentSize]));
+            session.put().readTimeout(10, TimeUnit.MINUTES).upload(new ByteArrayInputStream(new byte[attachmentSize]));
         }
         
         System.exit(0);
