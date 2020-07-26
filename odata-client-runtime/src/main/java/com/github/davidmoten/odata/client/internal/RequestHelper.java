@@ -289,10 +289,13 @@ public final class RequestHelper {
         List<RequestHeader> list = new ArrayList<>();
         list.add(RequestHeader.ODATA_VERSION);
         if (hasPayload) {
-            list.add(RequestHeader.CONTENT_TYPE_JSON);
+            if (!requestHeaders.stream().map(x -> x.name()).filter(x -> x.equals("Content-Type")).findFirst().isPresent()) {
+                list.add(RequestHeader.CONTENT_TYPE_JSON);
+            }
         }
         list.add(RequestHeader.ACCEPT_JSON);
         list.addAll(requestHeaders);
+        System.out.println("list="+ list);
 
         // remove duplicates
         List<RequestHeader> list2 = new ArrayList<>();
@@ -458,7 +461,7 @@ public final class RequestHelper {
             if (contentType == null) {
                 contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
-            Path path = new Path(editLink, contextPath.path().style()).addSegment(fieldName);
+            Path path = new Path(editLink, contextPath.path().style());
             return Optional.of(new StreamUploaderSingleCall(new ContextPath(context, path), contentType));
         }
     }

@@ -64,6 +64,7 @@ import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
+import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
@@ -948,12 +949,12 @@ public final class Generator {
 			t.printJavadoc(p, indent);
 			printPropertyOrder(imports, p, t.getProperties());
 			printJsonIncludesNonNull(indent, imports, p);
-			p.format("public class %s%s implements %s {\n\n", simpleClassName, t.getExtendsClause(imports),
+			p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
 					imports.add(ODataType.class));
 
 			indent.right();
 			if (!t.hasBaseType()) {
-				addContextPathField(imports, indent, p);
+				addContextPathInjectableField(imports, indent, p);
 			}
 
 			addUnmappedFieldsField(imports, indent, p);
@@ -1554,8 +1555,9 @@ public final class Generator {
 									imports.add(StreamUploader.class), //
 									putMethodName, //
 									imports.add(UploadStrategy.class));
-							p.format("%sreturn strategy.builder(contextPath, this, \"%s\");\n", //
+							p.format("%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\");\n", //
 									indent.right(), //
+									x.getName(), //
 									x.getName());
 						} else {
 							final String importedType = names.toImportedTypeNonCollection(t, imports);
@@ -1592,6 +1594,31 @@ public final class Generator {
 							p.format("%sreturn _x;\n", indent);
 						}
 						p.format("%s}\n", indent.left());
+						
+						// add special convenience method to write stream to upload url. Supports Ms Graph createUploadSession.
+						if (structure.getSimpleClassName().equals("UploadSession") && x.getName().equals("uploadUrl")) {
+						    addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic <T extends %s<T>> T put(%s<T> strategy) {\n", //
+                                    indent, //
+                                    imports.add(StreamUploader.class), //
+                                    imports.add(UploadStrategy.class));
+                            p.format("%sthis.unmappedFields.put(\"uploadUrl@odata.mediaEditLink\", uploadUrl);\n", indent.right());
+                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"uploadUrl\").get();\n", //
+                                    indent, //
+                                    imports.add(ContextPath.class), //
+                                    imports.add(Path.class));
+                            p.format("%s}\n", indent.left());
+                            
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s putChunked() {\n", indent, imports.add(StreamUploaderChunked.class));
+                            p.format("%sreturn put(%s.chunked());\n", indent.right(), imports.add(UploadStrategy.class));
+                            p.format("%s}\n", indent.left());
+                            
+                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            p.format("\n%spublic %s put() {\n", indent, imports.add(StreamUploaderSingleCall.class));
+                            p.format("%sreturn put(%s.singleCall());\n", indent.right(), imports.add(UploadStrategy.class));
+                            p.format("%s}\n", indent.left());
+						}
 					}
 
 				});

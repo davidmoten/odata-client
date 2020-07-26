@@ -45,6 +45,8 @@ public final class RequestHeader {
     
     public static final RequestHeader CONTENT_TYPE_JSON = RequestHeader.create("Content-Type", "application/json");
 
+    public static final RequestHeader CONTENT_TYPE_OCTET_STREAM = RequestHeader.create("Content-Type", "application/octet-stream");
+
     public boolean isAcceptJsonWithMetadata() {
         return name.equals("Accept") && value.contains("application/json;odata.metadata=");
     }

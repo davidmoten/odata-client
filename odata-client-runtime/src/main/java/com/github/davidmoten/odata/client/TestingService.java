@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class TestingService {
@@ -99,7 +100,13 @@ public final class TestingService {
         public T expectRequest(String path, String requestResourceName, HttpMethod method,
                 RequestHeader... requestHeaders) {
             Preconditions.checkArgument(method != HttpMethod.GET, "GET not expected for a request with content");
-            requests.put(toKey(method, baseUrl + path, asList(requestHeaders)), requestResourceName);
+            final String url;
+			if (path.startsWith("https://")) {
+            	url = path;
+            } else {
+            	url = baseUrl + path;
+            }
+            requests.put(toKey(method, url, asList(requestHeaders)), requestResourceName);
             return (T) this;
         }
 
@@ -164,24 +171,34 @@ public final class TestingService {
 
                 @Override
                 public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
-                    log("PATCH called at " + url);
+                    return patchOrPut(url, requestHeaders, content, options, HttpMethod.PATCH);    
+                }
+
+                private HttpResponse patchOrPut(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options, HttpMethod method) {
+                    log(method + "called  at " + url);
                     String text = Util.utf8(content);
                     log(text);
                     log("Available requests:");
                     requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                     log("Calling:");
-                    String key = BuilderBase.toKey(HttpMethod.PATCH, url, requestHeaders);
+                    String key = BuilderBase.toKey(method, url, requestHeaders);
                     log(key);
                     String resourceName = requests.get(key);
                     if (resourceName == null) {
                         throw new RuntimeException(
-                                "PATCH response not found for url=" + url + ", headers=" + requestHeaders);
+                                method + " response not found for url=" + url + ", headers=" + requestHeaders);
                     }
                     try {
                         String expected = new String(
                                 Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
-
-                        if (Serializer.INSTANCE.matches(expected, text)) {
+                        
+                        boolean matches;
+                        try {
+                        	matches = Serializer.INSTANCE.matches(expected, text);
+                        } catch (JsonParseException e) {
+                        	matches = expected.equals(text);
+                        }
+                        if (matches) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
                             throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
@@ -191,10 +208,10 @@ public final class TestingService {
                         throw new RuntimeException(e);
                     }
                 }
-
+                
                 @Override
-                public HttpResponse put(String url, List<RequestHeader> h, InputStream content, HttpRequestOptions options) {
-                    return patch(url, h, content, options);
+                public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+                    return patchOrPut(url, requestHeaders, content, options, HttpMethod.PUT);
                 }
 
                 @Override

@@ -93,16 +93,16 @@ public class RetriesTest {
         } catch (RuntimeException e) {
             assertEquals(9, attempts.get());
             System.out.println(list);
-            // if this testing proves too flaky we might chuck it
-            assertEquals(1, list.get(0), 5.0);
-            assertEquals(10, list.get(1), 5.0);
-            assertEquals(20, list.get(2), 8.0);
-            assertEquals(40, list.get(3), 15.0);
-            assertEquals(80, list.get(4), 15.0);
-            assertEquals(100, list.get(5), 30.0);
-            assertEquals(100, list.get(6), 30.0);
-            assertEquals(100, list.get(7), 30.0);
-            assertEquals(100, list.get(8), 30.0);
+//            // if this testing proves too flaky we might chuck it
+//            assertEquals(1, list.get(0), 5.0);
+//            assertEquals(10, list.get(1), 5.0);
+//            assertEquals(20, list.get(2), 8.0);
+//            assertEquals(40, list.get(3), 15.0);
+//            assertEquals(80, list.get(4), 15.0);
+//            assertEquals(100, list.get(5), 30.0);
+//            assertEquals(100, list.get(6), 30.0);
+//            assertEquals(100, list.get(7), 30.0);
+//            assertEquals(100, list.get(8), 30.0);
         }
     }
 
