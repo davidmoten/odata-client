@@ -16,7 +16,7 @@ public final class UploadStrategyChunked
             String fieldName) {
         // TODO inspect metadata to see if can upload stream
         String contentType = "application/octet-stream";
-        return Optional.of(new StreamUploaderChunked(contextPath, fieldName, contentType));
+        return Optional.of(new StreamUploaderChunked(contextPath, contentType));
     }
 
 }
