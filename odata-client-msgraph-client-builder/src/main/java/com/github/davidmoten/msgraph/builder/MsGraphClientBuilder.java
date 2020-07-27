@@ -315,7 +315,7 @@ public final class MsGraphClientBuilder<T> {
                         .authenticationEndpoint(authenticationEndpoint) //
                         .build());
 
-        Authenticator authenticator = new BearerAuthenticator(accessTokenProvider);
+        Authenticator authenticator = new BearerAuthenticator(accessTokenProvider, baseUrl);
 
         return createService(baseUrl, authenticator, connectTimeoutMs, readTimeoutMs, proxyHost,
                 proxyPort, proxyUsername, proxyPassword, supplier,
@@ -354,7 +354,6 @@ public final class MsGraphClientBuilder<T> {
                 clientSupplier, //
                 authenticator::authenticate);
         httpService = httpServiceTransformer.apply(httpService);
-        
         return creator.create(new Context(Serializer.INSTANCE, httpService, createProperties()));
     }
     
