@@ -428,6 +428,59 @@ List<User> users = client
   .toList();
 ```
 
+### Sending an email with a large attachment
+
+Here's how:
+
+```java
+GraphService client = ...;
+File file = ...;
+String contentType = "text/plain";
+String mailbox = "me@somewhere.com";
+
+MailFolderRequest drafts = client //
+    .users(mailbox) //
+    .mailFolders("Drafts");
+Message m = Message.builderMessage() //
+    .subject("hi there " + new Date()) //
+    .body(ItemBody.builder() //
+            .content("hello there how are you") //
+            .contentType(BodyType.TEXT).build()) //
+    .from(Recipient.builder() //
+            .emailAddress(EmailAddress.builder() //
+                    .address(mailbox) //
+                    .build()) //
+            .build()) //
+    .toRecipients(Recipient.builder() //
+            .emailAddress(EmailAddress.builder() //
+                    .address("someone@thing.com") //
+                    .build()) //
+            .build()) //
+    .build();
+m = drafts.messages().post(m);
+
+AttachmentItem a = AttachmentItem //
+    .builder() //
+    .attachmentType(AttachmentType.FILE) //
+    .contentType(contentType) //
+    .name(file.getName()) //
+    .size(file.length()) //
+    .build();
+
+int chunkSize = 500*1024;
+client //
+    .users(mailbox) //
+    .messages(m.getId().get()) //
+    .attachments() //
+    .createUploadSession(a) //
+    .get() //
+    .putChunked() //
+    .readTimeout(10, TimeUnit.MINUTES) //
+    .upload(file, chunkSize, Retries.builder().maxRetries(2).build());
+
+m.send().call();
+```
+
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
 
