@@ -459,25 +459,34 @@ Message m = Message.builderMessage() //
     .build();
 m = drafts.messages().post(m);
 
-AttachmentItem a = AttachmentItem //
-    .builder() //
-    .attachmentType(AttachmentType.FILE) //
-    .contentType(contentType) //
-    .name(file.getName()) //
-    .size(file.length()) //
-    .build();
-
-int chunkSize = 500*1024;
-client //
-    .users(mailbox) //
-    .messages(m.getId().get()) //
-    .attachments() //
-    .createUploadSession(a) //
-    .get() //
-    .putChunked() //
-    .readTimeout(10, TimeUnit.MINUTES) //
-    .upload(file, chunkSize, Retries.builder().maxRetries(2).build());
-
+if (file.length() < 3000000) {
+    client.users(mailbox) //
+        .messages(m.getId().get()) //
+        .attachments() //
+        .post(FileAttachment.builderFileAttachment() //
+           .name(file.getName()) //
+           .contentBytes(Files.readAllBytes(file.toPath())) //
+           .contentType(contentType).build());
+} else {
+    AttachmentItem a = AttachmentItem //
+        .builder() //
+        .attachmentType(AttachmentType.FILE) //
+        .contentType(contentType) //
+        .name(file.getName()) //
+        .size(file.length()) //
+        .build();
+    
+    int chunkSize = 500*1024;
+    client //
+        .users(mailbox) //
+        .messages(m.getId().get()) //
+        .attachments() //
+        .createUploadSession(a) //
+        .get() //
+        .putChunked() //
+        .readTimeout(10, TimeUnit.MINUTES) //
+        .upload(file, chunkSize, Retries.builder().maxRetries(2).build());
+}
 m.send().call();
 ```
 
