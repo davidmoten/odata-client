@@ -1,7 +1,11 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +54,14 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
         upload(text.getBytes(StandardCharsets.UTF_8));
     }
     
+    public void upload(File file) {
+        try (InputStream in = new FileInputStream(file)) {
+            upload(in, (int) file.length());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+    
     public void upload(InputStream in, int length) {
         requestHeaders.add(RequestHeader.contentRange(0, length - 1, length));
         RequestHelper.put(contextPath, RequestOptions.create(queries, requestHeaders, connectTimeoutMs, readTimeoutMs), in, length);
@@ -62,5 +74,5 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
     public void upload(InputStream in, int length, UploadListener listener) {
         upload(in, length, listener, 8192);
     }
-
+    
 }

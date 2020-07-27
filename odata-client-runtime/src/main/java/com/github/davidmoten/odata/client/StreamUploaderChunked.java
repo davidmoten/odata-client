@@ -1,6 +1,8 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -90,6 +92,14 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
 
     public void upload(byte[] bytes, int chunkSize) {
         upload(bytes, chunkSize, Retries.NONE);
+    }
+    
+    public void upload(File file, int chunkSize) {
+        try (InputStream in = new FileInputStream(file)) {
+            upload(in, (int) file.length(), chunkSize);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
     
     public void uploadUtf8(String text, int chunkSize) {
