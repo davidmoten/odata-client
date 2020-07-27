@@ -1,5 +1,6 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
         }
         HttpRequestOptions options = HttpRequestOptions.create(connectTimeoutMs, readTimeoutMs);
         //TODO do we use edit url?
+        System.out.println("requestHeaders=" + requestHeaders);
         String uploadUrl = RequestHelper.createUploadSession(contextPath,
                 requestHeaders, contentType, options);
 
@@ -75,5 +77,13 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
                             start, Math.min(size, start + chunk), size, options);
             });
         }
+    }
+
+    public void upload(byte[] bytes, int chunkSize) {
+        upload(bytes, chunkSize, Retries.NONE);
+    }
+    
+    public void upload(byte[] bytes, int chunkSize, Retries retries) {
+        upload(new ByteArrayInputStream(bytes), bytes.length, chunkSize, retries);
     }
 }

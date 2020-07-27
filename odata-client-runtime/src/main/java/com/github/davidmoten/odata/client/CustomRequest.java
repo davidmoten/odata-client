@@ -76,7 +76,6 @@ public final class CustomRequest {
         Map<String, String> queries = URLEncodedUtils //
                 .parse(urlQuery, StandardCharsets.UTF_8) //
                 .stream() //
-                .peek(x -> System.out.println("pair=" + x)) //
                 .collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
         return new UrlInfo(contextPath, queries, Arrays.asList(requestHeaders), options);
     }

@@ -302,7 +302,6 @@ public final class RequestHelper {
         }
         list.add(RequestHeader.ACCEPT_JSON);
         list.addAll(requestHeaders);
-        System.out.println("list="+ list);
 
         // remove duplicates
         List<RequestHeader> list2 = new ArrayList<>();
@@ -501,7 +500,6 @@ public final class RequestHelper {
     public static void putChunk(HttpService service, String url, InputStream in,
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
-//        h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
         h.add(RequestHeader.create("Content-Range",
                 "bytes " + startByte + "-" + finishByte + "/" + size));
         HttpResponse response = service.put(url, h, in,  (int) (finishByte - startByte), options);
