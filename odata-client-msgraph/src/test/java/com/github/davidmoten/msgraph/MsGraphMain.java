@@ -1,6 +1,8 @@
 package com.github.davidmoten.msgraph;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +13,7 @@ import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.complex.UploadSession;
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.AttachmentType;
@@ -18,7 +21,7 @@ import odata.msgraph.client.enums.BodyType;
 
 public class MsGraphMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         GraphService client = MsGraph //
                 .tenantName(System.getProperty("tenantName")) //
@@ -60,25 +63,33 @@ public class MsGraphMain {
                     .users(mailbox) //
                     .messages(m.getId().get()) //
                     .attachments() //
-                    .createUploadSession(a)
-                    .get();
+                    .createUploadSession(a).get();
             boolean chunked = false;
             File file = new File("src/test/resources/java.jpg");
-            if (chunked) {
-                session //
-                        .putChunked() //
-                        .readTimeout(10, TimeUnit.MINUTES) //
-                        .upload(file, 1024 * 1024);
+            if (file.length() < 3 * 1024 * 1024) {
+                client.users(mailbox) //
+                        .messages(m.getId().get()) //
+                        .attachments() //
+                        .post(FileAttachment.builderFileAttachment().name("java.jpg")
+                                .contentBytes(Files.readAllBytes(file.toPath())).contentType("image/jpeg").build());
             } else {
-                session //
-                        .put() //
-                        .readTimeout(10, TimeUnit.MINUTES) //
-                        .upload(file);
+                if (chunked) {
+                    session //
+                            .putChunked() //
+                            .readTimeout(10, TimeUnit.MINUTES) //
+                            .upload(file, 1024 * 1024);
+                } else {
+                    session //
+                            .put() //
+                            .readTimeout(10, TimeUnit.MINUTES) //
+                            .upload(file);
+                }
             }
+            System.out.println("attachment uploaded");
         }
-        
+
         System.exit(0);
-        
+
         client.users().select("userPrincipalName").stream()
                 .forEach(user -> System.out.println(user.getUserPrincipalName()));
 
