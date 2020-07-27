@@ -1,5 +1,6 @@
 package com.github.davidmoten.msgraph;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -61,17 +62,18 @@ public class MsGraphMain {
                     .attachments() //
                     .createUploadSession(a)
                     .get();
-            boolean chunked = true;
+            boolean chunked = false;
+            File file = new File("src/test/resources/java.jpg");
             if (chunked) {
                 session //
                         .putChunked() //
                         .readTimeout(10, TimeUnit.MINUTES) //
-                        .upload(new byte[attachmentSize], 1024 * 1024);
+                        .upload(file, 1024 * 1024);
             } else {
                 session //
                         .put() //
                         .readTimeout(10, TimeUnit.MINUTES) //
-                        .upload(new byte[attachmentSize]);
+                        .upload(file);
             }
         }
         
