@@ -260,11 +260,11 @@ public final class RequestHelper {
         return entity;
     }
 
-    public static void put(ContextPath contextPath, RequestOptions options, InputStream in) {
+    public static void put(ContextPath contextPath, RequestOptions options, InputStream in, int length) {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
-        final HttpResponse response = service.put(cp.toUrl(), h, in, options);
+        final HttpResponse response = service.put(cp.toUrl(), h, in, length, options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
 
@@ -473,7 +473,7 @@ public final class RequestHelper {
         HttpResponse response = contextPath //
                 .context() //
                 .service() //
-                .post(cp.toUrl(), h, new ByteArrayInputStream(new byte[] {}), options);
+                .post(cp.toUrl(), h, new ByteArrayInputStream(new byte[] {}), 0, options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
         ObjectMapper m = new ObjectMapper();
         try {
@@ -494,10 +494,10 @@ public final class RequestHelper {
     public static void putChunk(HttpService service, String url, InputStream in,
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
-        h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
+//        h.add(RequestHeader.create("Content-Length", "" + (finishByte - startByte)));
         h.add(RequestHeader.create("Content-Range",
                 "bytes " + startByte + "-" + finishByte + "/" + size));
-        HttpResponse response = service.put(url, h, in, options);
+        HttpResponse response = service.put(url, h, in,  (int) (finishByte - startByte), options);
         checkResponseCode(url, response, 200, 202);
     }
 

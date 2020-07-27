@@ -42,20 +42,20 @@ public final class GraphExplorerHttpService implements HttpService {
 
     @Override
     public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-            InputStream content, HttpRequestOptions options) {
-        return s.patch(convert(url), requestHeaders, content, options);
+            InputStream content, int length, HttpRequestOptions options) {
+        return s.patch(convert(url), requestHeaders, content, length, options);
     }
 
     @Override
     public HttpResponse put(String url, List<RequestHeader> requestHeaders,
-            InputStream content, HttpRequestOptions options) {
-        return s.put(convert(url), requestHeaders, content, options);
+            InputStream content, int length, HttpRequestOptions options) {
+        return s.put(convert(url), requestHeaders, content, length, options);
     }
 
     @Override
     public HttpResponse post(String url, List<RequestHeader> requestHeaders,
-            InputStream content, HttpRequestOptions options) {
-        return s.post(convert(url), requestHeaders, content, options);
+            InputStream content, int length, HttpRequestOptions options) {
+        return s.post(convert(url), requestHeaders, content, length, options);
     }
 
     @Override

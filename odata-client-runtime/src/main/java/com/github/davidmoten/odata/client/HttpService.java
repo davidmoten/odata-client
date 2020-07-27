@@ -16,14 +16,16 @@ import java.util.function.Function;
 import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
 public interface HttpService extends AutoCloseable {
+    
+    static int LENGTH_UNKNOWN = -1;
 
     HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
-    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options);
+    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
 
-    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options);
+    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
 
-    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options);
+    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
 
     HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
@@ -36,37 +38,40 @@ public interface HttpService extends AutoCloseable {
     Path getBasePath();
 
     default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return patch(url, requestHeaders, in, options);
+        byte[] b = content.getBytes(StandardCharsets.UTF_8);
+        try (InputStream in = new ByteArrayInputStream(b)) {
+            return patch(url, requestHeaders, in, b.length, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     default HttpResponse put(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return put(url, requestHeaders, in, options);
+        byte[] b = content.getBytes(StandardCharsets.UTF_8);
+        try (InputStream in = new ByteArrayInputStream(b)) {
+            return put(url, requestHeaders, in, b.length, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return post(url, requestHeaders, in, options);
+        byte[] b = content.getBytes(StandardCharsets.UTF_8);
+        try (InputStream in = new ByteArrayInputStream(b)) {
+            return post(url, requestHeaders, in, b.length, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+            List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
         if (method == HttpMethod.PATCH) {
-            return patch(url, requestHeaders, content, options);
+            return patch(url, requestHeaders, content, length, options);
         } else if (method == HttpMethod.PUT) {
-            return put(url, requestHeaders, content, options);
+            return put(url, requestHeaders, content, length, options);
         } else if (method == HttpMethod.POST) {
-            return put(url, requestHeaders, content, options);
+            return put(url, requestHeaders, content, length, options);
         } else {
             throw new IllegalArgumentException(
                     method + " not permitted for a submission with content");
@@ -75,8 +80,9 @@ public interface HttpService extends AutoCloseable {
 
     default HttpResponse submitWithContent(HttpMethod method, String url,
             List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        try (InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-            return submitWithContent(method, url, requestHeaders, in, options);
+        byte[] b = content.getBytes(StandardCharsets.UTF_8);
+        try (InputStream in = new ByteArrayInputStream(b)) {
+            return submitWithContent(method, url, requestHeaders, in, b.length, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

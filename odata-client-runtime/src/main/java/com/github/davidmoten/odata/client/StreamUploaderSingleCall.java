@@ -1,6 +1,8 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,7 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
         this.contextPath = contextPath;
         this.queries = new HashMap<>();
         this.requestHeaders = new ArrayList<>();
-        requestHeaders.add(RequestHeader.create("Content-Type", contentType));
+        requestHeaders.add(RequestHeader.contentType(contentType));
     }
 
     public StreamUploaderSingleCall requestHeader(String name, String value) {
@@ -39,17 +41,26 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
     	this.readTimeoutMs = Optional.of(unit.toMillis(duration));
     	return this;
     }
-
-    public void upload(InputStream in) {
-        RequestHelper.put(contextPath, RequestOptions.create(queries, requestHeaders, connectTimeoutMs, readTimeoutMs), in);
+    
+    public void upload(byte[] bytes) {
+        upload(new ByteArrayInputStream(bytes), bytes.length);
+    }
+    
+    public void uploadUtf8(String text) {
+        upload(text.getBytes(StandardCharsets.UTF_8));
+    }
+    
+    public void upload(InputStream in, int length) {
+        requestHeaders.add(RequestHeader.contentLength(length));
+        RequestHelper.put(contextPath, RequestOptions.create(queries, requestHeaders, connectTimeoutMs, readTimeoutMs), in, length);
+    }
+    
+    public void upload(InputStream in, int length, UploadListener listener, int reportingChunkSize) {
+        upload(new InputStreamWithProgress(in, reportingChunkSize, listener), length);
     }
 
-    public void upload(InputStream in, UploadListener listener, int reportingChunkSize) {
-        upload(new InputStreamWithProgress(in, reportingChunkSize, listener));
-    }
-
-    public void upload(InputStream in, UploadListener listener) {
-        upload(in, listener, 8192);
+    public void upload(InputStream in, int length, UploadListener listener) {
+        upload(in, length, listener, 8192);
     }
 
 }

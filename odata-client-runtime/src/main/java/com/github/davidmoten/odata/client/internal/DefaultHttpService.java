@@ -40,45 +40,45 @@ public final class DefaultHttpService implements HttpService {
 
     @Override
     public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.GET, true, null);
+        return getResponse(url, requestHeaders, HttpMethod.GET, true, null, HttpService.LENGTH_UNKNOWN);
     }
 
     @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
         if (patchSupported) {
             try {
-                return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content);
+                return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content, length);
             } catch (ProtocolRuntimeException e) {
-                return getResponsePatchOverride(url, requestHeaders, content);
+                return getResponsePatchOverride(url, requestHeaders, content, length);
             }
         } else {
-            return getResponsePatchOverride(url, requestHeaders, content);
+            return getResponsePatchOverride(url, requestHeaders, content, length);
         }
     }
 
     private HttpResponse getResponsePatchOverride(String url, List<RequestHeader> requestHeaders,
-            InputStream content) {
+            InputStream content, int length) {
         List<RequestHeader> list = Lists.newArrayList(requestHeaders);
         list.add(new RequestHeader("X-HTTP-Method-Override", "PATCH"));
-        HttpResponse result = getResponse(url, list, HttpMethod.POST, false, content);
+        HttpResponse result = getResponse(url, list, HttpMethod.POST, false, content, length);
         // only indicate patch not supported if the result is returned ok
         patchSupported = false;
         return result;
     }
 
     @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.PUT, false, content);
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+        return getResponse(url, requestHeaders, HttpMethod.PUT, false, content, length);
     }
 
     @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.POST, true, content);
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+        return getResponse(url, requestHeaders, HttpMethod.POST, true, content, length);
     }
 
     @Override
     public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.DELETE, false, null);
+        return getResponse(url, requestHeaders, HttpMethod.DELETE, false, null, -1);
     }
 
     @Override
@@ -87,7 +87,7 @@ public final class DefaultHttpService implements HttpService {
     }
 
     private HttpResponse getResponse(String url, List<RequestHeader> requestHeaders,
-            HttpMethod method, boolean doInput, InputStream content) {
+            HttpMethod method, boolean doInput, InputStream content, int length) {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
@@ -95,6 +95,9 @@ public final class DefaultHttpService implements HttpService {
             c.setRequestMethod(method.toString());
             for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
                 c.setRequestProperty(header.name(), header.value());
+            }
+            if (length != HttpService.LENGTH_UNKNOWN) {
+                c.setRequestProperty("Content-Length", length + "");
             }
             c.setDoInput(doInput);
             c.setDoOutput(content != null);
