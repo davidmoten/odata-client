@@ -2,9 +2,11 @@ package com.github.davidmoten.odata.client.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -37,17 +39,17 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     private final Path basePath;
     private final CloseableHttpClient client;
-    private final Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier;
+    private final BiFunction<URL, List<RequestHeader>, List<RequestHeader>> requestHeadersModifier;
 
     public ApacheHttpClientHttpService(Path basePath, Supplier<CloseableHttpClient> clientSupplier,
-            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
+            BiFunction<URL, List<RequestHeader>, List<RequestHeader>> requestHeadersModifier) {
         this.basePath = basePath;
         this.client = clientSupplier.get();
         this.requestHeadersModifier = requestHeadersModifier;
     }
 
     public ApacheHttpClientHttpService(Path basePath) {
-        this(basePath, () -> HttpClientBuilder.create().useSystemProperties().build(), m -> m);
+        this(basePath, () -> HttpClientBuilder.create().useSystemProperties().build(), (url,m) -> m);
     }
 
     @Override
@@ -80,11 +82,19 @@ public class ApacheHttpClientHttpService implements HttpService {
         return basePath;
     }
 
+    private static URL toUrl(HttpRequestBase request) {
+        try {
+            return request.getURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpRequestBase request,
             boolean doInput, InputStream content, HttpRequestOptions options) {
     	Preconditions.checkNotNull(options);
         log.debug("{} from url {}", request.getMethod(), request.getURI());
-        for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
+        for (RequestHeader header : requestHeadersModifier.apply(toUrl(request), requestHeaders)) {
             request.addHeader(header.name(), header.value());
         }
         try {
@@ -129,7 +139,7 @@ public class ApacheHttpClientHttpService implements HttpService {
         // note follow redirects by default
         HttpGet request = new HttpGet(url);
         log.debug("{} from url {}", request.getMethod(), request.getURI());
-        for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
+        for (RequestHeader header : requestHeadersModifier.apply(toUrl(request), requestHeaders)) {
             request.addHeader(header.name(), header.value());
         }
         try {
