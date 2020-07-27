@@ -471,38 +471,13 @@ public final class RequestHelper {
         }
     }
 
-    public static String createUploadSession(ContextPath contextPath,
-            List<RequestHeader> requestHeaders, String contentType, HttpRequestOptions options) {
-        List<RequestHeader> h = cleanAndSupplementRequestHeaders(requestHeaders, contentType, true);
-        ContextPath cp = contextPath.addSegment("createUploadSession");
-        HttpResponse response = contextPath //
-                .context() //
-                .service() //
-                .post(cp.toUrl(), h, new ByteArrayInputStream(new byte[] {}), 0, options);
-        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
-        ObjectMapper m = new ObjectMapper();
-        try {
-            JsonNode tree = m.readTree(response.getText());
-            JsonNode v = tree.get("uploadUrl");
-            if (v == null) {
-                throw new ClientException(
-                        "could not create upload session because response does not contain 'uploadUrl' field:\n"
-                                + response.getText());
-            } else {
-                return v.asText();
-            }
-        } catch (JsonProcessingException e) {
-            throw new ClientException(e);
-        }
-    }
-
     public static void putChunk(HttpService service, String url, InputStream in,
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
         h.add(RequestHeader.create("Content-Range",
                 "bytes " + startByte + "-" + (finishByte - 1) + "/" + size));
         HttpResponse response = service.put(url, h, in,  (int) (finishByte - startByte), options);
-        checkResponseCode(url, response, 200, 202);
+        checkResponseCode(url, response, 200, 204);
     }
 
 }

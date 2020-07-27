@@ -1,7 +1,10 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,12 +69,20 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
         // get the post url and then send each chunk to the post url
         // without Authorization header
 
+        byte[] buffer = new byte[chunkSize];
         for (int i = 0; i < size; i += chunkSize) {
             int start = i;
-            int chunk = chunkSize;
+            final int chunk;
+            try {
+                chunk = in.read(buffer, 0, chunkSize);
+            } catch (IOException e) {
+                // this is unrecoverable because we cannot reread from the InputStream
+                // TODO provide a Supplier<InputStream> parameter?
+                throw new UncheckedIOException(e);
+            }
             retries.performWithRetries(() -> {
                     log.debug("putting chunk " + start + ", size=" + chunk);
-                    RequestHelper.putChunk(contextPath.context().service(), uploadUrl, in, requestHeaders,
+                    RequestHelper.putChunk(contextPath.context().service(), uploadUrl, new ByteArrayInputStream(buffer, 0, chunk), requestHeaders,
                             start, Math.min(size, start + chunk), size, options);
             });
         }
@@ -79,6 +90,10 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
 
     public void upload(byte[] bytes, int chunkSize) {
         upload(bytes, chunkSize, Retries.NONE);
+    }
+    
+    public void uploadUtf8(String text, int chunkSize) {
+        upload(text.getBytes(StandardCharsets.UTF_8), chunkSize);
     }
     
     public void upload(byte[] bytes, int chunkSize, Retries retries) {

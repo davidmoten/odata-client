@@ -30,7 +30,7 @@ public final class Retries {
         this.keepGoingIf = keepGoingIf;
     }
 
-    public void performWithRetries(Runnable runnable) {
+    public void performWithRetries(RunnableThrowing runnable) {
         int attempt = 0;
         Throwable error = null;
         Function<? super Throwable, Boolean> keepGoing = keepGoingIf().get();
