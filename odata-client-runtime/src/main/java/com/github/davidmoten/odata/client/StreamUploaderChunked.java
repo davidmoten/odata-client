@@ -61,9 +61,7 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
         }
         HttpRequestOptions options = HttpRequestOptions.create(connectTimeoutMs, readTimeoutMs);
         //TODO do we use edit url?
-        System.out.println("requestHeaders=" + requestHeaders);
-        String uploadUrl = RequestHelper.createUploadSession(contextPath,
-                requestHeaders, contentType, options);
+        String uploadUrl = contextPath.toUrl();
 
         // get the post url and then send each chunk to the post url
         // without Authorization header

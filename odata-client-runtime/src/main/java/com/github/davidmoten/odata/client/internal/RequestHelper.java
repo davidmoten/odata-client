@@ -262,14 +262,13 @@ public final class RequestHelper {
 
     public static void put(ContextPath contextPath, RequestOptions options, InputStream in, int length) {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
-        addContentLengthHeader(h, length);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
         final HttpResponse response = service.put(cp.toUrl(), h, in, length, options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
     
-    private static void addContentLengthHeader(List<RequestHeader> h, int length) {
+    public static void addContentLengthHeader(List<RequestHeader> h, int length) {
         if (length > 0 && !h.stream().anyMatch(x -> x.name().equals("Content-Length"))) {
             h.add(RequestHeader.contentLength(length));
         }
@@ -501,7 +500,7 @@ public final class RequestHelper {
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
         h.add(RequestHeader.create("Content-Range",
-                "bytes " + startByte + "-" + finishByte + "/" + size));
+                "bytes " + startByte + "-" + (finishByte - 1) + "/" + size));
         HttpResponse response = service.put(url, h, in,  (int) (finishByte - startByte), options);
         checkResponseCode(url, response, 200, 202);
     }
