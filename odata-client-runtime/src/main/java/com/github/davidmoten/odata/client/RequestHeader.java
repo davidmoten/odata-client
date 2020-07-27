@@ -96,4 +96,8 @@ public final class RequestHeader {
         return RequestHeader.create("Content-Type", contentType);
     }
 
+    public static RequestHeader contentRange(int start, int finish, int length) {
+        return RequestHeader.create("Content-Range", "bytes " + start + "-" + finish + "/" + length);
+    }
+
 }
