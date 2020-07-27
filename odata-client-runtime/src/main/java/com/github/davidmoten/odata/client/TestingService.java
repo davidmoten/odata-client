@@ -170,7 +170,7 @@ public final class TestingService {
                 }
 
                 @Override
-                public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+                public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
                     return patchOrPut(url, requestHeaders, content, options, HttpMethod.PATCH);    
                 }
 
@@ -210,12 +210,12 @@ public final class TestingService {
                 }
                 
                 @Override
-                public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+                public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
                     return patchOrPut(url, requestHeaders, content, options, HttpMethod.PUT);
                 }
 
                 @Override
-                public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, HttpRequestOptions options) {
+                public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
                     log("POST called at " + url);
                     String text = Util.utf8(content);
                     log(text);

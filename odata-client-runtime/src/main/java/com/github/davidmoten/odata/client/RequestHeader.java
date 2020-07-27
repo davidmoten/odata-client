@@ -88,4 +88,12 @@ public final class RequestHeader {
         } else return value.equals(other.value);
     }
 
+    public static RequestHeader contentLength(int length) {
+        return RequestHeader.create("Content-Length", ""+ length);
+    }
+
+    public static RequestHeader contentType(String contentType) {
+        return RequestHeader.create("Content-Type", contentType);
+    }
+
 }

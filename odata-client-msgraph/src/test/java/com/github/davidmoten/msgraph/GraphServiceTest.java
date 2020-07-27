@@ -269,7 +269,8 @@ public class GraphServiceTest {
                         HttpMethod.PUT, //
                         RequestHeader.ODATA_VERSION , //
                         RequestHeader.ACCEPT_JSON, //
-                        RequestHeader.CONTENT_TYPE_OCTET_STREAM)
+                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, 
+                        RequestHeader.contentLength(5))
                 .build();
         AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
                 .name("att.txt").size(5000000L).build();
@@ -279,8 +280,7 @@ public class GraphServiceTest {
         
         // perform upload using new method
         //https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345
-        InputStream in = new ByteArrayInputStream("hello".getBytes(StandardCharsets.UTF_8));
-        u.put().readTimeout(10, TimeUnit.SECONDS).upload(in);
+        u.put().readTimeout(10, TimeUnit.SECONDS).uploadUtf8("hello");
     }
     
     @Test
