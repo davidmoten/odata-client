@@ -2,6 +2,8 @@ package com.github.davidmoten.msgraph;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.UUID;
@@ -50,14 +52,25 @@ public class MsGraphMain {
                             .build())
                     .build();
             m = drafts.messages().post(m);
-            int attachmentSize = 5000000;
+            
+            File file = new File("target/attachment.txt");
+            String contentType = "text/plain";
+            file.delete();
+            long minSize = 2250000;
+            try (PrintStream out = new PrintStream(file)) {
+                byte[] bytes = "abcdefghijklmnopqrstuvwxyz0123456789\n".getBytes(StandardCharsets.UTF_8);
+                for (int i = 0; i < minSize/bytes.length + 1; i++) {
+                    out.write(bytes);
+                }
+            }
+            System.out.println("file size=" + file.length());
             // upload a big attachment using an upload session
             AttachmentItem a = AttachmentItem //
                     .builder() //
                     .attachmentType(AttachmentType.FILE) //
-                    .contentType("text/plain") //
-                    .name("attachment.txt") //
-                    .size((long) attachmentSize) //
+                    .contentType(contentType) //
+                    .name(file.getName()) //
+                    .size(file.length()) //
                     .build();
             UploadSession session = client //
                     .users(mailbox) //
@@ -65,13 +78,13 @@ public class MsGraphMain {
                     .attachments() //
                     .createUploadSession(a).get();
             boolean chunked = false;
-            File file = new File("src/test/resources/java.jpg");
+            
             if (file.length() < 3 * 1024 * 1024) {
                 client.users(mailbox) //
                         .messages(m.getId().get()) //
                         .attachments() //
-                        .post(FileAttachment.builderFileAttachment().name("java.jpg")
-                                .contentBytes(Files.readAllBytes(file.toPath())).contentType("image/jpeg").build());
+                        .post(FileAttachment.builderFileAttachment().name(file.getName())
+                                .contentBytes(Files.readAllBytes(file.toPath())).contentType(contentType).build());
             } else {
                 if (chunked) {
                     session //
