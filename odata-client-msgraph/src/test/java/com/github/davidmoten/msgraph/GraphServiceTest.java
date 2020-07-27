@@ -270,6 +270,7 @@ public class GraphServiceTest {
                         RequestHeader.ODATA_VERSION , //
                         RequestHeader.ACCEPT_JSON, //
                         RequestHeader.CONTENT_TYPE_OCTET_STREAM, 
+                        RequestHeader.contentRange(0, 4, 5),
                         RequestHeader.contentLength(5))
                 .build();
         AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")

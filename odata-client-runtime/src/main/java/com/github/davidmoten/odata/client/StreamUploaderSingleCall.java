@@ -51,7 +51,7 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
     }
     
     public void upload(InputStream in, int length) {
-        requestHeaders.add(RequestHeader.contentLength(length));
+        requestHeaders.add(RequestHeader.contentRange(0, length - 1, length));
         RequestHelper.put(contextPath, RequestOptions.create(queries, requestHeaders, connectTimeoutMs, readTimeoutMs), in, length);
     }
     
