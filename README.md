@@ -438,6 +438,7 @@ File file = ...;
 String contentType = "text/plain";
 String mailbox = "me@somewhere.com";
 
+// create new outbound mail in Drafts folder
 MailFolderRequest drafts = client //
     .users(mailbox) //
     .mailFolders("Drafts");
@@ -457,8 +458,12 @@ Message m = Message.builderMessage() //
                     .build()) //
             .build()) //
     .build();
+
 m = drafts.messages().post(m);
 
+// Upload attachment to the new mail
+// We use different methods depending on the size of the attachment
+// because will fail if doesn't match the right size window
 if (file.length() < 3000000) {
     client.users(mailbox) //
         .messages(m.getId().get()) //
@@ -487,6 +492,8 @@ if (file.length() < 3000000) {
         .readTimeout(10, TimeUnit.MINUTES) //
         .upload(file, chunkSize, Retries.builder().maxRetries(2).build());
 }
+
+// send the email 
 m.send().call();
 ```
 
