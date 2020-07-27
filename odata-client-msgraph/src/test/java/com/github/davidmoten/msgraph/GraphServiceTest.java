@@ -284,6 +284,42 @@ public class GraphServiceTest {
     }
     
     @Test
+    public void testGetUploadUrlChunked() {
+        String uploadUrl = "https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345";
+        GraphService client = clientBuilder() //
+                .expectRequestAndResponse("/users/me/messages/1/attachments/createUploadSession", //
+                        "/request-create-upload.json", //
+                        "/response-create-upload.json",  //
+                        HttpMethod.POST,  //
+                        HttpURLConnection.HTTP_CREATED, //
+                        RequestHeader.ACCEPT_JSON, //
+                        RequestHeader.CONTENT_TYPE_JSON, // 
+                        RequestHeader.ODATA_VERSION)
+                .expectRequest(uploadUrl, //
+                        "/request-upload-bytes-part-1.txt",
+                        HttpMethod.PUT, //
+                        RequestHeader.contentRange(0, 1, 5))
+                .expectRequest(uploadUrl, //
+                        "/request-upload-bytes-part-2.txt",
+                        HttpMethod.PUT, //
+                        RequestHeader.contentRange(2, 3, 5))
+                .expectRequest(uploadUrl, //
+                        "/request-upload-bytes-part-3.txt",
+                        HttpMethod.PUT, //
+                        RequestHeader.contentRange(4, 4, 5))
+                .build();
+        AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
+                .name("att.txt").size(5000000L).build();
+        UploadSession u = client.users("me").messages("1").attachments().createUploadSession(item).get();
+        assertNotNull(u);
+        assertTrue(u.getUploadUrl().isPresent());
+        
+        // perform upload using new method
+        //https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345
+        u.putChunked().readTimeout(10, TimeUnit.SECONDS).uploadUtf8("hello", 2);
+    }
+    
+    @Test
     public void testGetCollectionWithSelect() {
         GraphService client = clientBuilder() //
                 .expectResponse("/groups?$select=id%2CgroupTypes", "/response-groups-select.json",

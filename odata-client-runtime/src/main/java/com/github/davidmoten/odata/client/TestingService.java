@@ -189,8 +189,9 @@ public final class TestingService {
                                 method + " response not found for url=" + url + ", headers=" + requestHeaders);
                     }
                     try {
+                        URL resource = Preconditions.checkNotNull(TestingService.class.getResource(resourceName), "resource not found: " + resourceName);
                         String expected = new String(
-                                Files.readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+                                Files.readAllBytes(Paths.get(resource.toURI())));
                         
                         boolean matches;
                         try {
@@ -201,7 +202,7 @@ public final class TestingService {
                         if (matches) {
                             return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
                         } else {
-                            throw new RuntimeException("request does not match expected.\n==== Recieved ====\n" + text
+                            throw new RuntimeException("request does not match expected.\n==== Received ====\n" + text
                                     + "\n==== Expected =====\n" + expected);
                         }
                     } catch (IOException | URISyntaxException e) {
