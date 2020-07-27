@@ -26,6 +26,10 @@ public class MsGraphMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
         {
+            /////////////////////////////////////////////////////////////
+            // Integration test for stream upload (large attachment 5MB)
+            /////////////////////////////////////////////////////////////
+
             String mailbox = System.getProperty("mailbox");
             MailFolderRequest drafts = client //
                     .users(mailbox) //
@@ -46,9 +50,20 @@ public class MsGraphMain {
             // upload a big attachment using an upload session
             AttachmentItem a = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
                     .name("attachment.txt").size((long) attachmentSize).build();
-            UploadSession session = client.users(mailbox).messages(m.getId().get()).attachments().createUploadSession(a).get();
-            session.put().readTimeout(10, TimeUnit.MINUTES).upload(new byte[attachmentSize]);
-            
+            UploadSession session = client.users(mailbox).messages(m.getId().get()).attachments().createUploadSession(a)
+                    .get();
+            boolean chunked = true;
+            if (chunked) {
+                session //
+                        .putChunked() //
+                        .readTimeout(10, TimeUnit.MINUTES) //
+                        .upload(new byte[attachmentSize], 1024 * 1024);
+            } else {
+                session //
+                        .put() //
+                        .readTimeout(10, TimeUnit.MINUTES) //
+                        .upload(new byte[attachmentSize]);
+            }
         }
         
         System.exit(0);

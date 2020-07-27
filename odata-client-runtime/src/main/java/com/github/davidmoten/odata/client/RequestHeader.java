@@ -47,6 +47,8 @@ public final class RequestHeader {
 
     public static final RequestHeader CONTENT_TYPE_OCTET_STREAM = RequestHeader.create("Content-Type", "application/octet-stream");
 
+    public static final RequestHeader TRANSFER_ENCODING_CHUNKED = RequestHeader.create("Transfer-Encoding", "chunked");
+
     public boolean isAcceptJsonWithMetadata() {
         return name.equals("Accept") && value.contains("application/json;odata.metadata=");
     }
