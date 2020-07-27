@@ -94,12 +94,16 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
         upload(bytes, chunkSize, Retries.NONE);
     }
     
-    public void upload(File file, int chunkSize) {
+    public void upload(File file, int chunkSize, Retries retries) {
         try (InputStream in = new FileInputStream(file)) {
-            upload(in, (int) file.length(), chunkSize);
+            upload(in, (int) file.length(), chunkSize, retries);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+    
+    public void upload(File file, int chunkSize) {
+        upload(file, chunkSize, Retries.NONE);
     }
     
     public void uploadUtf8(String text, int chunkSize) {

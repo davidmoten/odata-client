@@ -8,12 +8,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +36,7 @@ import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
+import com.github.davidmoten.odata.client.Retries;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
@@ -59,6 +63,7 @@ import odata.msgraph.client.entity.Group;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.Message;
 import odata.msgraph.client.entity.User;
+import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.AttachmentType;
 import odata.msgraph.client.enums.BodyType;
 import odata.msgraph.client.enums.Importance;
@@ -317,6 +322,56 @@ public class GraphServiceTest {
         // perform upload using new method
         //https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345
         u.putChunked().readTimeout(10, TimeUnit.SECONDS).uploadUtf8("hello", 2);
+    }
+    
+    @Test
+    @Ignore
+    public void testSendEmailWithAttachmentCompiles() {
+        File file = new File("dummy.txt");
+        String contentType = "text/plain";
+        String mailbox = "me@somewhere.com";
+        GraphService client = clientBuilder().build();
+        MailFolderRequest drafts = client //
+                .users(mailbox) //
+                .mailFolders("Drafts");
+        Message m = Message.builderMessage() //
+                .subject("hi there " + new Date()) //
+                .body(ItemBody.builder() //
+                        .content("hello there how are you") //
+                        .contentType(BodyType.TEXT).build()) //
+                .from(Recipient.builder() //
+                        .emailAddress(EmailAddress.builder() //
+                                .address(mailbox) //
+                                .build()) //
+                        .build()) //
+                .toRecipients(Recipient.builder() //
+                        .emailAddress(EmailAddress.builder() //
+                                .address("someone@thing.com") //
+                                .build()) //
+                        .build()) //
+                .build();
+        m = drafts.messages().post(m);
+        
+        AttachmentItem a = AttachmentItem //
+                .builder() //
+                .attachmentType(AttachmentType.FILE) //
+                .contentType(contentType) //
+                .name(file.getName()) //
+                .size(file.length()) //
+                .build();
+        
+        int chunkSize = 500*1024;
+        client //
+                .users(mailbox) //
+                .messages(m.getId().get()) //
+                .attachments() //
+                .createUploadSession(a) //
+                .get() //
+                .putChunked() //
+                .readTimeout(10, TimeUnit.MINUTES) //
+                .upload(file, chunkSize, Retries.builder().maxRetries(2).build());
+
+        m.send().call();
     }
     
     @Test
