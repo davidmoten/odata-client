@@ -48,9 +48,18 @@ public class MsGraphMain {
             m = drafts.messages().post(m);
             int attachmentSize = 5000000;
             // upload a big attachment using an upload session
-            AttachmentItem a = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
-                    .name("attachment.txt").size((long) attachmentSize).build();
-            UploadSession session = client.users(mailbox).messages(m.getId().get()).attachments().createUploadSession(a)
+            AttachmentItem a = AttachmentItem //
+                    .builder() //
+                    .attachmentType(AttachmentType.FILE) //
+                    .contentType("text/plain") //
+                    .name("attachment.txt") //
+                    .size((long) attachmentSize) //
+                    .build();
+            UploadSession session = client //
+                    .users(mailbox) //
+                    .messages(m.getId().get()) //
+                    .attachments() //
+                    .createUploadSession(a)
                     .get();
             boolean chunked = true;
             if (chunked) {
@@ -67,6 +76,7 @@ public class MsGraphMain {
         }
         
         System.exit(0);
+        
         client.users().select("userPrincipalName").stream()
                 .forEach(user -> System.out.println(user.getUserPrincipalName()));
 
