@@ -1423,8 +1423,7 @@ public final class Generator {
 	}
 
 	private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
-		p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
-		p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
+		p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
 		p.format("%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
 	}
 
