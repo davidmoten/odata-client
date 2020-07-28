@@ -1,0 +1,182 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites('root')/lists('d7689e2b-941a-4cd3-bb24-55cddee54294')/items(fields())",
+  "value": [
+    {
+      "@odata.etag": "\"c8cf0cd9-826e-4295-8c52-e2c201739dc5,13\"",
+      "createdDateTime": "2017-09-02T01:44:00Z",
+      "eTag": "\"c8cf0cd9-826e-4295-8c52-e2c201739dc5,13\"",
+      "id": "6",
+      "lastModifiedDateTime": "2017-09-02T01:45:12Z",
+      "webUrl": "https://m365x214355.sharepoint.com/Lists/Office%20365%20Demos/6_.000",
+      "createdBy": {
+        "user": {
+          "email": "provisioninguser1@m365x214355.onmicrosoft.com",
+          "displayName": "Provisioning User"
+        }
+      },
+      "lastModifiedBy": {
+        "user": {
+          "email": "different.test.email@m365x214355.onmicrosoft.com",
+          "displayName": "Provisioning User"
+        }
+      },
+      "parentReference": {
+        "siteId": "m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd"
+      },
+      "contentType": {
+        "id": "0x002B9E68D71A94D34CBB2455CDDEE54294",
+        "name": "Office 365 Demos"
+      },
+      "fields@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites('root')/lists('d7689e2b-941a-4cd3-bb24-55cddee54294')/items('6')/fields/$entity",
+      "fields": {
+        "@odata.etag": "\"c8cf0cd9-826e-4295-8c52-e2c201739dc5,13\"",
+        "id": "6",
+        "ContentType": "Office 365 Demos",
+        "Title": "Contoso Home",
+        "Modified": "2017-09-02T01:45:12Z",
+        "Created": "2017-09-02T01:44:00Z",
+        "AuthorLookupId": "36",
+        "EditorLookupId": "36",
+        "_UIVersionString": "1.0",
+        "Attachments": false,
+        "Edit": "",
+        "LinkTitleNoMenu": "Contoso Home",
+        "LinkTitle": "Contoso Home",
+        "ItemChildCount": "0",
+        "FolderChildCount": "0",
+        "_ComplianceFlags": "",
+        "_ComplianceTag": "",
+        "_ComplianceTagWrittenTime": "",
+        "_ComplianceTagUserId": "",
+        "BackgroundImageLocation": {
+          "Description": "https://m365x214355.sharepoint.com/SiteAssets/DemoHomePageShort1.png",
+          "Url": "https://m365x214355.sharepoint.com/SiteAssets/DemoHomePageShort1.png"
+        },
+        "LinkLocation": {
+          "Description": "https://m365x214355.sharepoint.com/sites/contoso",
+          "Url": "https://m365x214355.sharepoint.com/sites/contoso"
+        },
+        "LaunchBehavior": "New tab",
+        "TileOrder": 1
+      }
+    },
+    {
+      "@odata.etag": "\"e99bbad3-17b2-47b4-8b11-b67c7231aaa7,13\"",
+      "createdDateTime": "2017-09-02T01:45:14Z",
+      "eTag": "\"e99bbad3-17b2-47b4-8b11-b67c7231aaa7,13\"",
+      "id": "7",
+      "lastModifiedDateTime": "2017-09-02T01:46:30Z",
+      "webUrl": "https://m365x214355.sharepoint.com/Lists/Office%20365%20Demos/7_.000",
+      "createdBy": {
+        "user": {
+          "email": "provisioninguser1@m365x214355.onmicrosoft.com",
+          "displayName": "Provisioning User"
+        }
+      },
+      "lastModifiedBy": {
+        "user": {
+          "email": "provisioninguser1@m365x214355.onmicrosoft.com",
+          "displayName": "Provisioning User"
+        }
+      },
+      "parentReference": {
+        "siteId": "m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd"
+      },
+      "contentType": {
+        "id": "0x002B9E68D71A94D34CBB2455CDDEE54294",
+        "name": "Office 365 Demos"
+      },
+      "fields@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites('root')/lists('d7689e2b-941a-4cd3-bb24-55cddee54294')/items('7')/fields/$entity",
+      "fields": {
+        "@odata.etag": "\"e99bbad3-17b2-47b4-8b11-b67c7231aaa7,13\"",
+        "id": "7",
+        "ContentType": "Office 365 Demos",
+        "Title": "Microsoft Demos",
+        "Modified": "2017-09-02T01:46:30Z",
+        "Created": "2017-09-02T01:45:14Z",
+        "AuthorLookupId": "36",
+        "EditorLookupId": "36",
+        "_UIVersionString": "1.0",
+        "Attachments": false,
+        "Edit": "",
+        "LinkTitleNoMenu": "Microsoft Demos",
+        "LinkTitle": "Microsoft Demos",
+        "ItemChildCount": "0",
+        "FolderChildCount": "0",
+        "_ComplianceFlags": "",
+        "_ComplianceTag": "",
+        "_ComplianceTagWrittenTime": "",
+        "_ComplianceTagUserId": "",
+        "BackgroundImageLocation": {
+          "Description": "https://m365x214355.sharepoint.com/siteassets/MOD.png",
+          "Url": "https://m365x214355.sharepoint.com/siteassets/MOD.png"
+        },
+        "LinkLocation": {
+          "Description": "https://demos.microsoft.com",
+          "Url": "https://demos.microsoft.com"
+        },
+        "LaunchBehavior": "New tab",
+        "TileOrder": 4
+      }
+    },
+    {
+      "@odata.etag": "\"a6de4804-a33e-4f3c-8af7-d09a7a6ee83e,13\"",
+      "createdDateTime": "2017-09-02T01:46:32Z",
+      "eTag": "\"a6de4804-a33e-4f3c-8af7-d09a7a6ee83e,13\"",
+      "id": "8",
+      "lastModifiedDateTime": "2017-09-02T01:47:32Z",
+      "webUrl": "https://m365x214355.sharepoint.com/Lists/Office%20365%20Demos/8_.000",
+      "createdBy": {
+        "user": {
+          "email": "provisioninguser1@m365x214355.onmicrosoft.com",
+          "displayName": "Provisioning User"
+        }
+      },
+      "lastModifiedBy": {
+        "user": {
+          "email": "provisioninguser1@m365x214355.onmicrosoft.com",
+          "displayName": "Provisioning User"
+        }
+      },
+      "parentReference": {
+        "siteId": "m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd"
+      },
+      "contentType": {
+        "id": "0x002B9E68D71A94D34CBB2455CDDEE54294",
+        "name": "Office 365 Demos"
+      },
+      "fields@odata.context": "https://graph.microsoft.com/v1.0/$metadata#sites('root')/lists('d7689e2b-941a-4cd3-bb24-55cddee54294')/items('8')/fields/$entity",
+      "fields": {
+        "@odata.etag": "\"a6de4804-a33e-4f3c-8af7-d09a7a6ee83e,13\"",
+        "id": "8",
+        "ContentType": "Office 365 Demos",
+        "Title": "Office Blogs",
+        "Modified": "2017-09-02T01:47:32Z",
+        "Created": "2017-09-02T01:46:32Z",
+        "AuthorLookupId": "36",
+        "EditorLookupId": "36",
+        "_UIVersionString": "1.0",
+        "Attachments": false,
+        "Edit": "",
+        "LinkTitleNoMenu": "Office Blogs",
+        "LinkTitle": "Office Blogs",
+        "ItemChildCount": "0",
+        "FolderChildCount": "0",
+        "_ComplianceFlags": "",
+        "_ComplianceTag": "",
+        "_ComplianceTagWrittenTime": "",
+        "_ComplianceTagUserId": "",
+        "BackgroundImageLocation": {
+          "Description": "https://m365x214355.sharepoint.com/siteassets/OfficeBlogs.png",
+          "Url": "https://m365x214355.sharepoint.com/siteassets/OfficeBlogs.png"
+        },
+        "LinkLocation": {
+          "Description": "http://blogs.office.com",
+          "Url": "http://blogs.office.com"
+        },
+        "LaunchBehavior": "New tab",
+        "TileOrder": 5
+      }
+    }
+  ]
+}
