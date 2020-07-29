@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.util.ClassUtil;
+import com.github.davidmoten.guavamini.Preconditions;
 
 public final class InjectableValuesFromFactories extends InjectableValues implements java.io.Serializable {
 
@@ -25,11 +26,15 @@ public final class InjectableValuesFromFactories extends InjectableValues implem
     }
 
     public InjectableValuesFromFactories addValue(String key, Callable<?> value) {
+        Preconditions.checkNotNull(key);
+        Preconditions.checkNotNull(value);
         _values.put(key, value);
         return this;
     }
 
     public InjectableValuesFromFactories addValue(Class<?> classKey, Callable<?> value) {
+        Preconditions.checkNotNull(classKey);
+        Preconditions.checkNotNull(value);
         _values.put(classKey.getName(), value);
         return this;
     }
@@ -43,6 +48,10 @@ public final class InjectableValuesFromFactories extends InjectableValues implem
         }
         String key = (String) valueId;
         Callable<?> callable = _values.get(key);
+        if (callable == null) {
+            throw new IllegalArgumentException(
+                    "No injectable id with value '" + key + "' found (for property '" + forProperty.getName() + "')");
+        }
         Object ob;
         try {
             ob = callable.call();
