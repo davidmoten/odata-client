@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -303,14 +302,17 @@ public class GraphServiceTest {
                 .expectRequest(uploadUrl, //
                         "/request-upload-bytes-part-1.txt",
                         HttpMethod.PUT, //
+                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(0, 1, 5))
                 .expectRequest(uploadUrl, //
                         "/request-upload-bytes-part-2.txt",
                         HttpMethod.PUT, //
+                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(2, 3, 5))
                 .expectRequest(uploadUrl, //
                         "/request-upload-bytes-part-3.txt",
                         HttpMethod.PUT, //
+                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(4, 4, 5))
                 .build();
         AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
