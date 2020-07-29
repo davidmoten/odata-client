@@ -76,10 +76,7 @@ public final class Serializer {
         try {
             if (contextPath != null) {
                 ObjectMapper m = MAPPER_EXCLUDE_NULLS.copy();
-                InjectableValuesFromFactories iv = new InjectableValuesFromFactories() //
-                        .addValue(ContextPath.class, () -> contextPath) //
-                        .addValue(ChangedFields.class, ChangedFields::new) //
-                        .addValue(UnmappedFields.class, UnmappedFields::new);
+                InjectableValues iv = createInjectableValues(contextPath);
                 m.setInjectableValues(iv);
                 T t = m.readValue(text, cls);
                 if (t instanceof ODataType) {
@@ -94,6 +91,13 @@ public final class Serializer {
         }
     }
 
+    private static InjectableValues createInjectableValues(ContextPath contextPath) {
+        return new InjectableValuesFromFactories() //
+                .addValue(ContextPath.class, () -> contextPath) //
+                .addValue(ChangedFields.class, ChangedFields::new) //
+                .addValue(UnmappedFields.class, UnmappedFields::new);
+    }
+
     public <T, S> T deserializeWithParametricType(String text, Class<? extends T> cls,
             Class<? extends S> parametricTypeClass, ContextPath contextPath,
             boolean addKeysToContextPath) {
@@ -102,10 +106,7 @@ public final class Serializer {
             JavaType type = m.getTypeFactory().constructParametricType(cls,
                     parametricTypeClass);
             if (contextPath != null) {
-                Std iv = new InjectableValues.Std() //
-                        .addValue(ContextPath.class, contextPath) //
-                        .addValue(ChangedFields.class, new ChangedFields()) //
-                        .addValue(UnmappedFields.class, new UnmappedFields());
+                InjectableValues iv = createInjectableValues(contextPath);
                 m.setInjectableValues(iv);
                 T t = m.readValue(text, type);
                 if (t instanceof ODataType) {
@@ -119,7 +120,7 @@ public final class Serializer {
             throw new RuntimeException(e);
         }
     }
-
+    
     public <T> T deserialize(String text, Class<T> cls) {
         return deserialize(text, cls, null, false);
     }
