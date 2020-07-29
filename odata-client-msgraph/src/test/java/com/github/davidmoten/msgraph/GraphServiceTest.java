@@ -668,10 +668,12 @@ public class GraphServiceTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void testUnmappedFieldsHaveDistinctValues() {
+    public void testItemsInDeserializedListHaveDistinctUnmappedFieldsInstancesPR35() {
         // NOTE: The following test data is taken from https://developer.microsoft.com/en-us/graph/graph-explorer -- with the first item's "lastModifiedBy" user email hand-modified
         GraphService client = clientBuilder() //
-                .expectResponse("/sites/lists/d7689e2b-941a-4cd3-bb24-55cddee54294/items?$expand=fields", "/response-list-items-expand-fields.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                .expectResponse("/sites/lists/d7689e2b-941a-4cd3-bb24-55cddee54294/items?$expand=fields", //
+                        "/response-list-items-expand-fields.json", //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
                         RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<ListItem> listItems = client.sites().lists("d7689e2b-941a-4cd3-bb24-55cddee54294").items().expand("fields").get();
@@ -680,12 +682,16 @@ public class GraphServiceTest {
         ListItem firstListItem = listItems.currentPage().get(0);
 
          // Verify UnmappedFields from separate ListItems:
-        assertEquals("Contoso Home", ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields")).get("Title"));
-        assertEquals("Microsoft Demos", ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields().get("fields")).get("Title"));
+        assertEquals("Contoso Home", //
+                ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields")).get("Title"));
+        assertEquals("Microsoft Demos", //
+                ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields().get("fields")).get("Title"));
 
          // Verify that different UnmappedFields instances from the same ListItem Jackson deserialization call have distinct contents:
-        assertEquals("provisioninguser1@m365x214355.onmicrosoft.com", firstListItem.getCreatedBy().get().getUser().get().getUnmappedFields().get("email"));
-        assertEquals("different.test.email@m365x214355.onmicrosoft.com", firstListItem.getLastModifiedBy().get().getUser().get().getUnmappedFields().get("email"));
+        assertEquals("provisioninguser1@m365x214355.onmicrosoft.com", //
+                firstListItem.getCreatedBy().get().getUser().get().getUnmappedFields().get("email"));
+        assertEquals("different.test.email@m365x214355.onmicrosoft.com", //
+                firstListItem.getLastModifiedBy().get().getUser().get().getUnmappedFields().get("email"));
     }
 
     @Test
