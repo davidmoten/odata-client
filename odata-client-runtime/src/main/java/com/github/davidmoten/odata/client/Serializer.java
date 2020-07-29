@@ -26,6 +26,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+import com.github.davidmoten.odata.client.internal.InjectableValuesFromFactories;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
@@ -75,10 +76,10 @@ public final class Serializer {
         try {
             if (contextPath != null) {
                 ObjectMapper m = MAPPER_EXCLUDE_NULLS.copy();
-                Std iv = new InjectableValues.Std() //
-                        .addValue(ContextPath.class, contextPath) //
-                        .addValue(ChangedFields.class, new ChangedFields()) //
-                        .addValue(UnmappedFields.class, new UnmappedFields());
+                InjectableValuesFromFactories iv = new InjectableValuesFromFactories() //
+                        .addValue(ContextPath.class, () -> contextPath) //
+                        .addValue(ChangedFields.class, ChangedFields::new) //
+                        .addValue(UnmappedFields.class, UnmappedFields::new);
                 m.setInjectableValues(iv);
                 T t = m.readValue(text, cls);
                 if (t instanceof ODataType) {
