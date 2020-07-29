@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.InjectableValues.Std;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +25,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+import com.github.davidmoten.odata.client.internal.InjectableValuesFromFactories;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
@@ -75,10 +75,7 @@ public final class Serializer {
         try {
             if (contextPath != null) {
                 ObjectMapper m = MAPPER_EXCLUDE_NULLS.copy();
-                Std iv = new InjectableValues.Std() //
-                        .addValue(ContextPath.class, contextPath) //
-                        .addValue(ChangedFields.class, new ChangedFields()) //
-                        .addValue(UnmappedFields.class, new UnmappedFields());
+                InjectableValues iv = createInjectableValues(contextPath);
                 m.setInjectableValues(iv);
                 T t = m.readValue(text, cls);
                 if (t instanceof ODataType) {
@@ -93,6 +90,13 @@ public final class Serializer {
         }
     }
 
+    private static InjectableValues createInjectableValues(ContextPath contextPath) {
+        return new InjectableValuesFromFactories() //
+                .addValue(ContextPath.class, () -> contextPath) //
+                .addValue(ChangedFields.class, ChangedFields::new) //
+                .addValue(UnmappedFields.class, UnmappedFields::new);
+    }
+
     public <T, S> T deserializeWithParametricType(String text, Class<? extends T> cls,
             Class<? extends S> parametricTypeClass, ContextPath contextPath,
             boolean addKeysToContextPath) {
@@ -101,10 +105,7 @@ public final class Serializer {
             JavaType type = m.getTypeFactory().constructParametricType(cls,
                     parametricTypeClass);
             if (contextPath != null) {
-                Std iv = new InjectableValues.Std() //
-                        .addValue(ContextPath.class, contextPath) //
-                        .addValue(ChangedFields.class, new ChangedFields()) //
-                        .addValue(UnmappedFields.class, new UnmappedFields());
+                InjectableValues iv = createInjectableValues(contextPath);
                 m.setInjectableValues(iv);
                 T t = m.readValue(text, type);
                 if (t instanceof ODataType) {
@@ -118,7 +119,7 @@ public final class Serializer {
             throw new RuntimeException(e);
         }
     }
-
+    
     public <T> T deserialize(String text, Class<T> cls) {
         return deserialize(text, cls, null, false);
     }
