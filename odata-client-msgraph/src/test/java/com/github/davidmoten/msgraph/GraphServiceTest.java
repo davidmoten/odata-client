@@ -666,6 +666,7 @@ public class GraphServiceTest {
         assertEquals("editLink1", editLink);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void testUnmappedFieldsHaveDistinctValues() {
         // NOTE: The following test data is taken from https://developer.microsoft.com/en-us/graph/graph-explorer -- with the first item's "lastModifiedBy" user email hand-modified
