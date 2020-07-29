@@ -52,7 +52,7 @@ public final class InjectableValuesFromFactories
             try {
                 ob = callable.call();
             } catch (Exception e) {
-                throw new RuntimeException("callable threw when creating value", e);
+                throw JsonMappingException.from(ctxt,"callable threw when creating value for property " + forProperty.getFullName(), e);
             }
             if (ob == null && !_values.containsKey(key)) {
                 throw new IllegalArgumentException("No injectable id with value '"+key+"' found (for property '"+forProperty.getName()+"')");
