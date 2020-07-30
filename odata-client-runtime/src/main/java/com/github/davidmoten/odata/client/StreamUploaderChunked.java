@@ -71,20 +71,31 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
         // without Authorization header
 
         byte[] buffer = new byte[chunkSize];
-        for (int i = 0; i < size; i += chunkSize) {
+        int chunk;
+        for (int i = 0; i < size; i += chunk) {
             int start = i;
-            final int chunk;
             try {
                 chunk = in.read(buffer, 0, chunkSize);
+                if (chunk == -1) {
+                	throw new IOException("end of input stream reached earlier than expected, have you passed the correct size parameter for the input stream?");
+                }
             } catch (IOException e) {
                 // this is unrecoverable because we cannot reread from the InputStream
                 // TODO provide a Supplier<InputStream> parameter?
                 throw new UncheckedIOException(e);
             }
+            final int finalChunk = chunk;
             retries.performWithRetries(() -> {
-                    log.debug("putting chunk " + start + ", size=" + chunk);
-                    RequestHelper.putChunk(contextPath.context().service(), uploadUrl, new ByteArrayInputStream(buffer, 0, chunk), requestHeaders,
-                            start, Math.min(size, start + chunk), size, options);
+                    log.debug("putting chunk " + start + ", size=" + finalChunk);
+                    RequestHelper.putChunk( //
+                    		contextPath.context().service(), //
+                    		uploadUrl, //
+                    		new ByteArrayInputStream(buffer, 0, finalChunk), //
+                    		requestHeaders, //
+                            start, //
+                            Math.min(size, start + finalChunk), //
+                            size, //
+                            options);
             });
         }
     }
