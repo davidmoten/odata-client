@@ -64,7 +64,7 @@ public class CachingInputStreamTest {
 			assertEquals(2, cin.read());
 			cin.reset();
 			byte[] bytes = new byte[8];
-			cin.read(bytes, 1, 5);
+			assertEquals(5, cin.read(bytes, 1, 5));
 			assertEquals(1, bytes[1]);
 			assertEquals(2, bytes[2]);
 			assertEquals(3, bytes[3]);
