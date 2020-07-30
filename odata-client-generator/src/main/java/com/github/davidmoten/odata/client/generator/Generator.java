@@ -1490,8 +1490,10 @@ public final class Generator {
 						}
 						{
 							String options = "options";
+							Map<String,String> parameterDoc = new HashMap<>();
+							parameterDoc.put("options", "specify connect and read timeouts");
 							structure.printPropertyJavadoc(p, indent, x.getName(), "property " + x.getName(),
-									Collections.emptyMap());
+									parameterDoc);
 							addPropertyAnnotation(imports, indent, p, x.getName());
 							p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
 							
