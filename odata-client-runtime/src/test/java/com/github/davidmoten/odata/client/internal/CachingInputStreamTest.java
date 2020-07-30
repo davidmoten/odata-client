@@ -55,7 +55,7 @@ public class CachingInputStreamTest {
 			assertEquals(0, bytes[6]);
 		}
 	}
-	
+
 	@Test
 	public void testReset() throws IOException {
 		InputStream in = new ByteArrayInputStream(new byte[] { 1, 2, 3, 4, 5 });
@@ -70,6 +70,15 @@ public class CachingInputStreamTest {
 			assertEquals(3, bytes[3]);
 			assertEquals(4, bytes[4]);
 			assertEquals(5, bytes[5]);
+		}
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testReadBeyondSize() throws IOException {
+		InputStream in = new ByteArrayInputStream(new byte[] { 1, 2, 3, 4, 5 });
+		try (InputStream cin = new CachingInputStream(in, 5)) {
+			byte[] bytes = new byte[6];
+			cin.read(bytes, 0, 6);
 		}
 	}
 

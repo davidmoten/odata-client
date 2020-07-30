@@ -28,6 +28,9 @@ public final class CachingInputStream extends InputStream {
 
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
+		if (readPosition + len > cache.length) {
+			throw new IllegalArgumentException("cannot read beyond size of input stream");
+		}
 		int readFromCache = Math.min(len, writePosition - readPosition);
 		if (readFromCache > 0) {
 			System.arraycopy(cache, readPosition, b, off, readFromCache);
