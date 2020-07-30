@@ -555,4 +555,5 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * only generate classes that are actually used (e.g. not every Entity or ComplexType needs a corresponding Collection request)
 * remove context property "modify.stream.edit.link" from MsGraph client once they support their own @odata.mediaEditLink!
 * add helper methods to generated UploadUrl class in MsGraph
-* add optional retry logic to StreamUploaderChunked
+* <strike>add optional retry logic to StreamUploaderChunked</strike>
+* increase chunked upload efficiency by writing read bytes to destination immediately, retaining the ability to retry the chunk
