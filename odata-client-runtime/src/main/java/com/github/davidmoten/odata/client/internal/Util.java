@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -57,5 +58,39 @@ public final class Util {
             return EdmSchemaInfo.INSTANCE.getTypeWithNamespaceFromClass(cls);
         }
     }
+    
+    /**
+     * Reads size bytes into buffer from InputStream if end of stream not reached.
+     * Returns the number of bytes read (which will be {@code size} if end of stream
+     * not reached).
+     * 
+     * @param in
+     *            input stream
+     * @param buffer
+     *            destination array to read into
+     * @param size
+     *            number of bytes to read if available
+     * @return number of bytes read
+     */
+    // TODO unit test
+    public static int readFully(InputStream in, byte[] buffer, int size) {
+        int len = 0;
+        while (len < size) {
+            try {
+                int numRead = in.read(buffer, len, size - len);
+                if (numRead == -1) {
+                    break;
+                } else {
+                    len += numRead;
+                }
+            } catch (IOException e) {
+                // this is unrecoverable because we cannot reread from the InputStream
+                // TODO provide a Supplier<InputStream> parameter?
+                throw new UncheckedIOException(e);
+            }
+        }
+        return len;
+    }
+
 
 }

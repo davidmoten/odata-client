@@ -73,7 +73,7 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
         byte[] buffer = new byte[chunkSize];
         for (int i = 0; i < size; i += chunkSize) {
             int start = i;
-            int chunk = readFully(in, buffer, chunkSize);
+            int chunk = com.github.davidmoten.odata.client.internal.Util.readFully(in, buffer, chunkSize);
             retries.performWithRetries(() -> {
                 log.debug("putting chunk " + start + ", size=" + chunk);
                 RequestHelper.putChunk( //
@@ -87,39 +87,6 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
                         options);
             });
         }
-    }
-
-    /**
-     * Reads size bytes into buffer from InputStream if end of stream not reached.
-     * Returns the number of bytes read (which will be {@code size} if end of stream
-     * not reached).
-     * 
-     * @param in
-     *            input stream
-     * @param buffer
-     *            destination array to read into
-     * @param size
-     *            number of bytes to read if available
-     * @return number of bytes read
-     */
-    // TODO unit test
-    private static int readFully(InputStream in, byte[] buffer, int size) {
-        int len = 0;
-        while (len < size) {
-            try {
-                int numRead = in.read(buffer, len, size - len);
-                if (numRead == -1) {
-                    break;
-                } else {
-                    len += numRead;
-                }
-            } catch (IOException e) {
-                // this is unrecoverable because we cannot reread from the InputStream
-                // TODO provide a Supplier<InputStream> parameter?
-                throw new UncheckedIOException(e);
-            }
-        }
-        return len;
     }
 
     public void upload(byte[] bytes, int chunkSize) {
