@@ -70,9 +70,14 @@
                                 <schema>
                                     <namespace>microsoft.graph</namespace>
                                     <packageName>odata.msgraph.client.beta</packageName>
-                                </schema><schema>
+                                </schema>
+                                <schema>
                                     <namespace>microsoft.graph.callRecords</namespace>
                                     <packageName>odata.msgraph.client.beta.callRecords</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.termStore</namespace>
+                                    <packageName>odata.msgraph.client.beta.termStore</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
