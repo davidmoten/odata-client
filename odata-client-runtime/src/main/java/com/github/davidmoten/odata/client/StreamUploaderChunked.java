@@ -91,7 +91,8 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
 
     /**
      * Reads size bytes into buffer from InputStream if end of stream not reached.
-     * Returns the number of bytes read.
+     * Returns the number of bytes read (which will be {@code size} if end of stream
+     * not reached).
      * 
      * @param in
      *            input stream
