@@ -27,30 +27,30 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
 
     private final ContextPath contextPath;
     private final List<RequestHeader> requestHeaders;
-	private Optional<Long> connectTimeoutMs = Optional.empty();
-	private Optional<Long> readTimeoutMs = Optional.empty();
+    private Optional<Long> connectTimeoutMs = Optional.empty();
+    private Optional<Long> readTimeoutMs = Optional.empty();
 
     StreamUploaderChunked(ContextPath contextPath, String contentType) {
         this.contextPath = contextPath;
         this.requestHeaders = new ArrayList<>();
         requestHeaders.add(RequestHeader.contentType(contentType));
     }
-    
+
     public StreamUploaderChunked requestHeader(String name, String value) {
         requestHeaders.add(RequestHeader.create(name, value));
         return this;
     }
 
     public StreamUploaderChunked connectTimeout(long duration, TimeUnit unit) {
-    	this.connectTimeoutMs = Optional.of(unit.toMillis(duration));
-    	return this;
+        this.connectTimeoutMs = Optional.of(unit.toMillis(duration));
+        return this;
     }
-    
+
     public StreamUploaderChunked readTimeout(long duration, TimeUnit unit) {
-    	this.readTimeoutMs = Optional.of(unit.toMillis(duration));
-    	return this;
+        this.readTimeoutMs = Optional.of(unit.toMillis(duration));
+        return this;
     }
-    
+
     public void upload(InputStream in, long size, int chunkSize) {
         upload(in, size, chunkSize, Retries.NONE);
     }
@@ -64,46 +64,67 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
             chunkSize += chunkSize - rem;
         }
         HttpRequestOptions options = HttpRequestOptions.create(connectTimeoutMs, readTimeoutMs);
-        //TODO do we use edit url?
+        // TODO do we use edit url?
         String uploadUrl = contextPath.toUrl();
 
         // get the post url and then send each chunk to the post url
         // without Authorization header
 
         byte[] buffer = new byte[chunkSize];
-        int chunk;
-        for (int i = 0; i < size; i += chunk) {
+        for (int i = 0; i < size; i += chunkSize) {
             int start = i;
+            int chunk = readFully(in, buffer, chunkSize);
+            retries.performWithRetries(() -> {
+                log.debug("putting chunk " + start + ", size=" + chunk);
+                RequestHelper.putChunk( //
+                        contextPath.context().service(), //
+                        uploadUrl, //
+                        new ByteArrayInputStream(buffer, 0, chunk), //
+                        requestHeaders, //
+                        start, //
+                        Math.min(size, start + chunk), //
+                        size, //
+                        options);
+            });
+        }
+    }
+
+    /**
+     * Reads size bytes into buffer from InputStream if end of stream not reached.
+     * Returns the number of bytes read.
+     * 
+     * @param in
+     *            input stream
+     * @param buffer
+     *            destination array to read into
+     * @param size
+     *            number of bytes to read if available
+     * @return number of bytes read
+     */
+    // TODO unit test
+    private static int readFully(InputStream in, byte[] buffer, int size) {
+        int len = 0;
+        while (len < size) {
             try {
-                chunk = in.read(buffer, 0, chunkSize);
-                if (chunk == -1) {
-                	throw new IOException("end of input stream reached earlier than expected, have you passed the correct size parameter for the input stream?");
+                int numRead = in.read(buffer, len, size - len);
+                if (numRead == -1) {
+                    break;
+                } else {
+                    len += numRead;
                 }
             } catch (IOException e) {
                 // this is unrecoverable because we cannot reread from the InputStream
                 // TODO provide a Supplier<InputStream> parameter?
                 throw new UncheckedIOException(e);
             }
-            final int finalChunk = chunk;
-            retries.performWithRetries(() -> {
-                    log.debug("putting chunk " + start + ", size=" + finalChunk);
-                    RequestHelper.putChunk( //
-                    		contextPath.context().service(), //
-                    		uploadUrl, //
-                    		new ByteArrayInputStream(buffer, 0, finalChunk), //
-                    		requestHeaders, //
-                            start, //
-                            Math.min(size, start + finalChunk), //
-                            size, //
-                            options);
-            });
         }
+        return len;
     }
 
     public void upload(byte[] bytes, int chunkSize) {
         upload(bytes, chunkSize, Retries.NONE);
     }
-    
+
     public void upload(File file, int chunkSize, Retries retries) {
         try (InputStream in = new FileInputStream(file)) {
             upload(in, (int) file.length(), chunkSize, retries);
@@ -111,15 +132,15 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
             throw new UncheckedIOException(e);
         }
     }
-    
+
     public void upload(File file, int chunkSize) {
         upload(file, chunkSize, Retries.NONE);
     }
-    
+
     public void uploadUtf8(String text, int chunkSize) {
         upload(text.getBytes(StandardCharsets.UTF_8), chunkSize);
     }
-    
+
     public void upload(byte[] bytes, int chunkSize, Retries retries) {
         upload(new ByteArrayInputStream(bytes), bytes.length, chunkSize, retries);
     }
