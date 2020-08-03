@@ -57,7 +57,9 @@ public class GeneratorTest {
                 "microsoft.graph.beta.generated");
         SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords",
                 "microsoft.graph.beta.callRecords.generated");
-        Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2));
+        SchemaOptions schemaOptions3 = new SchemaOptions("microsoft.graph.termStore",
+                "microsoft.graph.beta.termStore.generated");
+        Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2, schemaOptions3));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
     }

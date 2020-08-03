@@ -1565,6 +1565,16 @@
         <Member Name="channels" Value="8"/>
         <Member Name="members" Value="16"/>
       </EnumType>
+      <EnumType Name="teamSpecialization">
+        <Member Name="none" Value="0"/>
+        <Member Name="educationStandard" Value="1"/>
+        <Member Name="educationClass" Value="2"/>
+        <Member Name="educationProfessionalLearningCommunity" Value="3"/>
+        <Member Name="educationStaff" Value="4"/>
+        <Member Name="healthcareStandard" Value="5"/>
+        <Member Name="healthcareCareCoordination" Value="6"/>
+        <Member Name="unknownFutureValue" Value="7"/>
+      </EnumType>
       <EnumType Name="giphyRatingType">
         <Member Name="strict" Value="0"/>
         <Member Name="moderate" Value="1"/>
@@ -2454,6 +2464,12 @@
         <Property Name="joinInformation" Type="graph.itemBody"/>
       </EntityType>
       <EntityType Name="team" BaseType="graph.entity" OpenType="true">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="internalId" Type="Edm.String"/>
+        <Property Name="classification" Type="Edm.String"/>
+        <Property Name="specialization" Type="graph.teamSpecialization"/>
+        <Property Name="visibility" Type="graph.teamVisibilityType"/>
         <Property Name="webUrl" Type="Edm.String"/>
         <Property Name="memberSettings" Type="graph.teamMemberSettings"/>
         <Property Name="guestSettings" Type="graph.teamGuestSettings"/>
@@ -2461,6 +2477,9 @@
         <Property Name="funSettings" Type="graph.teamFunSettings"/>
         <Property Name="isArchived" Type="Edm.Boolean"/>
         <NavigationProperty Name="schedule" Type="graph.schedule" ContainsTarget="true"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="template" Type="graph.teamsTemplate"/>
+        <NavigationProperty Name="members" Type="Collection(graph.conversationMember)" ContainsTarget="true"/>
         <NavigationProperty Name="channels" Type="Collection(graph.channel)" ContainsTarget="true"/>
         <NavigationProperty Name="primaryChannel" Type="graph.channel" ContainsTarget="true"/>
         <NavigationProperty Name="installedApps" Type="Collection(graph.teamsAppInstallation)" ContainsTarget="true"/>
@@ -7380,6 +7399,11 @@
         <Property Name="allowStickersAndMemes" Type="Edm.Boolean"/>
         <Property Name="allowCustomMemes" Type="Edm.Boolean"/>
       </ComplexType>
+      <EntityType Name="teamsTemplate" BaseType="graph.entity"/>
+      <EntityType Name="conversationMember" BaseType="graph.entity" Abstract="true">
+        <Property Name="roles" Type="Collection(Edm.String)"/>
+        <Property Name="displayName" Type="Edm.String"/>
+      </EntityType>
       <EntityType Name="channel" BaseType="graph.entity">
         <Property Name="displayName" Type="Edm.String" Nullable="false"/>
         <Property Name="description" Type="Edm.String"/>
@@ -7461,6 +7485,11 @@
         <Property Name="webUrl" Type="Edm.String"/>
         <Property Name="configuration" Type="graph.teamsTabConfiguration"/>
         <NavigationProperty Name="teamsApp" Type="graph.teamsApp"/>
+      </EntityType>
+      <EntityType Name="aadUserConversationMember" BaseType="graph.conversationMember">
+        <Property Name="userId" Type="Edm.String"/>
+        <Property Name="email" Type="Edm.String"/>
+        <NavigationProperty Name="user" Type="graph.user"/>
       </EntityType>
       <ComplexType Name="operationError">
         <Property Name="code" Type="Edm.String"/>
@@ -7622,12 +7651,24 @@
         <ReturnType Type="Collection(graph.group)"/>
       </Function>
       <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.administrativeUnit)"/>
+        <ReturnType Type="Collection(graph.administrativeUnit)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
         <Parameter Name="bindingParameter" Type="Collection(graph.orgContact)"/>
         <ReturnType Type="Collection(graph.orgContact)"/>
       </Function>
       <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.servicePrincipal)"/>
+        <ReturnType Type="Collection(graph.servicePrincipal)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
         <Parameter Name="bindingParameter" Type="Collection(graph.directoryRole)"/>
         <ReturnType Type="Collection(graph.directoryRole)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.oAuth2PermissionGrant)"/>
+        <ReturnType Type="Collection(graph.oAuth2PermissionGrant)"/>
       </Function>
       <Action Name="addKey" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.application" Nullable="false"/>
@@ -11749,7 +11790,11 @@
         <EntitySet Name="groupLifecyclePolicies" EntityType="microsoft.graph.groupLifecyclePolicy"/>
         <EntitySet Name="dataPolicyOperations" EntityType="microsoft.graph.dataPolicyOperation"/>
         <EntitySet Name="subscriptions" EntityType="microsoft.graph.subscription"/>
-        <EntitySet Name="teams" EntityType="microsoft.graph.team"/>
+        <EntitySet Name="teams" EntityType="microsoft.graph.team">
+          <NavigationPropertyBinding Path="group" Target="groups"/>
+          <NavigationPropertyBinding Path="template" Target="teamsTemplates"/>
+        </EntitySet>
+        <EntitySet Name="teamsTemplates" EntityType="microsoft.graph.teamsTemplate"/>
         <Singleton Name="auditLogs" Type="microsoft.graph.auditLogRoot"/>
         <Singleton Name="identity" Type="microsoft.graph.identityContainer"/>
         <Singleton Name="policies" Type="microsoft.graph.policyRoot"/>
@@ -11785,8 +11830,8 @@
         <Singleton Name="reports" Type="microsoft.graph.reportRoot"/>
         <Singleton Name="planner" Type="microsoft.graph.planner"/>
         <Singleton Name="Security" Type="microsoft.graph.security"/>
-        <Singleton Name="appCatalogs" Type="microsoft.graph.appCatalogs"/>
         <Singleton Name="teamwork" Type="microsoft.graph.teamwork"/>
+        <Singleton Name="appCatalogs" Type="microsoft.graph.appCatalogs"/>
         <Singleton Name="informationProtection" Type="microsoft.graph.informationProtection"/>
       </EntityContainer>
       <Annotations Target="microsoft.graph.directoryAudit">
