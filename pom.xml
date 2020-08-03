@@ -28,7 +28,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <scm.url>scm:git:https://github.com/davidmoten/odata-client.git</scm.url>
-        <m3.site.version>3.8.2</m3.site.version>
+        <m3.site.version>3.9.1</m3.site.version>
 
         <checkstyle.version>3.1.1</checkstyle.version>
         <javadoc.version>3.2.0</javadoc.version>
@@ -38,7 +38,7 @@
         <taglist.version>2.4</taglist.version>
         <changelog.version>2.2</changelog.version>
 
-        <jackson.version>2.11.1</jackson.version>
+        <jackson.version>2.11.2</jackson.version>
         <junit.version>4.13</junit.version>
         <olingo.version>4.7.1</olingo.version>
         <httpclient.version>4.5.12</httpclient.version>
