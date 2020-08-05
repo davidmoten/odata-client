@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -69,8 +70,8 @@ import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.StreamUploader;
-import com.github.davidmoten.odata.client.StreamUploaderSingleCall;
 import com.github.davidmoten.odata.client.StreamUploaderChunked;
+import com.github.davidmoten.odata.client.StreamUploaderSingleCall;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 import com.github.davidmoten.odata.client.UploadStrategy;
@@ -1486,6 +1487,30 @@ public final class Generator {
 									importedInnerType, methodName);
 							writePropertyGetterCollectionBody(imports, indent, p, fieldName, inner, importedInnerType,
 									isEntity, options);
+							p.format("%s}\n", indent.left());
+						}
+						// add a mutator for a collection if is collection of complex type and owner is an entity
+						if (!isEntity && ofEntity) {
+							Map<String, String> map = new LinkedHashMap<>();
+							map.put(fieldName,
+									"new value of {@code " + x.getName() + "} field (as defined in service metadata)");
+							structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
+							String classSuffix = "";
+							String withMethodName = Names.getWithMethod(x.getName());
+							methodNames.add(withMethodName);
+							p.format("\n%spublic %s%s %s(%s<%s> %s) {\n", indent, simpleClassName, classSuffix, //
+									withMethodName, imports.add(List.class), importedInnerType, fieldName);
+							// use _x as identifier so doesn't conflict with any field name
+							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
+							if (ofEntity) {
+								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
+							}
+							p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
+									indent, //
+									imports.add(com.github.davidmoten.odata.client.Util.class), //
+									fullType);
+							p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
+							p.format("%sreturn _x;\n", indent);
 							p.format("%s}\n", indent.left());
 						}
 						{
