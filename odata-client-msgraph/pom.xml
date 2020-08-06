@@ -11,7 +11,7 @@
     <artifactId>odata-client-msgraph</artifactId>
     <name>${project.artifactId}</name>
     <packaging>bundle</packaging>
-    <description>OData client generator</description>
+    <description>Java client for use with the Microsoft Graph v1.0 endpoint</description>
 
     <dependencies>
 
