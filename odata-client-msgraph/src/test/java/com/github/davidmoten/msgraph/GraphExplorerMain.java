@@ -3,6 +3,7 @@ package com.github.davidmoten.msgraph;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import odata.msgraph.client.complex.ObjectIdentity;
 import odata.msgraph.client.container.GraphService;
@@ -15,13 +16,37 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
-        {
-    		// for compilation only, not running
-    		User me = client.me().get();
-    		List<ObjectIdentity> ids = me.getIdentities().toList();
-    		ids.add(ObjectIdentity.builder().issuerAssignedId("blah").issuerAssignedId("id").build());
-    	    me = me.withIdentities(ids).patch();
-        }
+		{
+			Predicate<ObjectIdentity> hasUserPrincipalName = id -> id.getSignInType().orElse("").equals("userPrincipalName");
+			// for compilation only, not running
+			User u = client //
+					.users() //
+					.select("id,identities") //
+					.get() //
+					.stream() //
+					.filter(x -> x //
+							.getIdentities() //
+							.stream() //
+							.anyMatch(hasUserPrincipalName)) //
+					.findFirst() //
+					.get();
+
+			List<ObjectIdentity> ids = u.getIdentities().toList();
+			System.out.println(ids);
+			ObjectIdentity id = ids.stream() //
+					.filter(hasUserPrincipalName) //
+					.findFirst() //
+					.get();
+			ObjectIdentity id2 = ObjectIdentity //
+					.builder() //
+					.signInType("userPrincipalName") //
+					.issuer(id.getIssuer().orElse(null)) //
+					.issuerAssignedId(id.getIssuerAssignedId().orElse(null)) //
+					.build();
+			ids.add(id2);
+			// no real change but see if patch works
+			u.withIdentities(ids).patch();
+		}
         
         System.exit(0);
         {
