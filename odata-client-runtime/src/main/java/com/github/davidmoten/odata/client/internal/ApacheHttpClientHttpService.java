@@ -112,23 +112,28 @@ public class ApacheHttpClientHttpService implements HttpService {
             request.setConfig(config);
             log.debug("executing request");
             try (CloseableHttpResponse response = client.execute(request)) {
-                log.debug("executed request, code={}", response.getStatusLine().getStatusCode());
+            	int statusCode = response.getStatusLine().getStatusCode();
+                log.debug("executed request, code={}", statusCode);
                 final String text;
-                if (doInput) {
+                if (doInput || isError(statusCode)) {
                     text = Util.readString(response.getEntity().getContent(),
                             StandardCharsets.UTF_8);
                 } else {
                     text = null;
                 }
                 log.debug("response text=\n{}", text);
-                return new HttpResponse(response.getStatusLine().getStatusCode(), text);
+                return new HttpResponse(statusCode, text);
             }
         } catch (IOException e) {
             throw new ClientException(e);
         }
     }
 
-    @Override
+    private static boolean isError(int statusCode) {
+    	return statusCode >= 400;
+    }
+
+	@Override
     public void close() throws Exception {
         log.info("closing client");
         client.close();
