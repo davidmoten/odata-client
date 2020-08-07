@@ -1,8 +1,10 @@
 package com.github.davidmoten.msgraph;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import odata.msgraph.client.complex.ObjectIdentity;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.DirectoryObject;
 import odata.msgraph.client.entity.FileAttachment;
@@ -13,6 +15,15 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+        {
+    		// for compilation only, not running
+    		User me = client.me().get();
+    		List<ObjectIdentity> ids = me.getIdentities().toList();
+    		ids.add(ObjectIdentity.builder().issuerAssignedId("blah").issuerAssignedId("id").build());
+    	    me = me.withIdentities(ids).patch();
+        }
+        
+        System.exit(0);
         {
             client //
                     .me() //
