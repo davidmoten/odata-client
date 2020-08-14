@@ -16,6 +16,11 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+        {
+        	client.users().delta().forEach(System.out::println);
+        }
+        System.exit(0);
+        
 		{
 			Predicate<ObjectIdentity> hasUserPrincipalName = id -> id.getSignInType().orElse("").equals("userPrincipalName");
 			// for compilation only, not running

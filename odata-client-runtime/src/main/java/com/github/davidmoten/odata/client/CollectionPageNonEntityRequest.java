@@ -60,6 +60,18 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
                 HttpURLConnection.HTTP_OK);
     }
 
+    public static <T> CollectionPageNonEntityRequest<T> forFunction(ContextPath contextPath,
+            Class<T> returnClass, Map<String, TypedObject> parameters,
+            SchemaInfo returnTypeSchemaInfo) {
+        String json = contextPath.context().serializer().serialize(parameters);
+        return new CollectionPageNonEntityRequest<T>( //
+                contextPath, //
+                returnClass, //
+                returnTypeSchemaInfo, //
+                HttpMethod.GET, //
+                Optional.of(json), //
+                HttpURLConnection.HTTP_OK);
+    }
     CollectionPage<T> get(RequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;

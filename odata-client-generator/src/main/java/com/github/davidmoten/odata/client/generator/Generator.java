@@ -725,7 +725,7 @@ public final class Generator {
 		writeFunctionParameterMapAndNullChecksAndAsciiCheck(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
-                    "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    "%sreturn %s.forFunction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
                     indent, //
                     imports.add(CollectionPageNonEntityRequest.class), //
                     function.getFullType(), //
