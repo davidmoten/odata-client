@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -188,11 +189,17 @@ public final class Serializer {
         }
     }
 
-    public <T> CollectionPage<T> deserializeCollectionPage(String json, Class<T> cls,
-            ContextPath contextPath, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    public <T> CollectionPage<T> deserializeCollectionPage( //
+    		String json, //
+    		Class<T> cls, //
+            ContextPath contextPath, //
+            SchemaInfo schemaInfo, //
+            List<RequestHeader> requestHeaders, //
+            HttpRequestOptions options, //
+            Consumer<? super CollectionPage<T>> listener) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, schemaInfo,
-                requestHeaders, options);
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, schemaInfo,
+                requestHeaders, options, listener);
     }
 
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls,
@@ -210,7 +217,9 @@ public final class Serializer {
             // TODO support relative urls using odata.context if present
             Optional<String> nextLink = Optional.ofNullable(o.get("@odata.nextLink"))
                     .map(JsonNode::asText);
-            return new CollectionInfo<T>(list, nextLink);
+            Optional<String> deltaLink = Optional.ofNullable(o.get("@odata.deltaLink"))
+                    .map(JsonNode::asText);
+            return new CollectionInfo<T>(list, nextLink, deltaLink);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -220,10 +229,12 @@ public final class Serializer {
 
         final List<T> list;
         final Optional<String> nextLink;
+        final Optional<String> deltaLink;
 
-        CollectionInfo(List<T> list, Optional<String> nextLink) {
+        CollectionInfo(List<T> list, Optional<String> nextLink, Optional<String> deltaLink) {
             this.list = list;
             this.nextLink = nextLink;
+            this.deltaLink = deltaLink;
         }
     }
 

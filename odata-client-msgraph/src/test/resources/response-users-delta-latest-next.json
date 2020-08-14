@@ -1,0 +1,18 @@
+{
+  "@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(displayName,givenName,surname)",
+  "@odata.nextLink":"https://graph.microsoft.com/v1.0/users/delta?$skiptoken=4567",
+  "value": [
+    {
+      "displayName":"Testuser1",
+      "givenName":"John",
+      "surname":"Doe",
+      "id":"ffff7b1a-13b6-477b-8c0c-380905cd99f7"
+    },
+    {
+      "displayName":"Testuser2",
+      "givenName":"Jane",
+      "surname":"Doe",
+      "id":"605d1257-ffff-40b6-8e6f-528a53f5dc55"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -65,5 +66,13 @@ public class Util {
                 return list;
             }
         };
+    }
+    
+    static <S extends Collection<T>, T> S add(Iterable<T> iterable, S collection) {
+    	Iterator<T> it = iterable.iterator();
+        while (it.hasNext()) {
+            collection.add(it.next());
+        }
+        return collection;
     }
 }
