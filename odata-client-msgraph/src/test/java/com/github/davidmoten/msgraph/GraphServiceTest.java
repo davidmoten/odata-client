@@ -701,9 +701,8 @@ public class GraphServiceTest {
                         "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
                         "/request-messages-delta.json", //
                         "/response-messages-delta.json", //
-                        HttpMethod.POST, //
+                        HttpMethod.GET, //
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
-                        RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Message m = client //

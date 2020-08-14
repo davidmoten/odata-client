@@ -1,0 +1,517 @@
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users",
+	"@odata.nextLink": "https://graph.microsoft.com/v1.0/users/delta?$skiptoken=C89pSM2OS16Losa5WwuZYlA6FG8IEvZun5xxYY5sSvJzl1hIGV24t2G69bKFHcV6JxhdZzMQ7DmoNWmxiCssby9WwOjVkgkaR3yjviQVPBoLpFnqrZgFuA4YQOvTVvGKw9Rq8E9jApsPWvSWaG6lzR4GkOe73r7znrKOwm77DyC3h-DFMVQRpfsUrSgWiEKgZTF5YzREL88tg6Uuw5BGz8FvDzd-MRD7BoFwcUfjkusXTsi_h_Ex2Foi3Y0rx1qe3UY2s-UdrIganifDfAolsLSl64e-DpCNisPFC_mgRgK-Kn9b0wa4hD0v9i-WvhlAbnQbUBRZm1BKm0YlKRg1BFycCv8BOox4HoNybrijw_T0CkKKZtxjH_X4-RNk5ZjJgMbBhXRsgosEOwemEs4SxvVTQLmk1gEvaL78rvIvOBJg31S89_KiUNqe7cwLjohEotPjCZUCaoeL0OmTYE-b8MPhiNxUx3C4G_ysz86JWpCKrSFqumtvMkKEkWXOxJJUJ9STt_PTDSLvTu28RnvCONm-lo7osiNBphABcoQ_TGOaIiaRfG0zyY47FOubMO3VWQH4pgavux5S-RZ78xW6fVV_NBq-Cakrzfj43d-A9nL--Kt7acXynsdUZmpLXOdeLC95QakFH9MqH6DUilAS49oz9SePxiXHpXs-dm8IkkSy95XXEckvPHXMg_9KvLufeE4J4u0cSLdHT7VpnM42IoeSDbOABXEf4cfkrJGzjGQQVgXeYWqmRLsttM0Bw5hg88WJivYxeztip_2OHBnta6y51M9ojnRHPGaJIY86sMVGSE5a5zJ_wjPGpd5sakt9HdpDrTbdrAb30QkJUtwnxCPm5AEl_8WqePxHMtEnV7MTRBBCa-ebNXYV4wKvIF1tiuPOSEReFZ9gwQqhkl5dJeQKHjcDwIfAWkl5eSEbFN21TjuO0PA8Z59aLc85PBHj2RQBKQXOiKlMi7NIMUzsrERfnDHNE4tdORTVTZYff1LDHLoTaugt8bhDZ26HVebaRbbUT3_fUnDLQkr7RuxwEG-X1nZSUWFmBYe_KXA2OwQ9503_ablB0ZMEW9XcW7LtZAYmcoUxro5UVzLmA0H99oW986hQ01f9Y2bjc-iU_TbF5w9YrMJlLBS25gSX2XkX3VrZqJnTyICpVM2rtF0Yz7KYTraD4j4uz0DiZTglzr8fPoYr8vBkkRMDHknXCjpqktVLjhW25n3wIk3WuyNYz_dFCRozfKp0-iz9osbGaudBERGEnYLshTm-EWS4ApnDOIarTPW_DUwjR288Sr9TcIEby2PUf0oAboHututTZhEM2E2ZO1I3162PdyWAq5ZT6N9W4LEpcakP33Nhu9mOMNk5UH9Iqkrwj1z5113elic0T3aevvQYfPSKI_AfDeTHr_2hIRJP0uyr3O93VsaPizHMk83HCAPzgygkbW8JGZ49SY798VJvPbH41OzUYSjxK_fNlBYNu0dzMEMgOT99hAU13GiG-bPLNheReL-vZ2_XtsFJWiaAQwFAcBgRGR2PeDNBa-s3i763YHGFISm2EfsaHhbkmew53CO8kedT63EhzzhrPCZ5xI3on5Yv9rTD3oOjSkGJavEktKEqW4AsmVFQwowXSPAlZGD-Izf8J7onEj8H-3_DHNvBGJRWD8VH6Y62Q_HuxsH--mk9ATsXn0kPxY5Yq7XTUydAO7YK-alx122HKg1JkA4xkXVuRZpU3gVL-Fjx0DAz9GopkRccPVMB8CLurksZvKCpkoN6FMH7YT4EEngCh8NvmTY7oFHPsAwIxlW-C_OZSxZAxzOnMR66VlF0TSX9oPGfhwKkIczoqd9dghF42nU-nOUGR8DoNNucsL6dsqgjvWZVDwUQzu406EmeXkARYhq5MoDW7qfB0djHx_JdhisIDTdmv8vZ95JOKe7vE8SH_cBICvtwRVwSJcjHG-UPSpy35AIPyxLxv7kCZu1dBTFpotByDI7hT24kLB5o3eDupJYuL-Hqh2wl3PKI7ukGf2-OG66aP5F-3Oju6jDFccO-0V1amQUYb5BCMUekwd7hmn-UuiUqPxstDJfx91J2UrJleqU6h4bAkdqTOs917wUo0iJoalO5q7oGo0NEw_zlyhV-ZmGTt1Ndquv-6GucNgEgceOEFgASXvTJc9CFzPWl83vhJrPRsqBkNyYEKdFL5dbOGejHihZc_Vz2AVnHiG0JS83Z13pTUVHFIeKsIaI3HAOaiNgbAomDfxAq7sZ2gH0jyyx0B9M7htarjujBxlHqzLafnseYgkOWMkR9VOuph-CatMxnxA28w8Mi6ADQuNJ-y-_7MNzHPSGXnKVYhvC2fQD3R60CtfN2V9smspP8dKO8mch9XG5NTgdIeGGmGA2826kNagp48aDKzDpSZQW80VxE_ohlMBDt-61ASIFt9MkJ-eb0K9vEI7_S5eXqQw_Gap_76143CyN0bjH4-q7Y60yHXyFH6NFvdlVVECe34pEp0ehVt8TrzLQzcIQ-oYX8h2UoLCT6L7qDYGJ7DmOu7q_THcODpVD_NkC-jWT-PnPzLNkVJ_Qeku6_Lu7TyfOxSChLRuLsqpOPjVAgCo2AzeXWX_3T0VAYw7IRt5nIdArZbZvFGWkxzpYJ-oSatL-_Z2FZkujC-oLZ_0KAF9IXNWNwp4SrHU5-OqqcLMdYnmTB3OA-ktA-xVEB5V2ZYnshPdqhTv9iXPsaTRLm1ZnA3TO4EjlWC2tudnV864mzOS77Yg5tIJDOnkZa73CBGurmxfEi4cog42KuzuB-KA4lunDXSMH-1pKe2APHPPgOCnRrs2KH-D-_CtdfSqUyolb9bOMqu-FXnVN5K0TLc3I5sdVG29qIFtQESGzGZYiMAc3MIz00ouBqHA0bu1Zxvbheeob9Uv69xTOL-yaQlwIIklrCQ1S7FXMvDIF-XPSiImiF9k1m8H9Rwx0ZLbsBF8T_tIqi87Kc_ZGlVI7LLbF1Bw5hEyMhP7IAm649set9YntWEyVySxPE-AAZaYSdAWjxy7O-eni3aZcu7LfrBnLKed7eqXaYBIXG_um3rm-PhQ1Xxxy3eGtY94qEALczwdRvxJuWKpcufFWvGFTUB_fxEHex-i7yi4awP6jPSDWkBny2BlZRyexpiCv_DfSJNcuElaL03EHUsw07ApRzfm8eS5LdpieT9xhEQNxNOMf6ZRXnM0sLO-r0sthYyWMLVi528xy6bFCIXwYgLRv_XK5IhAL6mA8yd6bYeSFnI-3u_lpxrvZMoFSsLMHloxSzzjif8QsWmUgtVrtoA83-tUIljbfBXz7WCBvGjJhZf58VHbtkEgqI6SgzuTOlvkLl5ohOlB6xW9h0lVWv1cwj6R5CsFqyCUvslxBeUq17PUroQNa7T3ag68y5UFP_zLJZ3LzUqeeMEmMPYv0nuly-KMBrMdznqLGdIDsfSBrqlKUtiAprh7LmdMfE6zG_jttwBwmZ_YP8qiCzmjBqQkkocE-1NRAAsvDL2-tHyYhAEXAQcPHSJ7bQcvZhZwFb91G100rPd1BFbKMMeu8jcqfAkKVC_FQXN_JgaMUvYpZhzcGA8ytm1Cmultv7mR72tXHbXNBOAIiWHeZ0t05fEp9mfmncxSp5aizZHhtLUcHBTc5AzlQvSBJEUGpoxNP1ANSZyZOD7R2cU43MNujX_N9VvVeaOjXa9p-3EfewcPKxMfucYLLXBlcD2HJ05q-z6CGaiLRIGfnqM0YdvEs4a1PAH5bb2t5xkMeqXZrMQI9NSHV89LLrhIi24w7TvAD5r0rKw_UaemEgW5ZfB0gRG8LXetssY6GDVEuRvMPYZ7gCwQJyVQurgJMpJJAXqbK1lY6STPpQTrbRDEtfTGnUg8nHgPh-O7nKvw4mjLYrql-Vmfy-sS2JhC7_L6sOb6sjfUZ-WQK1D0p2Bx1oba01zxpyc4n1c0p7_pDvn4M9k8eknlP93O1zwxJQTDCOKQUJySST4-G2NGuWnH3xTKk91RXaL5YPrJunQoNPL0QdkLTz3wCpbf2sAkOAP-yL9wM4WlzQYuve5-szpeKTtGI8Hdb7nmq9K9PSHCsartH-9utC_aV_EwlZGcymXX9D9UF4xCvuJ5Eky1NlrHWPjAqUd2TSj1ukdzLk--EI39gEuyB7paXJ3x-3Lbmx7qvsEEoWLTJfxRyzROEh5VMCwN4pkeWsefwivZnmw-jxtTigPdp8C_Nnhc1Qq_J8EBRax2rX9M4s5e97T8vh_DHJ9rBxGQXdfDQIFYK3qrtgjau5e3Ma2_lhkZMSDbw4_LfJpgC5ixleAuVPB-kunt0JxQ1obnSlF_X9jrfe6L2_QM7V7TInyDiPzvALDE1Aycg6Enk27jYUFvGv7EfG2DGVs_kDAOpezrPLacW6Z0ssxcYxd2vPHODJiWGvW5Fu82oOJrq84tfC8ac22p1JKoKzW_LF7nvXVQD7VlUzSrE.JE9uhDRqLihBoz14WLS2jHNqXJAekHjhleCOev2lFdc",
+	"value": [
+		{
+			"displayName": "Brian Johnson (TAILSPIN)",
+			"givenName": "Brian",
+			"mail": "BrianJ@M365x214355.onmicrosoft.com",
+			"surname": "Johnson",
+			"userPrincipalName": "BrianJ@M365x214355.onmicrosoft.com",
+			"id": "e46ba1a2-59e7-4019-b0fa-b940053e0e30"
+		},
+		{
+			"displayName": "Conf Room Stevens",
+			"mail": "Stevens@M365x214355.onmicrosoft.com",
+			"userPrincipalName": "Stevens@M365x214355.onmicrosoft.com",
+			"id": "5c7188eb-da70-4f1a-a8a5-afc26c2fe22c"
+		},
+		{
+			"displayName": "Conf Room Hood",
+			"mail": "Hood@M365x214355.onmicrosoft.com",
+			"userPrincipalName": "Hood@M365x214355.onmicrosoft.com",
+			"id": "3fec04fc-e036-42f4-8f6f-b3b02288085c"
+		},
+		{
+			"displayName": "Conf Room Crystal",
+			"mail": "Crystal@M365x214355.onmicrosoft.com",
+			"userPrincipalName": "Crystal@M365x214355.onmicrosoft.com",
+			"id": "8528d6e9-dce3-45d1-85d4-d2db5f738a9f"
+		},
+		{
+			"displayName": "Conf Room Baker",
+			"mail": "Baker@M365x214355.onmicrosoft.com",
+			"userPrincipalName": "Baker@M365x214355.onmicrosoft.com",
+			"id": "013b7b1b-5411-4e6e-bdc9-c4790dae1051"
+		},
+		{
+			"displayName": "Conf Room Adams",
+			"mail": "Adams@M365x214355.onmicrosoft.com",
+			"userPrincipalName": "Adams@M365x214355.onmicrosoft.com",
+			"id": "6e7b768e-07e2-4810-8459-485f84f8f204"
+		},
+		{
+			"displayName": "Conf Room Rainier",
+			"mail": "Rainier@M365x214355.onmicrosoft.com",
+			"userPrincipalName": "Rainier@M365x214355.onmicrosoft.com",
+			"id": "6f1c452b-f9f4-4f43-8c42-17e30ab0077c"
+		},
+		{
+			"businessPhones": [
+				"+81 345550115"
+			],
+			"displayName": "Emily Braun",
+			"givenName": "Emily",
+			"jobTitle": "Budget Analyst",
+			"mail": "EmilyB@M365x214355.onmicrosoft.com",
+			"officeLocation": "97/2302",
+			"preferredLanguage": "en-US",
+			"surname": "Braun",
+			"userPrincipalName": "EmilyB@M365x214355.onmicrosoft.com",
+			"id": "2804bc07-1e1f-4938-9085-ce6d756a32d2",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "24fcbca3-c3e2-48bf-9ffc-c7f81b81483d"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 858 555 0110"
+			],
+			"displayName": "Alex Wilber",
+			"givenName": "Alex",
+			"jobTitle": "Marketing Assistant",
+			"mail": "AlexW@M365x214355.onmicrosoft.com",
+			"officeLocation": "131/1104",
+			"preferredLanguage": "en-US",
+			"surname": "Wilber",
+			"userPrincipalName": "AlexW@M365x214355.onmicrosoft.com",
+			"id": "4782e723-f4f4-4af3-a76e-25e3bab0d896",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "08fa38e4-cbfa-4488-94ed-c834da6539df"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 918 555 0101"
+			],
+			"displayName": "Isaiah Langer",
+			"givenName": "Isaiah",
+			"jobTitle": "Web Marketing Manager",
+			"mail": "IsaiahL@M365x214355.onmicrosoft.com",
+			"officeLocation": "20/1101",
+			"preferredLanguage": "en-US",
+			"surname": "Langer",
+			"userPrincipalName": "IsaiahL@M365x214355.onmicrosoft.com",
+			"id": "e3d0513b-449e-4198-ba6f-bd97ae7cae85",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "08fa38e4-cbfa-4488-94ed-c834da6539df"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 425 555 0109"
+			],
+			"displayName": "Adele Vance",
+			"givenName": "Adele",
+			"jobTitle": "Product Marketing Manager",
+			"mail": "AdeleV@M365x214355.onmicrosoft.com",
+			"officeLocation": "18/2111",
+			"preferredLanguage": "en-US",
+			"surname": "Vance",
+			"userPrincipalName": "AdeleV@M365x214355.onmicrosoft.com",
+			"id": "87d349ed-44d7-43e1-9a83-5f2406dee5bd",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "08fa38e4-cbfa-4488-94ed-c834da6539df"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 262 555 0106"
+			],
+			"displayName": "Allan Deyoung",
+			"givenName": "Allan",
+			"jobTitle": "Corporate Security Officer",
+			"mail": "AllanD@M365x214355.onmicrosoft.com",
+			"officeLocation": "24/1106",
+			"preferredLanguage": "en-US",
+			"surname": "Deyoung",
+			"userPrincipalName": "AllanD@M365x214355.onmicrosoft.com",
+			"id": "c03e6eaa-b6ab-46d7-905b-73ec7ea1f755",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "089a6bb8-e8cb-492c-aa41-c078aa0b5120"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 954 555 0118"
+			],
+			"displayName": "Henrietta Mueller",
+			"givenName": "Henrietta",
+			"jobTitle": "Marketing Assistant",
+			"mail": "HenriettaM@M365x214355.onmicrosoft.com",
+			"officeLocation": "18/1106",
+			"preferredLanguage": "en-US",
+			"surname": "Mueller",
+			"userPrincipalName": "HenriettaM@M365x214355.onmicrosoft.com",
+			"id": "c8913c86-ceea-4d39-b1ea-f63a5b675166",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "08fa38e4-cbfa-4488-94ed-c834da6539df"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 918 555 0104"
+			],
+			"displayName": "Lynne Robbins",
+			"givenName": "Lynne",
+			"jobTitle": "Product Manager",
+			"mail": "LynneR@M365x214355.onmicrosoft.com",
+			"officeLocation": "20/1104",
+			"preferredLanguage": "en-US",
+			"surname": "Robbins",
+			"userPrincipalName": "LynneR@M365x214355.onmicrosoft.com",
+			"id": "e8a02cc7-df4d-4778-956d-784cc9506e5a",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "87d349ed-44d7-43e1-9a83-5f2406dee5bd"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 425 555 0105"
+			],
+			"displayName": "Debra Berger",
+			"givenName": "Debra",
+			"jobTitle": "Administrative Assistant",
+			"mail": "DebraB@M365x214355.onmicrosoft.com",
+			"officeLocation": "18/2107",
+			"preferredLanguage": "en-US",
+			"surname": "Berger",
+			"userPrincipalName": "DebraB@M365x214355.onmicrosoft.com",
+			"id": "d4957c9d-869e-4364-830c-d0c95be72738",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "24fcbca3-c3e2-48bf-9ffc-c7f81b81483d"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 858 555 0111"
+			],
+			"displayName": "Christie Cline",
+			"givenName": "Christie",
+			"jobTitle": "Sr. VP Sales & Marketing",
+			"mail": "ChristieC@M365x214355.onmicrosoft.com",
+			"officeLocation": "131/2105",
+			"preferredLanguage": "en-US",
+			"surname": "Cline",
+			"userPrincipalName": "ChristieC@M365x214355.onmicrosoft.com",
+			"id": "b66ecf79-a093-4d51-86e0-efcc4531f37a",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "40079818-3808-4585-903b-02605f061225"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 205 555 0103"
+			],
+			"displayName": "Enrico Cattaneo",
+			"givenName": "Enrico",
+			"jobTitle": "Attorney",
+			"mail": "EnricoC@M365x214355.onmicrosoft.com",
+			"officeLocation": "14/1102",
+			"preferredLanguage": "en-US",
+			"surname": "Cattaneo",
+			"userPrincipalName": "EnricoC@M365x214355.onmicrosoft.com",
+			"id": "16cfe710-1625-4806-9990-91b8f0afee35",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "baafca12-9874-4765-9576-e0e5cafe491b"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 732 555 0102"
+			],
+			"displayName": "Ben Walters",
+			"givenName": "Ben",
+			"jobTitle": "VP Sales",
+			"mail": "BenW@M365x214355.onmicrosoft.com",
+			"officeLocation": "19/3123",
+			"preferredLanguage": "en-US",
+			"surname": "Walters",
+			"userPrincipalName": "BenW@M365x214355.onmicrosoft.com",
+			"id": "f5289423-7233-4d60-831a-fe107a8551cc",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "b66ecf79-a093-4d51-86e0-efcc4531f37a"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 918 555 0107"
+			],
+			"displayName": "Lidia Holloway",
+			"givenName": "Lidia",
+			"jobTitle": "Product Manager",
+			"mail": "LidiaH@M365x214355.onmicrosoft.com",
+			"officeLocation": "20/2107",
+			"preferredLanguage": "en-US",
+			"surname": "Holloway",
+			"userPrincipalName": "LidiaH@M365x214355.onmicrosoft.com",
+			"id": "2ed03dfd-01d8-4005-a9ef-fa8ee546dc6c",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "87d349ed-44d7-43e1-9a83-5f2406dee5bd"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 309 555 0104"
+			],
+			"displayName": "Grady Archie",
+			"givenName": "Grady",
+			"jobTitle": "CVP Legal",
+			"mail": "GradyA@M365x214355.onmicrosoft.com",
+			"officeLocation": "19/2109",
+			"preferredLanguage": "en-US",
+			"surname": "Archie",
+			"userPrincipalName": "GradyA@M365x214355.onmicrosoft.com",
+			"id": "df043ff1-49d5-414e-86a4-0c7f239c36cf",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "40079818-3808-4585-903b-02605f061225"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 980 555 0101"
+			],
+			"displayName": "Joni Sherman",
+			"givenName": "Joni",
+			"jobTitle": "Paralegal",
+			"mail": "JoniS@M365x214355.onmicrosoft.com",
+			"officeLocation": "20/1109",
+			"preferredLanguage": "en-US",
+			"surname": "Sherman",
+			"userPrincipalName": "JoniS@M365x214355.onmicrosoft.com",
+			"id": "8b209ac8-08ff-4ef1-896d-3b9fde0bbf04",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "baafca12-9874-4765-9576-e0e5cafe491b"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"8006427676"
+			],
+			"displayName": "MOD Administrator",
+			"givenName": "MOD",
+			"mail": "admin@M365x214355.onmicrosoft.com",
+			"mobilePhone": "5555555555",
+			"preferredLanguage": "en-US",
+			"surname": "Administrator",
+			"userPrincipalName": "admin@M365x214355.onmicrosoft.com",
+			"id": "5bde3e51-d13b-4db1-9948-fe4b109d11a7"
+		},
+		{
+			"businessPhones": [
+				"+1 858 555 0109"
+			],
+			"displayName": "Miriam Graham",
+			"givenName": "Miriam",
+			"jobTitle": "VP Marketing",
+			"mail": "MiriamG@M365x214355.onmicrosoft.com",
+			"officeLocation": "131/2103",
+			"preferredLanguage": "en-US",
+			"surname": "Graham",
+			"userPrincipalName": "MiriamG@M365x214355.onmicrosoft.com",
+			"id": "08fa38e4-cbfa-4488-94ed-c834da6539df",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "b66ecf79-a093-4d51-86e0-efcc4531f37a"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 206 555 0105"
+			],
+			"displayName": "Nestor Wilke",
+			"givenName": "Nestor",
+			"jobTitle": "CVP Operations",
+			"mail": "NestorW@M365x214355.onmicrosoft.com",
+			"officeLocation": "36/2121",
+			"preferredLanguage": "en-US",
+			"surname": "Wilke",
+			"userPrincipalName": "NestorW@M365x214355.onmicrosoft.com",
+			"id": "089a6bb8-e8cb-492c-aa41-c078aa0b5120",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "40079818-3808-4585-903b-02605f061225"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 309 555 0101"
+			],
+			"displayName": "Irvin Sayers",
+			"givenName": "Irvin",
+			"jobTitle": "Director",
+			"mail": "IrvinS@M365x214355.onmicrosoft.com",
+			"officeLocation": "19/2106",
+			"preferredLanguage": "en-US",
+			"surname": "Sayers",
+			"userPrincipalName": "IrvinS@M365x214355.onmicrosoft.com",
+			"id": "baafca12-9874-4765-9576-e0e5cafe491b",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "df043ff1-49d5-414e-86a4-0c7f239c36cf"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+20 255501070"
+			],
+			"displayName": "Pradeep Gupta",
+			"givenName": "Pradeep",
+			"jobTitle": "Accountant II",
+			"mail": "PradeepG@M365x214355.onmicrosoft.com",
+			"officeLocation": "98/2202",
+			"preferredLanguage": "en-US",
+			"surname": "Gupta",
+			"userPrincipalName": "PradeepG@M365x214355.onmicrosoft.com",
+			"id": "ec63c778-24e1-4240-bea3-d12a167d5232",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "48d31887-5fad-4d73-a9f5-3c356e68a038"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 205 555 0108"
+			],
+			"displayName": "Diego Siciliani",
+			"givenName": "Diego",
+			"jobTitle": "CVP Finance",
+			"mail": "DiegoS@M365x214355.onmicrosoft.com",
+			"officeLocation": "14/1108",
+			"preferredLanguage": "en-US",
+			"surname": "Siciliani",
+			"userPrincipalName": "DiegoS@M365x214355.onmicrosoft.com",
+			"id": "24fcbca3-c3e2-48bf-9ffc-c7f81b81483d",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "40079818-3808-4585-903b-02605f061225"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 412 555 0109"
+			],
+			"displayName": "Megan Bowen",
+			"givenName": "Megan",
+			"jobTitle": "Auditor",
+			"mail": "MeganB@M365x214355.onmicrosoft.com",
+			"officeLocation": "12/1110",
+			"preferredLanguage": "en-US",
+			"surname": "Bowen",
+			"userPrincipalName": "MeganB@M365x214355.onmicrosoft.com",
+			"id": "48d31887-5fad-4d73-a9f5-3c356e68a038",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "24fcbca3-c3e2-48bf-9ffc-c7f81b81483d"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 502 555 0144"
+			],
+			"displayName": "Patti Fernandez",
+			"givenName": "Patti",
+			"jobTitle": "President",
+			"mail": "PattiF@M365x214355.onmicrosoft.com",
+			"officeLocation": "15/1102",
+			"preferredLanguage": "en-US",
+			"surname": "Fernandez",
+			"userPrincipalName": "PattiF@M365x214355.onmicrosoft.com",
+			"id": "40079818-3808-4585-903b-02605f061225"
+		},
+		{
+			"businessPhones": [
+				"+1 913 555 0101"
+			],
+			"displayName": "Lee Gu",
+			"givenName": "Lee",
+			"jobTitle": "CVP Research & Development",
+			"mail": "LeeG@M365x214355.onmicrosoft.com",
+			"officeLocation": "23/3101",
+			"preferredLanguage": "en-US",
+			"surname": "Gu",
+			"userPrincipalName": "LeeG@M365x214355.onmicrosoft.com",
+			"id": "074e56ea-0b50-4461-89e5-c67ae14a2c0b",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "40079818-3808-4585-903b-02605f061225"
+				}
+			]
+		},
+		{
+			"businessPhones": [
+				"+1 502 555 0102"
+			],
+			"displayName": "Johanna Lorenz",
+			"givenName": "Johanna",
+			"jobTitle": "CVP Engineering",
+			"mail": "JohannaL@M365x214355.onmicrosoft.com",
+			"officeLocation": "23/2102",
+			"preferredLanguage": "en-US",
+			"surname": "Lorenz",
+			"userPrincipalName": "JohannaL@M365x214355.onmicrosoft.com",
+			"id": "626cbf8c-5dde-46b0-8385-9e40d64736fe",
+			"manager@delta": [
+				{
+					"@odata.type": "#microsoft.graph.user",
+					"id": "40079818-3808-4585-903b-02605f061225"
+				}
+			]
+		}
+	]
+}
