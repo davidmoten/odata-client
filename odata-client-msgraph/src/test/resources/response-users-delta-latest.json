@@ -1,0 +1,5 @@
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users",
+	"@odata.deltaLink": "https://graph.microsoft.com/v1.0/users/delta?$deltatoken=1234",
+	"value": []
+}
