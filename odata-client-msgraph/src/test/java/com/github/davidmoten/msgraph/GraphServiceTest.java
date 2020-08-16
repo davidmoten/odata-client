@@ -134,6 +134,8 @@ public class GraphServiceTest {
                 .get();
         assertNotNull(c);
         assertEquals(31, c.currentPage().size());
+        assertFalse(c.deltaLink().isPresent());
+        assertFalse(c.nextDelta().isPresent());
     }
 
     @Test
@@ -234,6 +236,48 @@ public class GraphServiceTest {
             assertEquals(403, (int) e.getStatusCode().get());
         }
     }
+    
+	@Test
+	public void testUsersDeltaTokenLatest() {
+		GraphService client = clientBuilder() //
+				.expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.build();
+		CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
+		assertTrue(p.toList().isEmpty());
+		p = p.nextDelta().get();
+		assertEquals(4, p.toList().size());
+		p = p.nextDelta().get();
+		List<User> list = p.toList();
+		assertEquals(1, list.size());
+		assertEquals("Fred", list.get(0).getGivenName().get());
+	}
+	
+	@Test
+	public void testUsersDeltaNextDeltaWorsWithoutReadingStreamFully() {
+		GraphService client = clientBuilder() //
+				.expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json", HttpMethod.GET,
+						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+				.build();
+		CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
+		p = p.nextDelta().get();
+		p = p.nextDelta().get();
+		List<User> list = p.toList();
+		assertEquals(1, list.size());
+		assertEquals("Fred", list.get(0).getGivenName().get());
+	}
 
     @SuppressWarnings("unused")
     @Test

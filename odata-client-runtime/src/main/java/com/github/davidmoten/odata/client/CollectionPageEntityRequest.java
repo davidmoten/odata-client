@@ -35,7 +35,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h, options);
         RequestHelper.checkResponseCode(cp, r, 200, 299);
         return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp,
-                schemaInfo, h, options);
+                schemaInfo, h, options, null);
     }
 
     T post(CollectionRequestOptions options, T entity) {
@@ -151,6 +151,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     public CollectionEntityRequestOptionsBuilder<T, R> readTimeout(long duration, TimeUnit unit) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).readTimeout(duration, unit);
+    }
+    
+    public CollectionEntityRequestOptionsBuilder<T, R> deltaTokenLatest() {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).deltaTokenLatest();
     }
 
 }

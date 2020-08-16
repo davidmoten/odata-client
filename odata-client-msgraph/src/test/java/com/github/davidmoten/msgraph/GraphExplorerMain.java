@@ -1,9 +1,13 @@
 package com.github.davidmoten.msgraph;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+
+import com.github.davidmoten.odata.client.CollectionPage;
 
 import odata.msgraph.client.complex.ObjectIdentity;
 import odata.msgraph.client.container.GraphService;
@@ -17,7 +21,10 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
-        	client.users().delta().forEach(System.out::println);
+        	CollectionPage<User> delta = client.users().delta().deltaTokenLatest().get();
+        	delta.forEach(System.out::println);
+        	delta = delta.nextDelta().get();
+        	assertTrue(delta.currentPage().isEmpty());
         }
         System.exit(0);
         

@@ -46,7 +46,7 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty(),
                 HttpURLConnection.HTTP_CREATED);
     }
-
+    
     public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath,
             Class<T> returnClass, Map<String, TypedObject> parameters,
             SchemaInfo returnTypeSchemaInfo) {
@@ -72,6 +72,7 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
                 Optional.of(json), //
                 HttpURLConnection.HTTP_OK);
     }
+    
     CollectionPage<T> get(RequestOptions options) {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;
@@ -92,9 +93,10 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
                         cp, //
                         schemaInfo, //
                         h, //
-                        options);
+                        options, //
+                        null);
     }
-
+    
     public CollectionPage<T> get() {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).get();
     }
@@ -190,4 +192,7 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).urlOverride(urlOverride);
     }
 
+    public CollectionNonEntityRequestOptionsBuilder<T> deltaTokenLatest() {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).deltaTokenLatest();
+    }
 }
