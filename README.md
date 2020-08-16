@@ -510,7 +510,7 @@ CollectionPage<User> delta = client.users().delta().deltaTokenLatest().get();
 // a while later
 delta = delta.nextDelta().get();
 
-// delta is now a CollectionPage and can be iterated upon or paged through as you like
+// delta is a CollectionPage and can be iterated upon or paged through as you like
 // if you don't iterate through the results of the CollectionPage the next call to 
 // nextDelta() will do it for you because the deltaLink is on the last page 
 // of the current collection 
