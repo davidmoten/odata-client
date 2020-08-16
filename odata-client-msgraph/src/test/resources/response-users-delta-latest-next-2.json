@@ -1,0 +1,18 @@
+{
+  "@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users",
+  "@odata.deltaLink":"https://graph.microsoft.com/v1.0/users/delta?$deltatoken=789",
+  "value": [
+    {
+      "displayName":"Testuser5",
+      "givenName":"Al",
+      "surname":"Doe",
+      "id":"25dcffff-959e-4ece-9973-e5d9b800e8cc"
+    },
+    {
+      "displayName":"Testuser6",
+      "givenName":"Sam",
+      "surname":"Doe",
+      "id":"f6ede700-27d0-4c42-bfb9-4dffff43c74a"
+    }
+  ]
+}

@@ -18,21 +18,11 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
     Optional<R> nextPage();
 
     default List<T> toList() {
-        List<T> list = new ArrayList<>();
-        Iterator<T> it = iterator();
-        while (it.hasNext()) {
-            list.add(it.next());
-        }
-        return list;
+        return Util.add(this, new ArrayList<T>());
     }
     
     default Set<T> toSet() {
-        Set<T> set = new HashSet<>();
-        Iterator<T> it = iterator();
-        while (it.hasNext()) {
-            set.add(it.next());
-        }
-        return set;
+        return Util.add(this, new HashSet<T>());
     }
 
     default Stream<T> stream() {
