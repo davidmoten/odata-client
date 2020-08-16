@@ -520,8 +520,7 @@ delta.forEach(System.out::println);
 
 // a while later
 delta = delta.nextDelta().get();
-
-// etc ...
+...
 
 ```
 
