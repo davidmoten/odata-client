@@ -499,7 +499,7 @@ if (file.length() < 3000000) {
 m.send().call();
 ```
 ### Delta collections
-Some functions return delta collections which track changes to resource collections. In the Graph API xiv1.0 there are delta functions on users, calendar events, and messages. 
+Some functions return delta collections which track changes to resource collections. In the Graph API v1.0 there are delta functions on users, calendar events, and messages. 
 
 Here's an example of usage:
 
