@@ -512,8 +512,8 @@ delta = delta.nextDelta();
 
 // delta is now a CollectionPage and can be iterated upon or paged through as you like
 // if you don't iterate through the results of the CollectionPage the next call to 
-// nextDelta() will do it for you because the deltaLink is on the last CollectionPage 
-// of the current delta
+// nextDelta() will do it for you because the deltaLink is on the last page 
+// of the current collection 
 
 // print out all users that have changed
 delta.forEach(System.out::println);
