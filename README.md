@@ -517,6 +517,12 @@ delta = delta.nextDelta().get();
 
 // print out all users that have changed
 delta.forEach(System.out::println);
+
+// a while later
+delta = delta.nextDelta().get();
+
+// etc ...
+
 ```
 
 ## Serialization
