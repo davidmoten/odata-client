@@ -515,6 +515,7 @@ delta = delta.nextDelta();
 // nextDelta() will do it for you because the deltaLink is on the last CollectionPage 
 // of the current delta
 
+// print out all users that have changed
 delta.forEach(System.out::println);
 ```
 
