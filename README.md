@@ -498,6 +498,25 @@ if (file.length() < 3000000) {
 // send the email 
 m.send().call();
 ```
+### Delta collections
+Some functions return delta collections which track changes to resource collections. In the Graph API xiv1.0 there are delta functions on users, calendar events, and messages. 
+
+Here's an example of usage:
+
+```java
+// get a delta that returns no users but marks where future deltas will be based on
+CollectionPage<User> delta = client.users().delta().deltaTokenLatest().get();
+
+// a while later
+delta = delta.nextDelta();
+
+// delta is now a CollectionPage and can be iterated upon or paged through as you like
+// if you don't iterate through the results of the CollectionPage the next call to 
+// nextDelta() will do it for you because the deltaLink is on the last CollectionPage 
+// of the current delta
+
+delta.forEach(System.out::println);
+```
 
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
