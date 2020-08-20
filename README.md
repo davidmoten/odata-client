@@ -418,7 +418,7 @@ GraphService client = MsGraph
     .build();
 ``` 
 
-Global timeouts can be overriden by request:
+Global timeouts can be overriden **by request**:
 
 ```java
 List<User> users = client
