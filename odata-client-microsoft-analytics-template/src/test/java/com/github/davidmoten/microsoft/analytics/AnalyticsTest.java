@@ -8,6 +8,12 @@ public class AnalyticsTest {
 
 	@Test
 	public void testCreateClientFromContainer() {
+
+		// generate the classes from the metadata using the pom plugin
+		// then create a client in code using those generated classes.
+		// The class Container below is the service entry point (and is
+		// in the container sub-package (generated).
+
 		String organization = "myorg";
 		String version = "3.0";
 		@SuppressWarnings("unused")
