@@ -18,5 +18,11 @@ public class GeneratorMojoTest {
         assertEquals("abc.de123", toPackage("abc.de123"));
         assertEquals("abc.de123", toPackage("abc.de123;:=+"));
     }
+    
+    @Test
+    public void testToPackageOfJavaReservedWord() {
+        assertEquals("default_", toPackage("default"));
+        assertEquals("a.default_.b", toPackage("a.default.b"));
+    }
 
 }
