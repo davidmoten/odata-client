@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.lang.model.SourceVersion;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -32,7 +34,7 @@ import com.github.davidmoten.odata.client.generator.SchemaOptions;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GeneratorMojo extends AbstractMojo {
-
+    
     @Parameter(name = "metadata", required = true)
     String metadata;
 
@@ -161,6 +163,19 @@ public class GeneratorMojo extends AbstractMojo {
         while (result.endsWith(".")) {
             result = result.substring(0, result.length() - 1);
         }
-        return result;
+        return result = replaceReservedWordsInPackageName(result);
     }
+
+    private static String replaceReservedWordsInPackageName(String pkg) {
+        return Arrays.stream(pkg.split("\\.")) //
+                .map(x -> {
+                    if (SourceVersion.isKeyword(x)) {
+                        return x + "_";
+                    } else {
+                        return x;
+                    }
+                }).collect(Collectors.joining("."));
+        
+    }
+    
 }
