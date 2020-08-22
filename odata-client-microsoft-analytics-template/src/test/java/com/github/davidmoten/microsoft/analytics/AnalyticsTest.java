@@ -10,6 +10,7 @@ public class AnalyticsTest {
 	public void testCreateClientFromContainer() {
 		String organization = "myorg";
 		String version = "3.0";
+		@SuppressWarnings("unused")
 		Container client = Analytics //
 				.service(Container.class) //
 				.baseUrl("https://analytics.dev.azure.com/" + organization + "/_odata/v" + version) //
