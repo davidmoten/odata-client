@@ -1,10 +1,12 @@
 package com.github.davidmoten.microsoft.analytics;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
+import com.github.davidmoten.odata.client.ClientException;
+import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HasContext;
-
-import default_.container.Container;
 
 public final class Analytics {
 
@@ -47,10 +49,15 @@ public final class Analytics {
 		
 		public  MsGraphClientBuilder.Builder<T> tenantName(String tenantName) {
 			return new MsGraphClientBuilder<T> //
-			(b.baseUrl, b.serviceCls::newInstance).tenantName(tenantName);
+			(b.baseUrl, context -> {
+				try {
+					return b.serviceCls.getConstructor(Context.class).newInstance(context);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new ClientException(e);
+				}
+			}).tenantName(tenantName);
 		}
 	}
-
-	
 
 }

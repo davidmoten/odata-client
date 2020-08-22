@@ -59,7 +59,7 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-msgraph-client</id>
+                        <id>generate-client</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
@@ -68,16 +68,16 @@
                             <metadata>src/main/odata/microsoft-analytics-v3-metadata.xml</metadata>
                             <schemas>
                                 <schema>
-                                    <namespace>microsoft.graph</namespace>
-                                    <packageName>odata.msgraph.client.beta</packageName>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics.Model</namespace>
+                                    <packageName>microsoft.vs.analytics.model</packageName>
                                 </schema>
                                 <schema>
-                                    <namespace>microsoft.graph.callRecords</namespace>
-                                    <packageName>odata.msgraph.client.beta.callRecords</packageName>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics</namespace>
+                                    <packageName>microsoft.vs.analytics</packageName>
                                 </schema>
                                 <schema>
-                                    <namespace>microsoft.graph.termStore</namespace>
-                                    <packageName>odata.msgraph.client.beta.termStore</packageName>
+                                    <namespace>Default</namespace>
+                                    <packageName>microsoft.vs.analytics.myorg</packageName>
                                 </schema>
                             </schemas>
                         </configuration>

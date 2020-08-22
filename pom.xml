@@ -106,6 +106,7 @@
 		<module>odata-client-msgraph-client-builder</module>
 		<module>odata-client-msgraph</module>
 		<module>odata-client-msgraph-beta</module>
+                <module>odata-client-microsoft-analytics-template</module>
 		<module>odata-client-test-report</module>
 	</modules>
 
