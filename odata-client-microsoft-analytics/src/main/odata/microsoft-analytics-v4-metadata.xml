@@ -91,10 +91,6 @@
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.Activity"/>
           <Annotation Term="Display.DisplayName" String="Activity"/>
         </Property>
-        <Property Name="BacklogPriority" Type="Edm.Double">
-          <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BacklogPriority"/>
-          <Annotation Term="Display.DisplayName" String="Backlog Priority"/>
-        </Property>
         <Property Name="BusinessValue" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BusinessValue"/>
           <Annotation Term="Display.DisplayName" String="Business Value"/>
@@ -233,6 +229,10 @@
         <Property Name="CommentCount" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="System.CommentCount"/>
           <Annotation Term="Display.DisplayName" String="Comment Count"/>
+        </Property>
+        <Property Name="Custom_TFSID" Type="Edm.String">
+          <Annotation Term="Display.DisplayName" String="TFS ID"/>
+          <Annotation Term="Ref.ReferenceName" String="Custom.TFSID"/>
         </Property>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedBySK" Type="Edm.Guid"/>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedDate" Type="Edm.DateTimeOffset">
@@ -458,10 +458,6 @@
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.Activity"/>
           <Annotation Term="Display.DisplayName" String="Activity"/>
         </Property>
-        <Property Name="BacklogPriority" Type="Edm.Double">
-          <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BacklogPriority"/>
-          <Annotation Term="Display.DisplayName" String="Backlog Priority"/>
-        </Property>
         <Property Name="BusinessValue" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BusinessValue"/>
           <Annotation Term="Display.DisplayName" String="Business Value"/>
@@ -588,6 +584,10 @@
         <Property Name="CommentCount" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="System.CommentCount"/>
           <Annotation Term="Display.DisplayName" String="Comment Count"/>
+        </Property>
+        <Property Name="Custom_TFSID" Type="Edm.String">
+          <Annotation Term="Display.DisplayName" String="TFS ID"/>
+          <Annotation Term="Ref.ReferenceName" String="Custom.TFSID"/>
         </Property>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedBySK" Type="Edm.Guid"/>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedDate" Type="Edm.DateTimeOffset">
@@ -825,10 +825,6 @@
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.Activity"/>
           <Annotation Term="Display.DisplayName" String="Activity"/>
         </Property>
-        <Property Name="BacklogPriority" Type="Edm.Double">
-          <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BacklogPriority"/>
-          <Annotation Term="Display.DisplayName" String="Backlog Priority"/>
-        </Property>
         <Property Name="BusinessValue" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BusinessValue"/>
           <Annotation Term="Display.DisplayName" String="Business Value"/>
@@ -967,6 +963,10 @@
         <Property Name="CommentCount" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="System.CommentCount"/>
           <Annotation Term="Display.DisplayName" String="Comment Count"/>
+        </Property>
+        <Property Name="Custom_TFSID" Type="Edm.String">
+          <Annotation Term="Display.DisplayName" String="TFS ID"/>
+          <Annotation Term="Ref.ReferenceName" String="Custom.TFSID"/>
         </Property>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedBySK" Type="Edm.Guid"/>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedDate" Type="Edm.DateTimeOffset">
@@ -1238,10 +1238,6 @@
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.Activity"/>
           <Annotation Term="Display.DisplayName" String="Activity"/>
         </Property>
-        <Property Name="BacklogPriority" Type="Edm.Double">
-          <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BacklogPriority"/>
-          <Annotation Term="Display.DisplayName" String="Backlog Priority"/>
-        </Property>
         <Property Name="BusinessValue" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="Microsoft.VSTS.Common.BusinessValue"/>
           <Annotation Term="Display.DisplayName" String="Business Value"/>
@@ -1380,6 +1376,10 @@
         <Property Name="CommentCount" Type="Edm.Int32">
           <Annotation Term="Ref.ReferenceName" String="System.CommentCount"/>
           <Annotation Term="Display.DisplayName" String="Comment Count"/>
+        </Property>
+        <Property Name="Custom_TFSID" Type="Edm.String">
+          <Annotation Term="Display.DisplayName" String="TFS ID"/>
+          <Annotation Term="Ref.ReferenceName" String="Custom.TFSID"/>
         </Property>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedBySK" Type="Edm.Guid"/>
         <Property Name="Microsoft_VSTS_CodeReview_AcceptedDate" Type="Edm.DateTimeOffset">

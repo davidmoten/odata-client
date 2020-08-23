@@ -8,7 +8,7 @@
         <artifactId>odata-client-parent</artifactId>
         <version>0.1.32-SNAPSHOT</version>
     </parent>
-    <artifactId>odata-client-microsoft-analytics-template</artifactId>
+    <artifactId>odata-client-microsoft-analytics</artifactId>
     <name>${project.artifactId}</name>
     <packaging>bundle</packaging>
     <description>Java client as template for Microsoft Analytics organisation endpoints</description>
