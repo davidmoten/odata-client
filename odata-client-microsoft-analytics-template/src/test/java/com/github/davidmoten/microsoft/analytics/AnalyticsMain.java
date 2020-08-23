@@ -24,7 +24,7 @@ public class AnalyticsMain {
 		Container client = Analytics //
 				.service(Container.class) //
 				.baseUrl(baseUrl) //
-				.basicAuthentication(() -> UsernamePassword.create(username, password)) //
+				.basicAuthentication(username, password) //
 				.build();
 		
 		// print out work items

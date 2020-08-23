@@ -54,6 +54,10 @@ public final class Analytics {
 			return createBuilder().basicAuthentication(usernamePassword);
 	    }
 		
+		public Builder3<T> basicAuthentication(String username, String password) {
+			return basicAuthentication(() -> UsernamePassword.create(username, password));
+		}
+		
 		public  MsGraphClientBuilder.Builder<T> tenantName(String tenantName) {
 			return createBuilder().tenantName(tenantName);
 		}
