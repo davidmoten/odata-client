@@ -1,5 +1,7 @@
 package com.github.davidmoten.microsoft.analytics;
 
+import java.util.concurrent.TimeUnit;
+
 import com.github.davidmoten.guavamini.Preconditions;
 
 import microsoft.vs.analytics.v3.myorg.container.Container;
@@ -27,6 +29,8 @@ public class AnalyticsDemoMain {
 				.project(project) // optional
 				.version(version) // mandatory
 				.basicAuthentication(username, password) //
+				.connectTimeout(30, TimeUnit.SECONDS) //
+				.readTimeout(60, TimeUnit.SECONDS) //
 				.build();
 		
 		// System.out.println(client._custom().getString(baseUrl + "/$metadata", RequestOptions.EMPTY));
@@ -34,6 +38,7 @@ public class AnalyticsDemoMain {
 		// print out work items
 		client //
 				.workItems() //
+				.metadataMinimal() //
 				.select("WorkItemId,State,CreatedDate") //
 				.stream() //
 				.filter(x -> x.getCreatedDate().isPresent()) //
