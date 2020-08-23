@@ -1,7 +1,6 @@
 package com.github.davidmoten.microsoft.analytics;
 
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.UsernamePassword;
 
 import microsoft.vs.analytics.myorg.container.Container;
 
