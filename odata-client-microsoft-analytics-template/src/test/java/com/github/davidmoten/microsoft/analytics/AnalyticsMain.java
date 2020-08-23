@@ -53,7 +53,7 @@ public class AnalyticsMain {
 				.select("WorkItemId,State,CreatedDate") //
 				.stream() //
 				.filter(x -> x.getCreatedDate().isPresent()) //
-				.sorted( (x,y) -> x.getCreatedDate().get().compareTo(y.getCreatedDate().get())) //
+				.sorted((x,y) -> x.getCreatedDate().get().compareTo(y.getCreatedDate().get())) //
 				.map(x -> x.getWorkItemId() + ", " + x.getState() + ", " +  x.getCreatedDate()) //
 				.forEach(System.out::println);
 	}
