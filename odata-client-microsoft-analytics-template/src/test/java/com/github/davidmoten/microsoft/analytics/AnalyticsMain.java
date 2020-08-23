@@ -2,7 +2,7 @@ package com.github.davidmoten.microsoft.analytics;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-import microsoft.vs.analytics.myorg.container.Container;
+import microsoft.vs.analytics.v3.myorg.container.Container;
 
 public class AnalyticsMain {
 

@@ -59,7 +59,55 @@
                 <version>${project.parent.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-client</id>
+                        <id>generate-v1-client</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/main/odata/microsoft-analytics-v1-metadata.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics.Model</namespace>
+                                    <packageName>microsoft.vs.analytics.v1.model</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics</namespace>
+                                    <packageName>microsoft.vs.analytics.v1</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Default</namespace>
+                                    <packageName>microsoft.vs.analytics.v1.myorg</packageName>
+                                </schema>
+                            </schemas>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-v2-client</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/main/odata/microsoft-analytics-v2-metadata.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics.Model</namespace>
+                                    <packageName>microsoft.vs.analytics.v2.model</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics</namespace>
+                                    <packageName>microsoft.vs.analytics.v2</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Default</namespace>
+                                    <packageName>microsoft.vs.analytics.v2.myorg</packageName>
+                                </schema>
+                            </schemas>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-v3-client</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
@@ -69,15 +117,39 @@
                             <schemas>
                                 <schema>
                                     <namespace>Microsoft.VisualStudio.Services.Analytics.Model</namespace>
-                                    <packageName>microsoft.vs.analytics.model</packageName>
+                                    <packageName>microsoft.vs.analytics.v3.model</packageName>
                                 </schema>
                                 <schema>
                                     <namespace>Microsoft.VisualStudio.Services.Analytics</namespace>
-                                    <packageName>microsoft.vs.analytics</packageName>
+                                    <packageName>microsoft.vs.analytics.v3</packageName>
                                 </schema>
                                 <schema>
                                     <namespace>Default</namespace>
-                                    <packageName>microsoft.vs.analytics.myorg</packageName>
+                                    <packageName>microsoft.vs.analytics.v3.myorg</packageName>
+                                </schema>
+                            </schemas>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-v4-client</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/main/odata/microsoft-analytics-v4-metadata.xml</metadata>
+                            <schemas>
+                                <schema>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics.Model</namespace>
+                                    <packageName>microsoft.vs.analytics.v4.model</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Microsoft.VisualStudio.Services.Analytics</namespace>
+                                    <packageName>microsoft.vs.analytics.v4</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>Default</namespace>
+                                    <packageName>microsoft.vs.analytics.v4.myorg</packageName>
                                 </schema>
                             </schemas>
                         </configuration>
