@@ -38,7 +38,7 @@ public class AnalyticsMain {
 				.forEach(System.out::println);
 		
 		// print out areas
-		client.areas().stream().forEach(System.out::println);
+		client.areas().forEach(System.out::println);
 	}
 
 }
