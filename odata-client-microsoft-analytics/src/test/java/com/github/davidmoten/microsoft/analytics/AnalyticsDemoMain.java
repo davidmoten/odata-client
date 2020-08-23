@@ -1,11 +1,10 @@
 package com.github.davidmoten.microsoft.analytics;
 
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.odata.client.RequestOptions;
 
 import microsoft.vs.analytics.v3.myorg.container.Container;
 
-public class AnalyticsMain {
+public class AnalyticsDemoMain {
 
 	public static void main(String[] args) {
 
@@ -18,12 +17,15 @@ public class AnalyticsMain {
 		String project = "MyTestProject1";
 		String username = Preconditions.checkNotNull(System.getProperty("username"));
 		String password = Preconditions.checkNotNull(System.getProperty("password"));
-		String version = "3.0";
-		String baseUrl = "https://analytics.dev.azure.com/" + organization + "/_odata/v" + version;
+		String version = "v3.0";
+		
+		// Note that you can leave the project part of the url out to get access to the organization wide service
 		
 		Container client = Analytics //
 				.service(Container.class) //
-				.baseUrl(baseUrl) //
+				.organization(organization) //
+				.project(project) // optional
+				.version(version) // mandatory
 				.basicAuthentication(username, password) //
 				.build();
 		
