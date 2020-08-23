@@ -5,7 +5,7 @@ Microsoft provides OData endpoints for Analytics for DevOps services. These ODat
 This project generates classes (and includes them in the jar artifact) for accessing these services based on metadata definitions in [src/main/odata](src/main/odata). Currently there are four versions supported 1.0, 2.0, 3.0, 4.0 but any additional version or specific project metadata can be included in the code generation by copying this project and modifying the pom.xml to generate from a new metadata file. 
 
 ## Example
-To use the base functionality of an Analytics for DevOps service you need to be part of an organization and have a username and Personal Access Token that will be used in Basic Authentication against the service. Here's an example:
+To use the base functionality of an Analytics for DevOps service you need to be part of an organization and have a username and Personal Access Token that will be used in Basic Authentication against the service. The Personal Access Token will need the Analytics Service permission to utilize the OData endpoint. Here's an example:
 
 ```java
 import com.github.davidmoten.microsoft.analytics.Analytics;
