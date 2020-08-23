@@ -1,9 +1,12 @@
 package com.github.davidmoten.microsoft.analytics;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
+import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.Builder3;
+import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.UsernamePassword;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HasContext;
@@ -47,7 +50,15 @@ public final class Analytics {
 			this.b = b;
 		}
 		
+		public Builder3<T> basicAuthentication(Supplier<UsernamePassword> usernamePassword) {
+			return createBuilder().basicAuthentication(usernamePassword);
+	    }
+		
 		public  MsGraphClientBuilder.Builder<T> tenantName(String tenantName) {
+			return createBuilder().tenantName(tenantName);
+		}
+		
+		private MsGraphClientBuilder<T> createBuilder() {
 			return new MsGraphClientBuilder<T> //
 			(b.baseUrl, context -> {
 				try {
@@ -56,7 +67,7 @@ public final class Analytics {
 						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					throw new ClientException(e);
 				}
-			}).tenantName(tenantName);
+			});
 		}
 	}
 
