@@ -40,3 +40,6 @@ If your OData service has some customizations that are reflected in the metadata
 At this point the built jar contains what you need to build a client and make calls against the service.
 
 Then follow the same client creation code as per the example above but import the `Container` class from your generated code instead.
+
+## TODO
+* add support for [OData extensions](https://docs.oasis-open.org/odata/odata-data-aggregation-ext/v4.0/cs01/odata-data-aggregation-ext-v4.0-cs01.html)
