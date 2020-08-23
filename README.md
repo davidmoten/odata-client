@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/odata-client-runtime/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/odata-client)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/odata-client/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/odata-client)<br/>
 
-Generates java client for a service described by OData v4 metadata. Includes client libraries for Microsoft Graph primary and beta APIs.
+Generates java client for a service described by OData v4 metadata. Includes client libraries for Microsoft Graph primary and beta APIs, Graph Explorer API, and Analytics for DevOps APIs.
 
 Status : *released to Maven Central* 
 
@@ -22,6 +22,7 @@ Status : *released to Maven Central*
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
 * Graph Explorer client (test endpoint)
+* Microsoft Analytics for DevOps 1.0, 2.0, 3.0, 4.0 and custom [clients](odata-client-microsoft-analytics/README.md).
 * More generated clients can be added, just raise an issue
 * Runs on Java 8+ (including Java 11+). When running <11 the jaxb dependencies can be excluded from odata-client-runtime. 
 
