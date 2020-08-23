@@ -48,6 +48,7 @@ public final class MsGraphClientBuilder<T> {
     private String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
     private Function<? super HttpService, ? extends HttpService> httpServiceTransformer = x -> x;
     public Optional<AccessTokenProvider> accessTokenProvider = Optional.empty();
+	public Optional<Authenticator> authenticator = Optional.empty();
 
     public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
@@ -281,13 +282,18 @@ public final class MsGraphClientBuilder<T> {
             b.authenticationEndpoint = authenticationEndpoint;
             return this;
         }
+        
+        public Builder3<T> authenticator(Authenticator authenticator) {
+        	b.authenticator = Optional.of(authenticator);
+        	return this;
+        }
 
         public T build() {
             return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret,
                     b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
                     b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider);
+                    b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider, b.authenticator);
         }
 
     }
@@ -302,7 +308,9 @@ public final class MsGraphClientBuilder<T> {
             Creator<T> creator, //
             String authenticationEndpoint, //
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer,
-            Optional<AccessTokenProvider> accessTokenProviderOverride) {
+            Optional<AccessTokenProvider> accessTokenProviderOverride, //
+            Optional<Authenticator> authenticator
+            ) {
         
         final AccessTokenProvider accessTokenProvider = accessTokenProviderOverride
                 .orElseGet(() -> ClientCredentialsAccessTokenProvider //
@@ -315,9 +323,9 @@ public final class MsGraphClientBuilder<T> {
                         .authenticationEndpoint(authenticationEndpoint) //
                         .build());
 
-        Authenticator authenticator = new BearerAuthenticator(accessTokenProvider, baseUrl);
+        Authenticator auth = authenticator.orElseGet(() ->  new BearerAuthenticator(accessTokenProvider, baseUrl));
 
-        return createService(baseUrl, authenticator, connectTimeoutMs, readTimeoutMs, proxyHost,
+        return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost,
                 proxyPort, proxyUsername, proxyPassword, supplier,
                 httpClientBuilderExtras, creator, authenticationEndpoint, httpServiceTransformer);
     }
