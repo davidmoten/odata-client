@@ -1,7 +1,9 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -11,6 +13,7 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
 
     private final EntityRequest<T> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
+    private final Map<String, String> queries = new HashMap<>();
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
     private boolean useCaches = false;
@@ -27,6 +30,11 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
         return this;
     }
 
+    public EntityRequestOptionsBuilder<T> query(String name, String value) {
+        queries.put(name,  value);
+        return this;
+    }
+    
     public EntityRequestOptionsBuilder<T> select(String clause) {
         Preconditions.checkNotNull(clause);
         this.select = Optional.of(clause);
@@ -96,7 +104,8 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
 
     private EntityRequestOptions<T> build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
-        return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches, connectTimeoutMs, readTimeoutMs);
+        return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches, //
+        		connectTimeoutMs, readTimeoutMs, queries);
     }
 
 }
