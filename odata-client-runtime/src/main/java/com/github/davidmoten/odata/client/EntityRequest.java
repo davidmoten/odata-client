@@ -50,6 +50,10 @@ public abstract class EntityRequest<T extends ODataEntityType> {
         return new EntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
 
+    public EntityRequestOptionsBuilder<T> query(String name, String value) {
+        return new EntityRequestOptionsBuilder<T>(this).query(name, value);
+    }
+    
     public EntityRequestOptionsBuilder<T> select(String clause) {
         return new EntityRequestOptionsBuilder<T>(this).select(clause);
     }

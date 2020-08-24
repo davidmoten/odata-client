@@ -144,6 +144,10 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
     }
     
+    public CollectionNonEntityRequestOptionsBuilder<T> query(String name, String value) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).query(name, value);
+    }
+    
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(RequestHeader header) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).requestHeader(header);
     }
