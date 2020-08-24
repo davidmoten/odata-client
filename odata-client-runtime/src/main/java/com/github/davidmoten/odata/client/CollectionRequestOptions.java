@@ -21,12 +21,14 @@ final class CollectionRequestOptions implements RequestOptions {
     private final Optional<Long> connectTimeoutMs;
     private final Optional<Long> readTimeoutMs;
 	private final Optional<String> deltaToken;
+	private final Map<String, String> queries;
 
     CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
             Optional<Long> top, Optional<String> select, Optional<String> expand, //
             Optional<String> urlOverride, Optional<Long> connectTimeoutMs, //
-            Optional<Long> readTimeoutMs, Optional<String> deltaToken) {
+            Optional<Long> readTimeoutMs, Optional<String> deltaToken, //
+            Map<String, String> queries) {
     	Preconditions.checkNotNull(connectTimeoutMs);
     	Preconditions.checkNotNull(readTimeoutMs);
         this.requestHeaders = requestHeaders;
@@ -41,6 +43,7 @@ final class CollectionRequestOptions implements RequestOptions {
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
         this.deltaToken = deltaToken;
+        this.queries = queries;
     }
 
     @Override
@@ -59,6 +62,7 @@ final class CollectionRequestOptions implements RequestOptions {
         select.ifPresent(x -> map.put("$select", x));
         expand.ifPresent(x -> map.put("$expand", x));
         deltaToken.ifPresent(x -> map.put("$deltaToken", x));
+        map.putAll(queries);
         return map;
     }
 

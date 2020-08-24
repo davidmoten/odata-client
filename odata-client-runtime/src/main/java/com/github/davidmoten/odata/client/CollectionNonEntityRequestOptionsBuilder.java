@@ -1,8 +1,10 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
 
     private final CollectionPageNonEntityRequest<T> request;
     private final List<RequestHeader> requestHeaders;
+    private final Map<String, String> queries;
     private Optional<String> search;
     private Optional<String> filter;
     private Optional<String> orderBy;
@@ -42,7 +45,8 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
                 Optional.empty(), //
                 Optional.empty(), //
                 Optional.empty(), //
-                Optional.empty());
+                Optional.empty(), //
+                new HashMap<>());
     }
 
     private CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request,
@@ -50,7 +54,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
             Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
             Optional<String> select, Optional<String> expand, String metadata,
             Optional<String> urlOverride, Optional<Long> connectTimeoutMs, //
-            Optional<Long> readTimeoutMs, Optional<String> deltaToken) {
+            Optional<Long> readTimeoutMs, Optional<String> deltaToken, Map<String, String> queries) {
         this.request = request;
         this.requestHeaders = requestHeaders;
         this.search = search;
@@ -65,6 +69,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
         this.deltaToken = deltaToken;
+        this.queries = queries;
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String name, String value) {
@@ -133,7 +138,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     public <S extends T> CollectionNonEntityRequestOptionsBuilder<S> filter(Class<S> cls) {
         return new CollectionNonEntityRequestOptionsBuilder<S>(request.filter(cls), requestHeaders,
                 search, filter, orderBy, skip, top, select, expand, metadata, urlOverride, //
-                connectTimeoutMs, readTimeoutMs, deltaToken);
+                connectTimeoutMs, readTimeoutMs, deltaToken, queries);
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> orderBy(String clause) {
@@ -184,11 +189,16 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.deltaToken = Optional.of("latest");
         return this;
     }
+    
+    public CollectionNonEntityRequestOptionsBuilder<T> query(String name, String value) {
+        this.queries.put(name, value);
+        return this;
+    }
 
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken);
+                select, expand, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
     }
 
     public CollectionPage<T> get() {

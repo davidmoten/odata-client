@@ -8,6 +8,7 @@ import java.util.Optional;
 public final class EntityRequestOptions<T extends ODataEntityType> implements RequestOptions {
 
     private final List<RequestHeader> requestHeaders;
+    private final Map<String, String> queries;
     private final Optional<String> select;
     private final Optional<String> expand;
     private final boolean useCaches;
@@ -16,13 +17,14 @@ public final class EntityRequestOptions<T extends ODataEntityType> implements Re
 
     public EntityRequestOptions(List<RequestHeader> requestHeaders, Optional<String> select,
             Optional<String> expand, boolean useCaches, Optional<Long> connectTimeoutMs, //
-            Optional<Long> readTimeoutMs) {
+            Optional<Long> readTimeoutMs, Map<String, String> queries) {
         this.requestHeaders = requestHeaders;
         this.select = select;
         this.expand = expand;
         this.useCaches = useCaches;
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
+        this.queries = queries;
     }
 
     public Optional<String> getSelect() {
@@ -48,6 +50,7 @@ public final class EntityRequestOptions<T extends ODataEntityType> implements Re
         Map<String, String> map = new HashMap<>();
         select.ifPresent(x -> map.put("$select", x));
         expand.ifPresent(x -> map.put("$expand", x));
+        map.putAll(queries);
         return map;
     }
 
