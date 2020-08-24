@@ -92,6 +92,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(key, value);
     }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> query(String name, String value) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).query(name, value);
+    }
     
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(RequestHeader header) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).requestHeader(header);
