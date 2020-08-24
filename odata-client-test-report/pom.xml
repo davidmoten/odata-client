@@ -88,7 +88,7 @@
 
        <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>odata-client-microsoft-analytics-template</artifactId>
+            <artifactId>odata-client-microsoft-analytics</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
