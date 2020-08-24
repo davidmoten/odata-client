@@ -1308,10 +1308,9 @@ public final class Generator {
 			t.getNavigationProperties() //
 					.forEach(x -> {
 						Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
-						p.println();
 						if (x.getType().get(0).startsWith(COLLECTION_PREFIX)) {
 							String y = names.getInnerType(names.getType(x));
-							p.format("%spublic %s %s() {\n", //
+							p.format("\n%spublic %s %s() {\n", //
 									indent, //
 									imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
 									Names.getIdentifier(x.getName()));
