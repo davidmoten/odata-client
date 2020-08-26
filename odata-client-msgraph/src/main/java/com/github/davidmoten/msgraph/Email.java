@@ -227,7 +227,7 @@ public final class Email {
 					}
 				}
 			}
-			m.send().call();
+			client.users(b.mailbox).messages(m.getId().get()).send().call();
 		}
 	}
 
