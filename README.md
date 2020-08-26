@@ -436,7 +436,8 @@ Unfortunately sending an email with an attachment is complicated somewhat by Mic
 To help send an email a helper utility class called `Email` exists. Here's an example that sends an email with two attachments:
 
 ```java
-Email.mailbox(mailbox) 
+Email
+  .mailbox(mailbox) 
   .subject("hi there " + new Date())
   .body("hello there how are you")
   .to("davidmoten@gmail.com")
@@ -450,7 +451,7 @@ Email.mailbox(mailbox)
   .send(client);
 ```
 
-The builder code above does quite a lot for you. Here's how you do it using the generated classes only:
+The builder code above does quite a lot for you. For reference here's how you do it using the generated classes only:
 
 ```java
 GraphService client = ...;
