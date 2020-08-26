@@ -433,7 +433,24 @@ List<User> users = client
 
 Unfortunately sending an email with an attachment is complicated somewhat by Microsoft Graph forcing users to use two different methods to upload an attachment depending on the size of the attachment. Default maximum size for an attachment is apparently 25MB according to Microsoft [docs](https://docs.microsoft.com/en-us/office365/servicedescriptions/exchange-online-service-description/exchange-online-limits#message-limits) though an administrator can increase the limit up to 150MB if required.
 
-Anyway, the code for jumping those hoops is below. A TODO for this project might be to make a helper method or builder to reduce the verbosity of sending an email.
+To help send an email a helper utility class called `Email` exists. Here's an example that sends an email with two attachments:
+
+```java
+Email.mailbox(mailbox) 
+  .subject("hi there " + new Date())
+  .body("hello there how are you")
+  .to("davidmoten@gmail.com")
+  .attachment(file)
+  .name("list.txt")
+  .contentMimeType("text/plain")
+  .chunkSize(512 * 1024)
+  .attachment("hi there")
+  .name("greeting.txt")
+  .contentMimeType("text/plain")
+  .send(client);
+```
+
+The builder code above does quite a lot for you. Here's how you do it using the generated classes only:
 
 ```java
 GraphService client = ...;
