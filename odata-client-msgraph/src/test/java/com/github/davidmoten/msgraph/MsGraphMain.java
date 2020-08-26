@@ -35,35 +35,36 @@ public class MsGraphMain {
             /////////////////////////////////////////////////////////////
             // Integration test for stream upload (large attachment 5MB)
             /////////////////////////////////////////////////////////////
-        	
 
-        	File file = new File("target/attachment.txt");
+            File file = new File("target/attachment.txt");
             String contentType = "text/plain";
             file.delete();
             long minSize = 1000;
             try (PrintStream out = new PrintStream(file)) {
-                byte[] bytes = "abcdefghijklmnopqrstuvwxyz0123456789\n".getBytes(StandardCharsets.UTF_8);
-                for (int i = 0; i < minSize/bytes.length + 1; i++) {
+                byte[] bytes = "abcdefghijklmnopqrstuvwxyz0123456789\n"
+                        .getBytes(StandardCharsets.UTF_8);
+                for (int i = 0; i < minSize / bytes.length + 1; i++) {
                     out.write(bytes);
                 }
             }
-            
+
             String mailbox = System.getProperty("mailbox");
-            
-			Email.mailbox(mailbox) //
-					.subject("hi there " + new Date()) //
-					.body("hello there how are you") //
-					.to("davidmoten@gmail.com") //
-					.attachment(file) //
-					.name("list.txt") //
-					.contentMimeType(contentType) //
-					.chunkSize(512 * 1024) //
-					.attachment("hi there") //
-					.name("greeting.txt") //
-					.send(client);
-            
+
+            Email.mailbox(mailbox) //
+                    .subject("hi there " + new Date()) //
+                    .body("hello there how are you") //
+                    .to("davidmoten@gmail.com") //
+                    .attachment(file) //
+                    .name("list.txt") //
+                    .contentMimeType(contentType) //
+                    .chunkSize(512 * 1024) //
+                    .attachment("hi there") //
+                    .name("greeting.txt") //
+                    .contentMimeType("text/plain") //
+                    .send(client);
+
             System.exit(0);
-            
+
             MailFolderRequest drafts = client //
                     .users(mailbox) //
                     .mailFolders("Drafts");
@@ -79,7 +80,7 @@ public class MsGraphMain {
                             .build())
                     .build();
             m = drafts.messages().post(m);
-            
+
             System.out.println("file size=" + file.length());
             // upload a big attachment using an upload session
             AttachmentItem a = AttachmentItem //
@@ -95,13 +96,14 @@ public class MsGraphMain {
                     .attachments() //
                     .createUploadSession(a).get();
             boolean chunked = false;
-            
+
             if (file.length() < 3 * 1024 * 1024) {
                 client.users(mailbox) //
                         .messages(m.getId().get()) //
                         .attachments() //
                         .post(FileAttachment.builderFileAttachment().name(file.getName())
-                                .contentBytes(Files.readAllBytes(file.toPath())).contentType(contentType).build());
+                                .contentBytes(Files.readAllBytes(file.toPath()))
+                                .contentType(contentType).build());
             } else {
                 if (chunked) {
                     session //
