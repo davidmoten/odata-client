@@ -35,8 +35,31 @@ public class MsGraphMain {
             /////////////////////////////////////////////////////////////
             // Integration test for stream upload (large attachment 5MB)
             /////////////////////////////////////////////////////////////
+        	
 
+        	File file = new File("target/attachment.txt");
+            String contentType = "text/plain";
+            file.delete();
+            long minSize = 1000;
+            try (PrintStream out = new PrintStream(file)) {
+                byte[] bytes = "abcdefghijklmnopqrstuvwxyz0123456789\n".getBytes(StandardCharsets.UTF_8);
+                for (int i = 0; i < minSize/bytes.length + 1; i++) {
+                    out.write(bytes);
+                }
+            }
+            
             String mailbox = System.getProperty("mailbox");
+            
+			Email.mailbox(mailbox) //
+					.subject("hi there " + new Date()) //
+					.body("hello there how are you") //
+					.to("davidmoten@gmail.com") //
+					.attachment(file) //
+					.contentMimeType(contentType) //
+					.send(client);
+            
+            System.exit(0);
+            
             MailFolderRequest drafts = client //
                     .users(mailbox) //
                     .mailFolders("Drafts");
@@ -53,16 +76,6 @@ public class MsGraphMain {
                     .build();
             m = drafts.messages().post(m);
             
-            File file = new File("target/attachment.txt");
-            String contentType = "text/plain";
-            file.delete();
-            long minSize = 2250000;
-            try (PrintStream out = new PrintStream(file)) {
-                byte[] bytes = "abcdefghijklmnopqrstuvwxyz0123456789\n".getBytes(StandardCharsets.UTF_8);
-                for (int i = 0; i < minSize/bytes.length + 1; i++) {
-                    out.write(bytes);
-                }
-            }
             System.out.println("file size=" + file.length());
             // upload a big attachment using an upload session
             AttachmentItem a = AttachmentItem //
