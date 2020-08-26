@@ -497,7 +497,14 @@ if (file.length() < 3000000) {
 }
 
 // send the email 
-m.send().call();
+// you can't just use m.send().call() because Graph doesn't 
+// honour the path corresponding to m for send method and throws
+// a 405 status code
+client
+  .users(mailbox)
+  .messages(m.getId().get())
+  .send()
+  .call();
 ```
 ### Delta collections
 Some functions return delta collections which track changes to resource collections. In the Graph API v1.0 there are delta functions on users, calendar events, and messages. 
