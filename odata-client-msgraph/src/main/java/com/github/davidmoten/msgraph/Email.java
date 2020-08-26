@@ -99,7 +99,7 @@ public final class Email {
 			b.from = emailAddress;
 			return new Builder4(b);
 		}
-		
+
 		Builder4 to(String... emailAddresses) {
 			return to(Arrays.asList(emailAddresses));
 		}
@@ -141,7 +141,7 @@ public final class Email {
 		BuilderAttachment attachmentName(String name) {
 			return new BuilderAttachment(this, name);
 		}
-		
+
 		Builder6 attachment(File file) {
 			return attachmentName(file.getName()).file(file);
 		}
@@ -227,7 +227,11 @@ public final class Email {
 					}
 				}
 			}
-			client.users(b.mailbox).messages(m.getId().get()).send().call();
+			client //
+					.users(b.mailbox) //
+					.messages(m.getId().get()) //
+					.send() //
+					.call();
 		}
 	}
 
