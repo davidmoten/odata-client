@@ -55,7 +55,11 @@ public class MsGraphMain {
 					.body("hello there how are you") //
 					.to("davidmoten@gmail.com") //
 					.attachment(file) //
+					.name("list.txt") //
 					.contentMimeType(contentType) //
+					.chunkSize(512 * 1024) //
+					.attachment("hi there") //
+					.name("greeting.txt") //
 					.send(client);
             
             System.exit(0);
