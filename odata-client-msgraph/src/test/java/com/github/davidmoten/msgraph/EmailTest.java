@@ -26,8 +26,9 @@ public final class EmailTest {
 				.contentMimeType("text/plain") //
 				.readTimeout(10, TimeUnit.MINUTES) //
 				.retries(Retries.builder().maxRetries(3).build()) //
-				.attachmentName("more-info.txt") //
-				.contentTextUtf8("some info for you") //
+				.name("more-info.txt") //
+				.attachment("some info for you") //
+				.name("info2.txt") //
 				.chunkSize(512 * 1024) //
 				.send(client);
 	}

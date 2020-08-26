@@ -138,12 +138,20 @@ public final class Email {
 			return this;
 		}
 
-		BuilderAttachment attachmentName(String name) {
-			return new BuilderAttachment(this, name);
+		Builder6 attachment(String contentUtf8) {
+			return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
 		}
 
+		Builder6 attachment(byte[] content) {
+			return new BuilderAttachment(this).bytes(content);
+		}
+		
+		Builder5 attachment(InputStream content) {
+			return new BuilderAttachment(this).inputStream(content);
+		}
+		
 		Builder6 attachment(File file) {
-			return attachmentName(file.getName()).file(file);
+			return new BuilderAttachment(this).file(file);
 		}
 
 		void send(GraphService client) {
@@ -251,7 +259,7 @@ public final class Email {
 	public static final class BuilderAttachment {
 
 		private long readTimeoutMs = -1; // use default
-		private final String name;
+		private String name = "attachment";
 		private final Builder4 sender;
 		private String contentMimeType = "application/octet-stream";
 		private File file;
@@ -260,26 +268,26 @@ public final class Email {
 		private int chunkSize = 512 * 1024;
 		private Retries retries = Retries.NONE;
 
-		public BuilderAttachment(Builder4 sender, String name) {
+		public BuilderAttachment(Builder4 sender) {
 			this.sender = sender;
-			this.name = name;
 		}
 
-		public Builder6 file(File file) {
+		Builder6 file(File file) {
 			this.file = file;
+			this.name = file.getName();
 			return new Builder6(this);
 		}
 
-		public Builder5 inputStream(InputStream in) {
+		Builder5 inputStream(InputStream in) {
 			this.inputStream = in;
 			return new Builder5(this);
 		}
 
-		public Builder6 bytes(byte[] bytes) {
+		Builder6 bytes(byte[] bytes) {
 			return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
 		}
 
-		public Builder6 contentTextUtf8(String text) {
+		Builder6 contentTextUtf8(String text) {
 			return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
 		}
 
@@ -326,10 +334,30 @@ public final class Email {
 			attachment.retries = retries;
 			return this;
 		}
+		
+		public Builder6 name(String name) {
+			attachment.name = name;
+			return this;
+		}
 
-		public BuilderAttachment attachmentName(String name) {
+		public Builder6 attachment(File file) {
 			attachment.sender.b.attachments.add(attachment);
-			return new BuilderAttachment(attachment.sender, name);
+			return attachment.sender.attachment(file);
+		}
+		
+		public Builder5 attachment(InputStream content) {
+			attachment.sender.b.attachments.add(attachment);
+			return attachment.sender.attachment(content);
+		}
+		
+		public Builder6 attachment(byte[] content) {
+			attachment.sender.b.attachments.add(attachment);
+			return attachment.sender.attachment(content);
+		}
+		
+		public Builder6 attachment(String content) {
+			attachment.sender.b.attachments.add(attachment);
+			return attachment.sender.attachment(content);
 		}
 
 		public void send(GraphService client) {
