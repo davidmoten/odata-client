@@ -26,7 +26,7 @@ public interface HttpService extends AutoCloseable {
     HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
 
     HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
-
+    
     HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
     InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
@@ -36,6 +36,21 @@ public interface HttpService extends AutoCloseable {
     }
 
     Path getBasePath();
+    
+    
+    default HttpResponse send(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            InputStream content, int length, HttpRequestOptions options) {
+        if (method == HttpMethod.PATCH) {
+            return patch(url, requestHeaders, content, length, options);
+        } else if (method == HttpMethod.POST) {
+            return post(url, requestHeaders, content, length, options);
+        } else if (method == HttpMethod.PUT) {
+            return put(url, requestHeaders, content, length, options);
+        } else {
+            throw new ClientException(
+                    "method not supported for update: " + method + ", url=" + url);
+        }
+    }
 
     default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
         byte[] b = content.getBytes(StandardCharsets.UTF_8);

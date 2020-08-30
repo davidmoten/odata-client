@@ -14,7 +14,7 @@ final class UploadStrategySingleCall implements UploadStrategy<StreamUploaderSin
 
     @Override
     public Optional<StreamUploaderSingleCall> builder(ContextPath contextPath, ODataType entity,
-            String fieldName) {
-        return RequestHelper.uploader(contextPath, entity, fieldName);
+            String fieldName, HttpMethod method) {
+        return RequestHelper.uploader(contextPath, entity, fieldName, method);
     }
 }

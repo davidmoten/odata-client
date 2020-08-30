@@ -59,6 +59,7 @@ import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollectionUnwrapped;
 import com.github.davidmoten.odata.client.HasContext;
+import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.NameValue;
@@ -611,8 +612,10 @@ public final class Generator {
 				methodNames.add(Names.getGetterMethod(p.getName()));
 				methodNames.add(Names.getWithMethod(p.getName()));
 				if (isStream(p)) {
-					methodNames.add(Names.getPutChunkedMethod(p.getName()));
-					methodNames.add(Names.getPutMethod(p.getName()));
+                    for (HttpMethod method : HttpMethod.createOrUpdateMethods()) {
+                        methodNames.add(Names.getPutChunkedMethod(p.getName(), method));
+                        methodNames.add(Names.getPutMethod(p.getName(), method));
+                    }
 				}
 			});
 			t = et;
@@ -1534,56 +1537,76 @@ public final class Generator {
 							p.format("%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
 									indent.right(), imports.add(RequestHelper.class), x.getName(), fieldName);
 							p.format("%s}\n", indent.left());
+							
+                            for (HttpMethod method : HttpMethod.createOrUpdateMethods()) {
+                                String putMethodName = Names.getPutMethod(x.getName(), method);
+                                methodNames.add(putMethodName);
+                                p.format("\n%s/**", indent);
+                                p.format(
+                                        "\n%s * If metadata indicate that the stream is editable then returns",
+                                        indent);
+                                p.format(
+                                        "\n%s * a {@link StreamUploader} which can be used to upload the stream",
+                                        indent);
+                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, x.getName(), method);
+                                p.format("\n%s *", indent);
+                                p.format("\n%s * @return a StreamUploader if upload permitted",
+                                        indent);
+                                p.format("\n%s */", indent);
+                                addPropertyAnnotation(imports, indent, p, x.getName());
+                                p.format("\n%spublic %s<%s> %s() {\n", indent,
+                                        imports.add(Optional.class), //
+                                        imports.add(StreamUploaderSingleCall.class), //
+                                        putMethodName);
+                                p.format("%sreturn %s(%s.singleCall());\n", //
+                                        indent.right(), //
+                                        putMethodName, imports.add(UploadStrategy.class) //
+                                );
+                                p.format("%s}\n", indent.left());
 
-							String putMethodName = Names.getPutMethod(x.getName());
-							methodNames.add(putMethodName);
-							p.format("\n%s/**", indent);
-							p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
-							p.format("\n%s * a {@link StreamUploader} which can be used to upload the stream", indent);
-							p.format("\n%s * to the {@code %s} property.", indent, x.getName());
-							p.format("\n%s *", indent);
-							p.format("\n%s * @return a StreamUploader if upload permitted", indent);
-							p.format("\n%s */", indent);
-							addPropertyAnnotation(imports, indent, p, x.getName());
-							p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class), //
-									imports.add(StreamUploaderSingleCall.class), //
-									putMethodName);
-							p.format("%sreturn %s(%s.singleCall());\n", //
-									indent.right(), //
-									putMethodName, imports.add(UploadStrategy.class) //
-							);
-							p.format("%s}\n", indent.left());
+                                String putChunkedMethodName = Names
+                                        .getPutChunkedMethod(x.getName(), method);
+                                methodNames.add(putChunkedMethodName);
+                                p.format("\n%s/**", indent);
+                                p.format(
+                                        "\n%s * If metadata indicate that the stream is editable then returns",
+                                        indent);
+                                p.format(
+                                        "\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream",
+                                        indent);
+                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, x.getName(), method);
+                                p.format("\n%s *", indent);
+                                p.format(
+                                        "\n%s * @return a StreamUploaderChunked if upload permitted",
+                                        indent);
+                                p.format("\n%s */", indent);
+                                addPropertyAnnotation(imports, indent, p, x.getName());
+                                p.format("\n%spublic %s<%s> %s() {\n", indent,
+                                        imports.add(Optional.class), //
+                                        imports.add(StreamUploaderChunked.class), //
+                                        putChunkedMethodName);
+                                p.format("%sreturn %s(%s.chunked());\n", //
+                                        indent.right(), //
+                                        putMethodName, imports.add(UploadStrategy.class) //
+                                );
+                                p.format("%s}\n", indent.left());
 
-							String putChunkedMethodName = Names.getPutChunkedMethod(x.getName());
-							methodNames.add(putChunkedMethodName);
-							p.format("\n%s/**", indent);
-							p.format("\n%s * If metadata indicate that the stream is editable then returns", indent);
-							p.format("\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream",
-									indent);
-							p.format("\n%s * to the {@code %s} property.", indent, x.getName());
-							p.format("\n%s *", indent);
-							p.format("\n%s * @return a StreamUploaderChunked if upload permitted", indent);
-							p.format("\n%s */", indent);
-							addPropertyAnnotation(imports, indent, p, x.getName());
-							p.format("\n%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class), //
-									imports.add(StreamUploaderChunked.class), //
-									putChunkedMethodName);
-							p.format("%sreturn %s(%s.chunked());\n", //
-									indent.right(), //
-									putMethodName, imports.add(UploadStrategy.class) //
-							);
-							p.format("%s}\n", indent.left());
-
-							addPropertyAnnotation(imports, indent, p, x.getName());
-							p.format("\n%spublic <T extends %s<T>> Optional<T> %s(%s<T> strategy) {\n", //
-									indent, //
-									imports.add(StreamUploader.class), //
-									putMethodName, //
-									imports.add(UploadStrategy.class));
-							p.format("%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\");\n", //
-									indent.right(), //
-									x.getName(), //
-									x.getName());
+                                addPropertyAnnotation(imports, indent, p, x.getName());
+                                p.format(
+                                        "\n%spublic <T extends %s<T>> Optional<T> %s(%s<T> strategy) {\n", //
+                                        indent, //
+                                        imports.add(StreamUploader.class), //
+                                        putMethodName, //
+                                        imports.add(UploadStrategy.class));
+                                p.format(
+                                        "%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\", %s.%s);\n", //
+                                        indent.right(), //
+                                        x.getName(), //
+                                        x.getName(), //
+                                        imports.add(HttpMethod.class), //
+                                        method.name());
+                                p.format("%s}\n", indent.left());
+                            }
 						} else {
 							final String importedType = names.toImportedTypeNonCollection(t, imports);
 							String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
@@ -1617,8 +1640,8 @@ public final class Generator {
 									fullType);
 							p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
 							p.format("%sreturn _x;\n", indent);
+							p.format("%s}\n", indent.left());
 						}
-						p.format("%s}\n", indent.left());
 						
 						// add special convenience method to write stream to upload url. Supports Ms Graph createUploadSession.
 						if (structure.getSimpleClassName().equals("UploadSession") && x.getName().equals("uploadUrl")) {
@@ -1628,10 +1651,12 @@ public final class Generator {
                                     imports.add(StreamUploader.class), //
                                     imports.add(UploadStrategy.class));
                             p.format("%sthis.unmappedFields.put(\"uploadUrl@odata.mediaEditLink\", uploadUrl);\n", indent.right());
-                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"uploadUrl\").get();\n", //
+                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"uploadUrl\", %s.%s).get();\n", //
                                     indent, //
                                     imports.add(ContextPath.class), //
-                                    imports.add(Path.class));
+                                    imports.add(Path.class), //
+                                    imports.add(HttpMethod.class), //
+                                    HttpMethod.PUT.name());
                             p.format("%s}\n", indent.left());
                             
                             addPropertyAnnotation(imports, indent, p, x.getName());

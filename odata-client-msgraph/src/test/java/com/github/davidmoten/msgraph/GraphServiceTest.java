@@ -938,6 +938,17 @@ public class GraphServiceTest {
                 .build();
         client.communications().calls().post(call);
     }
+    
+    @Test
+    @Ignore
+    public void testAddAttachmentToCalendarEventCompiles() {
+        GraphService client = clientBuilder().build();
+        File file = new File("example.txt");
+        AttachmentItem attachmentItem = AttachmentItem.builder().attachmentType(AttachmentType.FILE)
+                .contentType("text/plain").name("example.txt").size(file.length()).build();
+        client.me().calendars().events("EVENTID").attachments()
+                .createUploadSession(attachmentItem).get().putChunked().readTimeout(10, TimeUnit.MINUTES).upload(file, 512 * 1024);;
+    }
 
     // test paged complex type
     //

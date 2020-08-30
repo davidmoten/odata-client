@@ -27,11 +27,13 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
 
     private final ContextPath contextPath;
     private final List<RequestHeader> requestHeaders;
+    private final HttpMethod method;
     private Optional<Long> connectTimeoutMs = Optional.empty();
     private Optional<Long> readTimeoutMs = Optional.empty();
 
-    StreamUploaderChunked(ContextPath contextPath, String contentType) {
+    StreamUploaderChunked(ContextPath contextPath, String contentType, HttpMethod method) {
         this.contextPath = contextPath;
+        this.method = method;
         this.requestHeaders = new ArrayList<>();
         requestHeaders.add(RequestHeader.contentType(contentType));
     }
@@ -76,7 +78,8 @@ public final class StreamUploaderChunked implements StreamUploader<StreamUploade
             int chunk = com.github.davidmoten.odata.client.internal.Util.readFully(in, buffer, chunkSize);
             retries.performWithRetries(() -> {
                 log.debug("putting chunk " + start + ", size=" + chunk);
-                RequestHelper.putChunk( //
+                RequestHelper.sendChunk( //
+                        method, //
                         contextPath.context().service(), //
                         uploadUrl, //
                         new ByteArrayInputStream(buffer, 0, chunk), //

@@ -21,13 +21,15 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
     private final ContextPath contextPath;
     private final Map<String, String> queries;
     private final List<RequestHeader> requestHeaders;
+    private final HttpMethod method;
 	private Optional<Long> connectTimeoutMs = Optional.empty();
 	private Optional<Long> readTimeoutMs = Optional.empty();
 
-    public StreamUploaderSingleCall(ContextPath contextPath, String contentType) {
+    public StreamUploaderSingleCall(ContextPath contextPath, String contentType, HttpMethod method) {
         this.contextPath = contextPath;
         this.queries = new HashMap<>();
         this.requestHeaders = new ArrayList<>();
+        this.method = method;
         requestHeaders.add(RequestHeader.contentType(contentType));
     }
 
@@ -64,7 +66,7 @@ public final class StreamUploaderSingleCall implements StreamUploader<StreamUplo
     
     public void upload(InputStream in, int length) {
         requestHeaders.add(RequestHeader.contentRange(0, length - 1, length));
-        RequestHelper.put(contextPath, RequestOptions.create(queries, requestHeaders, connectTimeoutMs, readTimeoutMs), in, length);
+        RequestHelper.send(method, contextPath, RequestOptions.create(queries, requestHeaders, connectTimeoutMs, readTimeoutMs), in, length);
     }
     
     public void upload(InputStream in, int length, UploadListener listener, int reportingChunkSize) {
