@@ -22,6 +22,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
+import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
@@ -651,12 +652,12 @@ public final class Names {
         return toDirectory(output, o.pkg() + o.packageSuffixEntitySet());
     }
 
-    public static String getPutMethod(String name) {
-        return "put" + upperFirst(name);
+    public static String getPutMethod(String name, HttpMethod method) {
+        return method.toString().toLowerCase() + upperFirst(name);
     }
     
-    public static String getPutChunkedMethod(String name) {
-        return "putChunked" + upperFirst(name);
+    public static String getPutChunkedMethod(String name, HttpMethod method) {
+        return method.toString().toLowerCase() + "Chunked" +  upperFirst(name);
     }
 
 }

@@ -258,6 +258,10 @@ public final class RequestHelper {
     }
 
     public static void put(ContextPath contextPath, RequestOptions options, InputStream in, int length) {
+        send(HttpMethod.PUT, contextPath, options, in, length);
+    }
+
+    public static void send(HttpMethod method, ContextPath contextPath, RequestOptions options, InputStream in, int length) {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
@@ -450,7 +454,7 @@ public final class RequestHelper {
     }
 
     public static Optional<StreamUploaderSingleCall> uploader(ContextPath contextPath, ODataType item,
-            String fieldName) {
+            String fieldName, HttpMethod method) {
         Preconditions.checkNotNull(fieldName);
         String editLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaEditLink");
         String contentType = (String) item.getUnmappedFields()
@@ -464,11 +468,16 @@ public final class RequestHelper {
                 contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
             Path path = new Path(editLink, contextPath.path().style());
-            return Optional.of(new StreamUploaderSingleCall(new ContextPath(context, path), contentType));
+            return Optional.of(new StreamUploaderSingleCall(new ContextPath(context, path), contentType, method));
         }
     }
 
     public static void putChunk(HttpService service, String url, InputStream in,
+            List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
+        sendChunk(HttpMethod.PUT, service, url, in, requestHeaders, startByte, finishByte, size, options);
+    }
+    
+    public static void sendChunk(HttpMethod method, HttpService service, String url, InputStream in,
             List<RequestHeader> requestHeaders, long startByte, long finishByte, long size, HttpRequestOptions options) {
         List<RequestHeader> h = new ArrayList<RequestHeader>(requestHeaders);
         h.add(RequestHeader.create("Content-Range",
