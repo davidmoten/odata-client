@@ -850,10 +850,6 @@ public final class Generator {
 	private void writeCopyMethod(Structure<?> t, String simpleClassName, Imports imports, Indent indent, PrintWriter p,
 			boolean ofEntity) {
 		List<FieldName> fields = t.getFieldNames();
-		if (fields.isEmpty()) {
-			// copy method not required if no fields to mutate on
-			return;
-		}
 		p.format("\n%sprivate %s _copy() {\n", indent, simpleClassName);
 		// use _x as identifier so doesn't conflict with any field name
 		p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
@@ -887,7 +883,6 @@ public final class Generator {
 
 		// write put method
 		writePutOrPatchMethod(t, simpleClassName, imports, indent, p, false);
-
 	}
 
 	private void writePutOrPatchMethod(EntityType t, String simpleClassName, Imports imports, Indent indent,
@@ -1115,6 +1110,9 @@ public final class Generator {
 	}
 
 	private static List<String> fieldNames(EntityType et) {
+	    if (et.isAbstract() && et.getKeys().isEmpty()) {
+	        return Collections.emptyList();
+	    }
 		return fieldNames(et.getFirstKey());
 	}
 
@@ -1141,6 +1139,9 @@ public final class Generator {
 	}
 
 	private String getAddKeys(EntityType et, Imports imports) {
+	    if (et.isAbstract() && et.getKeys().isEmpty()) {
+	        return "";
+	    }
 		KeyElement key = et.getFirstKey();
 		return getAddKeys(et, imports, key);
 	}
