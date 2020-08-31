@@ -160,4 +160,16 @@
             </plugins>
         </pluginManagement>
     </build>
+<reporting><plugins>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-javadoc-plugin</artifactId>
+                                <version>${javadoc.version}</version>
+                                <configuration>
+                                        <excludePackageNames>odata.msgraph.client.beta.*:odata.msgraph.client.*</excludePackageNames>
+                                </configuration>
+                        </plugin>
+                </plugins>
+        </reporting>
+
 </project>
