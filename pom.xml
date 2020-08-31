@@ -236,6 +236,7 @@
 				<configuration>
 					<aggregate>true</aggregate>
 					<additionalJOption>-Xdoclint:none</additionalJOption>
+                                        <excludePackageNames>odata.msgraph.client.beta.*:odata.msgraph.client.*</excludePackageNames>
 				</configuration>
 			</plugin>
 		</plugins>
