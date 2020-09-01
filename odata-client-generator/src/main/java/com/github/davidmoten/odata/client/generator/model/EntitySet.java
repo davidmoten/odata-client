@@ -75,6 +75,10 @@ public final class EntitySet {
     public String getMethodName(TNavigationPropertyBinding b) {
         return Names.getIdentifier(lastSegment(b.getPath()));
     }
+    
+    public String getLongerMethodName(TNavigationPropertyBinding b) {
+        return Names.getIdentifier(nameFromAllSegments(b.getPath()));
+    }
 
     public String getSimplifiedPath(TNavigationPropertyBinding b) {
         return lastSegment(b.getPath());
@@ -87,6 +91,10 @@ public final class EntitySet {
         } else {
             return s.substring(i + 1);
         }
+    }
+    
+    private static String nameFromAllSegments(String s) {
+        return s.replace(".", "_").replace("/", "_");
     }
 
 }
