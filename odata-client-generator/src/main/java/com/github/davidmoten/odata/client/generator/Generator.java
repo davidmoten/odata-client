@@ -232,11 +232,17 @@ public final class Generator {
 			p.format("%s}\n", indent.left());
 
 			// write navigation property bindings
+			
+			Set<String> duplicateMethodNames = findDuplicateNavigationPropertyBindingMethodNames(pair, t);
+			
 			Util.filter( //
 					pair.b.getNavigationPropertyBindingOrAnnotation(), //
 					TNavigationPropertyBinding.class) //
 					.forEach(b -> {
 						String methodName = t.getMethodName(b);
+						if (duplicateMethodNames.contains(methodName)) {
+						    methodName = t.getLongerMethodName(b);
+						}
 						EntitySet referredEntitySet = t.getReferredEntitySet(b.getTarget());
 						String returnClassName = referredEntitySet.getFullClassNameEntitySet();
 						p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName), methodName);
@@ -252,6 +258,22 @@ public final class Generator {
 			throw new UncheckedIOException(e);
 		}
 	}
+
+    private Set<String> findDuplicateNavigationPropertyBindingMethodNames(Pair<TEntityContainer, TEntitySet> pair, EntitySet t) {
+        Set<String> methodNames = new HashSet<String>();
+        Set<String> duplicateMethodNames = new HashSet<String>();
+        Util.filter( //
+                pair.b.getNavigationPropertyBindingOrAnnotation(), //
+                TNavigationPropertyBinding.class) //
+                .forEach(b -> {
+                    String name = t.getMethodName(b);
+                    if (methodNames.contains(name)) {
+                        duplicateMethodNames.add(name);
+                    }
+                    methodNames.add(name);
+                });
+        return duplicateMethodNames;
+    }
 
 	private static Set<String> findTypesUsedInCollections(Names names, List<Schema> schemas) {
 		return schemas //

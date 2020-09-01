@@ -28700,7 +28700,7 @@
           <NavigationPropertyBinding Path="ManyToManyRelationships" Target="RelationshipDefinitions"/>
           <NavigationPropertyBinding Path="ManyToOneRelationships" Target="RelationshipDefinitions"/>
           <NavigationPropertyBinding Path="Microsoft.Dynamics.CRM.BooleanAttributeMetadata/GlobalOptionSet" Target="GlobalOptionSetDefinitions"/>
-          <!--  <NavigationPropertyBinding Path="Microsoft.Dynamics.CRM.EnumAttributeMetadata/GlobalOptionSet" Target="GlobalOptionSetDefinitions"/> -->
+          <NavigationPropertyBinding Path="Microsoft.Dynamics.CRM.EnumAttributeMetadata/GlobalOptionSet" Target="GlobalOptionSetDefinitions"/>
           <NavigationPropertyBinding Path="OneToManyRelationships" Target="RelationshipDefinitions"/>
         </EntitySet>
         <EntitySet Name="GlobalOptionSetDefinitions" EntityType="Microsoft.Dynamics.CRM.OptionSetMetadataBase"/>
