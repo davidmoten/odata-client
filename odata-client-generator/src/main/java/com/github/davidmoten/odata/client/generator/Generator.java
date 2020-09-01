@@ -1692,7 +1692,7 @@ public final class Generator {
 				importedSchemaInfo = imports.add(names.getFullClassNameSchemaInfo(sch));
 			}
 			p.format(
-					"%sreturn new %s<%s>(contextPath, %s.class, %s, %s.ofNullable(%sNextLink), %s.INSTANCE, %s.emptyList(), %s);\n",
+					"%sreturn new %s<%s>(contextPath, %s.class, this.%s, %s.ofNullable(%sNextLink), %s.INSTANCE, %s.emptyList(), %s);\n",
 					indent.right(), imports.add(CollectionPage.class), importedInnerType, importedInnerType, fieldName,
 					imports.add(Optional.class), fieldName, importedSchemaInfo, imports.add(Collections.class), //
 					options);
