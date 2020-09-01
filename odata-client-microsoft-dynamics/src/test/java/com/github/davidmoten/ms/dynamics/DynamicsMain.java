@@ -9,7 +9,7 @@ import microsoft.dynamics.crm.container.System;
 public class DynamicsMain {
 
     public static void main(String[] args) {
-        
+
         // build client
         System client = Analytics //
                 .service(System.class) //
@@ -19,9 +19,13 @@ public class DynamicsMain {
                 .clientSecret("CLIENT_SECRET") //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
-        
+
         // now use client
-        client.applicationusers().metadataMinimal().stream().limit(10)
+        client //
+                .applicationusers() //
+                .metadataMinimal() //
+                .stream() //
+                .limit(10) //
                 .forEach(java.lang.System.out::println);
 
     }
