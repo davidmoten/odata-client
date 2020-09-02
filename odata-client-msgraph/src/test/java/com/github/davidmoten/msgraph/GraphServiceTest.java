@@ -580,6 +580,23 @@ public class GraphServiceTest {
     }
     
     @Test
+    public void testSupplementWithDeltaLinkWhenCollectionNonEmptyAndHasNoDeltaLink() {
+        GraphService client = clientBuilder() //
+                .expectResponse(
+                        "/users",
+                        "/response-users-one-page.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        assertEquals(31, client.users().stream().count());
+        List<ObjectOrDeltaLink<User>> list = client.users().get().streamWithDeltaLink().collect(Collectors.toList());
+        assertEquals(32, list.size());
+        ObjectOrDeltaLink<User> x = list.get(list.size() -1);
+        assertFalse(x.object().isPresent());
+        assertFalse(x.deltaLink().isPresent());
+    }
+    
+    
+    @Test
     public void testGetStreamOnItemAttachment() throws IOException {
         GraphService client = clientBuilder() //
                 .expectResponse(
