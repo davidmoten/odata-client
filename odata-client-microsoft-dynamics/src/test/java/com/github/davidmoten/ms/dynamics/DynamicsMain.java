@@ -2,7 +2,7 @@ package com.github.davidmoten.ms.dynamics;
 
 import java.util.concurrent.TimeUnit;
 
-import com.github.davidmoten.microsoft.analytics.Analytics;
+import com.github.davidmoten.microsoft.dynamics.Dynamics;
 
 import microsoft.dynamics.crm.container.System;
 
@@ -11,7 +11,7 @@ public class DynamicsMain {
     public static void main(String[] args) {
 
         // build client
-        System client = Analytics //
+        System client = Dynamics //
                 .service(System.class) //
                 .baseUrl("https://SOLUTION.api.crm4.dynamics.com/api/data/v9.1/") //
                 .tenantName("TENANT_NAME") //
