@@ -149,8 +149,8 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     
     /**
      * Returns a stream of the paged objects (wrapped) followed by a deltaLink. If
-     * there are no objects then the stream will have a deltaLink item only (the
-     * deltaLink may or may not be present).
+     * there are no objects then the stream will have a deltaLink object only (the
+     * deltaLink value may or may not be present in that object).
      * 
      * @return a stream of the paged objects (wrapped) followed by a deltaLink.
      */
