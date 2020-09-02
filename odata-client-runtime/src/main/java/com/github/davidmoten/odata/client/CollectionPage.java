@@ -1,10 +1,16 @@
 package com.github.davidmoten.odata.client;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -139,6 +145,68 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         } else {
             return Optional.empty();
         }
+    }
+    
+    /**
+     * Returns a stream of the paged objects (wrapped) followed by a deltaLink. If
+     * there are no objects then the stream will have a deltaLink item only (the
+     * deltaLink may or may not be present).
+     * 
+     * @return a stream of the paged objects (wrapped) followed by a deltaLink.
+     */
+    public Stream<ObjectOrDeltaLink<T>> streamWithDeltaLink() {
+        Iterator<ObjectOrDeltaLink<T>> it = new Iterator<ObjectOrDeltaLink<T>>() {
+
+            CollectionPage<T> page = CollectionPage.this;
+            Optional<String> deltaLink = page.deltaLink();
+            
+            int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                loadNext();
+                return page != null || deltaLink != null;
+            }
+
+            @Override
+            public ObjectOrDeltaLink<T> next() {
+                loadNext();
+                if (page == null) {
+                    if (deltaLink == null) {
+                        throw new NoSuchElementException();
+                    } else {
+                        ObjectOrDeltaLink<T> v = new ObjectOrDeltaLink<T>(Optional.empty(), deltaLink);
+                        deltaLink = null;
+                        return v;
+                    }
+                } else {
+                    T v = page.currentPage().get(i);
+                    i++;
+                    return new ObjectOrDeltaLink<T>(Optional.of(v), Optional.empty());
+                }
+            }
+
+            private void loadNext() {
+                if (page != null) {
+                    while (true) {
+                        if (page != null && i == page.currentPage().size()) {
+                            page = page.nextPage().orElse(null);
+                            if (page != null) {
+                                deltaLink = page.deltaLink();
+                            }
+                            i = 0;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+
+        };
+        Spliterator<ObjectOrDeltaLink<T>> spliterator = Spliterators.spliteratorUnknownSize(it, 0);
+
+        // Get a Sequential Stream from spliterator
+        return StreamSupport.stream(spliterator, false);
     }
 
 }
