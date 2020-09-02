@@ -22,7 +22,7 @@ public class DynamicsMain {
 
         // now use client
         client //
-                .applicationusers() //
+                .accounts() //
                 .metadataMinimal() //
                 .stream() //
                 .limit(10) //
