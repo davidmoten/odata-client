@@ -65,7 +65,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <metadata>src/main/odata/microsoft-dynamics-metadata.xml</metadata>
+                            <metadata>src/main/odata/microsoft-dynamics-crm4-v9.1-metadata.xml</metadata>
                             <schemas>
                                 <schema>
                                     <namespace>Microsoft.Dynamics.CRM</namespace>
