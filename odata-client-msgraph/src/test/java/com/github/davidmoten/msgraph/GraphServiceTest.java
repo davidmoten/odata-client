@@ -34,6 +34,7 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
+import com.github.davidmoten.odata.client.ObjectOrDeltaLink;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Retries;
@@ -562,7 +563,39 @@ public class GraphServiceTest {
         assertEquals(Arrays.asList("lamp_thin.png"),
                 m.getAttachments().stream().map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
-
+    
+    @Test
+    public void testSupplementWithDeltaLinkWhenCollectionEmpty() {
+        GraphService client = clientBuilder() //
+                .expectResponse(
+                        "/users/delta?$deltaToken=latest",
+                        "/response-users-delta-empty.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        List<ObjectOrDeltaLink<User>> list = client.users().delta().deltaTokenLatest().get().streamWithDeltaLink().collect(Collectors.toList());
+        assertEquals(1, list.size());
+        ObjectOrDeltaLink<User> x = list.get(0);
+        assertFalse(x.object().isPresent());
+        assertEquals("https://graph.microsoft.com/v1.0/users/delta?$deltatoken=3enys", x.deltaLink().get());
+    }
+    
+    @Test
+    public void testSupplementWithDeltaLinkWhenCollectionNonEmptyAndHasNoDeltaLink() {
+        GraphService client = clientBuilder() //
+                .expectResponse(
+                        "/users",
+                        "/response-users-one-page.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        assertEquals(31, client.users().stream().count());
+        List<ObjectOrDeltaLink<User>> list = client.users().get().streamWithDeltaLink().collect(Collectors.toList());
+        assertEquals(32, list.size());
+        ObjectOrDeltaLink<User> x = list.get(list.size() -1);
+        assertFalse(x.object().isPresent());
+        assertFalse(x.deltaLink().isPresent());
+    }
+    
+    
     @Test
     public void testGetStreamOnItemAttachment() throws IOException {
         GraphService client = clientBuilder() //
@@ -962,7 +995,7 @@ public class GraphServiceTest {
                 .readTimeout(10, TimeUnit.MINUTES) //
                 .upload(file, 512 * 1024);
     }
-
+    
     // test paged complex type
     //
 
