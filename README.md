@@ -549,6 +549,13 @@ delta = delta.nextDelta().get();
 ...
 
 ```
+A special streaming method is available also that returns a list of wrapped delta objects then the delta link to use for the next delta call:
+
+```java
+Stream<ObjectOrDeltaLink<User>> delta = client.users().delta().get().streamWithDeltaLink();
+
+```
+`ObjectOrDeltaLink` is serializable to JSON via its Jackson annotations and at least one user is using the `streamWithDeltaLink` method to pass large deltas over a network via WebFlux (see issue #44).
 
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
