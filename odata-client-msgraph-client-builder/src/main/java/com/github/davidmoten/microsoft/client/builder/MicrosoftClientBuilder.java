@@ -1,4 +1,4 @@
-package com.github.davidmoten.msgraph.builder;
+package com.github.davidmoten.microsoft.client.builder;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -25,6 +25,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.microsoft.authentication.AccessTokenProvider;
+import com.github.davidmoten.microsoft.authentication.AuthenticationEndpoint;
+import com.github.davidmoten.microsoft.authentication.ClientCredentialsAccessTokenProvider;
+import com.github.davidmoten.msgraph.builder.Authenticator;
+import com.github.davidmoten.msgraph.builder.BearerAuthenticator;
+import com.github.davidmoten.msgraph.builder.Creator;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
@@ -33,11 +39,13 @@ import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.internal.ApacheHttpClientHttpService;
 
-public final class MsGraphClientBuilder<T> {
+public final class MicrosoftClientBuilder<T> {
 
     private final Creator<T> creator;
     private final String baseUrl;
     private String tenantName;
+    private String resource;
+    private String scope;
     private String clientId;
     private String clientSecret;
     private long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
@@ -53,11 +61,10 @@ public final class MsGraphClientBuilder<T> {
     private String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
     private Function<? super HttpService, ? extends HttpService> httpServiceTransformer = x -> x;
     private Optional<AccessTokenProvider> accessTokenProvider = Optional.empty();
-	private Optional<Authenticator> authenticator = Optional.empty();
-	private Optional<Supplier<UsernamePassword>> basicCredentials = Optional.empty();
- 
+    private Optional<Authenticator> authenticator = Optional.empty();
+    private Optional<Supplier<UsernamePassword>> basicCredentials = Optional.empty();
 
-    public MsGraphClientBuilder(String baseUrl, Creator<T> creator) {
+    public MicrosoftClientBuilder(String baseUrl, Creator<T> creator) {
         Preconditions.checkNotNull(baseUrl);
         Preconditions.checkNotNull(creator);
         this.baseUrl = baseUrl;
@@ -71,9 +78,9 @@ public final class MsGraphClientBuilder<T> {
     public static final class BuilderCustomAuthenticator<T> {
 
         private final Authenticator authenticator;
-        private final MsGraphClientBuilder<T> b;
+        private final MicrosoftClientBuilder<T> b;
 
-        BuilderCustomAuthenticator(MsGraphClientBuilder<T> b, Authenticator authenticator) {
+        BuilderCustomAuthenticator(MicrosoftClientBuilder<T> b, Authenticator authenticator) {
             this.authenticator = authenticator;
             this.b = b;
         }
@@ -149,94 +156,122 @@ public final class MsGraphClientBuilder<T> {
         }
 
     }
-    
-    public Builder3<T> basicAuthentication(Supplier<UsernamePassword> usernamePassword) {
-    	this.basicCredentials = Optional.of(usernamePassword);
-    	return new Builder3<T>(this);
-	}
-    
-    
+
+    public Builder5<T> basicAuthentication(Supplier<UsernamePassword> usernamePassword) {
+        this.basicCredentials = Optional.of(usernamePassword);
+        return new Builder5<T>(this);
+    }
+
     public Builder<T> tenantName(String tenantName) {
         this.tenantName = tenantName;
         return new Builder<T>(this);
     }
 
     public static final class Builder<T> {
-        private final MsGraphClientBuilder<T> b;
+        private final MicrosoftClientBuilder<T> b;
 
-        Builder(MsGraphClientBuilder<T> b) {
+        Builder(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder2<T> clientId(String clientId) {
-            b.clientId = clientId;
+        public Builder2<T> resource(String resource) {
+            b.resource = resource;
             return new Builder2<T>(b);
         }
 
     }
 
     public static final class Builder2<T> {
-        private final MsGraphClientBuilder<T> b;
+        private final MicrosoftClientBuilder<T> b;
 
-        Builder2(MsGraphClientBuilder<T> b) {
+        Builder2(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder3<T> clientSecret(String clientSecret) {
-            b.clientSecret = clientSecret;
+        public Builder3<T> scope(String scope) {
+            b.scope = scope;
             return new Builder3<T>(b);
         }
 
     }
 
     public static final class Builder3<T> {
-        private final MsGraphClientBuilder<T> b;
+        private final MicrosoftClientBuilder<T> b;
 
-        Builder3(MsGraphClientBuilder<T> b) {
+        Builder3(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder3<T> refreshBeforeExpiry(long duration, TimeUnit unit) {
+        public Builder4<T> clientId(String clientId) {
+            b.clientId = clientId;
+            return new Builder4<T>(b);
+        }
+
+    }
+
+    public static final class Builder4<T> {
+        private final MicrosoftClientBuilder<T> b;
+
+        Builder4(MicrosoftClientBuilder<T> b) {
+            this.b = b;
+        }
+
+        public Builder5<T> clientSecret(String clientSecret) {
+            b.clientSecret = clientSecret;
+            return new Builder5<T>(b);
+        }
+
+    }
+
+    public static final class Builder5<T> {
+        private final MicrosoftClientBuilder<T> b;
+
+        Builder5(MicrosoftClientBuilder<T> b) {
+            this.b = b;
+        }
+
+        public Builder5<T> refreshBeforeExpiry(long duration, TimeUnit unit) {
             b.refreshBeforeExpiryDurationMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder3<T> connectTimeout(long duration, TimeUnit unit) {
+        public Builder5<T> connectTimeout(long duration, TimeUnit unit) {
             b.connectTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder3<T> readTimeout(long duration, TimeUnit unit) {
+        public Builder5<T> readTimeout(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder3<T> proxyHost(String proxyHost) {
+        public Builder5<T> proxyHost(String proxyHost) {
             b.proxyHost = Optional.of(proxyHost);
             return this;
         }
 
-        public Builder3<T> proxyPort(int proxyPort) {
+        public Builder5<T> proxyPort(int proxyPort) {
             b.proxyPort = Optional.of(proxyPort);
             return this;
         }
-        
-        public Builder3<T> httpServiceTransformer(Function<? super HttpService, ? extends HttpService> transformer) {
+
+        public Builder5<T> httpServiceTransformer(
+                Function<? super HttpService, ? extends HttpService> transformer) {
             b.httpServiceTransformer = transformer;
             return this;
         }
-        
-        public Builder3<T> accessTokenProvider (AccessTokenProvider atp){
+
+        public Builder5<T> accessTokenProvider(AccessTokenProvider atp) {
             b.accessTokenProvider = Optional.of(atp);
             return this;
         }
 
-        public Builder3<T> proxyUsername(String username) {
+        public Builder5<T> proxyUsername(String username) {
             b.proxyUsername = Optional.of(username);
             return this;
         }
 
-        public Builder3<T> proxyPassword(String password) {
+        public Builder5<T> proxyPassword(String password) {
             b.proxyPassword = Optional.of(password);
             return this;
         }
@@ -250,7 +285,7 @@ public final class MsGraphClientBuilder<T> {
          * @param supplier provider of HttpClient
          * @return this
          */
-        public Builder3<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
+        public Builder5<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
             Preconditions.checkArgument(!b.httpClientBuilderExtras.isPresent());
             b.httpClientSupplier = Optional.of(supplier);
             return this;
@@ -266,7 +301,7 @@ public final class MsGraphClientBuilder<T> {
          * @param extras modifier of builder
          * @return this
          */
-        public Builder3<T> httpClientBuilderExtras(
+        public Builder5<T> httpClientBuilderExtras(
                 Function<HttpClientBuilder, HttpClientBuilder> extras) {
             Preconditions.checkArgument(!b.httpClientSupplier.isPresent());
             b.httpClientBuilderExtras = Optional.of(extras);
@@ -280,7 +315,7 @@ public final class MsGraphClientBuilder<T> {
          * @param authenticationEndpoint endpoint to use for authentication
          * @return this
          */
-        public Builder3<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
+        public Builder5<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
             return authenticationEndpoint(authenticationEndpoint.url());
         }
 
@@ -291,78 +326,79 @@ public final class MsGraphClientBuilder<T> {
          * @param authenticationEndpoint endpoint to use for authentication
          * @return this
          */
-        public Builder3<T> authenticationEndpoint(String authenticationEndpoint) {
+        public Builder5<T> authenticationEndpoint(String authenticationEndpoint) {
             b.authenticationEndpoint = authenticationEndpoint;
             return this;
         }
-        
-        public Builder3<T> authenticator(Authenticator authenticator) {
-        	b.authenticator = Optional.of(authenticator);
-        	return this;
+
+        public Builder5<T> authenticator(Authenticator authenticator) {
+            b.authenticator = Optional.of(authenticator);
+            return this;
         }
-        
+
         public T build() {
-        	if (!b.authenticator.isPresent() && b.basicCredentials.isPresent()) {
-        		Supplier<UsernamePassword> bc = b.basicCredentials.get();
-        		authenticator((url, requestHeaders) -> {
-    				// some streaming endpoints object to auth so don't add header
-    				// if not on the base service
-    				if (url.toExternalForm().startsWith(b.baseUrl)) {
-    					// remove Authorization header if present
-    					List<RequestHeader> list = requestHeaders //
-    							.stream() //
-    							.filter(rh -> !rh.name().equalsIgnoreCase("Authorization")) //
-    							.collect(Collectors.toList());
-    					// add basic auth request header
-    					UsernamePassword c = bc.get();
-    					list.add(basicAuth(c.username(), c.password()));
-    					return list;
-    				} else {
-    					return requestHeaders;
-    				}
-    			});
-        	}
-            return createService(b.baseUrl, b.tenantName, b.clientId, b.clientSecret,
-                    b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
+            if (!b.authenticator.isPresent() && b.basicCredentials.isPresent()) {
+                Supplier<UsernamePassword> bc = b.basicCredentials.get();
+                authenticator((url, requestHeaders) -> {
+                    // some streaming endpoints object to auth so don't add header
+                    // if not on the base service
+                    if (url.toExternalForm().startsWith(b.baseUrl)) {
+                        // remove Authorization header if present
+                        List<RequestHeader> list = requestHeaders //
+                                .stream() //
+                                .filter(rh -> !rh.name().equalsIgnoreCase("Authorization")) //
+                                .collect(Collectors.toList());
+                        // add basic auth request header
+                        UsernamePassword c = bc.get();
+                        list.add(basicAuth(c.username(), c.password()));
+                        return list;
+                    } else {
+                        return requestHeaders;
+                    }
+                });
+            }
+            return createService(b.baseUrl, b.tenantName, b.resource, b.scope, b.clientId,
+                    b.clientSecret, b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs,
+                    b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider, b.authenticator);
+                    b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider,
+                    b.authenticator);
         }
 
     }
-    
+
     private static RequestHeader basicAuth(String username, String password) {
-		String s = username + ":" + password;
-		String encoded = Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
-		return RequestHeader.create("Authorization", "Basic " + encoded);
-	}
-    
-    public static final class UsernamePassword {
-    	
-    	private final String username;
-    	private final String password;
-		
-    	UsernamePassword(String username, String password) {
-			this.username = username;
-			this.password = password;
-		}
-    	
-    	public static UsernamePassword create(String username, String password) {
-    		return new UsernamePassword(username, password);
-    	}
-    	
-    	public String username() {
-    		return username;
-    	}
-    	
-    	public String password() {
-    		return password;
-    	}
+        String s = username + ":" + password;
+        String encoded = Base64.getEncoder().encodeToString(s.getBytes(StandardCharsets.UTF_8));
+        return RequestHeader.create("Authorization", "Basic " + encoded);
     }
 
-    private static <T> T createService(String baseUrl, String tenantName, String clientId,
-            String clientSecret, long refreshBeforeExpiryDurationMs, long connectTimeoutMs,
-            long readTimeoutMs, //
+    public static final class UsernamePassword {
+
+        private final String username;
+        private final String password;
+
+        UsernamePassword(String username, String password) {
+            this.username = username;
+            this.password = password;
+        }
+
+        public static UsernamePassword create(String username, String password) {
+            return new UsernamePassword(username, password);
+        }
+
+        public String username() {
+            return username;
+        }
+
+        public String password() {
+            return password;
+        }
+    }
+
+    private static <T> T createService(String baseUrl, String tenantName, String resource,
+            String scope, String clientId, String clientSecret, long refreshBeforeExpiryDurationMs,
+            long connectTimeoutMs, long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
@@ -371,28 +407,30 @@ public final class MsGraphClientBuilder<T> {
             String authenticationEndpoint, //
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer,
             Optional<AccessTokenProvider> accessTokenProviderOverride, //
-            Optional<Authenticator> authenticator
-	) {
-		final Authenticator auth;
-		if (authenticator.isPresent()) {
-			auth = authenticator.get();
-		} else {
-			AccessTokenProvider accessTokenProvider = accessTokenProviderOverride //
-					.orElseGet(() -> ClientCredentialsAccessTokenProvider //
-							.tenantName(tenantName) //
-							.clientId(clientId) //
-							.clientSecret(clientSecret) //
-							.connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
-							.readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
-							.refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
-							.authenticationEndpoint(authenticationEndpoint) //
-							.build());
-			auth = new BearerAuthenticator(accessTokenProvider, baseUrl);
-		}
-		return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort, proxyUsername,
-				proxyPassword, supplier, httpClientBuilderExtras, creator, authenticationEndpoint,
-				httpServiceTransformer);
-	}
+            Optional<Authenticator> authenticator) {
+        final Authenticator auth;
+        if (authenticator.isPresent()) {
+            auth = authenticator.get();
+        } else {
+            AccessTokenProvider accessTokenProvider = accessTokenProviderOverride //
+                    .orElseGet(() -> ClientCredentialsAccessTokenProvider //
+                            .tenantName(tenantName) //
+                            .resource(resource) //
+                            .scope(scope) //
+                            .clientId(clientId) //
+                            .clientSecret(clientSecret) //
+                            .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
+                            .readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
+                            .refreshBeforeExpiry(refreshBeforeExpiryDurationMs,
+                                    TimeUnit.MILLISECONDS) //
+                            .authenticationEndpoint(authenticationEndpoint) //
+                            .build());
+            auth = new BearerAuthenticator(accessTokenProvider, baseUrl);
+        }
+        return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
+                proxyUsername, proxyPassword, supplier, httpClientBuilderExtras, creator,
+                authenticationEndpoint, httpServiceTransformer);
+    }
 
     private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs,
             long readTimeoutMs, Optional<String> proxyHost, Optional<Integer> proxyPort,
@@ -410,7 +448,7 @@ public final class MsGraphClientBuilder<T> {
     }
 
     @SuppressWarnings("resource")
-	private static <T> T createService(String baseUrl, Authenticator authenticator,
+    private static <T> T createService(String baseUrl, Authenticator authenticator,
             long connectTimeoutMs, long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
@@ -429,7 +467,7 @@ public final class MsGraphClientBuilder<T> {
         httpService = httpServiceTransformer.apply(httpService);
         return creator.create(new Context(Serializer.INSTANCE, httpService, createProperties()));
     }
-    
+
     public static Map<String, Object> createProperties() {
         Map<String, Object> p = new HashMap<>();
         p.put("modify.stream.edit.link", "true");
@@ -446,18 +484,20 @@ public final class MsGraphClientBuilder<T> {
                 .setConnectTimeout((int) connectTimeoutMs) //
                 .setSocketTimeout((int) readTimeoutMs) //
                 .build();
-        
+
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        // Set soTimeout here to affect socketRead in the phase of ssl handshake. Note that
-        // the RequestConfig.setSocketTimeout will take effect only after the ssl handshake completed.
+        // Set soTimeout here to affect socketRead in the phase of ssl handshake. Note
+        // that
+        // the RequestConfig.setSocketTimeout will take effect only after the ssl
+        // handshake completed.
         cm.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout((int) readTimeoutMs).build());
-        
+
         HttpClientBuilder b = HttpClientBuilder //
                 .create() //
                 .useSystemProperties() //
                 .setDefaultRequestConfig(config) //
                 .setConnectionManager(cm);
-        
+
         if (proxyHost.isPresent()) {
             HttpHost proxy = new HttpHost(proxyHost.get(), proxyPort.get());
             if (proxyUsername.isPresent()) {
@@ -475,7 +515,5 @@ public final class MsGraphClientBuilder<T> {
         }
         return b.build();
     }
-
-	
 
 }

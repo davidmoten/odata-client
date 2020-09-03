@@ -29,7 +29,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Sets;
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
@@ -1004,7 +1004,7 @@ public class GraphServiceTest {
                 .test() //
                 .baseUrl("https://graph.microsoft.com/v1.0") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
-                .addProperties(MsGraphClientBuilder.createProperties());
+                .addProperties(MicrosoftClientBuilder.createProperties());
     }
 
     private static GraphService createClient(String path, String resource, RequestHeader... requestHeaders) {
