@@ -555,7 +555,7 @@ A special streaming method is available also that returns a list of wrapped delt
 Stream<ObjectOrDeltaLink<User>> delta = 
     client
       .users()
-      .delta()i
+      .delta()
       .get()
       .streamWithDeltaLink();
 ```
