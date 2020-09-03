@@ -555,6 +555,12 @@ A special streaming method is available also that returns a list of wrapped delt
 Stream<ObjectOrDeltaLink<User>> delta = client.users().delta().get().streamWithDeltaLink();
 
 ```
+Using the delta link from the last element of the stream the next delta call can be made like so:
+
+```java
+Stream<ObjectOrDeltaLink<User>> delta = client.users().delta().overrideUrl(deltaLink).get().streamWithDeltaLink();
+```
+
 `ObjectOrDeltaLink` is serializable to JSON via its Jackson annotations and at least one user is using the `streamWithDeltaLink` method to pass large deltas over a network via WebFlux (see issue [#44](https://github.com/davidmoten/odata-client/issues/44)).
 
 ## Serialization
