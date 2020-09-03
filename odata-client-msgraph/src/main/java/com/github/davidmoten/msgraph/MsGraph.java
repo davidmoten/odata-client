@@ -2,9 +2,10 @@ package com.github.davidmoten.msgraph;
 
 import java.util.concurrent.TimeUnit;
 
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder5;
 import com.github.davidmoten.msgraph.builder.GraphExplorerHttpService;
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.Builder3;
+import com.github.davidmoten.msgraph.builder.internal.MsGraphConstants;
 
 import odata.msgraph.client.container.GraphService;
 
@@ -16,12 +17,15 @@ public final class MsGraph {
         // prevent instantiation
     }
 
-    public static MsGraphClientBuilder.Builder<GraphService> tenantName(String tenantName) {
-        return new MsGraphClientBuilder<> //
-                (MSGRAPH_1_0_BASE_URL, GraphService::new).tenantName(tenantName);
+    public static MicrosoftClientBuilder.Builder3<GraphService> tenantName(String tenantName) {
+        return new MicrosoftClientBuilder<> 
+                (MSGRAPH_1_0_BASE_URL, GraphService::new) //
+                .tenantName(tenantName) //
+                .resource(MsGraphConstants.RESOURCE_MS_GRAPH) //
+                .scope(MsGraphConstants.SCOPE_MS_GRAPH_DEFAULT);
     }
 
-    public static Builder3<GraphService> explorer() {
+    public static Builder5<GraphService> explorer() {
         return MsGraph //
                 .tenantName("unused") //
                 .clientId("unused") //

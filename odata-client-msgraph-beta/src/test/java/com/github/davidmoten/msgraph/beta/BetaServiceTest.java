@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
@@ -45,7 +45,7 @@ public class BetaServiceTest {
                 .test() //
                 .baseUrl("https://graph.microsoft.com/beta") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
-                .addProperties(MsGraphClientBuilder.createProperties());
+                .addProperties(MicrosoftClientBuilder.createProperties());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.davidmoten.msgraph.builder;
+package com.github.davidmoten.microsoft.authentication;
 
 import com.github.davidmoten.guavamini.Preconditions;
 

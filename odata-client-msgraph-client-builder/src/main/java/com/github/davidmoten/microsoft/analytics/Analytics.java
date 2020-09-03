@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.github.davidmoten.guavamini.Preconditions;
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder;
-import com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.UsernamePassword;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.UsernamePassword;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HasContext;
@@ -90,28 +90,28 @@ public final class Analytics {
 			this.b = b;
 		}
 
-		public com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.Builder3<T> basicAuthentication(
+		public MicrosoftClientBuilder.Builder5<T> basicAuthentication(
 				Supplier<UsernamePassword> usernamePassword) {
 			return createBuilder().basicAuthentication(usernamePassword);
 		}
 
-		public com.github.davidmoten.msgraph.builder.MsGraphClientBuilder.Builder3<T> basicAuthentication(
+		public MicrosoftClientBuilder.Builder5<T> basicAuthentication(
 				String username, String password) {
 			return basicAuthentication(() -> UsernamePassword.create(username, password));
 		}
 
-		public MsGraphClientBuilder.Builder<T> tenantName(String tenantName) {
+		public com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder<T> tenantName(String tenantName) {
 			return createBuilder().tenantName(tenantName);
 		}
 
-		private MsGraphClientBuilder<T> createBuilder() {
+		private MicrosoftClientBuilder<T> createBuilder() {
 			String baseUrl = b.baseUrl.orElseGet(() -> {
 				return ANALYTICS_BASE_URL + b.organization.get() //
 						+ b.project.map(x -> "/" + x).orElse("") //
 						+ "/_odata" //
 						+ b.version.map(x -> "/" + x).orElse(ANALYTICS_DEFAULT_VERSION);
 			});
-			return new MsGraphClientBuilder<T> //
+			return new MicrosoftClientBuilder<T> //
 			(baseUrl, context -> {
 				try {
 					return b.serviceCls.getConstructor(Context.class).newInstance(context);
