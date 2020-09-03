@@ -213,6 +213,10 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         return get().stream();
     }
     
+    public Stream<ObjectOrDeltaLink<T>> streamWithDeltaLink() {
+        return get().streamWithDeltaLink();
+    }
+    
     public <S> S to(Function<? super CollectionPage<T>,? extends S> function) {
     	return function.apply(get());
     }
