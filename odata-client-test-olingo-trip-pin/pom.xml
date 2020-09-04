@@ -55,7 +55,7 @@
             <plugin>
                 <groupId>org.apache.olingo</groupId>
                 <artifactId>pojogen-maven-plugin</artifactId>
-                <version>4.5.0</version>
+                <version>${olingo.version}</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/generated-sources/pojogen</outputDirectory>
                     <localEdm>${basedir}/src/main/odata/odata-test-service-trip-pin-metadata.xml</localEdm>
