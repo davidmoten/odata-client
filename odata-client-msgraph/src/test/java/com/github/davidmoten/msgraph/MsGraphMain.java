@@ -32,6 +32,11 @@ public class MsGraphMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
         {
+            String mailbox = System.getProperty("mailbox");
+            client.users(mailbox).messages().stream().limit(10).map(x-> x.getSubject().get()).forEach(System.out::println);
+            System.exit(0);
+        }
+        {
             /////////////////////////////////////////////////////////////
             // Integration test for stream upload (large attachment 5MB)
             /////////////////////////////////////////////////////////////

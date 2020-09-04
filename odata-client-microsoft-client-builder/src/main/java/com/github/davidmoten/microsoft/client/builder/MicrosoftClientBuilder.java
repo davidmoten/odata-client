@@ -174,6 +174,7 @@ public final class MicrosoftClientBuilder<T> {
         }
 
         public Builder2<T> resource(String resource) {
+            Preconditions.checkNotNull(resource);
             b.resource = resource;
             return new Builder2<T>(b);
         }
@@ -188,6 +189,7 @@ public final class MicrosoftClientBuilder<T> {
         }
 
         public Builder3<T> scope(String scope) {
+            Preconditions.checkNotNull(scope);
             b.scope = scope;
             return new Builder3<T>(b);
         }
