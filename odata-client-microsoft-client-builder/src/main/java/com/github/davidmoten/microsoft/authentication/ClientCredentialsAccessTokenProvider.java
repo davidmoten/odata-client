@@ -8,7 +8,9 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +48,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private final long refreshBeforeExpiryMs;
     private final long connectTimeoutMs;
     private final long readTimeoutMs;
-    private final String scope;
+    private final List<String> scopes;
     private final String resource;
     private final Optional<String> proxyHost;
     private final Optional<Integer> proxyPort;
@@ -59,7 +61,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
     private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
             String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
-            long readTimeoutMs, String authenticationEndpoint, String resource, String scope,
+            long readTimeoutMs, String authenticationEndpoint, String resource, List<String> scopes,
             Optional<String> proxyHost, //
             Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword) {
@@ -78,7 +80,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         Preconditions.checkArgument(!proxyHost.isPresent() || proxyPort.isPresent(),
                 "if proxyHost specified then so must proxyPort be specified");
         Preconditions.checkNotNull(resource);
-        Preconditions.checkNotNull(scope);
+        Preconditions.checkNotNull(scopes);
         this.tenantName = tenantName;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -86,7 +88,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
         this.authenticationEndpoint = authenticationEndpoint;
-        this.scope = scope;
+        this.scopes = scopes;
         this.resource = resource;
         this.proxyHost = proxyHost;
         this.proxyPort = proxyPort;
@@ -141,7 +143,9 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             add(params, PARAMETER_CLIENT_ID, clientId);
             add(params, PARAMETER_GRANT_TYPE, GRANT_TYPE_CLIENT_CREDENTIALS);
             add(params, PARAMETER_CLIENT_SECRET, clientSecret);
-            add(params, PARAMETER_SCOPE, scope);
+            for (String scope : scopes) {
+                add(params, PARAMETER_SCOPE, scope);
+            }
             con.setDoOutput(true);
             try (DataOutputStream dos = new DataOutputStream(con.getOutputStream())) {
                 dos.writeBytes(params.toString());
@@ -184,7 +188,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
     public static final class Builder {
         final String tenantName;
-        String scope;
+        List<String> scopes = new ArrayList<>();
         String resource;
         String clientId;
         String clientSecret;
@@ -218,9 +222,9 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             this.b = b;
         }
 
-        public Builder3 scope(String scope) {
-            Preconditions.checkNotNull(scope);
-            b.scope = scope;
+        public Builder3 scope(List<String> scopes) {
+            Preconditions.checkNotNull(scopes);
+            b.scopes.addAll(scopes);
             return new Builder3(b);
         }
 
@@ -288,8 +292,8 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             return this;
         }
 
-        public Builder5 scope(String scope) {
-            b.scope = scope;
+        public Builder5 scope(List<String> scopes) {
+            b.scopes.addAll(scopes);
             return this;
         }
 
@@ -335,7 +339,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         public ClientCredentialsAccessTokenProvider build() {
             return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
                     b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.endpoint, b.resource, b.scope, b.proxyHost, b.proxyPort, b.proxyUsername,
+                    b.endpoint, b.resource, b.scopes, b.proxyHost, b.proxyPort, b.proxyUsername,
                     b.proxyPassword);
         }
     }
