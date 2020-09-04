@@ -27,6 +27,12 @@
 
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
+            <artifactId>odata-client-microsoft-client-builder</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>odata-client-msgraph</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
