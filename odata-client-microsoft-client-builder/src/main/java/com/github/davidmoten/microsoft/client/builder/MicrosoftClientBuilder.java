@@ -1,6 +1,8 @@
 package com.github.davidmoten.microsoft.client.builder;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +46,7 @@ public final class MicrosoftClientBuilder<T> {
     private final String baseUrl;
     private String tenantName;
     private String resource;
-    private String scope;
+    private List<String> scopes = new ArrayList<>();
     private String clientId;
     private String clientSecret;
     private long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
@@ -188,10 +190,19 @@ public final class MicrosoftClientBuilder<T> {
             this.b = b;
         }
 
-        public Builder3<T> scope(String scope) {
-            Preconditions.checkNotNull(scope);
-            b.scope = scope;
+        public Builder3<T> scope(String... scopes) {
+            Preconditions.checkNotNull(scopes);
+            return scope(Arrays.asList(scopes));
+        }
+        
+        public Builder3<T> scope(List<String> scopes) {
+            Preconditions.checkNotNull(scopes);
+            b.scopes.addAll(scopes);
             return new Builder3<T>(b);
+        }
+        
+        public Builder4<T> clientId(String clientId) {
+            return new Builder3<T>(b).clientId(clientId);
         }
 
     }
@@ -358,7 +369,7 @@ public final class MicrosoftClientBuilder<T> {
                     }
                 });
             }
-            return createService(b.baseUrl, b.tenantName, b.resource, b.scope, b.clientId,
+            return createService(b.baseUrl, b.tenantName, b.resource, b.scopes, b.clientId,
                     b.clientSecret, b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs,
                     b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
@@ -398,7 +409,7 @@ public final class MicrosoftClientBuilder<T> {
     }
 
     private static <T> T createService(String baseUrl, String tenantName, String resource,
-            String scope, String clientId, String clientSecret, long refreshBeforeExpiryDurationMs,
+            List<String> scopes, String clientId, String clientSecret, long refreshBeforeExpiryDurationMs,
             long connectTimeoutMs, long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
@@ -417,7 +428,7 @@ public final class MicrosoftClientBuilder<T> {
                     .orElseGet(() -> ClientCredentialsAccessTokenProvider //
                             .tenantName(tenantName) //
                             .resource(resource) //
-                            .scope(scope) //
+                            .scope(scopes) //
                             .clientId(clientId) //
                             .clientSecret(clientSecret) //
                             .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
