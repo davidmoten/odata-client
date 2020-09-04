@@ -17,7 +17,7 @@
 
         <dependency>
             <groupId>com.github.davidmoten</groupId>
-            <artifactId>odata-client-msgraph-client-builder</artifactId>
+            <artifactId>odata-client-microsoft-client-builder</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
