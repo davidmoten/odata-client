@@ -59,7 +59,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
     private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
             String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
-            long readTimeoutMs, String authenticationEndpoint, String scope, String resource,
+            long readTimeoutMs, String authenticationEndpoint, String resource, String scope,
             Optional<String> proxyHost, //
             Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword) {
@@ -71,7 +71,6 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         Preconditions.checkArgument(connectTimeoutMs >= 0, "connectTimeoutMs must be >=0");
         Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
         Preconditions.checkNotNull(authenticationEndpoint);
-        Preconditions.checkNotNull(scope);
         Preconditions.checkNotNull(proxyHost);
         Preconditions.checkNotNull(proxyPort);
         Preconditions.checkNotNull(proxyUsername);
@@ -79,6 +78,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         Preconditions.checkArgument(!proxyHost.isPresent() || proxyPort.isPresent(),
                 "if proxyHost specified then so must proxyPort be specified");
         Preconditions.checkNotNull(resource);
+        Preconditions.checkNotNull(scope);
         this.tenantName = tenantName;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -220,6 +220,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
         public Builder3 scope(String scope) {
             Preconditions.checkNotNull(scope);
+            b.scope = scope;
             return new Builder3(b);
         }
 
@@ -334,7 +335,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         public ClientCredentialsAccessTokenProvider build() {
             return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
                     b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.endpoint, b.scope, b.resource, b.proxyHost, b.proxyPort, b.proxyUsername,
+                    b.endpoint, b.resource, b.scope, b.proxyHost, b.proxyPort, b.proxyUsername,
                     b.proxyPassword);
         }
     }

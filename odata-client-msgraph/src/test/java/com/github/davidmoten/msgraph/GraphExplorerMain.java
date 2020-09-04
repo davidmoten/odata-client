@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.Serializer;
 
 import odata.msgraph.client.complex.ObjectIdentity;
@@ -20,8 +19,8 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
-            CollectionPage<User> delta = client.users().get();
-            System.out.println(Serializer.INSTANCE.serializePrettyPrint(delta.streamWithDeltaLink()));
+            User delta = client.users().delta().streamWithDeltaLink().findFirst().get().object().get();
+            System.out.println(Serializer.INSTANCE.serialize(delta));
         }
         System.exit(0);
 
@@ -113,7 +112,8 @@ public class GraphExplorerMain {
 
         System.exit(0);
 
-        String id = client.me().messages().select("id").stream().limit(1).findFirst().get().getId().get();
+        String id = client.me().messages().select("id").stream().limit(1).findFirst().get().getId()
+                .get();
 
         client //
                 .me() //
