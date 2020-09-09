@@ -1469,7 +1469,7 @@ public final class Generator {
 		p.format("\n%s@%s\n", indent, imports.add(Override.class));
 		p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
 		p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
-		p.format("%sreturn unmappedFields == null ? new %s() : unmappedFields;\n", indent.right(),
+		p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
 				imports.add(UnmappedFields.class));
 		p.format("%s}\n", indent.left());
 	}
