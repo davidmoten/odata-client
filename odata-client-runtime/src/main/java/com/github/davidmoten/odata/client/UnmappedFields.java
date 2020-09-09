@@ -79,5 +79,10 @@ public final class UnmappedFields implements Map<String, Object> {
     public Set<Entry<String, Object>> entrySet() {
         return map.entrySet();
     }
+    
+    @Override
+    public String toString() {
+        return map.toString();
+    }
 
 }

@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,9 +34,11 @@ import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
+import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.ObjectOrDeltaLink;
+import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Retries;
@@ -70,6 +74,7 @@ import odata.msgraph.client.enums.AttachmentType;
 import odata.msgraph.client.enums.BodyType;
 import odata.msgraph.client.enums.Importance;
 import odata.msgraph.client.enums.Modality;
+import odata.msgraph.client.schema.SchemaInfo;
 
 public class GraphServiceTest {
 
@@ -625,6 +630,36 @@ public class GraphServiceTest {
                 .get();
         String s = new String(read(a.getStream().get().get()));
         assertEquals(60, s.length());
+    }
+    
+    @Test
+    public void testExpandAttachments() {
+        GraphService client = clientBuilder() //
+                .expectResponse(
+                        "/users/fred/messages/12345?$expand=attachments",
+                        "/response-expand-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .build();
+        Message m = client.users("fred").messages("12345").expand("attachments").get();
+        Object attachments = m.getUnmappedFields().get("attachments");
+        assertTrue(attachments instanceof ArrayList);
+        
+        // test how an expand attachments field can be converted into CollectionPage
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("value",  attachments);
+        String json = Serializer.INSTANCE.serialize(map);
+        System.out.println(json);
+        CollectionPage<Attachment> a = Serializer.INSTANCE.deserializeCollectionPage( //
+                json, //
+                Attachment.class, //
+                new ContextPath(client._context(),new Path("attachments", PathStyle.IDENTIFIERS_AS_SEGMENTS)), //
+                SchemaInfo.INSTANCE, 
+                Collections.emptyList(), //
+                HttpRequestOptions.EMPTY
+                , null);
+        List<Attachment> list = a.toList();
+        assertEquals(1, list.size());
+        assertEquals(2016, (int) list.get(0).getSize().orElse(0));
     }
 
     @Test
