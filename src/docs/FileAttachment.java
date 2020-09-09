@@ -213,7 +213,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     @Override
     @JsonIgnore
     public UnmappedFields getUnmappedFields() {
-        return unmappedFields == null ? new UnmappedFields() : unmappedFields;
+        return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
     }
 
     /**
