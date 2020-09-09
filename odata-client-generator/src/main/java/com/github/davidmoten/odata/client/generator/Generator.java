@@ -74,6 +74,7 @@ import com.github.davidmoten.odata.client.StreamUploaderChunked;
 import com.github.davidmoten.odata.client.StreamUploaderSingleCall;
 import com.github.davidmoten.odata.client.TestingService.BuilderBase;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
+import com.github.davidmoten.odata.client.UnmappedFields;
 import com.github.davidmoten.odata.client.UploadStrategy;
 import com.github.davidmoten.odata.client.annotation.NavigationProperty;
 import com.github.davidmoten.odata.client.annotation.Property;
@@ -98,7 +99,6 @@ import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
-import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Generator {
 
