@@ -21,7 +21,7 @@ public abstract class EntityRequest<T extends ODataEntityType> {
     T get(EntityRequestOptions<T> options) {
         if (value.isPresent()) {
             String json = Serializer.INSTANCE.serialize(value.get());
-            return Serializer.INSTANCE.deserialize(json, cls);
+            return Serializer.INSTANCE.deserialize(json, cls, contextPath, false);
         } else {
             return RequestHelper.get(contextPath, cls, options, schemaInfo);
         }

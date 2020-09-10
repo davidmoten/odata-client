@@ -10,6 +10,7 @@ import com.github.davidmoten.odata.client.Serializer;
 import odata.msgraph.client.complex.ObjectIdentity;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.DirectoryObject;
+import odata.msgraph.client.entity.Drive;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.User;
 
@@ -18,6 +19,11 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+        {
+            Drive drive = client.me().metadataMinimal().get().getDrive().get();
+            System.out.println(Serializer.INSTANCE.serialize(drive));
+            System.exit(0);
+        }
         {
             User delta = client.users().delta().streamWithDeltaLink().findFirst().get().object().get();
             System.out.println(Serializer.INSTANCE.serialize(delta));
