@@ -428,6 +428,60 @@ List<User> users = client
   .readTimeout(30, Timeout.SECONDS)
   .toList();
 ```
+### Download an email in SMTP MIME format
+Here's an example using Graph Explorer where we download the mime format of the any email returned by the service:
+```java
+GraphService client = MsGraph.explorer().build();
+String mimeMessage = 
+  client
+    .me()
+    .messages()
+    .stream()
+    .findFirst()
+    .get()
+    .getStream()
+    .get()
+    .getStringUtf8();
+System.out.println(mimeMessage);
+```
+Output:
+
+```
+From: Sundar Ganesan <admin@m365x1515.onmicrosoft.com>
+To: Megan Bowen <MeganB@M365x214355.onmicrosoft.com>, Alex Wilber
+Subject:
+Thread-Index: AQHWhnph+xDTvdQDAJzfEoyf/g4tCA==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date: Wed, 9 Sep 2020 07:25:22 +0000
+Message-ID: 1599636322761
+Content-Language: en-US
+X-MS-Exchange-Organization-SupervisoryReview-TeamsContext:
+	{"SenderId":"19806f8c015344149305dc48012b4789","AadGroupId":null,"ThreadId":"19:650081f4700a4414ac15cd7993129f80@thread.v2","MessageId":1599636322761,"ParentMessageId":null,"TenantId":"91c1bcb4-2349-4abd-83c1-6ae4ffaf7f6c","ThreadType":"chat","CorrelationVector":"KuDTOICw9UWVpDHto11XFw.1.1.1.2441281688.1.0"}
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: multipart/alternative; boundary="_000_1599636322761_"
+MIME-Version: 1.0
+
+--_000_1599636322761_
+Content-Type: text/plain; charset="us-ascii"
+
+test
+
+--_000_1599636322761_
+Content-Type: text/html; charset="us-ascii"
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+</head>
+<body>
+test
+</body>
+</html>
+
+--_000_1599636322761_--
+```
 
 ### Sending an email with an attachment
 
