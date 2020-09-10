@@ -31,6 +31,7 @@ import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.StreamProvider;
 import com.github.davidmoten.odata.client.StreamUploaderSingleCall;
+import com.github.davidmoten.odata.client.UnmappedFields;
 
 public final class RequestHelper {
 
@@ -484,6 +485,14 @@ public final class RequestHelper {
                 "bytes " + startByte + "-" + (finishByte - 1) + "/" + size));
         HttpResponse response = service.put(url, h, in,  (int) (finishByte - startByte), options);
         checkResponseCode(url, response, 200, 204);
+    }
+    
+    public static Optional<Object> getValue(UnmappedFields unmappedFields, String name) {
+        if (unmappedFields == null) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(unmappedFields.get(name));
+        }
     }
 
 }

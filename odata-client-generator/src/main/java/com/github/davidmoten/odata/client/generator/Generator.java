@@ -228,7 +228,7 @@ public final class Generator {
 					indent, //
 					t.getSimpleClassNameEntitySet(), //
 					imports.add(ContextPath.class));
-			p.format("%ssuper(contextPath);\n", indent.right());
+					p.format("%ssuper(contextPath, %s.empty());\n", indent.right(), imports.add(Optional.class));
 			p.format("%s}\n", indent.left());
 
 			// write navigation property bindings
@@ -1080,8 +1080,8 @@ public final class Generator {
 								Names.getGetterMethodWithoutGet(x.getName()));
 						if (isCollection(x)) {
 							p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
-							p.format("%scontextPath.addSegment(\"%s\"));\n", indent.right().right().right().right(),
-									x.getName());
+							p.format("%scontextPath.addSegment(\"%s\"), %s.empty());\n", indent.right().right().right().right(),
+									x.getName(), imports.add(Optional.class));
 							indent.left().left().left().left();
 						} else {
 							p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", indent.right(), returnClass,
@@ -1321,11 +1321,19 @@ public final class Generator {
 			addContextPathField(imports, indent, p);
 
 			// add constructor
-			p.format("\n%spublic %s(%s contextPath) {\n", indent, simpleClassName, imports.add(ContextPath.class));
-			p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp), %s.INSTANCE);\n", indent.right(),
+			p.format("\n%spublic %s(%s contextPath, %s<%s> value) {\n", //
+			        indent, //
+			        simpleClassName, //
+			        imports.add(ContextPath.class), //
+			        imports.add(Optional.class), //
+			        imports.add(Object.class));
+			p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp), %s.INSTANCE, value);\n", //
+			        indent.right(), //
 					imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
 					imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
-					imports.add(names.getFullClassNameSchemaInfo(schema)));
+					imports.add(names.getFullClassNameSchemaInfo(schema)), //
+					imports.add(RequestHelper.class), //
+					t.getName());
 			p.format("%sthis.contextPath = contextPath;\n", indent);
 			p.format("%s}\n", indent.left());
 
@@ -1340,10 +1348,11 @@ public final class Generator {
 									imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
 									Names.getIdentifier(x.getName()));
 
-							p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
+							p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.empty());\n", //
 									indent.right(), //
 									imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
-									x.getName());
+									x.getName(), //
+									imports.add(Optional.class));
 							p.format("%s}\n", indent.left());
 
 							if (names.isEntityWithNamespace(y)) {
@@ -1779,8 +1788,8 @@ public final class Generator {
 					if (isCollection(x)) {
 						if (names.isEntityWithNamespace(names.getType(x))) {
 							p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
-							p.format("%scontextPath.addSegment(\"%s\"));\n", //
-									indent.right().right().right().right(), x.getName());
+							p.format("%scontextPath.addSegment(\"%s\"), %s.getValue(unmappedFields, \"%s\"));\n", //
+									indent.right().right().right().right(), x.getName(), imports.add(RequestHelper.class), x.getName());
 							indent.left().left().left().left();
 						} else {
 							throw new RuntimeException("unexpected");
