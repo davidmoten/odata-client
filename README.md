@@ -572,6 +572,26 @@ Stream<ObjectOrDeltaLink<User>> delta =
 
 `ObjectOrDeltaLink` is serializable to JSON via its Jackson annotations and at least one user is using the `streamWithDeltaLink` method to pass large deltas over a network via WebFlux (see issue [#44](https://github.com/davidmoten/odata-client/issues/44)).
 
+## Expand
+Special support is provided for the `$expand` option. Here's an example:
+
+```java
+Attachment attachment = client
+  .users(emailId)
+  .mailFolders(folderId)
+  .messages(messageId)
+  .attachments(attachmentId)
+  .expand("microsoft.graph.itemattachment/item")
+  .get();
+if (attachment instanceof ItemAttachment) {
+    ItemAttachment a = (ItemAttachment) attachment;
+    OutlookItem item = a.getItem().get();
+    ...
+}
+```
+
+When the above code is called, the line OutlookItem item = a.getItem().get() will not actually make a network call but rather use the json in unmapped fields of attachment. If the json is not present in the unmapped fields then a network call will be made.
+
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
 
