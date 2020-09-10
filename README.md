@@ -431,7 +431,7 @@ List<User> users = client
 ### Download an email in SMTP MIME format
 Use `Message.getStream()`.
 
-Here's an example using Graph Explorer where we download the MIME format of a random email returned by the service:
+Here's an example using Graph Explorer where we download the MIME format of a random email returned by the service (you can run this exact code yourself to test):
 ```java
 GraphService client = MsGraph.explorer().build();
 String mimeMessage = 
