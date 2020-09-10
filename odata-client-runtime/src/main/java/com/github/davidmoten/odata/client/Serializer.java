@@ -28,7 +28,6 @@ import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.InjectableValuesFromFactories;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
-import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 public final class Serializer {
 

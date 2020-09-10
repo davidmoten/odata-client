@@ -33,7 +33,9 @@ public class MsGraphMain {
                 .build();
         {
             String mailbox = System.getProperty("mailbox");
-            client.users(mailbox).messages().stream().limit(10).map(x-> x.getSubject().get()).forEach(System.out::println);
+            String messageId = "AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNfAADh3MOyvFF4RJgQOjzBK-sdAAOBakhvAAA=";
+            Message m = client.users(mailbox).messages(messageId).expand("attachments").get();
+            System.out.println(m.getUnmappedFields());
             System.exit(0);
         }
         {

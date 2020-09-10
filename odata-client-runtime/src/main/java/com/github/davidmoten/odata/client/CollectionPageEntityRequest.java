@@ -2,8 +2,12 @@ package com.github.davidmoten.odata.client;
 
 import static com.github.davidmoten.odata.client.internal.Util.odataTypeName;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -18,24 +22,40 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     private final Class<T> cls;
     private final EntityRequestFactory<T, R> entityRequestFactory;
     private final SchemaInfo schemaInfo;
+    // the value for the collection if it has already been obtained (e.g. via expand option)
+    private final Optional<Object> value;
 
     // should not be public api
     public CollectionPageEntityRequest(ContextPath contextPath, Class<T> cls,
-            EntityRequestFactory<T, R> entityRequestFactory, SchemaInfo schemaInfo) {
+            EntityRequestFactory<T, R> entityRequestFactory, SchemaInfo schemaInfo, Optional<Object> value) {
         this.contextPath = contextPath;
         this.entityRequestFactory = entityRequestFactory;
         this.cls = cls;
         this.schemaInfo = schemaInfo;
+        this.value = value;
     }
 
     CollectionPage<T> get(CollectionRequestOptions options) {
-        ContextPath cp = contextPath.addQueries(options.getQueries());
-        List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
-                false);
-        HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h, options);
-        RequestHelper.checkResponseCode(cp, r, 200, 299);
-        return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp,
-                schemaInfo, h, options, null);
+        if (value.isPresent()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("value", value.get());
+            String json = Serializer.INSTANCE.serialize(map);
+            return Serializer.INSTANCE.deserializeCollectionPage( //
+                    json, //
+                    cls, //
+                    contextPath, //
+                    schemaInfo, Collections.emptyList(), //
+                    HttpRequestOptions.EMPTY, //
+                    null);
+        } else {
+            // perform service request
+            ContextPath cp = contextPath.addQueries(options.getQueries());
+            List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
+            HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h, options);
+            RequestHelper.checkResponseCode(cp, r, 200, 299);
+            return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp, schemaInfo, h, options,
+                    null);
+        }
     }
 
     T post(CollectionRequestOptions options, T entity) {
@@ -90,7 +110,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     @SuppressWarnings("unchecked")
     public <S extends T> CollectionPageEntityRequest<S, EntityRequest<S>> filter(Class<S> cls) {
         return new CollectionPageEntityRequest<S, EntityRequest<S>>(contextPath.addSegment(odataTypeName(cls)), cls,
-                (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, schemaInfo);
+                (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, schemaInfo, value);
     }
     
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {
