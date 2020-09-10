@@ -1025,6 +1025,14 @@ public class GraphServiceTest {
                 .readTimeout(10, TimeUnit.MINUTES) //
                 .upload(file, 512 * 1024);
     }
+    
+    @Test
+    @Ignore
+    public void testDownloadWholeEmailCompiles() {
+        GraphService client = clientBuilder().build();
+        client.me().messages("123").get().getStream().get().getBytes(); //
+        
+    }
 
     // test paged complex type
     //

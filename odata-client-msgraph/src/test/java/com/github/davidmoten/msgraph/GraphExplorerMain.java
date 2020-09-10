@@ -20,6 +20,11 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
+            String mimeMessage = client.me().messages().stream().findFirst().get().getStream().get().getStringUtf8();
+            System.out.println(mimeMessage);
+            System.exit(0);
+        }
+        {
             Drive drive = client.me().metadataMinimal().get().getDrive().get();
             System.out.println(Serializer.INSTANCE.serialize(drive));
             System.exit(0);
