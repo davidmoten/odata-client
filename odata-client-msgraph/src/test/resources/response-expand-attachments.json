@@ -1,0 +1,77 @@
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('david.moten%40amsa.gov.au')/messages(attachments())/$entity",
+	"@odata.etag": "W/\"CQAAABYAAADh3MOyvFF4RJgQOjzBK/sdAAOAhgDj\"",
+	"id": "AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNfAADh3MOyvFF4RJgQOjzBK-sdAAOBakhvAAA=",
+	"createdDateTime": "2020-09-09T21:00:21Z",
+	"lastModifiedDateTime": "2020-09-09T21:00:21Z",
+	"changeKey": "CQAAABYAAADh3MOyvFF4RJgQOjzBK/sdAAOAhgDj",
+	"categories": [],
+	"receivedDateTime": "2020-09-09T21:00:21Z",
+	"sentDateTime": "2020-09-09T21:00:14Z",
+	"hasAttachments": true,
+	"internetMessageId": "<b0a88dcb-1044-441d-9f12-20141b0bfbb3@APVWEXC01R.amsa.gov.au>",
+	"subject": "WebJobs Print Log Errors and Warnings",
+	"bodyPreview": "Some WebJobs Print logs have had warning or error events in the last 24 hours. See attached table.\r\n_time   sourcetype      log_level       message\r\n\r\nWed Sep  9 15:30:33 2020\r\n\r\nwebjobs:print:dynamics:response:processor\r\n\r\nERROR\r\n\r\nAMSA.Process.Print.Pri",
+	"importance": "normal",
+	"parentFolderId": "AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQAuAAAAAABCSTzSpYOXTJf5ExxfstMvAQD0q8bfcZ7QQry5SG484keOAAAACjNfAAA=",
+	"conversationId": "AAQkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQAQAGC9vcV4qX9MnRiUKWXnkfA=",
+	"conversationIndex": "AQHWhuw6YL29xXipf0ydGJQpZeeR8A==",
+	"isDeliveryReceiptRequested": null,
+	"isReadReceiptRequested": false,
+	"isRead": false,
+	"isDraft": false,
+	"webLink": "https://outlook.office365.com/owa/?ItemID=AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNfAADh3MOyvFF4RJgQOjzBK%2FsdAAOBakhvAAA%3D&exvsurl=1&viewmodel=ReadMessageItem",
+	"inferenceClassification": "focused",
+	"body": {
+		"contentType": "html",
+		"content": "<html><head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta content=\"text/html; charset=utf-8\"></head><body style=\"font-size:14px; font-family:helvetica,arial,sans-serif; padding:20px 0; margin:0; color:#333\"><div style=\"margin:0 20px\">Some WebJobs Print logs have had warning or error events in the last 24 hours. See attached table.</div><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"summary\" style=\"margin:20px\"><tbody></tbody></table><div style=\"margin-top:10px; padding-top:20px; border-top:1px solid #c3cbd4\"></div><div style=\"margin:0\"><div style=\"overflow:auto; width:100%\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"results\" style=\"margin:20px\"><tbody><tr><th style=\"text-align:left; padding:4px 8px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\">_time</th><th style=\"text-align:left; padding:4px 8px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\">sourcetype</th><th style=\"text-align:left; padding:4px 8px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\">log_level</th><th style=\"text-align:left; padding:4px 8px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\">message</th></tr><tr valign=\"top\"><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">Wed Sep  9 15:30:33 2020</pre></td><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">webjobs:print:dynamics:response:processor</pre></td><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">ERROR</pre></td><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">AMSA.Process.Print.PrintProcess - GetFileSftpAsync: Permission denied (password).   NOTE: THIS EXCEPTION IS NOT BEING RETHROWN.\n Renci.SshNet.Common.SshAuthenticationException: Permission denied (password).\n   at Renci.SshNet.ClientAuthentication.Authenticate(IConnectionInfoInternal connectionInfo, ISession session)\n   at Renci.SshNet.ConnectionInfo.Authenticate(ISession session, IServiceFactory serviceFactory)\n   at Renci.SshNet.Session.Connect()\n   at Renci.SshNet.BaseClient.Connect()\n   at AMSA.Process.Print.PrintProcess.&lt;GetFileSftpAsync&gt;d__29.MoveNext() in d:\\a\\1\\s\\AMSA.Process\\AMSA.Process.Print\\PrintProcess.cs:line 1183</pre></td></tr><tr valign=\"top\"><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">Wed Sep  9 14:30:06 2020</pre></td><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">webjobs:print:dynamics:response:processor</pre></td><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">ERROR</pre></td><td style=\"text-align:left; padding:4px 8px; margin-top:0px; margin-bottom:0px; border-bottom:1px dotted #c3cbd4\"><pre style=\"font-family:helvetica,arial,sans-serif; white-space:pre-wrap; margin:0\">AMSA.Process.Print.PrintProcess - GetFileSftpAsync: Permission denied (password).   NOTE: THIS EXCEPTION IS NOT BEING RETHROWN.\n Renci.SshNet.Common.SshAuthenticationException: Permission denied (password).\n   at Renci.SshNet.ClientAuthentication.Authenticate(IConnectionInfoInternal connectionInfo, ISession session)\n   at Renci.SshNet.ConnectionInfo.Authenticate(ISession session, IServiceFactory serviceFactory)\n   at Renci.SshNet.Session.Connect()\n   at Renci.SshNet.BaseClient.Connect()\n   at AMSA.Process.Print.PrintProcess.&lt;GetFileSftpAsync&gt;d__29.MoveNext() in d:\\a\\1\\s\\AMSA.Process\\AMSA.Process.Print\\PrintProcess.cs:line 1183</pre></td></tr></tbody></table></div></div><div style=\"margin-top:10px; border-top:1px solid #c3cbd4\"></div><p style=\"margin:20px; font-size:11px; color:#999\">If you believe you've received this email in error, please see your Splunk administrator.</p></body></html>"
+	},
+	"sender": {
+		"emailAddress": {
+			"name": "Splunk@amsa.gov.au",
+			"address": "Splunk@amsa.gov.au"
+		}
+	},
+	"from": {
+		"emailAddress": {
+			"name": "Splunk@amsa.gov.au",
+			"address": "Splunk@amsa.gov.au"
+		}
+	},
+	"toRecipients": [
+		{
+			"emailAddress": {
+				"name": "ITS Applications Development Team",
+				"address": "isappdev@amsa.gov.au"
+			}
+		},
+		{
+			"emailAddress": {
+				"name": "Operations Mars Support",
+				"address": "mars.support@amsa.gov.au"
+			}
+		}
+	],
+	"ccRecipients": [],
+	"bccRecipients": [],
+	"replyTo": [],
+	"flag": {
+		"flagStatus": "notFlagged"
+	},
+	"attachments@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('david.moten%40amsa.gov.au')/messages('AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNfAADh3MOyvFF4RJgQOjzBK-sdAAOBakhvAAA%3D')/attachments",
+	"attachments": [
+		{
+			"@odata.type": "#microsoft.graph.fileAttachment",
+			"@odata.mediaContentType": "text/csv",
+			"id": "AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNfAADh3MOyvFF4RJgQOjzBK-sdAAOBakhvAAABEgAQANS3LLY7QahIlU9iTorpXbk=",
+			"lastModifiedDateTime": "2020-09-09T21:00:21Z",
+			"name": "APPS_WebJobs_Alert_WarningErrorEventsReceived_Dail-2020-09-10.csv",
+			"contentType": "text/csv",
+			"size": 2016,
+			"isInline": false,
+			"contentId": "E3DE782B57C1AF49AD3109E6A420DB6B@AUSP282.PROD.OUTLOOK.COM",
+			"contentLocation": null,
+			"contentBytes": "X3RpbWUsc291cmNldHlwZSxsb2dfbGV2ZWwsbWVzc2FnZQ0KV2VkIFNlcCAgOSAxNTozMDozMyAyMDIwLHdlYmpvYnM6cHJpbnQ6ZHluYW1pY3M6cmVzcG9uc2U6cHJvY2Vzc29yLEVSUk9SLCJBTVNBLlByb2Nlc3MuUHJpbnQuUHJpbnRQcm9jZXNzIC0gR2V0RmlsZVNmdHBBc3luYzogUGVybWlzc2lvbiBkZW5pZWQgKHBhc3N3b3JkKS4gICBOT1RFOiBUSElTIEVYQ0VQVElPTiBJUyBOT1QgQkVJTkcgUkVUSFJPV04uXG4gUmVuY2kuU3NoTmV0LkNvbW1vbi5Tc2hBdXRoZW50aWNhdGlvbkV4Y2VwdGlvbjogUGVybWlzc2lvbiBkZW5pZWQgKHBhc3N3b3JkKS5cbiAgIGF0IFJlbmNpLlNzaE5ldC5DbGllbnRBdXRoZW50aWNhdGlvbi5BdXRoZW50aWNhdGUoSUNvbm5lY3Rpb25JbmZvSW50ZXJuYWwgY29ubmVjdGlvbkluZm8sIElTZXNzaW9uIHNlc3Npb24pXG4gICBhdCBSZW5jaS5Tc2hOZXQuQ29ubmVjdGlvbkluZm8uQXV0aGVudGljYXRlKElTZXNzaW9uIHNlc3Npb24sIElTZXJ2aWNlRmFjdG9yeSBzZXJ2aWNlRmFjdG9yeSlcbiAgIGF0IFJlbmNpLlNzaE5ldC5TZXNzaW9uLkNvbm5lY3QoKVxuICAgYXQgUmVuY2kuU3NoTmV0LkJhc2VDbGllbnQuQ29ubmVjdCgpXG4gICBhdCBBTVNBLlByb2Nlc3MuUHJpbnQuUHJpbnRQcm9jZXNzLjxHZXRGaWxlU2Z0cEFzeW5jPmRfXzI5Lk1vdmVOZXh0KCkgaW4gZDpcYVwxXHNcQU1TQS5Qcm9jZXNzXEFNU0EuUHJvY2Vzcy5QcmludFxQcmludFByb2Nlc3MuY3M6bGluZSAxMTgzIg0KV2VkIFNlcCAgOSAxNDozMDowNiAyMDIwLHdlYmpvYnM6cHJpbnQ6ZHluYW1pY3M6cmVzcG9uc2U6cHJvY2Vzc29yLEVSUk9SLCJBTVNBLlByb2Nlc3MuUHJpbnQuUHJpbnRQcm9jZXNzIC0gR2V0RmlsZVNmdHBBc3luYzogUGVybWlzc2lvbiBkZW5pZWQgKHBhc3N3b3JkKS4gICBOT1RFOiBUSElTIEVYQ0VQVElPTiBJUyBOT1QgQkVJTkcgUkVUSFJPV04uXG4gUmVuY2kuU3NoTmV0LkNvbW1vbi5Tc2hBdXRoZW50aWNhdGlvbkV4Y2VwdGlvbjogUGVybWlzc2lvbiBkZW5pZWQgKHBhc3N3b3JkKS5cbiAgIGF0IFJlbmNpLlNzaE5ldC5DbGllbnRBdXRoZW50aWNhdGlvbi5BdXRoZW50aWNhdGUoSUNvbm5lY3Rpb25JbmZvSW50ZXJuYWwgY29ubmVjdGlvbkluZm8sIElTZXNzaW9uIHNlc3Npb24pXG4gICBhdCBSZW5jaS5Tc2hOZXQuQ29ubmVjdGlvbkluZm8uQXV0aGVudGljYXRlKElTZXNzaW9uIHNlc3Npb24sIElTZXJ2aWNlRmFjdG9yeSBzZXJ2aWNlRmFjdG9yeSlcbiAgIGF0IFJlbmNpLlNzaE5ldC5TZXNzaW9uLkNvbm5lY3QoKVxuICAgYXQgUmVuY2kuU3NoTmV0LkJhc2VDbGllbnQuQ29ubmVjdCgpXG4gICBhdCBBTVNBLlByb2Nlc3MuUHJpbnQuUHJpbnRQcm9jZXNzLjxHZXRGaWxlU2Z0cEFzeW5jPmRfXzI5Lk1vdmVOZXh0KCkgaW4gZDpcYVwxXHNcQU1TQS5Qcm9jZXNzXEFNU0EuUHJvY2Vzcy5QcmludFxQcmludFByb2Nlc3MuY3M6bGluZSAxMTgzIg0K"
+		}
+	]
+}

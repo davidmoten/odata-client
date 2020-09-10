@@ -11,11 +11,11 @@ import com.github.davidmoten.odata.client.NameValue;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.StreamProvider;
+import com.github.davidmoten.odata.client.UnmappedFields;
 import com.github.davidmoten.odata.client.Util;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
-import com.github.davidmoten.odata.client.internal.UnmappedFields;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -213,7 +213,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     @Override
     @JsonIgnore
     public UnmappedFields getUnmappedFields() {
-        return unmappedFields == null ? new UnmappedFields() : unmappedFields;
+        return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
     }
 
     /**

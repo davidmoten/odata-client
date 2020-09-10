@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,6 +60,7 @@ import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.Device;
 import odata.msgraph.client.entity.DirectoryObject;
+import odata.msgraph.client.entity.Drive;
 import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.Group;
@@ -237,48 +240,48 @@ public class GraphServiceTest {
             assertEquals(403, (int) e.getStatusCode().get());
         }
     }
-    
-	@Test
-	public void testUsersDeltaTokenLatest() {
-		GraphService client = clientBuilder() //
-				.expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.build();
-		CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
-		assertTrue(p.toList().isEmpty());
-		p = p.nextDelta().get();
-		assertEquals(4, p.toList().size());
-		p = p.nextDelta().get();
-		List<User> list = p.toList();
-		assertEquals(1, list.size());
-		assertEquals("Fred", list.get(0).getGivenName().get());
-	}
-	
-	@Test
-	public void testUsersDeltaNextDeltaWorsWithoutReadingStreamFully() {
-		GraphService client = clientBuilder() //
-				.expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json", HttpMethod.GET,
-						200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-				.build();
-		CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
-		p = p.nextDelta().get();
-		p = p.nextDelta().get();
-		List<User> list = p.toList();
-		assertEquals(1, list.size());
-		assertEquals("Fred", list.get(0).getGivenName().get());
-	}
+
+    @Test
+    public void testUsersDeltaTokenLatest() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
+                        200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json",
+                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json",
+                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json",
+                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
+        assertTrue(p.toList().isEmpty());
+        p = p.nextDelta().get();
+        assertEquals(4, p.toList().size());
+        p = p.nextDelta().get();
+        List<User> list = p.toList();
+        assertEquals(1, list.size());
+        assertEquals("Fred", list.get(0).getGivenName().get());
+    }
+
+    @Test
+    public void testUsersDeltaNextDeltaWorsWithoutReadingStreamFully() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
+                        200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json",
+                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json",
+                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json",
+                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
+        p = p.nextDelta().get();
+        p = p.nextDelta().get();
+        List<User> list = p.toList();
+        assertEquals(1, list.size());
+        assertEquals("Fred", list.get(0).getGivenName().get());
+    }
 
     @SuppressWarnings("unused")
     @Test
@@ -309,31 +312,30 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectRequestAndResponse("/users/me/messages/1/attachments/createUploadSession", //
                         "/request-create-upload.json", //
-                        "/response-create-upload.json",  //
-                        HttpMethod.POST,  //
+                        "/response-create-upload.json", //
+                        HttpMethod.POST, //
                         HttpURLConnection.HTTP_CREATED, //
                         RequestHeader.ACCEPT_JSON, //
-                        RequestHeader.CONTENT_TYPE_JSON, // 
+                        RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ODATA_VERSION)
-                .expectRequest("https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345", //
-                        "/request-upload-bytes.txt",
-                        HttpMethod.PUT, //
-                        RequestHeader.ODATA_VERSION , //
+                .expectRequest(
+                        "https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345", //
+                        "/request-upload-bytes.txt", HttpMethod.PUT, //
+                        RequestHeader.ODATA_VERSION, //
                         RequestHeader.ACCEPT_JSON, //
-                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, 
-                        RequestHeader.contentRange(0, 4, 5))
+                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, RequestHeader.contentRange(0, 4, 5))
                 .build();
         AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
                 .name("att.txt").size(5000000L).build();
         UploadSession u = client.users("me").messages("1").attachments().createUploadSession(item).get();
         assertNotNull(u);
         assertTrue(u.getUploadUrl().isPresent());
-        
+
         // perform upload using new method
-        //https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345
+        // https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345
         u.put().readTimeout(10, TimeUnit.SECONDS).uploadUtf8("hello");
     }
-    
+
     @Test
     public void testGetUploadUrlChunked() {
         String uploadUrl = "https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345";
@@ -380,7 +382,7 @@ public class GraphServiceTest {
                 .readTimeout(10, TimeUnit.SECONDS) //
                 .uploadUtf8("hello", 2);
     }
-    
+
     @Test
     @Ignore
     public void testSendEmailWithAttachmentCompiles() {
@@ -408,7 +410,7 @@ public class GraphServiceTest {
                         .build()) //
                 .build();
         m = drafts.messages().post(m);
-        
+
         AttachmentItem a = AttachmentItem //
                 .builder() //
                 .attachmentType(AttachmentType.FILE) //
@@ -416,8 +418,8 @@ public class GraphServiceTest {
                 .name(file.getName()) //
                 .size(file.length()) //
                 .build();
-        
-        int chunkSize = 500*1024;
+
+        int chunkSize = 500 * 1024;
         client //
                 .users(mailbox) //
                 .messages(m.getId().get()) //
@@ -430,7 +432,7 @@ public class GraphServiceTest {
 
         m.send().call();
     }
-    
+
     @Test
     public void testGetCollectionWithSelect() {
         GraphService client = clientBuilder() //
@@ -478,24 +480,25 @@ public class GraphServiceTest {
                 .getByIds(Arrays.asList("a", "b"), Arrays.asList("c", "d")).get();
         assertTrue(page.currentPage().get(0).getId().get().startsWith("84b80893"));
     }
-    
+
     @Test
     public void testActionReturnsEdmTypeShouldReturnWrappedInODataValue() {
-        // note that graph docs and metadata clash about the return for this! I'll stick to the metadata definition but have raised
+        // note that graph docs and metadata clash about the return for this! I'll stick
+        // to the metadata definition but have raised
         // https://github.com/microsoftgraph/microsoft-graph-docs/issues/9211
         GraphService client = clientBuilder() //
                 .expectRequestAndResponse("/users/me/revokeSignInSessions", //
                         "/empty.json", //
                         "/response-revoke-sign-in-sessions.json", //
                         HttpMethod.POST, //
-                        HttpURLConnection.HTTP_CREATED, // 
+                        HttpURLConnection.HTTP_CREATED, //
                         RequestHeader.ODATA_VERSION, //
                         RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ACCEPT_JSON) //
                 .build();
         assertTrue(client.users("me").revokeSignInSessions().get().value());
     }
-    
+
     @Test
     public void testEntityCollectionNotFromEntityContainer() {
         GraphService client = createClient("/me/messages/1/attachments", "/response-me-messages-1-attachments.json",
@@ -544,8 +547,8 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-expand-attachments-minimal-metadata.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                        "/response-messages.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .expectResponse(
                         "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
                         "/response-message-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
@@ -563,39 +566,35 @@ public class GraphServiceTest {
         assertEquals(Arrays.asList("lamp_thin.png"),
                 m.getAttachments().stream().map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
-    
+
     @Test
     public void testSupplementWithDeltaLinkWhenCollectionEmpty() {
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users/delta?$deltaToken=latest",
-                        "/response-users-delta-empty.json",
+                .expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-empty.json",
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
-        List<ObjectOrDeltaLink<User>> list = client.users().delta().deltaTokenLatest().get().streamWithDeltaLink().collect(Collectors.toList());
+        List<ObjectOrDeltaLink<User>> list = client.users().delta().deltaTokenLatest().get().streamWithDeltaLink()
+                .collect(Collectors.toList());
         assertEquals(1, list.size());
         ObjectOrDeltaLink<User> x = list.get(0);
         assertFalse(x.object().isPresent());
         assertEquals("https://graph.microsoft.com/v1.0/users/delta?$deltatoken=3enys", x.deltaLink().get());
     }
-    
+
     @Test
     public void testSupplementWithDeltaLinkWhenCollectionNonEmptyAndHasNoDeltaLink() {
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users",
-                        "/response-users-one-page.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectResponse("/users", "/response-users-one-page.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         assertEquals(31, client.users().stream().count());
         List<ObjectOrDeltaLink<User>> list = client.users().get().streamWithDeltaLink().collect(Collectors.toList());
         assertEquals(32, list.size());
-        ObjectOrDeltaLink<User> x = list.get(list.size() -1);
+        ObjectOrDeltaLink<User> x = list.get(list.size() - 1);
         assertFalse(x.object().isPresent());
         assertFalse(x.deltaLink().isPresent());
     }
-    
-    
+
     @Test
     public void testGetStreamOnItemAttachment() throws IOException {
         GraphService client = clientBuilder() //
@@ -625,6 +624,33 @@ public class GraphServiceTest {
                 .get();
         String s = new String(read(a.getStream().get().get()));
         assertEquals(60, s.length());
+    }
+
+    @Test
+    public void testExpandCollectionRequest() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred/messages/12345?$expand=attachments", "/response-expand-attachments.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        Message m = client.users("fred").messages("12345").expand("attachments").get();
+        Object attachments = m.getUnmappedFields().get("attachments");
+        assertTrue(attachments instanceof ArrayList);
+        List<Attachment> list = m.getAttachments().toList();
+        assertEquals(1, list.size());
+        assertEquals(2016, (int) list.get(0).getSize().orElse(0));
+    }
+    
+    @Test
+    public void testExpandEntityRequest() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred?$expand=drive", "/response-user-expand-with-drive.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        User user = client.users("fred").expand("drive").get();
+        Object object = user.getUnmappedFields().get("drive");
+        assertTrue(object instanceof HashMap);
+        Drive drive = user.getDrive().get();
+        assertEquals("OneDrive", drive.getName().get());
     }
 
     @Test
@@ -742,29 +768,33 @@ public class GraphServiceTest {
         String editLink = a.getUnmappedFields().get("@odata.editLink").toString();
         assertEquals("editLink1", editLink);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void testItemsInDeserializedListHaveDistinctUnmappedFieldsInstancesPR35() {
-        // NOTE: The following test data is taken from https://developer.microsoft.com/en-us/graph/graph-explorer -- with the first item's "lastModifiedBy" user email hand-modified
+        // NOTE: The following test data is taken from
+        // https://developer.microsoft.com/en-us/graph/graph-explorer -- with the first
+        // item's "lastModifiedBy" user email hand-modified
         GraphService client = clientBuilder() //
                 .expectResponse("/sites/lists/d7689e2b-941a-4cd3-bb24-55cddee54294/items?$expand=fields", //
                         "/response-list-items-expand-fields.json", //
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
                         RequestHeader.ODATA_VERSION) //
                 .build();
-        CollectionPage<ListItem> listItems = client.sites().lists("d7689e2b-941a-4cd3-bb24-55cddee54294").items().expand("fields").get();
+        CollectionPage<ListItem> listItems = client.sites().lists("d7689e2b-941a-4cd3-bb24-55cddee54294").items()
+                .expand("fields").get();
         assertNotNull(listItems);
         assertEquals(3, listItems.currentPage().size());
         ListItem firstListItem = listItems.currentPage().get(0);
 
-         // Verify UnmappedFields from separate ListItems:
+        // Verify UnmappedFields from separate ListItems:
         assertEquals("Contoso Home", //
                 ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields")).get("Title"));
         assertEquals("Microsoft Demos", //
                 ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields().get("fields")).get("Title"));
 
-         // Verify that different UnmappedFields instances from the same ListItem Jackson deserialization call have distinct contents:
+        // Verify that different UnmappedFields instances from the same ListItem Jackson
+        // deserialization call have distinct contents:
         assertEquals("provisioninguser1@m365x214355.onmicrosoft.com", //
                 firstListItem.getCreatedBy().get().getUser().get().getUnmappedFields().get("email"));
         assertEquals("different.test.email@m365x214355.onmicrosoft.com", //
@@ -971,7 +1001,7 @@ public class GraphServiceTest {
                 .build();
         client.communications().calls().post(call);
     }
-    
+
     @Test
     @Ignore
     public void testAddAttachmentToCalendarEventCompiles() {
@@ -995,7 +1025,7 @@ public class GraphServiceTest {
                 .readTimeout(10, TimeUnit.MINUTES) //
                 .upload(file, 512 * 1024);
     }
-    
+
     // test paged complex type
     //
 

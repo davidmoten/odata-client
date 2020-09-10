@@ -1,5 +1,7 @@
 package com.github.davidmoten.odata.client;
 
+import java.util.Optional;
+
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 
 public abstract class EntityRequest<T extends ODataEntityType> {
@@ -7,15 +9,22 @@ public abstract class EntityRequest<T extends ODataEntityType> {
     private final Class<T> cls;
     protected final ContextPath contextPath;
     private final SchemaInfo schemaInfo;
+    private Optional<Object> value;
 
-    public EntityRequest(Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+    public EntityRequest(Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo, Optional<Object> value) {
         this.cls = cls;
         this.contextPath = contextPath;
         this.schemaInfo = schemaInfo;
+        this.value = value;
     }
 
     T get(EntityRequestOptions<T> options) {
-        return RequestHelper.get(contextPath, cls, options, schemaInfo);
+        if (value.isPresent()) {
+            String json = Serializer.INSTANCE.serialize(value.get());
+            return Serializer.INSTANCE.deserialize(json, cls, contextPath, false);
+        } else {
+            return RequestHelper.get(contextPath, cls, options, schemaInfo);
+        }
     }
 
     void delete(EntityRequestOptions<T> options) {
