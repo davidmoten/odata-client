@@ -34,11 +34,9 @@ import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
-import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.ObjectOrDeltaLink;
-import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.Retries;
@@ -62,6 +60,7 @@ import odata.msgraph.client.entity.Call;
 import odata.msgraph.client.entity.Contact;
 import odata.msgraph.client.entity.Device;
 import odata.msgraph.client.entity.DirectoryObject;
+import odata.msgraph.client.entity.Drive;
 import odata.msgraph.client.entity.DriveItem;
 import odata.msgraph.client.entity.FileAttachment;
 import odata.msgraph.client.entity.Group;
@@ -74,7 +73,6 @@ import odata.msgraph.client.enums.AttachmentType;
 import odata.msgraph.client.enums.BodyType;
 import odata.msgraph.client.enums.Importance;
 import odata.msgraph.client.enums.Modality;
-import odata.msgraph.client.schema.SchemaInfo;
 
 public class GraphServiceTest {
 
@@ -629,7 +627,7 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void testExpandAttachments() {
+    public void testExpandCollectionRequest() {
         GraphService client = clientBuilder() //
                 .expectResponse("/users/fred/messages/12345?$expand=attachments", "/response-expand-attachments.json",
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
@@ -640,6 +638,19 @@ public class GraphServiceTest {
         List<Attachment> list = m.getAttachments().toList();
         assertEquals(1, list.size());
         assertEquals(2016, (int) list.get(0).getSize().orElse(0));
+    }
+    
+    @Test
+    public void testExpandEntityRequest() {
+        GraphService client = clientBuilder() //
+                .expectResponse("/users/fred?$expand=drive", "/response-user-expand-with-drive.json",
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .build();
+        User user = client.users("fred").expand("drive").get();
+        Object object = user.getUnmappedFields().get("drive");
+        assertTrue(object instanceof HashMap);
+        Drive drive = user.getDrive().get();
+        assertEquals("OneDrive", drive.getName().get());
     }
 
     @Test
