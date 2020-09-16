@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import com.github.davidmoten.odata.client.RequestHeader;
+import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.Serializer;
 
 import odata.msgraph.client.complex.ObjectIdentity;
@@ -19,6 +21,11 @@ public class GraphExplorerMain {
     public static void main(String[] args) {
 
         GraphService client = MsGraph.explorer().build();
+        {
+            String count = client._custom().getString("https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
+            System.out.println(count);
+            System.exit(0);
+        }
         {
             String mimeMessage = client.me().messages().stream().findFirst().get().getStream().get().getStringUtf8();
             System.out.println(mimeMessage);
