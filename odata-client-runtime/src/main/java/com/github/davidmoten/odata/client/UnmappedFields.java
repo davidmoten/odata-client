@@ -84,5 +84,9 @@ public final class UnmappedFields implements Map<String, Object> {
     public String toString() {
         return map.toString();
     }
+    
+    public UnmappedFields copy() {
+        return new UnmappedFields(new HashMap<>(map));
+    }
 
 }

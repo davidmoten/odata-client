@@ -880,7 +880,7 @@ public final class Generator {
 		if (ofEntity) {
 			p.format("%s_x.changedFields = changedFields;\n", indent);
 		}
-		p.format("%s_x.unmappedFields = unmappedFields;\n", indent);
+		p.format("%s_x.unmappedFields = unmappedFields.copy();\n", indent);
 		p.format("%s_x.odataType = odataType;\n", //
 				indent);
 		fields.stream() //
