@@ -203,6 +203,12 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
+    public FileAttachment withUnmappedField(String name, String value) {
+        FileAttachment _x = _copy();
+        _x.unmappedFields.put(name, value);
+        return _x;
+    }
+
     @JsonAnySetter
     private void setUnmappedField(String name, Object value) {
         if (unmappedFields == null) {

@@ -461,7 +461,7 @@ public class GraphServiceTest {
                 m.getUnmappedFields().get("@odata.context"));
         
         // check can modify unmapped fields
-        m.getUnmappedFields().put("nombre", "david");
+        m = m.withUnmappedField("nombre", "david");
         assertTrue(Serializer.INSTANCE.serialize(m).contains("nombre"));
     }
 

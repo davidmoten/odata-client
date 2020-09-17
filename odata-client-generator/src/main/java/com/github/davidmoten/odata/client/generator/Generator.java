@@ -1005,12 +1005,7 @@ public final class Generator {
 			writeBuilder(t, simpleClassName, imports, indent, p);
 
 			// write copy method
-			if (t.getProperties() //
-					.stream() //
-					.filter(x -> !isCollection(x)) //
-					.anyMatch(x -> !isStream(x))) {
-				writeCopyMethod(t, simpleClassName, imports, indent, p, false);
-			}
+			writeCopyMethod(t, simpleClassName, imports, indent, p, false);
 
 			// write toString
 			writeToString(t, simpleClassName, imports, indent, p);
@@ -1707,6 +1702,15 @@ public final class Generator {
 					}
 
 				});
+		
+        // add unmapped fields mutator
+        String method= Names.getWithMethod("unmappedField");
+        p.format("\n%spublic %s %s(%s name, %s value) {\n", indent, simpleClassName, method, //
+                imports.add(String.class), imports.add(String.class));
+        p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
+        p.format("%s_x.unmappedFields.put(name, value);\n", indent);
+        p.format("%sreturn _x;\n", indent);
+        p.format("%s}\n", indent.left());
 	}
 
 	private void writePropertyGetterCollectionBody(Imports imports, Indent indent, PrintWriter p, String fieldName,
