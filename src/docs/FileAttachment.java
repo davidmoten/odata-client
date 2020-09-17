@@ -1,5 +1,6 @@
 package microsoft.graph.generated.entity;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -211,7 +212,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @Override
-    @JsonIgnore
+    @JsonAnyGetter
     public UnmappedFields getUnmappedFields() {
         return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
     }

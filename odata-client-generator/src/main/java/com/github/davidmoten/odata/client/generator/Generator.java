@@ -37,6 +37,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 import org.oasisopen.odata.csdl.v4.TSingleton;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -1478,7 +1479,7 @@ public final class Generator {
 
 		methodNames.add("getUnmappedField");
 		p.format("\n%s@%s\n", indent, imports.add(Override.class));
-		p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
+		p.format("%s@%s\n", indent, imports.add(JsonAnyGetter.class));
 		p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
 		p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
 				imports.add(UnmappedFields.class));
