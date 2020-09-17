@@ -22,6 +22,19 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
+            client //
+                    .me() //
+                    .calendar() //
+                    .calendarView() //
+                    .query("startDateTime", "2019-11-25T15:00:00+00:00") //
+                    .query("endDateTime", "2019-11-27T20:00:00+00:00") //
+                    .get() //
+                    .stream() //
+                    .limit(40) //
+                    .forEach(x -> System.out.println(x.getStart()));
+            System.exit(0);
+        }
+        {
             String count = client._custom().getString("https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
             System.out.println(count);
             System.exit(0);
