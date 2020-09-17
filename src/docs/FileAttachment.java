@@ -264,7 +264,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         FileAttachment _x = new FileAttachment();
         _x.contextPath = contextPath;
         _x.changedFields = changedFields;
-        _x.unmappedFields = unmappedFields;
+        _x.unmappedFields = unmappedFields.copy();
         _x.odataType = odataType;
         _x.id = id;
         _x.contentType = contentType;
