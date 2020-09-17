@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -30,6 +32,7 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 @JsonIgnoreType
 @JsonPropertyOrder({"@odata.nextLink","@odata.deltaLink","value"})
 public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
+    
 
     private final ContextPath contextPath;
     private final Class<T> cls;
@@ -41,12 +44,14 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 	private final HttpRequestOptions options;
 	private final Consumer<? super CollectionPage<T>> listener;
 	private final AtomicReference<CollectionPage<T>> latest = new AtomicReference<>();
+    private final UnmappedFields unmappedFields;
 
     public CollectionPage(ContextPath contextPath, //
     		Class<T> cls, //
     		List<T> list, //
             Optional<String> nextLink, //
             Optional<String> deltaLink, //
+            UnmappedFields unmappedFields, //
             SchemaInfo schemaInfo, //
             List<RequestHeader> requestHeaders, //
             HttpRequestOptions options,
@@ -54,6 +59,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 		Preconditions.checkArgument(!nextLink.isPresent() || contextPath != null, "if nextLink is present contextPath must be non-null");
         Preconditions.checkNotNull(cls);
         Preconditions.checkNotNull(nextLink);
+        Preconditions.checkNotNull(unmappedFields);
         Preconditions.checkNotNull(schemaInfo);
         Preconditions.checkNotNull(requestHeaders);
         Preconditions.checkNotNull(options);
@@ -62,6 +68,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         this.list = list == null ? Collections.emptyList() : list;
         this.nextLink = nextLink;
         this.deltaLink = deltaLink;
+        this.unmappedFields = unmappedFields;
         this.schemaInfo = schemaInfo;
         this.requestHeaders = requestHeaders;
         this.options = options;
@@ -75,7 +82,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     
     public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
             Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-    	this(contextPath, cls, list, nextLink, Optional.empty(), schemaInfo, requestHeaders, options, null);
+    	this(contextPath, cls, list, nextLink, Optional.empty(), UnmappedFields.EMPTY, schemaInfo, requestHeaders, options, null);
     }
 
     @Override
@@ -209,4 +216,17 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         return StreamSupport.stream(spliterator, false);
     }
 
+    @JsonAnySetter
+    private void setUnmappedField(String name, Object value) {
+        unmappedFields.put(name, value);
+    }
+
+    @JsonAnyGetter
+    public UnmappedFields unmappedFields() {
+        if (unmappedFields == null) {
+            return UnmappedFields.EMPTY;
+        } else {
+            return unmappedFields;
+        }
+    }
 }

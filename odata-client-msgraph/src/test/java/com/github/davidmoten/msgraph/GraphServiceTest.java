@@ -192,6 +192,7 @@ public class GraphServiceTest {
         ObjectMapper m = new ObjectMapper();
         try (InputStream expected = GraphServiceTest.class
                 .getResourceAsStream("/response-contacts-minimal-json.json")) {
+            System.out.println(m.readTree(c.toJsonMinimal()));
             assertEquals(m.readTree(expected), m.readTree(c.toJsonMinimal()));
         }
         assertTrue(Serializer.INSTANCE.serializePrettyPrint(c).contains("@odata.nextLink"));
