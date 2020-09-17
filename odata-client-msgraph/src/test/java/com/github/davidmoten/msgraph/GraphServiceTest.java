@@ -1032,7 +1032,19 @@ public class GraphServiceTest {
     public void testDownloadWholeEmailCompiles() {
         GraphService client = clientBuilder().build();
         client.me().messages("123").get().getStream().get().getBytes(); //
-        
+    }
+    
+    @Test
+    @Ignore
+    public void testCalendarViewCompiles() {
+        GraphService client = clientBuilder().build();
+        client //
+        .me() //
+        .calendar()//
+        .calendarView() //
+        .query("startDateTime", "2019-11-08T19:00:00-08:00") //
+        .query("endDateTime", "2019-11-10T19:00:00-08:00") //
+        .get();
     }
 
     // test paged complex type
