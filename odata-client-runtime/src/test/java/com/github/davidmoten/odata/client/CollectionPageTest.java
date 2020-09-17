@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 
 public class CollectionPageTest {
@@ -27,10 +29,24 @@ public class CollectionPageTest {
                         .getResource("/odata-paged-collection-response.json").toURI())),
                 StandardCharsets.UTF_8);
         Serializer serializer = Serializer.INSTANCE;
-        HttpService service = new HttpService() {
+        HttpService service = createHttpService(json);
+        SchemaInfo schemaInfo = name -> Person.class;
+
+        Context context = new Context(serializer, service);
+        CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,
+                new ContextPath(context, service.getBasePath()), schemaInfo,
+                Collections.emptyList(), HttpRequestOptions.EMPTY, x -> {
+                });
+        assertEquals(2, c.currentPage().size());
+        assertEquals("Russell", c.currentPage().get(0).firstName);
+    }
+
+    private static HttpService createHttpService(String json) {
+        return new HttpService() {
 
             @Override
-            public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+            public HttpResponse get(String url, List<RequestHeader> requestHeaders,
+                    HttpRequestOptions options) {
                 return new HttpResponse(200, json);
             }
 
@@ -40,22 +56,26 @@ public class CollectionPageTest {
             }
 
             @Override
-            public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+            public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
+                    InputStream content, int length, HttpRequestOptions options) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+            public HttpResponse put(String url, List<RequestHeader> requestHeaders,
+                    InputStream content, int length, HttpRequestOptions options) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
             @Override
-            public HttpResponse post(String url, List<RequestHeader> h, InputStream content, int length, HttpRequestOptions options) {
+            public HttpResponse post(String url, List<RequestHeader> h, InputStream content,
+                    int length, HttpRequestOptions options) {
                 return new HttpResponse(HttpURLConnection.HTTP_CREATED, "");
             }
 
             @Override
-            public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+            public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
+                    HttpRequestOptions options) {
                 return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
             }
 
@@ -65,20 +85,36 @@ public class CollectionPageTest {
             }
 
             @Override
-            public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+            public InputStream getStream(String url, List<RequestHeader> requestHeaders,
+                    HttpRequestOptions options) {
                 // TODO Auto-generated method stub
                 return null;
             }
 
         };
-        SchemaInfo schemaInfo = name -> Person.class;
+    }
 
+    @Test
+    public void testUnmappedFields() throws IOException, URISyntaxException {
+        String json = new String(
+                Files.readAllBytes(Paths.get(
+                        CollectionPageTest.class.getResource("/collection-page.json").toURI())),
+                StandardCharsets.UTF_8);
+        Serializer serializer = Serializer.INSTANCE;
+        HttpService service = createHttpService(json);
+        SchemaInfo schemaInfo = name -> Person.class;
         Context context = new Context(serializer, service);
-        CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,
-                new ContextPath(context, service.getBasePath()), schemaInfo,
-                Collections.emptyList(), HttpRequestOptions.EMPTY, x -> {});
-        assertEquals(2, c.currentPage().size());
-        assertEquals("Russell", c.currentPage().get(0).firstName);
+        ContextPath contextPath = new ContextPath(context,
+                new Path("https://blah", PathStyle.IDENTIFIERS_AS_SEGMENTS));
+        CollectionPage<Person> page = serializer.deserializeCollectionPage(json, Person.class,
+                contextPath, schemaInfo, Collections.emptyList(), HttpRequestOptions.EMPTY,
+                p -> {
+                });
+        assertEquals(Lists.newArrayList(1,2,3), page.unmappedFields().get("hello"));
+        
+        // test serialization of unmapped fields
+        String json2 = Serializer.INSTANCE.serialize(page);
+        assertTrue(json2.contains("hello"));
     }
 
     static final class Person implements ODataEntityType {
@@ -112,5 +148,4 @@ public class CollectionPageTest {
             return "person";
         }
     }
-
 }

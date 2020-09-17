@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -24,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.InjectableValuesFromFactories;
@@ -197,9 +201,11 @@ public final class Serializer {
             HttpRequestOptions options, //
             Consumer<? super CollectionPage<T>> listener) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, schemaInfo,
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, c.unmappedFields, schemaInfo,
                 requestHeaders, options, listener);
     }
+    
+    private static final Set<String> COLLECTION_PAGE_FIELDS = Sets.newHashSet("value", "@odata.nextLink", "@odata.deltaLink");
 
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls,
             ContextPath contextPath, SchemaInfo schemaInfo) {
@@ -218,7 +224,15 @@ public final class Serializer {
                     .map(JsonNode::asText);
             Optional<String> deltaLink = Optional.ofNullable(o.get("@odata.deltaLink"))
                     .map(JsonNode::asText);
-            return new CollectionInfo<T>(list, nextLink, deltaLink);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = m.convertValue(o, HashMap.class);
+            UnmappedFields u = new UnmappedFields();
+            for (String fieldName: map.keySet()) {
+                if (!COLLECTION_PAGE_FIELDS.contains(fieldName)) {
+                    u.put(fieldName, map.get(fieldName));
+                }
+            }
+            return new CollectionInfo<T>(list, nextLink, deltaLink, u);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -229,11 +243,13 @@ public final class Serializer {
         final List<T> list;
         final Optional<String> nextLink;
         final Optional<String> deltaLink;
+        final UnmappedFields unmappedFields;
 
-        CollectionInfo(List<T> list, Optional<String> nextLink, Optional<String> deltaLink) {
+        CollectionInfo(List<T> list, Optional<String> nextLink, Optional<String> deltaLink, UnmappedFields unmappedFields) {
             this.list = list;
             this.nextLink = nextLink;
             this.deltaLink = deltaLink;
+            this.unmappedFields = unmappedFields;
         }
     }
 
