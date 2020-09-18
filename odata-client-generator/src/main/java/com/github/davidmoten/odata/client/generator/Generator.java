@@ -1464,9 +1464,9 @@ public final class Generator {
 	private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p,
             Set<String> methodNames) {
         p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
-        // TODO protect "setUnmappedField" name against clashes
         methodNames.add("setUnmappedField");
-        p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
+        p.format("%sprivate void setUnmappedField(java.lang.String name, java.lang.Object value) {\n", //
+                indent);
         p.format("%sif (unmappedFields == null) {\n", indent.right());
         p.format("%sunmappedFields = new %s();\n", indent.right(),
                 imports.add(UnmappedFieldsImpl.class));
@@ -1710,12 +1710,12 @@ public final class Generator {
 
 				});
 		
-        // add unmapped fields mutator
+        // add unmapped fields mutator withUnmappedField
         String method= Names.getWithMethod("unmappedField");
         p.format("\n%spublic %s %s(%s name, %s value) {\n", indent, simpleClassName, method, //
                 imports.add(String.class), imports.add(String.class));
         p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
-        p.format("%s_x.unmappedFields.put(name, value);\n", indent);
+        p.format("%s_x.setUnmappedField(name, value);\n", indent);
         p.format("%sreturn _x;\n", indent);
         p.format("%s}\n", indent.left());
 	}
