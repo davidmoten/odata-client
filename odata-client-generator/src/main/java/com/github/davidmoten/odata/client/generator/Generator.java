@@ -1475,7 +1475,7 @@ public final class Generator {
         p.format("%s}\n", indent.left());
 
         methodNames.add("unmappedFields");
-        p.format("%s@%s\n", indent, imports.add(JsonAnyGetter.class));
+        p.format("\n%s@%s\n", indent, imports.add(JsonAnyGetter.class));
         p.format("%sprivate %s unmappedFields() {\n", indent, imports.add(UnmappedFieldsImpl.class));
         p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
                 imports.add(UnmappedFieldsImpl.class));
