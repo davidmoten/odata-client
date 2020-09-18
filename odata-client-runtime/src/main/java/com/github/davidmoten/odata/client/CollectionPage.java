@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
 /**
  * Note this object has been annotated with JsonProperty declarations but the
@@ -218,10 +219,14 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
 
     @JsonAnySetter
     private void setUnmappedField(String name, Object value) {
-        unmappedFields.put(name, value);
+        ((UnmappedFieldsImpl) unmappedFields).put(name, value);
     }
 
     @JsonAnyGetter
+    private UnmappedFieldsImpl getUnmappedFields() {
+        return (UnmappedFieldsImpl) unmappedFields();
+    }
+    
     public UnmappedFields unmappedFields() {
         if (unmappedFields == null) {
             return UnmappedFields.EMPTY;

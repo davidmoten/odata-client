@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import org.junit.Test;
 
 import com.github.davidmoten.odata.client.ODataType;
+import com.github.davidmoten.odata.client.UnmappedFields;
 
 public class UtilTest {
 
@@ -94,7 +94,7 @@ public class UtilTest {
         }
 
         @Override
-        public Map<String, Object> getUnmappedFields() {
+        public UnmappedFields getUnmappedFields() {
             // TODO Auto-generated method stub
             return null;
         }

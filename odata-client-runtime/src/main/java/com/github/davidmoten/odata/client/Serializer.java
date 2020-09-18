@@ -32,6 +32,7 @@ import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.InjectableValuesFromFactories;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
 public final class Serializer {
 
@@ -98,7 +99,7 @@ public final class Serializer {
         return new InjectableValuesFromFactories() //
                 .addValue(ContextPath.class, () -> contextPath) //
                 .addValue(ChangedFields.class, ChangedFields::new) //
-                .addValue(UnmappedFields.class, UnmappedFields::new);
+                .addValue(UnmappedFieldsImpl.class, UnmappedFieldsImpl::new);
     }
 
     public <T, S> T deserializeWithParametricType(String text, Class<? extends T> cls,
@@ -226,7 +227,7 @@ public final class Serializer {
                     .map(JsonNode::asText);
             @SuppressWarnings("unchecked")
             Map<String, Object> map = m.convertValue(o, HashMap.class);
-            UnmappedFields u = new UnmappedFields();
+            UnmappedFieldsImpl u = new UnmappedFieldsImpl();
             for (String fieldName: map.keySet()) {
                 if (!COLLECTION_PAGE_FIELDS.contains(fieldName)) {
                     u.put(fieldName, map.get(fieldName));

@@ -100,6 +100,7 @@ import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
+import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
 public final class Generator {
 
@@ -1445,7 +1446,7 @@ public final class Generator {
 		if (t instanceof EntityType) {
 			p.format("%s_x.changedFields = changedFields;\n", indent);
 		}
-		p.format("%s_x.unmappedFields = new %s();\n", indent, imports.add(UnmappedFields.class));
+		p.format("%s_x.unmappedFields = new %s();\n", indent, imports.add(UnmappedFieldsImpl.class));
 		p.format("%s_x.odataType = \"%s\";\n", indent, t.getFullType());
 		fields.stream().map(f -> String.format("%s_x.%s = %s;\n", indent, f.fieldName, f.fieldName)).forEach(p::print);
 		p.format("%sreturn _x;\n", indent);
@@ -1457,29 +1458,35 @@ public final class Generator {
 	private static void addUnmappedFieldsField(Imports imports, Indent indent, PrintWriter p) {
 		p.format("\n%s@%s\n", indent, imports.add(JacksonInject.class));
 		p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
-		p.format("%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFields.class));
+		p.format("%sprotected %s unmappedFields;\n", indent, imports.add(UnmappedFieldsImpl.class));
 	}
 
 	private static void addUnmappedFieldsSetterAndGetter(Imports imports, Indent indent, PrintWriter p,
-			Set<String> methodNames) {
-		p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
-		// TODO protect "setUnmappedField" name against clashes
-		methodNames.add("setUnmappedField");
-		p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
-		p.format("%sif (unmappedFields == null) {\n", indent.right());
-		p.format("%sunmappedFields = new %s();\n", indent.right(), imports.add(UnmappedFields.class));
-		p.format("%s}\n", indent.left());
-		p.format("%sunmappedFields.put(name, value);\n", indent);
-		p.format("%s}\n", indent.left());
+            Set<String> methodNames) {
+        p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
+        // TODO protect "setUnmappedField" name against clashes
+        methodNames.add("setUnmappedField");
+        p.format("%sprivate void setUnmappedField(String name, Object value) {\n", indent);
+        p.format("%sif (unmappedFields == null) {\n", indent.right());
+        p.format("%sunmappedFields = new %s();\n", indent.right(),
+                imports.add(UnmappedFieldsImpl.class));
+        p.format("%s}\n", indent.left());
+        p.format("%sunmappedFields.put(name, value);\n", indent);
+        p.format("%s}\n", indent.left());
 
-		methodNames.add("getUnmappedField");
-		p.format("\n%s@%s\n", indent, imports.add(Override.class));
-		p.format("%s@%s\n", indent, imports.add(JsonAnyGetter.class));
-		p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
-		p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
-				imports.add(UnmappedFields.class));
-		p.format("%s}\n", indent.left());
-	}
+        methodNames.add("unmappedFields");
+        p.format("%s@%s\n", indent, imports.add(JsonAnyGetter.class));
+        p.format("%sprivate %s unmappedFields() {\n", indent, imports.add(UnmappedFieldsImpl.class));
+        p.format("%sreturn unmappedFields == null ? %s.EMPTY : unmappedFields;\n", indent.right(),
+                imports.add(UnmappedFieldsImpl.class));
+        p.format("%s}\n", indent.left());
+
+        methodNames.add("getUnmappedFields");
+        p.format("\n%s@%s\n", indent, imports.add(Override.class));
+        p.format("%spublic %s getUnmappedFields() {\n", indent, imports.add(UnmappedFields.class));
+        p.format("%sreturn unmappedFields();\n", indent.right());
+        p.format("%s}\n", indent.left());
+    }
 
 	private static void addContextPathInjectableField(Imports imports, Indent indent, PrintWriter p) {
 		// add context path field

@@ -17,6 +17,7 @@ import com.github.davidmoten.odata.client.Util;
 import com.github.davidmoten.odata.client.annotation.Property;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -133,7 +134,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
             FileAttachment _x = new FileAttachment();
             _x.contextPath = null;
             _x.changedFields = changedFields;
-            _x.unmappedFields = new UnmappedFields();
+            _x.unmappedFields = new UnmappedFieldsImpl();
             _x.odataType = "microsoft.graph.fileAttachment";
             _x.id = id;
             _x.contentType = contentType;
@@ -212,15 +213,18 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     @JsonAnySetter
     private void setUnmappedField(String name, Object value) {
         if (unmappedFields == null) {
-            unmappedFields = new UnmappedFields();
+            unmappedFields = new UnmappedFieldsImpl();
         }
         unmappedFields.put(name, value);
     }
+    @JsonAnyGetter
+    private UnmappedFieldsImpl unmappedFields() {
+        return unmappedFields == null ? UnmappedFieldsImpl.EMPTY : unmappedFields;
+    }
 
     @Override
-    @JsonAnyGetter
     public UnmappedFields getUnmappedFields() {
-        return unmappedFields == null ? UnmappedFields.EMPTY : unmappedFields;
+        return unmappedFields();
     }
 
     /**

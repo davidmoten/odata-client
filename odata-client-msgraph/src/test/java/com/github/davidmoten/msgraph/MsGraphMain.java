@@ -23,7 +23,7 @@ import odata.msgraph.client.enums.BodyType;
 
 public class MsGraphMain {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         GraphService client = MsGraph //
                 .tenantName(System.getProperty("tenantName")) //
@@ -31,6 +31,26 @@ public class MsGraphMain {
                 .clientSecret(System.getProperty("clientSecret")) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
+        
+        {
+            String mailbox = System.getProperty("mailbox");
+            while (true) {
+                long count = client //
+                        .users(mailbox) //
+                        .mailFolders("inbox") //
+                        .messages() //
+                        .filter("isRead eq false") //
+                        .orderBy("createdDateTime") //
+                        .stream() //
+                        .limit(10) //
+                        .peek(m -> System.out.println(m.getSubject())) //
+                        .count();
+                Thread.sleep(10000);
+                if (count == 100000) {
+                    break;
+                }
+            }
+        }
         {
             String mailbox = System.getProperty("mailbox");
             String messageId = "AAMkADRiMjI2ZmQwLTJkZmUtNDQ0NS1iZGVmLWE1ZjBjYjBiYmUzZQBGAAAAAABCSTzSpYOXTJf5ExxfstMvBwD0q8bfcZ7QQry5SG484keOAAAACjNfAADh3MOyvFF4RJgQOjzBK-sdAAOBakhvAAA=";

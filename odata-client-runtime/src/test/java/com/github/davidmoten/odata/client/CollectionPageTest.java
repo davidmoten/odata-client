@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -129,8 +128,8 @@ public class CollectionPageTest {
         String lastName;
 
         @Override
-        public Map<String, Object> getUnmappedFields() {
-            return Collections.emptyMap();
+        public UnmappedFields getUnmappedFields() {
+            return UnmappedFields.EMPTY;
         }
 
         @Override
