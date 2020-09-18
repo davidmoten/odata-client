@@ -2,91 +2,29 @@ package com.github.davidmoten.odata.client;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-public final class UnmappedFields implements Map<String, Object> {
+import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
-    public static final UnmappedFields EMPTY = new UnmappedFields(Collections.emptyMap());
+public interface UnmappedFields {
 
-    private final Map<String, Object> map;
-    
-    public UnmappedFields() {
-        this(new HashMap<>());
-    }
-    
-    private UnmappedFields(Map<String, Object> map) {
-        this.map = map;
-    }
+    public static final UnmappedFieldsImpl EMPTY = new UnmappedFieldsImpl(Collections.emptyMap());
 
-    @Override
-    public int size() {
-        return map.size();
-    }
+    int size();
 
-    @Override
-    public boolean isEmpty() {
-        return map.isEmpty();
-    }
+    boolean isEmpty();
 
-    @Override
-    public boolean containsKey(Object key) {
-        return map.containsKey(key);
-    }
+    boolean containsKey(String key);
 
-    @Override
-    public boolean containsValue(Object value) {
-        return map.containsValue(value);
-    }
+    boolean containsValue(Object value);
 
-    @Override
-    public Object get(Object key) {
-        return map.get(key);
-    }
+    Object get(String key);
 
-    @Override
-    public Object put(String key, Object value) {
-        return map.put(key,  value);
-    }
+    Set<String> keySet();
 
-    @Override
-    public Object remove(Object key) {
-        return map.remove(key);
-    }
+    Collection<Object> values();
 
-    @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
-        map.putAll(m);
-    }
-
-    @Override
-    public void clear() {
-        map.clear();
-    }
-
-    @Override
-    public Set<String> keySet() {
-        return map.keySet();
-    }
-
-    @Override
-    public Collection<Object> values() {
-        return map.values();
-    }
-
-    @Override
-    public Set<Entry<String, Object>> entrySet() {
-        return map.entrySet();
-    }
-    
-    @Override
-    public String toString() {
-        return map.toString();
-    }
-    
-    public UnmappedFields copy() {
-        return new UnmappedFields(new HashMap<>(map));
-    }
+    Set<Entry<String, Object>> entrySet();
 
 }
