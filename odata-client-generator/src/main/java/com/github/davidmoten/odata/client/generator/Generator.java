@@ -1465,8 +1465,8 @@ public final class Generator {
             Set<String> methodNames) {
         p.format("\n%s@%s\n", indent, imports.add(JsonAnySetter.class));
         methodNames.add("setUnmappedField");
-        p.format("%sprivate void setUnmappedField(java.lang.String name, java.lang.Object value) {\n", //
-                indent);
+        p.format("%sprivate void setUnmappedField(%s name, %s value) {\n", //
+                indent, imports.add(String.class), imports.add(Object.class));
         p.format("%sif (unmappedFields == null) {\n", indent.right());
         p.format("%sunmappedFields = new %s();\n", indent.right(),
                 imports.add(UnmappedFieldsImpl.class));

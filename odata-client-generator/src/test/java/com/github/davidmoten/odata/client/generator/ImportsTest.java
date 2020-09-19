@@ -42,6 +42,7 @@ public class ImportsTest {
                 + "import com.fred.MyClass;\n" //
                 + "\n" //
                 + "import java.io.IOException;\n" //
+                + "import java.lang.Integer;\n" //
                 + "import java.net.HttpURLConnection;\n\n", //
                 imports.toString());
     }

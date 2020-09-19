@@ -19,6 +19,12 @@ import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.lang.StringBuilder;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -211,7 +217,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     }
 
     @JsonAnySetter
-    private void setUnmappedField(java.lang.String name, java.lang.Object value) {
+    private void setUnmappedField(String name, Object value) {
         if (unmappedFields == null) {
             unmappedFields = new UnmappedFieldsImpl();
         }

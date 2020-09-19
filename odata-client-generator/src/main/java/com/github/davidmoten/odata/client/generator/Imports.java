@@ -14,7 +14,7 @@ public final class Imports {
         add(fullClassName);
     }
 
-    // simpleName to fullClassName
+    // simpleName (may be full class name if already present) to fullClassName
     private final Map<String, String> map = new HashMap<>();
 
     public String add(Class<?> cls) {
@@ -22,19 +22,19 @@ public final class Imports {
     }
 
     public String add(String className) {
-        final String simpleName = simpleName(className);
-        String c = map.get(simpleName);
+        final String simplifiedName = simplifiedName(className);
+        String c = map.get(simplifiedName);
         if (c == null) {
-            map.put(simpleName, className);
-            return simpleName;
+            map.put(simplifiedName, className);
+            return simplifiedName;
         } else if (c.equals(className)) {
-            return simpleName;
+            return simplifiedName;
         } else {
             return className;
         }
     }
 
-    private static String simpleName(String className) {
+    private static String simplifiedName(String className) {
         final String simpleName;
         int i = className.lastIndexOf('.');
         if (i == -1) {
@@ -52,7 +52,7 @@ public final class Imports {
                 .values() //
                 .stream() //
                 .sorted() //
-                .filter(c -> !c.startsWith("java.lang.")) //
+//                .filter(c -> !c.startsWith("java.lang.")) //
                 .filter(c -> !c.equals("boolean")) //
                 .filter(c -> !c.equals("short")) //
                 .filter(c -> !c.equals("float")) //
@@ -61,7 +61,7 @@ public final class Imports {
                 .filter(c -> !c.equals("byte")) //
                 .filter(c -> !c.equals(fullClassName))
                 // ensure that if in same pkg as fullClassName that we don't need
-                // to specify an import
+                // to specify an import 
                 .filter(c -> !pkg(c).equals(pkgFullClassName)) //
                 .map(new Function<String,String>() {
 
