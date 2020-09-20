@@ -5,11 +5,14 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.microsoft.client.builder.Creator;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.UsernamePassword;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HasContext;
+
+import microsoft.dynamics.crm.schema.SchemaInfo;
 
 public final class Dynamics {
 
@@ -67,15 +70,19 @@ public final class Dynamics {
         }
 
         private MicrosoftClientBuilder<T> createBuilder() {
-            return new MicrosoftClientBuilder<T> //
-            (b.baseUrl.get(), context -> {
+            Creator<T> creator = context -> {
                 try {
                     return b.serviceCls.getConstructor(Context.class).newInstance(context);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                     throw new ClientException(e);
                 }
-            });
+            };
+            return MicrosoftClientBuilder //
+                    .baseUrl(b.baseUrl.get()) //
+                    .creator(creator) //
+                    .addSchema(SchemaInfo.INSTANCE) //
+                    .build();
         }
     }
 

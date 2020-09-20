@@ -37,6 +37,7 @@ import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
+import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.internal.ApacheHttpClientHttpService;
 
@@ -64,14 +65,57 @@ public final class MicrosoftClientBuilder<T> {
     private Optional<AccessTokenProvider> accessTokenProvider = Optional.empty();
     private Optional<Authenticator> authenticator = Optional.empty();
     private Optional<Supplier<UsernamePassword>> basicCredentials = Optional.empty();
+    private List<SchemaInfo> schemas;
 
-    public MicrosoftClientBuilder(String baseUrl, Creator<T> creator) {
+    MicrosoftClientBuilder(String baseUrl, Creator<T> creator, List<SchemaInfo> schemas) {
         Preconditions.checkNotNull(baseUrl);
         Preconditions.checkNotNull(creator);
         this.baseUrl = baseUrl;
         this.creator = creator;
+        this.schemas = schemas;
     }
+    
+    public static BuilderBuilder baseUrl(String baseUrl) {
+        Preconditions.checkNotNull(baseUrl);
+        return new BuilderBuilder(baseUrl);
+    }
+    
+    public static final class BuilderBuilder {
 
+        private final String baseUrl;
+
+        BuilderBuilder(String baseUrl) {
+            this.baseUrl = baseUrl;
+        }
+        
+        public <T> BuilderBuilder2<T> creator(Creator<T> creator) {
+            return new BuilderBuilder2<T>(this, creator); 
+        }
+        
+    }
+    
+    public static final class BuilderBuilder2<T> {
+
+        private final BuilderBuilder b;
+        private Creator<T> creator;
+        private final List<SchemaInfo> schemas = new ArrayList<>();
+
+        BuilderBuilder2(BuilderBuilder b, Creator<T> creator) {
+            this.b = b;
+            this.creator = creator;
+        }
+        
+        public BuilderBuilder2<T> addSchema(SchemaInfo schema) {
+            schemas.add(schema);
+            return this;
+        }
+        
+        public MicrosoftClientBuilder<T> build() {
+            return new MicrosoftClientBuilder<T>(b.baseUrl,creator, schemas);
+        }
+        
+    }
+    
     public BuilderCustomAuthenticator<T> authenticator(Authenticator authenticator) {
         return new BuilderCustomAuthenticator<T>(this, authenticator);
     }
@@ -153,7 +197,7 @@ public final class MicrosoftClientBuilder<T> {
             return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs,
                     b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint, b.httpServiceTransformer);
+                    b.authenticationEndpoint, b.httpServiceTransformer,b.schemas);
         }
 
     }
@@ -374,7 +418,7 @@ public final class MicrosoftClientBuilder<T> {
                     b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
                     b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider,
-                    b.authenticator);
+                    b.authenticator, b.schemas);
         }
 
     }
@@ -419,7 +463,7 @@ public final class MicrosoftClientBuilder<T> {
             String authenticationEndpoint, //
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer,
             Optional<AccessTokenProvider> accessTokenProviderOverride, //
-            Optional<Authenticator> authenticator) {
+            Optional<Authenticator> authenticator, List<SchemaInfo> schemas) {
         final Authenticator auth;
         if (authenticator.isPresent()) {
             auth = authenticator.get();
@@ -441,7 +485,7 @@ public final class MicrosoftClientBuilder<T> {
         }
         return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
                 proxyUsername, proxyPassword, supplier, httpClientBuilderExtras, creator,
-                authenticationEndpoint, httpServiceTransformer);
+                authenticationEndpoint, httpServiceTransformer, schemas);
     }
 
     private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs,
@@ -467,7 +511,8 @@ public final class MicrosoftClientBuilder<T> {
             Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
             Creator<T> creator, String authenticationEndpoint, //
-            Function<? super HttpService, ? extends HttpService> httpServiceTransformer) {
+            Function<? super HttpService, ? extends HttpService> httpServiceTransformer, //
+            List<SchemaInfo> schemas) {
         final Supplier<CloseableHttpClient> clientSupplier = createClientSupplier(connectTimeoutMs,
                 readTimeoutMs, proxyHost, proxyPort, proxyUsername, proxyPassword, supplier,
                 httpClientBuilderExtras);
@@ -477,7 +522,7 @@ public final class MicrosoftClientBuilder<T> {
                 clientSupplier, //
                 authenticator::authenticate);
         httpService = httpServiceTransformer.apply(httpService);
-        return creator.create(new Context(Serializer.INSTANCE, httpService, createProperties()));
+        return creator.create(new Context(Serializer.INSTANCE, httpService, createProperties(), schemas));
     }
 
     public static Map<String, Object> createProperties() {
