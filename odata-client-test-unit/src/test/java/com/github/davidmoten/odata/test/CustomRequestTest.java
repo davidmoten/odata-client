@@ -9,7 +9,6 @@ import com.github.davidmoten.odata.client.RequestHeader;
 
 import test5.container.Test5Service;
 import test5.entity.Product;
-import test5.schema.SchemaInfo;
 
 public class CustomRequestTest {
 
@@ -19,7 +18,7 @@ public class CustomRequestTest {
 				.expectResponse("/Products/1", "/response-product-1.json", RequestHeader.ACCEPT_JSON,
 						RequestHeader.ODATA_VERSION) //
 				.build();
-		Product p = client._custom().get("https://testing.com/Products/1", Product.class, SchemaInfo.INSTANCE,
+		Product p = client._custom().get("https://testing.com/Products/1", Product.class,
 				HttpRequestOptions.EMPTY);
 		System.out.println(p);
 		assertEquals(1, (int) p.getID().get());

@@ -6,16 +6,14 @@ public abstract class NonEntityRequest<T> {
 
     private final Class<T> cls;
     protected final ContextPath contextPath;
-    private final SchemaInfo schemaInfo;
 
-    public NonEntityRequest(Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo) {
+    public NonEntityRequest(Class<T> cls, ContextPath contextPath) {
         this.cls = cls;
         this.contextPath = contextPath;
-        this.schemaInfo = schemaInfo;
     }
 
     T get(NonEntityRequestOptions<T> options) {
-        return RequestHelper.get(contextPath, cls, options, schemaInfo);
+        return RequestHelper.get(contextPath, cls, options);
     }
 
     public T get() {

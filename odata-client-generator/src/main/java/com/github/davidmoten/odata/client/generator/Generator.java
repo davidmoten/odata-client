@@ -96,7 +96,6 @@ import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.generator.model.Structure.FieldName;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.Checks;
-import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
@@ -679,21 +678,19 @@ public final class Generator {
 			writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
 			if (returnType.isCollection) {
 				p.format(
-						"%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+						"%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
 						indent, //
 						imports.add(CollectionPageNonEntityRequest.class), //
 						action.getFullType(), //
-						returnType.innerImportedFullClassName, //
-						returnType.schemaInfoFullClassName);
+						returnType.innerImportedFullClassName);
 			} else {
                 p.format(
-                        "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                        "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
                         indent, //
                         isNonCollectionEdm ? imports.add(ActionRequestReturningNonCollection.class) : imports.add(ActionRequestReturningNonCollectionUnwrapped.class), //
                         returnType.innerImportedFullClassName, //
                         action.getFullType(), //
-                        returnType.innerImportedFullClassName, //
-                        returnType.schemaInfoFullClassName);
+                        returnType.innerImportedFullClassName);
             } 
 		} else {
 			p.format("%spublic %s %s(%s) {\n", //
@@ -751,22 +748,20 @@ public final class Generator {
 		writeFunctionParameterMapAndNullChecksAndAsciiCheck(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
-                    "%sreturn %s.forFunction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    "%sreturn %s.forFunction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
                     indent, //
                     imports.add(CollectionPageNonEntityRequest.class), //
                     function.getFullType(), //
-                    returnType.innerImportedFullClassName, //
-                    returnType.schemaInfoFullClassName);
+                    returnType.innerImportedFullClassName);
         } else {
             p.format(
-                    "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters, %s.INSTANCE);\n", //
+                    "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
                     indent, //
                     isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
                             : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class), //
                     returnType.innerImportedFullClassName, //
                     function.getFullType(), //
-                    returnType.innerImportedFullClassName, //
-                    returnType.schemaInfoFullClassName);
+                    returnType.innerImportedFullClassName);
         }
 		p.format("%s}\n", indent.left());
 	}
@@ -1043,10 +1038,9 @@ public final class Generator {
 			p.format("%spublic %s(%s contextPath, %s<%s> value) {\n", indent, //
 			        simpleClassName, imports.add(ContextPath.class), //
 			        imports.add(Optional.class), imports.add(Object.class));
-			p.format("%ssuper(%s.class, contextPath, %s.INSTANCE, value);\n", //
+			p.format("%ssuper(%s.class, contextPath, value);\n", //
 					indent.right(), //
-					imports.add(t.getFullClassNameEntity()), //
-					imports.add(names.getFullClassNameSchemaInfo(schema)));
+					imports.add(t.getFullClassNameEntity()));
 			p.format("%s}\n", indent.left());
 
 			indent.left();
@@ -1326,11 +1320,10 @@ public final class Generator {
 			        imports.add(ContextPath.class), //
 			        imports.add(Optional.class), //
 			        imports.add(Object.class));
-			p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp, Optional.empty()), %s.INSTANCE, value);\n", //
+			p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp, Optional.empty()), value);\n", //
 			        indent.right(), //
 					imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
 					imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
-					imports.add(names.getFullClassNameSchemaInfo(schema)), //
 					imports.add(RequestHelper.class), //
 					t.getName());
 			p.format("%sthis.contextPath = contextPath;\n", indent);
@@ -1723,23 +1716,14 @@ public final class Generator {
 	private void writePropertyGetterCollectionBody(Imports imports, Indent indent, PrintWriter p, String fieldName,
 			String inner, String importedInnerType, boolean isEntity, String options) {
 		if (isEntity) {
-			Schema sch = names.getSchema(inner);
-			p.format("%sreturn %s.from(contextPath.context(), %s, %s.class, %s.INSTANCE, %s.emptyList());\n",
+			p.format("%sreturn %s.from(contextPath.context(), %s, %s.class, %s.emptyList());\n",
 					indent.right(), imports.add(CollectionPage.class), fieldName, importedInnerType,
-					imports.add(names.getFullClassNameSchemaInfo(sch)), //
 					imports.add(Collections.class));
 		} else {
-			final String importedSchemaInfo;
-			if (inner.startsWith("Edm.")) {
-				importedSchemaInfo = imports.add(EdmSchemaInfo.class);
-			} else {
-				Schema sch = names.getSchema(inner);
-				importedSchemaInfo = imports.add(names.getFullClassNameSchemaInfo(sch));
-			}
 			p.format(
-					"%sreturn new %s<%s>(contextPath, %s.class, this.%s, %s.ofNullable(%sNextLink), %s.INSTANCE, %s.emptyList(), %s);\n",
+					"%sreturn new %s<%s>(contextPath, %s.class, this.%s, %s.ofNullable(%sNextLink), %s.emptyList(), %s);\n",
 					indent.right(), imports.add(CollectionPage.class), importedInnerType, importedInnerType, fieldName,
-					imports.add(Optional.class), fieldName, importedSchemaInfo, imports.add(Collections.class), //
+					imports.add(Optional.class), fieldName, imports.add(Collections.class), //
 					options);
 		}
 	}

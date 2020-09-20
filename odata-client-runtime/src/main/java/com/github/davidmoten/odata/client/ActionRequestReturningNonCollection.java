@@ -10,13 +10,11 @@ public final class ActionRequestReturningNonCollection<T>
         extends ActionFunctionRequestBase<ActionRequestReturningNonCollection<T>> {
 
     private final Class<T> returnClass;
-    private final SchemaInfo schemaInfo;
 
     public ActionRequestReturningNonCollection(ContextPath contextPath, Class<T> returnClass,
-            Map<String, TypedObject> parameters, SchemaInfo schemaInfo) {
+            Map<String, TypedObject> parameters) {
         super(parameters, contextPath);
         this.returnClass = returnClass;
-        this.schemaInfo = schemaInfo;
     }
 
     @SuppressWarnings("unchecked")
@@ -26,8 +24,7 @@ public final class ActionRequestReturningNonCollection<T>
                 contextPath, //
                 ODataValue.class, //
                 returnClass, //
-                options(), //
-                schemaInfo);
+                options());
     }
 
 }

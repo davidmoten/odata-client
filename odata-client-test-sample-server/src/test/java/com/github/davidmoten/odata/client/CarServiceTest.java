@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.olingo.server.sample.CarsServlet;
@@ -38,7 +39,7 @@ public class CarServiceTest {
     }
 
     private static Server checkServiceCalls(HttpService service) throws Exception {
-        Container c = new Container(new Context(Serializer.INSTANCE, service));
+        Container c = new Container(new Context(Serializer.INSTANCE, service, Collections.emptyList()));
         Server server = startServer();
 
         // test get collection

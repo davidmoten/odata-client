@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,9 +32,9 @@ public class CollectionPageTest {
         HttpService service = createHttpService(json);
         SchemaInfo schemaInfo = name -> Person.class;
 
-        Context context = new Context(serializer, service);
+        Context context = new Context(serializer, service, Arrays.asList(schemaInfo));
         CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,
-                new ContextPath(context, service.getBasePath()), schemaInfo,
+                new ContextPath(context, service.getBasePath()), 
                 Collections.emptyList(), HttpRequestOptions.EMPTY, x -> {
                 });
         assertEquals(2, c.currentPage().size());
@@ -102,11 +103,11 @@ public class CollectionPageTest {
         Serializer serializer = Serializer.INSTANCE;
         HttpService service = createHttpService(json);
         SchemaInfo schemaInfo = name -> Person.class;
-        Context context = new Context(serializer, service);
+        Context context = new Context(serializer, service, Lists.newArrayList(schemaInfo));
         ContextPath contextPath = new ContextPath(context,
                 new Path("https://blah", PathStyle.IDENTIFIERS_AS_SEGMENTS));
         CollectionPage<Person> page = serializer.deserializeCollectionPage(json, Person.class,
-                contextPath, schemaInfo, Collections.emptyList(), HttpRequestOptions.EMPTY,
+                contextPath, Collections.emptyList(), HttpRequestOptions.EMPTY,
                 p -> {
                 });
         assertEquals(Lists.newArrayList(1,2,3), page.unmappedFields().get("hello"));

@@ -11,8 +11,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -296,10 +296,16 @@ public final class TestingService {
         public abstract T _create(Context context);
 
         private final Map<String, Object> properties = new HashMap<>();
+        private final List<SchemaInfo> schemas = new ArrayList<>();
 
         @Override
         public T build() {
-            return _create(new Context(Serializer.INSTANCE, createService(), properties, Collections.emptyList()));
+            return _create(new Context(Serializer.INSTANCE, createService(), properties, schemas));
+        }
+        
+        public ContainerBuilder<T> addSchema(SchemaInfo schema) {
+            this.schemas.add(schema);
+            return this;
         }
 
         public ContainerBuilder<T> addProperty(String name, Object value) {
