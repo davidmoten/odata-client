@@ -8,6 +8,7 @@ import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Bui
 import com.github.davidmoten.msgraph.builder.GraphExplorerHttpService;
 
 import odata.msgraph.client.beta.container.GraphService;
+import odata.msgraph.client.beta.schema.SchemaInfo;
 
 public final class MsGraph {
 
@@ -18,7 +19,13 @@ public final class MsGraph {
     }
 
     public static Builder3<GraphService> tenantName(String tenantName) {
-        return new MicrosoftClientBuilder<GraphService>(MSGRAPH_BETA_BASE_URL, GraphService::new) //
+        return MicrosoftClientBuilder//
+                .baseUrl(MSGRAPH_BETA_BASE_URL) //
+                .creator(GraphService::new) //
+                .addSchema(SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.beta.callRecords.schema.SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.beta.termStore.schema.SchemaInfo.INSTANCE) //
+                .build() //
                 .tenantName(tenantName) //
                 .resource(GraphConstants.RESOURCE_MS_GRAPH) //
                 .scope(GraphConstants.SCOPE_MS_GRAPH_DEFAULT);
