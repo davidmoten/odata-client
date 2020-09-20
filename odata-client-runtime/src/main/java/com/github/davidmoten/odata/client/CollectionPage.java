@@ -40,7 +40,6 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     private final List<T> list;
     private final Optional<String> nextLink;
     private final Optional<String> deltaLink;
-    private final SchemaInfo schemaInfo;
     private final List<RequestHeader> requestHeaders;
 	private final HttpRequestOptions options;
 	private final Consumer<? super CollectionPage<T>> listener;
@@ -53,7 +52,6 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
             Optional<String> nextLink, //
             Optional<String> deltaLink, //
             UnmappedFields unmappedFields, //
-            SchemaInfo schemaInfo, //
             List<RequestHeader> requestHeaders, //
             HttpRequestOptions options,
             Consumer<? super CollectionPage<T>> listener) {
@@ -61,7 +59,6 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         Preconditions.checkNotNull(cls);
         Preconditions.checkNotNull(nextLink);
         Preconditions.checkNotNull(unmappedFields);
-        Preconditions.checkNotNull(schemaInfo);
         Preconditions.checkNotNull(requestHeaders);
         Preconditions.checkNotNull(options);
         this.contextPath = contextPath;
@@ -70,7 +67,6 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         this.nextLink = nextLink;
         this.deltaLink = deltaLink;
         this.unmappedFields = unmappedFields;
-        this.schemaInfo = schemaInfo;
         this.requestHeaders = requestHeaders;
         this.options = options;
         if (listener == null) {
@@ -82,8 +78,8 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     }
     
     public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
-            Optional<String> nextLink, SchemaInfo schemaInfo, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-    	this(contextPath, cls, list, nextLink, Optional.empty(), UnmappedFields.EMPTY, schemaInfo, requestHeaders, options, null);
+            Optional<String> nextLink, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    	this(contextPath, cls, list, nextLink, Optional.empty(), UnmappedFields.EMPTY, requestHeaders, options, null);
     }
 
     @Override
@@ -147,7 +143,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
             RequestHelper.checkResponseCode(contextPath, response, 200, 299);
             CollectionPage<T> page = contextPath.context().serializer().deserializeCollectionPage(
-			        response.getText(), cls, contextPath, schemaInfo, requestHeaders, options, listener);
+			        response.getText(), cls, contextPath, requestHeaders, options, listener);
             listener.accept(page);
 			return Optional.of(page);
         } else {

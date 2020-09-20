@@ -43,6 +43,7 @@ import com.github.davidmoten.odata.client.Retries;
 import com.github.davidmoten.odata.client.Serializer;
 import com.github.davidmoten.odata.client.TestingService.ContainerBuilder;
 
+import odata.msgraph.client.callrecords.schema.SchemaInfo;
 import odata.msgraph.client.complex.AttachmentItem;
 import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.Identity;
@@ -1059,6 +1060,8 @@ public class GraphServiceTest {
                 .test() //
                 .baseUrl("https://graph.microsoft.com/v1.0") //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
+                .addSchema(SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.schema.SchemaInfo.INSTANCE) //
                 .addProperties(MicrosoftClientBuilder.createProperties());
     }
 

@@ -21,7 +21,6 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
 
     private final ContextPath contextPath;
     private final Class<T> cls;
-    private final SchemaInfo schemaInfo;
 
     // initial call made with this method, further pages use HttpMethod.GET
     private final HttpMethod method;
@@ -30,44 +29,38 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
 
     // should not be public api
     public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls,
-            SchemaInfo schemaInfo, HttpMethod method, Optional<String> content,
+            HttpMethod method, Optional<String> content,
             int expectedResponseCode) {
         Preconditions.checkArgument(method != HttpMethod.POST || content.isPresent());
         this.contextPath = contextPath;
         this.cls = cls;
-        this.schemaInfo = schemaInfo;
         this.method = method;
         this.content = content;
         this.expectedResponseCode = expectedResponseCode;
     }
 
-    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls,
-            SchemaInfo schemaInfo) {
-        this(contextPath, cls, schemaInfo, HttpMethod.GET, Optional.empty(),
+    public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls) {
+        this(contextPath, cls, HttpMethod.GET, Optional.empty(),
                 HttpURLConnection.HTTP_CREATED);
     }
     
     public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath,
-            Class<T> returnClass, Map<String, TypedObject> parameters,
-            SchemaInfo returnTypeSchemaInfo) {
+            Class<T> returnClass, Map<String, TypedObject> parameters) {
         String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
                 returnClass, //
-                returnTypeSchemaInfo, //
                 HttpMethod.POST, //
                 Optional.of(json), //
                 HttpURLConnection.HTTP_OK);
     }
 
     public static <T> CollectionPageNonEntityRequest<T> forFunction(ContextPath contextPath,
-            Class<T> returnClass, Map<String, TypedObject> parameters,
-            SchemaInfo returnTypeSchemaInfo) {
+            Class<T> returnClass, Map<String, TypedObject> parameters) {
         String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
                 returnClass, //
-                returnTypeSchemaInfo, //
                 HttpMethod.GET, //
                 Optional.of(json), //
                 HttpURLConnection.HTTP_OK);
@@ -91,7 +84,6 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
                         r.getText(), //
                         cls, //
                         cp, //
-                        schemaInfo, //
                         h, //
                         options, //
                         null);
@@ -141,7 +133,7 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
      */
     public <S extends T> CollectionPageNonEntityRequest<S> filter(Class<S> cls) {
         return new CollectionPageNonEntityRequest<S>( //
-                contextPath.addSegment(odataTypeNameFromAny(cls)), cls, schemaInfo);
+                contextPath.addSegment(odataTypeNameFromAny(cls)), cls);
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> requestHeader(String key, String value) {

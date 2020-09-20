@@ -13,7 +13,6 @@ import org.oasisopen.odata.csdl.v4.TFunction;
 import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
-import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Function implements Method {
 
@@ -113,37 +112,20 @@ public final class Function implements Method {
         public final String innerImportedFullClassName;
         public final boolean isCollection;
 
-        public final String schemaInfoFullClassName;
-
-        public ReturnType(String innerType, boolean isCollection, String innerImportedFullClassName,
-                String schemaInfoFullClassName) {
+        public ReturnType(String innerType, boolean isCollection, String innerImportedFullClassName) {
             this.innerType = innerType;
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
-            this.schemaInfoFullClassName = schemaInfoFullClassName;
         }
     }
 
     public ReturnType getReturnType(Imports imports) {
         String innerType = names.getInnerType(function.getReturnType());
-        final String schemaInfoClassName;
-        if (innerType.startsWith("Edm.")) {
-            schemaInfoClassName = EdmSchemaInfo.INSTANCE.getClass().getCanonicalName();
-        } else {
-            schemaInfoClassName = names.getFullClassNameSchemaInfo(names.getSchema(innerType));
-        }
-
         return new ReturnType( //
                 innerType, 
                 names.isCollection(function.getReturnType()), //
                 names.toImportedTypeNonCollection(names.getInnerType(function.getReturnType()),
-                        imports), //
-                schemaInfoClassName);
-    }
-
-    public String getReturnTypeFullClassNameSchemaInfo() {
-        return names.getFullClassNameSchemaInfo(
-                names.getSchema(names.getInnerType(function.getReturnType())));
+                        imports));
     }
 
     public String getFullType() {

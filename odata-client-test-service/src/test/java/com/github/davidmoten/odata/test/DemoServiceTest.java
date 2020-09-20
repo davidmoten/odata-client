@@ -19,6 +19,7 @@ import odata.test.entity.Employee;
 import odata.test.entity.Person;
 import odata.test.entity.PersonDetail;
 import odata.test.entity.Product;
+import odata.test.schema.SchemaInfo;
 
 public class DemoServiceTest {
 
@@ -142,7 +143,8 @@ public class DemoServiceTest {
     private static ContainerBuilder<DemoService> serviceBuilder() {
         return DemoService.test() //
                 .baseUrl("https://services.odata.org/Experimental/OData/OData.svc") //
-                .pathStyle(PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS);
+                .pathStyle(PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS) //
+                .addSchema(SchemaInfo.INSTANCE);
     }
 
     private static DemoService createClient(String path, String resource,
