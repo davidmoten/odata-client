@@ -18,8 +18,11 @@ public final class MsGraph {
     }
 
     public static MicrosoftClientBuilder.Builder3<GraphService> tenantName(String tenantName) {
-        return new MicrosoftClientBuilder<> 
-                (MSGRAPH_1_0_BASE_URL, GraphService::new) //
+        return MicrosoftClientBuilder //
+                .baseUrl(MSGRAPH_1_0_BASE_URL) //
+                .creator(GraphService::new) //
+                .addSchema(odata.msgraph.client.schema.SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.callrecords.schema.SchemaInfo.INSTANCE).build() //
                 .tenantName(tenantName) //
                 .resource(GraphConstants.RESOURCE_MS_GRAPH) //
                 .scope(GraphConstants.SCOPE_MS_GRAPH_DEFAULT);

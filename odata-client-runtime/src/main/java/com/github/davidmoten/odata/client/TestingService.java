@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -298,7 +299,7 @@ public final class TestingService {
 
         @Override
         public T build() {
-            return _create(new Context(Serializer.INSTANCE, createService(), properties));
+            return _create(new Context(Serializer.INSTANCE, createService(), properties, Collections.emptyList()));
         }
 
         public ContainerBuilder<T> addProperty(String name, Object value) {
