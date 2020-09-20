@@ -8,13 +8,11 @@ public abstract class EntityRequest<T extends ODataEntityType> {
 
     private final Class<T> cls;
     protected final ContextPath contextPath;
-    private final SchemaInfo schemaInfo;
     private Optional<Object> value;
 
-    public EntityRequest(Class<T> cls, ContextPath contextPath, SchemaInfo schemaInfo, Optional<Object> value) {
+    public EntityRequest(Class<T> cls, ContextPath contextPath, Optional<Object> value) {
         this.cls = cls;
         this.contextPath = contextPath;
-        this.schemaInfo = schemaInfo;
         this.value = value;
     }
 
@@ -23,7 +21,7 @@ public abstract class EntityRequest<T extends ODataEntityType> {
             String json = Serializer.INSTANCE.serialize(value.get());
             return Serializer.INSTANCE.deserialize(json, cls, contextPath, false);
         } else {
-            return RequestHelper.get(contextPath, cls, options, schemaInfo);
+            return RequestHelper.get(contextPath, cls, options);
         }
     }
 

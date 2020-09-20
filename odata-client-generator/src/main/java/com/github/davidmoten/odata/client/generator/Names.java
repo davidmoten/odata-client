@@ -397,10 +397,6 @@ public final class Names {
         return schemas;
     }
 
-    public String getFullClassNameSchemaInfo(Schema schema) {
-        return getPackageSchema(schema) + "." + getSimpleClassNameSchema(schema);
-    }
-
     public String getFullClassNameEntityRequestFromTypeWithNamespace(Schema schema, String name) {
         String simple = getLastItemInDotDelimitedString(name);
         return getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, simple);

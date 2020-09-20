@@ -21,17 +21,15 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     private final ContextPath contextPath;
     private final Class<T> cls;
     private final EntityRequestFactory<T, R> entityRequestFactory;
-    private final SchemaInfo schemaInfo;
     // the value for the collection if it has already been obtained (e.g. via expand option)
     private final Optional<Object> value;
 
     // should not be public api
     public CollectionPageEntityRequest(ContextPath contextPath, Class<T> cls,
-            EntityRequestFactory<T, R> entityRequestFactory, SchemaInfo schemaInfo, Optional<Object> value) {
+            EntityRequestFactory<T, R> entityRequestFactory, Optional<Object> value) {
         this.contextPath = contextPath;
         this.entityRequestFactory = entityRequestFactory;
         this.cls = cls;
-        this.schemaInfo = schemaInfo;
         this.value = value;
     }
 
@@ -44,7 +42,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
                     json, //
                     cls, //
                     contextPath, //
-                    schemaInfo, Collections.emptyList(), //
+                    Collections.emptyList(), //
                     HttpRequestOptions.EMPTY, //
                     null);
         } else {
@@ -53,13 +51,13 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
             List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
             HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h, options);
             RequestHelper.checkResponseCode(cp, r, 200, 299);
-            return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp, schemaInfo, h, options,
+            return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp, h, options,
                     null);
         }
     }
 
     T post(CollectionRequestOptions options, T entity) {
-        return RequestHelper.post(entity, contextPath, cls, options, schemaInfo);
+        return RequestHelper.post(entity, contextPath, cls, options);
     }
 
     public R id(String id) {
@@ -110,7 +108,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     @SuppressWarnings("unchecked")
     public <S extends T> CollectionPageEntityRequest<S, EntityRequest<S>> filter(Class<S> cls) {
         return new CollectionPageEntityRequest<S, EntityRequest<S>>(contextPath.addSegment(odataTypeName(cls)), cls,
-                (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, schemaInfo, value);
+                (EntityRequestFactory<S, EntityRequest<S>>) entityRequestFactory, value);
     }
     
     public CollectionEntityRequestOptionsBuilder<T, R> requestHeader(String key, String value) {

@@ -197,26 +197,25 @@ public final class Serializer {
     		String json, //
     		Class<T> cls, //
             ContextPath contextPath, //
-            SchemaInfo schemaInfo, //
             List<RequestHeader> requestHeaders, //
             HttpRequestOptions options, //
             Consumer<? super CollectionPage<T>> listener) {
-        CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath, schemaInfo);
-        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, c.unmappedFields, schemaInfo,
+        CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath);
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, c.unmappedFields,
                 requestHeaders, options, listener);
     }
     
     private static final Set<String> COLLECTION_PAGE_FIELDS = Sets.newHashSet("value", "@odata.nextLink", "@odata.deltaLink");
 
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls,
-            ContextPath contextPath, SchemaInfo schemaInfo) {
+            ContextPath contextPath) {
         try {
             ObjectMapper m = MAPPER_EXCLUDE_NULLS;
             ObjectNode o = m.readValue(json, ObjectNode.class);
             List<T> list = new ArrayList<T>();
             for (JsonNode item : o.get("value")) {
                 String text = m.writeValueAsString(item);
-                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, schemaInfo,
+                Class<? extends T> subClass = RequestHelper.getSubClass(contextPath, contextPath.context().schemas(),
                         cls, text);
                 list.add(deserialize(text, subClass, contextPath, true));
             }

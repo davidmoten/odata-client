@@ -9,13 +9,11 @@ public final class FunctionRequestReturningNonCollectionUnwrapped<T>
         extends ActionFunctionRequestBase<FunctionRequestReturningNonCollectionUnwrapped<T>> {
 
     private final Class<T> returnClass;
-    private final SchemaInfo schemaInfo;
 
     public FunctionRequestReturningNonCollectionUnwrapped(ContextPath contextPath, Class<T> returnClass,
-            Map<String, TypedObject> parameters, SchemaInfo schemaInfo) {
+            Map<String, TypedObject> parameters) {
         super(parameters, contextPath);
         this.returnClass = returnClass;
-        this.schemaInfo = schemaInfo;
     }
 
     public T get() {
@@ -23,8 +21,7 @@ public final class FunctionRequestReturningNonCollectionUnwrapped<T>
         return RequestHelper.get( //
                 contextPath.addSegment(InlineParameterSyntax.encode(serializer, parameters)), //
                 returnClass, //
-                options(), //
-                schemaInfo);
+                options());
     }
 
 }

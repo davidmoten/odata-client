@@ -26,8 +26,8 @@ public final class Context {
         this.schemas = schemas;
     }
 
-    public Context(Serializer serializer, HttpService service) {
-        this(serializer, service, Collections.emptyMap(), Collections.emptyList());
+    public Context(Serializer serializer, HttpService service, List<SchemaInfo> schemas) {
+        this(serializer, service, Collections.emptyMap(), schemas);
     }
 
     public Serializer serializer() {

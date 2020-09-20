@@ -29,23 +29,22 @@ public final class CustomRequest {
         return context.service().getStream(url, Arrays.asList(headers), options);
     }
 
-    public <T> T get(String url, Class<T> responseCls, SchemaInfo responseSchemaInfo, HttpRequestOptions options,
+    public <T> T get(String url, Class<T> responseCls, HttpRequestOptions options,
             RequestHeader... headers) {
         UrlInfo info = getInfo(context, url, headers, options);
-        return RequestHelper.get(info.contextPath, responseCls, info, responseSchemaInfo);
+        return RequestHelper.get(info.contextPath, responseCls, info);
     }
 
     public <T extends ODataEntityType> void post(String url, Class<T> contentClass, T content,
-            SchemaInfo schemaInfo, HttpRequestOptions options, RequestHeader... headers) {
+            HttpRequestOptions options, RequestHeader... headers) {
         UrlInfo info = getInfo(context, url, headers, options);
-        RequestHelper.post(content, info.contextPath, contentClass, info, schemaInfo);
+        RequestHelper.post(content, info.contextPath, contentClass, info);
     }
 
     public <T> T post(String url, Object content, Class<T> responseClass,
             SchemaInfo responseSchemaInfo, HttpRequestOptions options, RequestHeader... headers) {
         UrlInfo info = getInfo(context, url, headers, options);
-        return RequestHelper.postAny(context, info.contextPath, responseClass, info,
-                responseSchemaInfo);
+        return RequestHelper.postAny(context, info.contextPath, responseClass, info);
     }
 
     public void postJson(String url, String contentJson, RequestOptions options, RequestHeader... headers) {
