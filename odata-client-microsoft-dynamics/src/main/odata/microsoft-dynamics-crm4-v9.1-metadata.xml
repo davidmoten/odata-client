@@ -11,7 +11,7 @@
   <edmx:DataServices>
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Microsoft.Dynamics.CRM" Alias="mscrm">
       <EntityType Name="crmbaseentity" Abstract="true"/>
-<!--      <EntityType Name="expando" BaseType="mscrm.crmbaseentity" OpenType="true"/> -->
+      <!--      <EntityType Name="expando" BaseType="mscrm.crmbaseentity" OpenType="true"/> -->
       <EntityType Name="account" BaseType="mscrm.crmbaseentity">
         <Key>
           <PropertyRef Name="accountid"/>
