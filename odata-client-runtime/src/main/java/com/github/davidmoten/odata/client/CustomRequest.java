@@ -52,6 +52,10 @@ public final class CustomRequest {
         return new CustomRequest(context, true);
     }
     
+    public CustomRequest withRelativeUrls(boolean value) {
+        return new CustomRequest(context, value);
+    }
+    
     public String getString(String url, RequestOptions options, RequestHeader... headers) {
         return context.service().getStringUtf8(toAbsoluteUrl(url), Arrays.asList(headers), options);
     }
@@ -78,16 +82,16 @@ public final class CustomRequest {
         return RequestHelper.postAny(context, info.contextPath, responseClass, info);
     }
 
-    public void postJson(String url, String contentJson, RequestOptions options,
+    public void postString(String url, String content, RequestOptions options,
             RequestHeader... headers) {
         UrlInfo info = getInfo(context, url, headers, options);
-        context.service().post(url, info.requestHeaders, contentJson, options);
+        context.service().post(url, info.requestHeaders, content, options);
     }
 
-    public String postJsonReturnsJson(String url, String contentJson, RequestOptions options,
+    public String postStringReturnsString(String url, String content, RequestOptions options,
             RequestHeader... headers) {
         UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
-        HttpResponse response = context.service().post(url, info.requestHeaders, contentJson,
+        HttpResponse response = context.service().post(url, info.requestHeaders, content,
                 options);
         RequestHelper.checkResponseCode(info.contextPath, response, 200, 299);
         return response.getText();
