@@ -16,34 +16,65 @@ import com.github.davidmoten.odata.client.internal.RequestHelper;
 public final class CustomRequest {
 
     private final Context context;
+    private final boolean relativeUrls;
 
-    public CustomRequest(Context context) {
+    public CustomRequest(Context context, boolean relativeUrls) {
         this.context = context;
+        this.relativeUrls = relativeUrls;
     }
-
+    
+    private String toAbsoluteUrl(String url) {
+        if (relativeUrls) {
+            if (url.startsWith("https://")) {
+                return url;
+            } else {
+                String base = context.service().getBasePath().toUrl();
+                String a;
+                if (base.endsWith("/")) {
+                    a = base;
+                } else {
+                    a = base + "/";
+                }
+                String b;
+                if (url.startsWith("/")) {
+                    b = url.substring(1);
+                } else {
+                    b = url;
+                }
+                return a + b;
+            }
+        } else {
+            return url;
+        }
+    }
+    
+    public CustomRequest withRelativeUrls() {
+        return new CustomRequest(context, true);
+    }
+    
     public String getString(String url, RequestOptions options, RequestHeader... headers) {
-        return context.service().getStringUtf8(url, Arrays.asList(headers), options);
+        return context.service().getStringUtf8(toAbsoluteUrl(url), Arrays.asList(headers), options);
     }
 
     public InputStream getStream(String url, RequestOptions options, RequestHeader... headers) {
-        return context.service().getStream(url, Arrays.asList(headers), options);
+        return context.service().getStream(toAbsoluteUrl(url), Arrays.asList(headers), options);
     }
 
     public <T> T get(String url, Class<T> responseCls, HttpRequestOptions options,
             RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers, options);
+        UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         return RequestHelper.get(info.contextPath, responseCls, info);
     }
 
     public <T extends ODataEntityType> void post(String url, Class<T> contentClass, T content,
             HttpRequestOptions options, RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers, options);
+        UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         RequestHelper.post(content, info.contextPath, contentClass, info);
     }
 
     public <T> T post(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers, options);
+        UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         return RequestHelper.postAny(context, info.contextPath, responseClass, info);
     }
 
@@ -55,7 +86,7 @@ public final class CustomRequest {
 
     public String postJsonReturnsJson(String url, String contentJson, RequestOptions options,
             RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers, options);
+        UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         HttpResponse response = context.service().post(url, info.requestHeaders, contentJson,
                 options);
         RequestHelper.checkResponseCode(info.contextPath, response, 200, 299);

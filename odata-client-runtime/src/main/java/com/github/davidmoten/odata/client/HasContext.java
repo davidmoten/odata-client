@@ -5,7 +5,7 @@ public interface HasContext {
     Context _context();
 
     default CustomRequest _custom() {
-        return new CustomRequest(_context());
+        return new CustomRequest(_context(), false);
     }
 
 }
