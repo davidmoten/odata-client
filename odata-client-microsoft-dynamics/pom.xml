@@ -70,6 +70,7 @@
                                 <schema>
                                     <namespace>Microsoft.Dynamics.CRM</namespace>
                                     <packageName>microsoft.dynamics.crm</packageName>
+                                    <failOnMissingEntitySet>false</failOnMissingEntitySet>
                                 </schema>
                             </schemas>
                         </configuration>

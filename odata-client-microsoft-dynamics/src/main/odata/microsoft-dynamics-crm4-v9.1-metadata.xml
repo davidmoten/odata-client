@@ -25942,8 +25942,6 @@
           <NavigationPropertyBinding Path="organization_webwizard" Target="webwizards"/>
           <NavigationPropertyBinding Path="webresource_organization" Target="webresourceset"/>
         </EntitySet>
-        <EntitySet Name="owners" EntityType="mscrm.principal">
-        </EntitySet>
         <EntitySet Name="ownermappings" EntityType="Microsoft.Dynamics.CRM.ownermapping">
           <NavigationPropertyBinding Path="createdby" Target="systemusers"/>
           <NavigationPropertyBinding Path="createdonbehalfby" Target="systemusers"/>

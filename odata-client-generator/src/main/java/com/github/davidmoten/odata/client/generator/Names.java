@@ -71,7 +71,7 @@ public final class Names {
         return new Names(schemas, options);
     }
 
-    private SchemaOptions getOptions(Schema schema) {
+    public SchemaOptions getOptions(Schema schema) {
         return opts.getSchemaOptions(schema.getNamespace());
     }
 

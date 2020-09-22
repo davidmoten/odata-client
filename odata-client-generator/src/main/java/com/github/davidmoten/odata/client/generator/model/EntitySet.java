@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client.generator.model;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TEntityContainer;
@@ -52,24 +53,29 @@ public final class EntitySet {
         return imports.add(names.getFullClassNameCollectionRequestFromTypeWithNamespace(schema, t));
     }
 
-    public EntitySet getReferredEntitySet(String name) {
-        return Util //
+    public Optional<EntitySet> getReferredEntitySet(String name) {
+        Optional<EntitySet> es = Util //
                 .filter(container.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
                 .filter(x -> x.getName().equals(name)) //
-                .map(es -> new EntitySet(schema, container, es, names)) //
-                .findFirst() //
-                .orElseGet(() -> names.getSchemas() //
-                        .stream() //
-                        .flatMap(sch -> Util.types(sch, TEntityContainer.class) //
-                                .flatMap(c -> Util
-                                        .filter(c.getEntitySetOrActionImportOrFunctionImport(),
-                                                TEntitySet.class) //
-                                        .filter(es -> name.equals(sch.getNamespace() + "."
-                                                + c.getName() + "/" + es.getName()))
-                                        .map(es -> new EntitySet(sch, c, es, names))))
-                        .findFirst() //
-                        .orElseThrow(
-                                () -> new RuntimeException("EntitySet " + name + " not found")));
+                .map(x -> new EntitySet(schema, container, x, names)) //
+                .findFirst();
+        if (!es.isPresent()) {
+            es = names.getSchemas() //
+                    .stream() //
+                    .flatMap(sch -> Util //
+                            .types(sch, TEntityContainer.class) //
+                            .flatMap(c -> Util
+                                    .filter(c.getEntitySetOrActionImportOrFunctionImport(),
+                                            TEntitySet.class) //
+                                    .filter(x -> name.equals(sch.getNamespace() + "." + c.getName()
+                                            + "/" + x.getName()))
+                                    .map(x -> new EntitySet(sch, c, x, names))))//
+                    .findFirst();
+        }
+        if (!es.isPresent() && names.getOptions(schema).failOnMissingEntitySet) {
+            throw new RuntimeException("EntitySet " + name + " not found");
+        }
+        return es;
     }
 
     public String getMethodName(TNavigationPropertyBinding b) {
