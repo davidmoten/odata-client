@@ -257,7 +257,7 @@ public final class Generator {
                                     b.getPath());
                             p.format("%s}\n", indent.left());
                         } else {
-                            log("WARN: EntitySet (target) '"+ b.getTarget() //
+                            log("WARN: EntitySet '"+ b.getTarget() //
                             + "' not found for navigation property binding " //
                             + t.getSimpleClassNameEntitySet() + "."
                             + b.getPath());
