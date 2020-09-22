@@ -244,14 +244,21 @@ public final class Generator {
 						if (duplicateMethodNames.contains(methodName)) {
 						    methodName = t.getLongerMethodName(b);
 						}
-						EntitySet referredEntitySet = t.getReferredEntitySet(b.getTarget());
-						String returnClassName = referredEntitySet.getFullClassNameEntitySet();
-						p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName), methodName);
-						p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
-								indent.right(), //
-								imports.add(referredEntitySet.getFullClassNameEntitySet()), //
-								b.getPath());
-						p.format("%s}\n", indent.left());
+						Optional<EntitySet> referredEntitySet = t.getReferredEntitySet(b.getTarget());
+                        if (referredEntitySet.isPresent()) {
+                            String returnClassName = referredEntitySet.get()
+                                    .getFullClassNameEntitySet();
+                            p.format("\n%spublic %s %s() {\n", indent, imports.add(returnClassName),
+                                    methodName);
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"));\n", //
+                                    indent.right(), //
+                                    imports.add(
+                                            referredEntitySet.get().getFullClassNameEntitySet()), //
+                                    b.getPath());
+                            p.format("%s}\n", indent.left());
+                        } else {
+                            
+                        }
 					});
 			p.format("%s}\n", indent.left());
 			writeToFile(imports, w, t.getClassFile());
