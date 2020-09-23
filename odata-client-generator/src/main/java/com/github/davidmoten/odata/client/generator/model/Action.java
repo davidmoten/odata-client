@@ -13,7 +13,6 @@ import org.oasisopen.odata.csdl.v4.TActionFunctionReturnType;
 import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
 import com.github.davidmoten.odata.client.generator.Util;
-import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Action implements Method {
 
