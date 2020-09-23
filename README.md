@@ -18,6 +18,7 @@ Status : *released to Maven Central*
 * Collections are `Iterable` and streamable (via `.stream()`)
 * Paging is handled for you automatically when iterating collections
 * Bound and unbound actions and functions are supported
+* Custom requests supported via `client._custom()`
 * Generated code is very clean - well formatted, no redundant imports ([example](src/docs/FileAttachment.java))
 * Microsoft Graph v1.0 client
 * Microsoft Graph Beta client
@@ -161,7 +162,7 @@ collab_hero_right_2x.png 6611B
 ```
 
 
-### Create a client
+### Create a client for Graph v1.0
 The first step is to create a client that will be used for all calls in your application.
 
 ```java
@@ -174,7 +175,7 @@ GraphService client = MsGraph
     .refreshBeforeExpiry(5, TimeUnit.MINUTES) 
     .build();
 ```
-### Create a client behind a proxy
+### Create a client for Graph v1.0 behind a proxy
 
 ```java
 GraphService client = MsGraph 
