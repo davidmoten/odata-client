@@ -150,6 +150,12 @@ public final class Generator {
 
 			Map<String, List<Function>> collectionTypeFunctions = createTypeFunctions(schema, names, true);
 			System.out.println("    collection functions count = " + collectionTypeFunctions.size());
+			
+			log("  checking entities have keys");
+            Util.types(schema, TEntityType.class) //
+                    .map(x -> new EntityType(x, names)) //
+                    .filter(x -> !x.hasKey()) //
+                    .forEach(x -> log("    " + x.getFullType() + " has no keys"));
 
 			log("  writing schema info");
 			writeSchemaInfo(schema);

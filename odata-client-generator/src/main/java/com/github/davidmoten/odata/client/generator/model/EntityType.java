@@ -119,6 +119,14 @@ public final class EntityType extends Structure<TEntityType> {
                 .flatMap(x -> ((EntityType) x).getKeysLocal().stream()) //
                 .collect(Collectors.toList());
     }
+    
+    public boolean hasKey() {
+        return getHeirarchy() //
+                .stream() //
+                .flatMap(x -> ((EntityType) x).getKeysLocal().stream()) //
+                .findAny() //
+                .isPresent();
+    }
 
     public KeyElement getFirstKey() {
         if (getKeys().isEmpty()) {
