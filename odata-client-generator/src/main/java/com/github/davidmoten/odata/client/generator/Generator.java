@@ -989,8 +989,9 @@ public final class Generator {
 			if (!t.hasBaseType()) {
 				addContextPathInjectableField(imports, indent, p);
 			}
-
-			addUnmappedFieldsField(imports, indent, p);
+			if (!t.hasBaseType()) {
+			    addUnmappedFieldsField(imports, indent, p);
+			}
 
 			// write fields from properties
 			printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
