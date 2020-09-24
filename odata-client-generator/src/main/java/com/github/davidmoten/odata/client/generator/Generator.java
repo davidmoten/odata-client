@@ -1340,9 +1340,7 @@ public final class Generator {
 			p.format("%ssuper(contextPath, %s.class, cp -> new %s(cp, Optional.empty()), value);\n", //
 			        indent.right(), //
 					imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
-					imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())), //
-					imports.add(RequestHelper.class), //
-					t.getName());
+					imports.add(names.getFullClassNameEntityRequestFromTypeWithoutNamespace(schema, t.getName())));
 			p.format("%sthis.contextPath = contextPath;\n", indent);
 			p.format("%s}\n", indent.left());
 
