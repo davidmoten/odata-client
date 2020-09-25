@@ -655,6 +655,30 @@ This support is present for both Entity requests and Enitty Collection requests.
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
 
+## Custom requests
+To get more precise control over the interaction with an OData api you can use the methods of `CustomRequest`. Here's an example that posts json to the service and recieves a json response:
+
+```java
+CustomRequest c = client._custom().withRelativeUrls();
+String json = c.getString("me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
+System.out.println(json);
+```
+Output:
+```
+{
+	"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/mailFolders('inbox')/messages(id)",
+	"@odata.count": 21,
+	"@odata.nextLink": "https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$select=id&count=true&$skip=10",
+	"value": [
+		{
+			"@odata.etag": "W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAL0pwit\"",
+			"id": "AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAAiIsqMbYjsT5e-T7KzowPTAAL0sBcuAAA="
+		},
+                ...
+	]
+}
+
+```
 ## Usage Notes
 ### Streams
 To find the read url for a property that is of type `Edm.Stream` you generally need to read the entity containing the stream property with the `Accept: odata.metadata=full` request header (set `.metadataFull()` before calling `get()` on an entity).

@@ -22,6 +22,17 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
+            String count = client._custom().withRelativeUrls() //
+                    .getString("me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
+            System.out.println(count);
+            System.exit(0);
+        }
+        {
+            String count = client._custom().getString("https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
+            System.out.println(count);
+            System.exit(0);
+        }
+        {
             client //
                     .me() //
                     .calendar() //

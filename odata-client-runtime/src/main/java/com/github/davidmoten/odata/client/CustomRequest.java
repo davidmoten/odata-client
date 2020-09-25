@@ -84,19 +84,51 @@ public final class CustomRequest {
 
     public void postString(String url, String content, RequestOptions options,
             RequestHeader... headers) {
-        UrlInfo info = getInfo(context, url, headers, options);
-        context.service().post(url, info.requestHeaders, content, options);
+        submitString(HttpMethod.POST, url, content, options, headers);
     }
 
     public String postStringReturnsString(String url, String content, RequestOptions options,
             RequestHeader... headers) {
-        UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
-        HttpResponse response = context.service().post(url, info.requestHeaders, content,
+        return submitStringReturnsString(HttpMethod.POST, url, content, options, headers);
+    }
+    
+    public void patchString(String url, String content, RequestOptions options,
+            RequestHeader... headers) {
+        submitString(HttpMethod.PATCH, url, content, options, headers);
+    }
+
+    public String patchStringReturnsString(String url, String content, RequestOptions options,
+            RequestHeader... headers) {
+        return submitStringReturnsString(HttpMethod.PATCH, url, content, options, headers);
+    }
+
+    public void putString(String url, String content, RequestOptions options,
+            RequestHeader... headers) {
+        submitString(HttpMethod.PUT, url, content, options, headers);
+    }
+
+    public String putStringReturnsString(String url, String content, RequestOptions options,
+            RequestHeader... headers) {
+        return submitStringReturnsString(HttpMethod.PUT, url, content, options, headers);
+    }
+
+    public void submitString(HttpMethod method, String url, String content, RequestOptions options,
+            RequestHeader... headers) {
+        String absoluteUrl = toAbsoluteUrl(url);
+        UrlInfo info = getInfo(context, absoluteUrl, headers, options);
+        context.service().submitWithContent(method, absoluteUrl, info.requestHeaders, content, options);
+    }
+
+    public String submitStringReturnsString(HttpMethod method, String url, String content, RequestOptions options,
+            RequestHeader... headers) {
+        String absoluteUrl = toAbsoluteUrl(url);
+        UrlInfo info = getInfo(context, absoluteUrl, headers, options);
+        HttpResponse response = context.service().submitWithContent(method, absoluteUrl, info.requestHeaders, content,
                 options);
         RequestHelper.checkResponseCode(info.contextPath, response, 200, 299);
         return response.getText();
     }
-
+    
     private static UrlInfo getInfo(Context context, String url, RequestHeader[] requestHeaders,
             HttpRequestOptions options) {
         final String urlPath;
