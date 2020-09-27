@@ -25,6 +25,7 @@ import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.ODataEntityType;
 import com.github.davidmoten.odata.client.ODataType;
 import com.github.davidmoten.odata.client.Path;
+import com.github.davidmoten.odata.client.Properties;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.RequestOptions;
 import com.github.davidmoten.odata.client.SchemaInfo;
@@ -361,7 +362,7 @@ public final class RequestHelper {
         }
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         if (editLink == null && "false"
-                .equals(contextPath.context().getProperty("attempt.stream.when.no.metadata"))) {
+                .equals(contextPath.context().getProperty(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA))) {
             return Optional.empty();
         } else {
             if (contentType == null) {
@@ -377,7 +378,7 @@ public final class RequestHelper {
                 editLink = concatenate(contextPath.context().service().getBasePath().toUrl(),
                         editLink);
             }
-            if ("true".equals(contextPath.context().getProperty("modify.stream.edit.link"))) {
+            if ("true".equals(contextPath.context().getProperty(Properties.MODIFY_STREAM_EDIT_LINK))) {
                 // Bug fix for Microsoft Graph only?
                 // When a collection is returned the editLink is terminated with the subclass if
                 // the collection type has subclasses. For example when a collection of

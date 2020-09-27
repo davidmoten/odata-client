@@ -36,6 +36,7 @@ import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HttpService;
 import com.github.davidmoten.odata.client.Path;
 import com.github.davidmoten.odata.client.PathStyle;
+import com.github.davidmoten.odata.client.Properties;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.Serializer;
@@ -527,9 +528,9 @@ public final class MicrosoftClientBuilder<T> {
 
     public static Map<String, Object> createProperties() {
         Map<String, Object> p = new HashMap<>();
-        p.put("modify.stream.edit.link", "true");
-        p.put("attempt.stream.when.no.metadata", "true");
-        p.put("action.or.function.segment.simple.name", "true");
+        p.put(Properties.MODIFY_STREAM_EDIT_LINK, "true");
+        p.put(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA, "true");
+        p.put(Properties.ACTION_OR_FUNCTION_SEGMENT_SIMPLE_NAME, "true");
         return p;
     }
 

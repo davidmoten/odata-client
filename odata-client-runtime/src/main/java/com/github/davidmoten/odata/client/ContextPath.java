@@ -18,7 +18,7 @@ public final class ContextPath {
     }
     
     public ContextPath addActionOrFunctionSegment(String fullyQualifiedName) {
-        boolean useSimpleNameOnly = "true".equalsIgnoreCase(String.valueOf(context.getProperty("action.or.function.segment.simple.name")));
+        boolean useSimpleNameOnly = "true".equalsIgnoreCase(String.valueOf(context.getProperty(Properties.ACTION_OR_FUNCTION_SEGMENT_SIMPLE_NAME)));
         if (useSimpleNameOnly) {
             int i = fullyQualifiedName.lastIndexOf(".");
             if (i == -1) {
