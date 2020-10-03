@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -50,9 +52,9 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        
-        <!--  jdk 11+ dependencies for jaxb -->
-        <!--  these can be excluded when running on less than jdk 11 -->
+
+        <!-- jdk 11+ dependencies for jaxb -->
+        <!-- these can be excluded when running on less than jdk 11 -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -76,7 +78,7 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -113,7 +115,8 @@
                             com.github.davidmoten.odata.client,
                             com.github.davidmoten.odata.client.annotation,
                             com.github.davidmoten.odata.client.edm,
-                            com.github.davidmoten.odata.client.internal, <!-- Guess internal doesn't really mean internal -->
+                            com.github.davidmoten.odata.client.internal, <!-- 
+                                Guess internal doesn't really mean internal -->
                             com.github.davidmoten.odata.csdl.v4.extras
                         </Export-Package>
                     </instructions>
