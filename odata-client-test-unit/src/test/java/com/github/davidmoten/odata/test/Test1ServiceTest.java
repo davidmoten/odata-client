@@ -47,13 +47,16 @@ public class Test1ServiceTest {
     public void testPost() {
         Test1Service client = Test1Service //
                 .test() //
-                .expectRequest("/Products", "/request-post.json", HttpMethod.POST,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.CONTENT_TYPE_JSON,
-                        RequestHeader.ODATA_VERSION) //
-                .expectResponse("/Products", "/response-post.json", HttpMethod.POST,
-                        HttpURLConnection.HTTP_CREATED, //
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
+                .expectRequest("/Products") //
+                .withPayload("/request-post.json") //
+                .withMethod(HttpMethod.POST) //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.CONTENT_TYPE_JSON, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/Products") //
+                .withResponse("/response-post.json") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED) //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
                         RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ODATA_VERSION) //
                 .build();

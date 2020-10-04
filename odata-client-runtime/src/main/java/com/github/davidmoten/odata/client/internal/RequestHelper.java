@@ -266,7 +266,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
-        final HttpResponse response = service.put(cp.toUrl(), h, in, length, options);
+        final HttpResponse response = service.submitWithContent(method, cp.toUrl(), h, in, length, options);
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
 

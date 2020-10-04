@@ -18,9 +18,12 @@ public class Test5ServiceTest {
     @Test
     public void testStreamGet() throws IOException {
         Test5Service client = Test5Service.test() //
-                .expectResponse("/Products/2", "/response-get-stream.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/Photos(123)/%24value", "/response-get-stream.txt") //
+                .expectRequest("/Products/2") //
+                .withResponse("/response-get-stream.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_FULL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/Photos(123)/%24value") //
+                .withResponse("/response-get-stream.txt") //
                 .build();
         StreamProvider stream = client.products(2).metadataFull().get().getStream().get();
         assertEquals("image/jpeg", stream.contentType());
