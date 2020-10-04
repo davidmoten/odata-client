@@ -160,13 +160,11 @@ public class GraphServiceTest {
     public void testGetEntityCollectionWithNextPage() {
         GraphService client = clientBuilder() //
                 .expectRequest("/me/contacts").withResponse("/response-contacts.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 // TODO what request header should be specified for next page?
                 .expectRequest("/me/contacts?$skip=10") //
                 .withResponse("/response-contacts-next-page.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -200,12 +198,10 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectRequest("/me/contacts") //
                 .withResponse("/response-contacts.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .expectRequest("/me/contacts?$skip=10") //
                 .withResponse("/response-contacts-next-page.json")
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -223,13 +219,11 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectRequest("/me/contacts") //
                 .withResponse("/response-contacts.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 // TODO what request header should be specified for next page?
                 .expectRequest("/me/contacts?$skip=10") //
                 .withResponse("/response-contacts-next-page.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -241,12 +235,10 @@ public class GraphServiceTest {
     public void testGetCollectionUsingSkip() {
         GraphService client = clientBuilder() //
                 .expectRequest("/me/contacts?$skip=3&$top=200") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .withResponse("/response-contacts.json") //
                 .expectRequest("/me/contacts?$skip=10") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .withResponse("/response-contacts-next-page.json") //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().top(200).skip(3).get();
@@ -258,8 +250,7 @@ public class GraphServiceTest {
     public void testGetCollectionThrowsInformativeError() {
         GraphService client = clientBuilder() //
                 .expectRequest("/users") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .withResponse("/response-get-collection-error.json") //
                 .withResponseStatusCode(403) //
                 .build();
@@ -276,21 +267,17 @@ public class GraphServiceTest {
     public void testUsersDeltaTokenLatest() {
         GraphService client = clientBuilder() //
                 .expectRequest("/users/delta?$deltaToken=latest") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .withResponse("/response-users-delta-latest.json") //
                 .expectRequest("/users/delta?$deltatoken=1234") //
                 .withResponse("/response-users-delta-latest-next.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$skiptoken=4567") //
                 .withResponse("/response-users-delta-latest-next-2.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$deltatoken=789") //
                 .withResponse("/response-users-delta-latest-next-3.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
         assertTrue(p.toList().isEmpty());
@@ -307,20 +294,16 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectRequest("/users/delta?$deltaToken=latest") //
                 .withResponse("/response-users-delta-latest.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$deltatoken=1234") //
                 .withResponse("/response-users-delta-latest-next.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$skiptoken=4567") //
                 .withResponse("/response-users-delta-latest-next-2.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$deltatoken=789") //
                 .withResponse("/response-users-delta-latest-next-3.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
         p = p.nextDelta().get();
@@ -344,14 +327,10 @@ public class GraphServiceTest {
 
     @Test
     public void testGetCollectionUrlOverride() {
-//        GraphService client = clientBuilder() //
-//                .expectResponse("/me/contacts?$skipToken=ABC", "/response-contacts.json",
-//                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-//                .build();
         GraphService client = clientBuilder() //
                 .expectRequest("/me/contacts?$skipToken=ABC") //
                 .withResponse("/response-contacts.json") //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .withRequestHeadersStandard() //
                 .build();
 
         CollectionPage<Contact> c = client.me().contacts()
@@ -399,7 +378,8 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectRequest("/users/me/messages/1/attachments/createUploadSession") //
                 .withPayload("/request-create-upload.json") //
-                .withResponse("/response-create-upload.json").withMethod(HttpMethod.POST) //
+                .withResponse("/response-create-upload.json") //
+                .withMethod(HttpMethod.POST) //
                 .withResponseStatusCode(HttpURLConnection.HTTP_CREATED) //
                 .withRequestHeaders(RequestHeader.ACCEPT_JSON, //
                         RequestHeader.CONTENT_TYPE_JSON, //
@@ -415,7 +395,8 @@ public class GraphServiceTest {
                 .withRequestHeaders(RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(2, 3, 5))
                 .expectRequest(uploadUrl) //
-                .withPayload("/request-upload-bytes-part-3.txt").withMethod(HttpMethod.PUT) //
+                .withPayload("/request-upload-bytes-part-3.txt") //
+                .withMethod(HttpMethod.PUT) //
                 .withRequestHeaders(RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(4, 4, 5))
                 .build();
@@ -509,8 +490,7 @@ public class GraphServiceTest {
         GraphService client = clientBuilder() //
                 .expectRequest("/me/messages/1") //
                 .withResponse("/response-message.json") //
-                .withRequestHeaders(RequestHeader.ODATA_VERSION, //
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .withRequestHeadersStandard() //
                 .build();
         
         Message m = client.me().messages("1").get();
