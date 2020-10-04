@@ -84,9 +84,11 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityWithComplexTypeCollection() {
-        GraphService client = createClient("/users/1", "/response-user.json", //
-                RequestHeader.ODATA_VERSION, //
-                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
+        GraphService client = clientBuilder() //
+                .expectRequest("/users/1") //
+                .withResponse( "/response-user.json") //
+                .withRequestHeadersStandard() //
+                .build();
         User user = client.users("1").get();
         assertEquals("Conf Room Adams", user.getDisplayName().get());
         assertEquals(1, user.getBusinessPhones().currentPage().size());
@@ -95,8 +97,11 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityCollectionWithoutNextPage() {
-        GraphService client = createClient("/users", "/response-users.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                RequestHeader.ODATA_VERSION);
+        GraphService client = clientBuilder() //
+                .expectRequest("/users") //
+                .withResponse("/response-users.json") //
+                .withRequestHeadersStandard() //
+                .build();
         assertNotNull(client.users().get());
         CollectionPage<User> c = client.users().get();
         assertNotNull(c);
@@ -119,8 +124,12 @@ public class GraphServiceTest {
     @Test
     public void testGetEntityCollectionWithMaxPageSize() {
         int maxPageSize = 50;
-        GraphService client = createClient("/users", "/response-users.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                RequestHeader.ODATA_VERSION, RequestHeader.maxPageSize(maxPageSize));
+        GraphService client = clientBuilder() //
+                .expectRequest("/users") //
+                .withResponse("/response-users.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION, RequestHeader.maxPageSize(maxPageSize)) //
+                .build();
         CollectionPage<User> c = client.users().maxPageSize(maxPageSize).get();
         assertNotNull(c);
         assertEquals(31, c.currentPage().size());
@@ -129,8 +138,12 @@ public class GraphServiceTest {
     @Test
     public void testGetEntityCollectionWithTimeouts() {
         int maxPageSize = 50;
-        GraphService client = createClient("/users", "/response-users.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                RequestHeader.ODATA_VERSION, RequestHeader.maxPageSize(maxPageSize));
+        GraphService client = clientBuilder() //
+                .expectRequest("/users") //
+                .withResponse("/response-users.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION, RequestHeader.maxPageSize(maxPageSize)) //
+                .build();
         CollectionPage<User> c = client //
                 .users() //
                 .maxPageSize(maxPageSize) //
@@ -146,11 +159,14 @@ public class GraphServiceTest {
     @Test
     public void testGetEntityCollectionWithNextPage() {
         GraphService client = clientBuilder() //
-                .expectResponse("/me/contacts", "/response-contacts.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                .expectRequest("/me/contacts").withResponse("/response-contacts.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
                         RequestHeader.ODATA_VERSION) //
                 // TODO what request header should be specified for next page?
-                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/me/contacts?$skip=10") //
+                .withResponse("/response-contacts-next-page.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -182,11 +198,14 @@ public class GraphServiceTest {
     @Test
     public void testJsonMinimal() throws IOException {
         GraphService client = clientBuilder() //
-                .expectResponse("/me/contacts", "/response-contacts.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                .expectRequest("/me/contacts") //
+                .withResponse("/response-contacts.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
                         RequestHeader.ODATA_VERSION) //
-                // TODO what request header should be specified for next page?
-                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/me/contacts?$skip=10") //
+                .withResponse("/response-contacts-next-page.json")
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -202,11 +221,15 @@ public class GraphServiceTest {
     @Test
     public void testGetCollectionGetNextLink() {
         GraphService client = clientBuilder() //
-                .expectResponse("/me/contacts", "/response-contacts.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                .expectRequest("/me/contacts") //
+                .withResponse("/response-contacts.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
                         RequestHeader.ODATA_VERSION) //
                 // TODO what request header should be specified for next page?
-                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/me/contacts?$skip=10") //
+                .withResponse("/response-contacts-next-page.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -217,11 +240,14 @@ public class GraphServiceTest {
     @Test
     public void testGetCollectionUsingSkip() {
         GraphService client = clientBuilder() //
-                .expectResponse("/me/contacts?$skip=3&$top=200", "/response-contacts.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                // TODO what request header should be specified for next page?
-                .expectResponse("/me/contacts?$skip=10", "/response-contacts-next-page.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/me/contacts?$skip=3&$top=200") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .withResponse("/response-contacts.json") //
+                .expectRequest("/me/contacts?$skip=10") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .withResponse("/response-contacts-next-page.json") //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().top(200).skip(3).get();
         assertNotNull(c);
@@ -231,8 +257,11 @@ public class GraphServiceTest {
     @Test
     public void testGetCollectionThrowsInformativeError() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users", "/response-get-collection-error.json", HttpMethod.GET, 403,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .withResponse("/response-get-collection-error.json") //
+                .withResponseStatusCode(403) //
                 .build();
         try {
             client.users().get().currentPage();
@@ -246,14 +275,22 @@ public class GraphServiceTest {
     @Test
     public void testUsersDeltaTokenLatest() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
-                        200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json",
-                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json",
-                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json",
-                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$deltaToken=latest") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .withResponse("/response-users-delta-latest.json") //
+                .expectRequest("/users/delta?$deltatoken=1234") //
+                .withResponse("/response-users-delta-latest-next.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$skiptoken=4567") //
+                .withResponse("/response-users-delta-latest-next-2.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$deltatoken=789") //
+                .withResponse("/response-users-delta-latest-next-3.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
         assertTrue(p.toList().isEmpty());
@@ -268,14 +305,22 @@ public class GraphServiceTest {
     @Test
     public void testUsersDeltaNextDeltaWorsWithoutReadingStreamFully() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-latest.json", HttpMethod.GET,
-                        200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/delta?$deltatoken=1234", "/response-users-delta-latest-next.json",
-                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/delta?$skiptoken=4567", "/response-users-delta-latest-next-2.json",
-                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/delta?$deltatoken=789", "/response-users-delta-latest-next-3.json",
-                        HttpMethod.GET, 200, RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$deltaToken=latest") //
+                .withResponse("/response-users-delta-latest.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$deltatoken=1234") //
+                .withResponse("/response-users-delta-latest-next.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$skiptoken=4567") //
+                .withResponse("/response-users-delta-latest-next-2.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$deltatoken=789") //
+                .withResponse("/response-users-delta-latest-next-3.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
                 .build();
         CollectionPage<User> p = client.users().delta().deltaTokenLatest().get();
         p = p.nextDelta().get();
@@ -299,10 +344,16 @@ public class GraphServiceTest {
 
     @Test
     public void testGetCollectionUrlOverride() {
+//        GraphService client = clientBuilder() //
+//                .expectResponse("/me/contacts?$skipToken=ABC", "/response-contacts.json",
+//                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+//                .build();
         GraphService client = clientBuilder() //
-                .expectResponse("/me/contacts?$skipToken=ABC", "/response-contacts.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/me/contacts?$skipToken=ABC") //
+                .withResponse("/response-contacts.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
+
         CollectionPage<Contact> c = client.me().contacts()
                 .urlOverride("https://graph.microsoft.com/v1.0/me/contacts?$skipToken=ABC").get();
         assertNotNull(c);
@@ -312,20 +363,24 @@ public class GraphServiceTest {
     @Test
     public void testGetUploadUrl() {
         GraphService client = clientBuilder() //
-                .expectRequestAndResponse("/users/me/messages/1/attachments/createUploadSession", //
-                        "/request-create-upload.json", //
-                        "/response-create-upload.json", //
-                        HttpMethod.POST, //
-                        HttpURLConnection.HTTP_CREATED, //
+                .expectRequest("/users/me/messages/1/attachments/createUploadSession") //
+                .withPayload("/request-create-upload.json") //
+                .withResponse("/response-create-upload.json") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED)
+                .withRequestHeaders( //
                         RequestHeader.ACCEPT_JSON, //
                         RequestHeader.CONTENT_TYPE_JSON, //
-                        RequestHeader.ODATA_VERSION)
-                .expectRequest(
-                        "https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345", //
-                        "/request-upload-bytes.txt", HttpMethod.PUT, //
+                        RequestHeader.ODATA_VERSION) 
+                ////////////////////////////////////////////
+                .expectRequest("https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345") //
+                .withMethod(HttpMethod.PUT) //
+                .withPayload("/hello.txt") //
+                .withRequestHeaders(
                         RequestHeader.ODATA_VERSION, //
                         RequestHeader.ACCEPT_JSON, //
-                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, RequestHeader.contentRange(0, 4, 5))
+                        RequestHeader.CONTENT_TYPE_OCTET_STREAM,
+                        RequestHeader.contentRange(0, 4, 5))
                 .build();
         AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
                 .name("att.txt").size(5000000L).build();
@@ -342,25 +397,26 @@ public class GraphServiceTest {
     public void testGetUploadUrlChunked() {
         String uploadUrl = "https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345";
         GraphService client = clientBuilder() //
-                .expectRequestAndResponse("/users/me/messages/1/attachments/createUploadSession", //
-                        "/request-create-upload.json", //
-                        "/response-create-upload.json", //
-                        HttpMethod.POST, //
-                        HttpURLConnection.HTTP_CREATED, //
-                        RequestHeader.ACCEPT_JSON, //
+                .expectRequest("/users/me/messages/1/attachments/createUploadSession") //
+                .withPayload("/request-create-upload.json") //
+                .withResponse("/response-create-upload.json").withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED) //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON, //
                         RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ODATA_VERSION)
-                .expectRequest(uploadUrl, //
-                        "/request-upload-bytes-part-1.txt", HttpMethod.PUT, //
-                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
+                .expectRequest(uploadUrl) //
+                .withPayload("/request-upload-bytes-part-1.txt") //
+                .withMethod(HttpMethod.PUT) //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(0, 1, 5))
-                .expectRequest(uploadUrl, //
-                        "/request-upload-bytes-part-2.txt", HttpMethod.PUT, //
-                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
+                .expectRequest(uploadUrl) //
+                .withPayload("/request-upload-bytes-part-2.txt") //
+                .withMethod(HttpMethod.PUT) //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(2, 3, 5))
-                .expectRequest(uploadUrl, //
-                        "/request-upload-bytes-part-3.txt", HttpMethod.PUT, //
-                        RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
+                .expectRequest(uploadUrl) //
+                .withPayload("/request-upload-bytes-part-3.txt").withMethod(HttpMethod.PUT) //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_OCTET_STREAM, //
                         RequestHeader.contentRange(4, 4, 5))
                 .build();
         AttachmentItem item = AttachmentItem.builder() //
@@ -438,8 +494,9 @@ public class GraphServiceTest {
     @Test
     public void testGetCollectionWithSelect() {
         GraphService client = clientBuilder() //
-                .expectResponse("/groups?$select=id%2CgroupTypes", "/response-groups-select.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/groups?$select=id%2CgroupTypes") //
+                .withResponse( "/response-groups-select.json") //
+                .withRequestHeadersStandard() // 
                 .build();
         CollectionPage<Group> c = client.groups().select("id,groupTypes").get();
         assertNotNull(c);
@@ -449,8 +506,13 @@ public class GraphServiceTest {
 
     @Test
     public void testGetEntityWithNestedComplexTypesAndEnumDeserialisationAndUnmappedFields() {
-        GraphService client = createClient("/me/messages/1", "/response-message.json", RequestHeader.ODATA_VERSION, //
-                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
+        GraphService client = clientBuilder() //
+                .expectRequest("/me/messages/1") //
+                .withResponse("/response-message.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .build();
+        
         Message m = client.me().messages("1").get();
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
@@ -473,12 +535,11 @@ public class GraphServiceTest {
         // test built according to
         // https://docs.microsoft.com/en-us/graph/api/directoryobject-getbyids?view=graph-rest-1.0&tabs=http
         GraphService client = clientBuilder() //
-                .expectRequestAndResponse("/directoryObjects/getByIds", //
-                        "/request-directory-objects-get-by-ids.json", //
-                        "/response-directory-objects-get-by-ids.json", //
-                        HttpMethod.POST, //
-                        200, //
-                        RequestHeader.ODATA_VERSION, //
+                .expectRequest("/directoryObjects/getByIds") //
+                .withPayload("/request-directory-objects-get-by-ids.json") //
+                .withResponse("/response-directory-objects-get-by-ids.json") //
+                .withMethod(HttpMethod.POST) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, //
                         RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .build();
@@ -493,12 +554,12 @@ public class GraphServiceTest {
         // to the metadata definition but have raised
         // https://github.com/microsoftgraph/microsoft-graph-docs/issues/9211
         GraphService client = clientBuilder() //
-                .expectRequestAndResponse("/users/me/revokeSignInSessions", //
-                        "/empty.json", //
-                        "/response-revoke-sign-in-sessions.json", //
-                        HttpMethod.POST, //
-                        HttpURLConnection.HTTP_CREATED, //
-                        RequestHeader.ODATA_VERSION, //
+                .expectRequest("/users/me/revokeSignInSessions") //
+                .withPayload("/empty.json") //
+                .withResponse("/response-revoke-sign-in-sessions.json") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, //
                         RequestHeader.CONTENT_TYPE_JSON, //
                         RequestHeader.ACCEPT_JSON) //
                 .build();
@@ -507,17 +568,22 @@ public class GraphServiceTest {
 
     @Test
     public void testEntityCollectionNotFromEntityContainer() {
-        GraphService client = createClient("/me/messages/1/attachments", "/response-me-messages-1-attachments.json",
-                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION);
+        GraphService client = clientBuilder() //
+                .expectRequest("/me/messages/1/attachments") //
+                .withResponse("/response-me-messages-1-attachments.json") //
+                .withRequestHeadersStandard() //
+                .build();
         List<Attachment> list = client.me().messages("1").attachments().get().toList();
         assertEquals(16, list.size());
     }
 
     @Test
     public void testDeserializationOfAttachmentEntityReturnsFileAttachment() {
-        GraphService client = createClient("/me/messages/1/attachments/2", "/response-attachment.json",
-                RequestHeader.ODATA_VERSION, //
-                RequestHeader.ACCEPT_JSON_METADATA_MINIMAL);
+        GraphService client = clientBuilder() //
+                .expectRequest("/me/messages/1/attachments/2") //
+                .withResponse("/response-attachment.json") //
+                .withRequestHeadersStandard() //
+                .build();
         Attachment m = client.me().messages("1").attachments("2").get();
         assertTrue(m instanceof FileAttachment);
         FileAttachment f = (FileAttachment) m;
@@ -551,14 +617,14 @@ public class GraphServiceTest {
     @Test
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
-                .expectResponse(
-                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments",
-                        "/response-message-attachments.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime") //
+                .withResponse("/response-messages.json") //
+                .withRequestHeadersStandard() //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/attachments") //
+                .withResponse("/response-message-attachments.json") //
+                .withRequestHeadersStandard() //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -576,8 +642,9 @@ public class GraphServiceTest {
     @Test
     public void testSupplementWithDeltaLinkWhenCollectionEmpty() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/delta?$deltaToken=latest", "/response-users-delta-empty.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/delta?$deltaToken=latest") //
+                .withResponse("/response-users-delta-empty.json") //
+                .withRequestHeadersStandard() //
                 .build();
         List<ObjectOrDeltaLink<User>> list = client.users().delta().deltaTokenLatest().get().streamWithDeltaLink()
                 .collect(Collectors.toList());
@@ -590,8 +657,9 @@ public class GraphServiceTest {
     @Test
     public void testSupplementWithDeltaLinkWhenCollectionNonEmptyAndHasNoDeltaLink() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users", "/response-users-one-page.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users") //
+                .withResponse("/response-users-one-page.json") //
+                .withRequestHeadersStandard() //
                 .build();
         assertEquals(31, client.users().stream().count());
         List<ObjectOrDeltaLink<User>> list = client.users().get().streamWithDeltaLink().collect(Collectors.toList());
@@ -604,14 +672,16 @@ public class GraphServiceTest {
     @Test
     public void testGetStreamOnItemAttachment() throws IOException {
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-with-item-attachment.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments", "/response-attachments.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
-                        "/response-item-attachment-raw.txt") //
+                .expectRequest(
+                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime") //
+                .withResponse("/response-messages-with-item-attachment.json") //
+                .withRequestHeadersStandard() //
+                .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments") //
+                .withResponse("/response-attachments.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value") //
+                .withResponse("/response-item-attachment-raw.txt") //
+                .withRequestHeaders() //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -635,8 +705,9 @@ public class GraphServiceTest {
     @Test
     public void testExpandCollectionRequest() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/fred/messages/12345?$expand=attachments", "/response-expand-attachments.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/fred/messages/12345?$expand=attachments") //
+                .withResponse("/response-expand-attachments.json") //
+                .withRequestHeadersStandard() //
                 .build();
         Message m = client.users("fred").messages("12345").expand("attachments").get();
         Object attachments = m.getUnmappedFields().get("attachments");
@@ -649,8 +720,9 @@ public class GraphServiceTest {
     @Test
     public void testExpandEntityRequest() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/fred?$expand=drive", "/response-user-expand-with-drive.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
+                .expectRequest("/users/fred?$expand=drive") //
+                .withResponse( "/response-user-expand-with-drive.json") //
+                .withRequestHeadersStandard() //
                 .build();
         User user = client.users("fred").expand("drive").get();
         Object object = user.getUnmappedFields().get("drive");
@@ -662,14 +734,16 @@ public class GraphServiceTest {
     @Test
     public void testTimeoutsOnNonEntityCollection() {
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime",
-                        "/response-messages-with-item-attachment.json", RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                .expectRequest(
+                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime") //
+                .withResponse("/response-messages-with-item-attachment.json") //
+                .withRequestHeadersStandard() //
+                .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments") //
+                .withResponse("/response-attachments.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_FULL,
                         RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments", "/response-attachments.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_FULL, RequestHeader.ODATA_VERSION) //
-                .expectResponse("/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value",
-                        "/response-item-attachment-raw.txt") //
+                .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value") //
+                .withResponse("/response-item-attachment-raw.txt") //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -686,12 +760,13 @@ public class GraphServiceTest {
     @Test
     public void testCollectionTypesHonourInheritance() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
-                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                .expectRequest("/users/fred/mailFolders/inbox/messages/1") //
+                .withResponse("/response-message-has-item-attachment.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION,
                         RequestHeader.ACCEPT_JSON_METADATA_FULL) //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments",
-                        "/response-attachments-includes-item.json", RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .expectRequest("/users/fred/mailFolders/inbox/messages/1/attachments") //
+                .withResponse("/response-attachments-includes-item.json") //
+                .withRequestHeadersStandard() //
                 .build();
         List<Attachment> list = client //
                 .users("fred") //
@@ -709,12 +784,13 @@ public class GraphServiceTest {
     @Test
     public void testCollectionWithDerivedType() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
-                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                .expectRequest("/users/fred/mailFolders/inbox/messages/1") //
+                .withResponse("/response-message-has-item-attachment.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION,
                         RequestHeader.ACCEPT_JSON_METADATA_FULL) //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments/microsoft.graph.itemAttachment",
-                        "/response-attachments-one-item.json", RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/1/attachments/microsoft.graph.itemAttachment") //
+                .withResponse("/response-attachments-one-item.json").withRequestHeadersStandard() //
                 .build();
         List<ItemAttachment> list = client //
                 .users("fred") //
@@ -731,11 +807,14 @@ public class GraphServiceTest {
     @Test
     public void testCollectionWithDerivedTypeFilterAvailableInNextBuilder() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
-                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                .expectRequest("/users/fred/mailFolders/inbox/messages/1") //
+                .withResponse("/response-message-has-item-attachment.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION,
                         RequestHeader.ACCEPT_JSON_METADATA_FULL) //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments/microsoft.graph.itemAttachment",
-                        "/response-attachments-one-item.json", RequestHeader.ODATA_VERSION,
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/1/attachments/microsoft.graph.itemAttachment") //
+                .withResponse("/response-attachments-one-item.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION,
                         RequestHeader.ACCEPT_JSON_METADATA_NONE) //
                 .build();
         List<ItemAttachment> list = client //
@@ -754,12 +833,13 @@ public class GraphServiceTest {
     @Test
     public void testUnmappedFields() {
         GraphService client = clientBuilder() //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1",
-                        "/response-message-has-item-attachment.json", RequestHeader.ODATA_VERSION,
+                .expectRequest("/users/fred/mailFolders/inbox/messages/1") //
+                .withResponse("/response-message-has-item-attachment.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION,
                         RequestHeader.ACCEPT_JSON_METADATA_FULL) //
-                .expectResponse("/users/fred/mailFolders/inbox/messages/1/attachments",
-                        "/response-attachments-includes-item.json", RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .expectRequest("/users/fred/mailFolders/inbox/messages/1/attachments") //
+                .withResponse("/response-attachments-includes-item.json") //
+                .withRequestHeadersStandard() //
                 .build();
         Attachment a = client //
                 .users("fred") //
@@ -782,10 +862,10 @@ public class GraphServiceTest {
         // https://developer.microsoft.com/en-us/graph/graph-explorer -- with the first
         // item's "lastModifiedBy" user email hand-modified
         GraphService client = clientBuilder() //
-                .expectResponse("/sites/lists/d7689e2b-941a-4cd3-bb24-55cddee54294/items?$expand=fields", //
-                        "/response-list-items-expand-fields.json", //
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
-                        RequestHeader.ODATA_VERSION) //
+                .expectRequest(
+                        "/sites/lists/d7689e2b-941a-4cd3-bb24-55cddee54294/items?$expand=fields") //
+                .withResponse("/response-list-items-expand-fields.json") //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<ListItem> listItems = client.sites().lists("d7689e2b-941a-4cd3-bb24-55cddee54294").items()
                 .expand("fields").get();
@@ -810,13 +890,11 @@ public class GraphServiceTest {
     @Test
     public void testFunctionBoundToCollection() {
         GraphService client = clientBuilder() //
-                .expectRequestAndResponse(
-                        "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc",
-                        "/request-messages-delta.json", //
-                        "/response-messages-delta.json", //
-                        HttpMethod.GET, //
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
-                        RequestHeader.ODATA_VERSION) //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc") //
+                .withPayload("/request-messages-delta.json") //
+                .withResponse("/response-messages-delta.json") //
+                .withRequestHeadersStandard() //
                 .build();
         Message m = client //
                 .users("fred") //
@@ -834,17 +912,17 @@ public class GraphServiceTest {
     @Test
     public void testMailMove() {
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json", RequestHeader.ODATA_VERSION,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
-                .expectRequestAndResponse(
-                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/move", //
-                        "/request-post-action-move.json", //
-                        "/response-message-move.json", //
-                        HttpMethod.POST, //
-                        HttpURLConnection.HTTP_CREATED, //
-                        RequestHeader.ODATA_VERSION, //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments") //
+                .withResponse("/response-messages-expand-attachments-minimal-metadata.json") //
+                .withRequestHeadersStandard() //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D/move") //
+                .withPayload("/request-post-action-move.json") //
+                .withResponse("/response-message-move.json") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, //
                         RequestHeader.ACCEPT_JSON_METADATA_FULL, //
                         RequestHeader.CONTENT_TYPE_JSON) //
                 .build();
@@ -866,14 +944,16 @@ public class GraphServiceTest {
     public void testMailRead() {
 
         GraphService client = clientBuilder() //
-                .expectResponse(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments",
-                        "/response-messages-expand-attachments-minimal-metadata.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D",
-                        "/request-patch-message-is-read.json", HttpMethod.PATCH, RequestHeader.CONTENT_TYPE_JSON,
-                        RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON) //
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments") //
+                .withResponse("/response-messages-expand-attachments-minimal-metadata.json") //
+                .withRequestHeadersStandard() //
+                .expectRequest(
+                        "/users/fred/mailFolders/inbox/messages/AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEJAAAiIsqMbYjsT5e-T7KzowPTAAAYbvZDAAA%3D") //
+                .withPayload("/request-patch-message-is-read.json") //
+                .withMethod(HttpMethod.PATCH) //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_JSON, RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON) //
                 .build();
 
         Message m = client //
@@ -1065,9 +1145,4 @@ public class GraphServiceTest {
                 .addProperties(MicrosoftClientBuilder.createProperties());
     }
 
-    private static GraphService createClient(String path, String resource, RequestHeader... requestHeaders) {
-        return clientBuilder() //
-                .expectResponse(path, resource, requestHeaders) //
-                .build();
-    }
 }

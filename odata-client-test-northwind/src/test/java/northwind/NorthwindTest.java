@@ -15,8 +15,8 @@ public class NorthwindTest {
         NorthwindEntities client = NorthwindEntities //
                 .test() //
                 .baseUrl(BASE_URL) //
-                .expectResponse("/Order_Details(OrderID=10248,ProductID=42)",
-                        "/response-order-details-one-record.json")
+                .expectRequest("/Order_Details(OrderID=10248,ProductID=42)") //
+                .withResponse("/response-order-details-one-record.json") //
                 .build();
 
         client.order_Details().id("OrderID=10248,ProductID=42").get();

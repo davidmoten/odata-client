@@ -15,7 +15,9 @@ public class CustomRequestTest {
 	@Test
 	public void testCustomRequestGet() {
 		Test5Service client = Test5Service.test() //
-				.expectResponse("/Products/1", "/response-product-1.json", RequestHeader.ACCEPT_JSON,
+				.expectRequest("/Products/1") //
+				.withResponse("/response-product-1.json") //
+				.withRequestHeaders(RequestHeader.ACCEPT_JSON,
 						RequestHeader.ODATA_VERSION) //
 				.build();
 		Product p = client._custom().get("https://testing.com/Products/1", Product.class,

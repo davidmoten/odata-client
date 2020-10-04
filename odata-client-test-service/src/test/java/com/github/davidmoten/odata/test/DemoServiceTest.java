@@ -110,12 +110,14 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatch() {
-        DemoService client = serviceBuilder()
-                .expectResponse("/Products(1)", "/response-product.json",
-                        RequestHeader.CONTENT_TYPE_JSON,
+        DemoService client = serviceBuilder().expectRequest("/Products(1)") //
+                .withResponse("/response-product.json") //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH,
-                        RequestHeader.CONTENT_TYPE_JSON,
+                .expectRequest("/Products(1)") //
+                .withPayload("/request-product-patch.json") //
+                .withMethod(HttpMethod.PATCH) //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = Product //
@@ -128,11 +130,15 @@ public class DemoServiceTest {
 
     @Test
     public void testEntityPatchDirect() {
-        DemoService client = serviceBuilder()
-                .expectResponse("/Products(1)", "/response-product.json",
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION) //
-                .expectRequest("/Products(1)", "/request-product-patch.json", HttpMethod.PATCH,
-                        RequestHeader.ACCEPT_JSON, RequestHeader.CONTENT_TYPE_JSON,
+        DemoService client = serviceBuilder() //
+                .expectRequest("/Products(1)") //
+                .withResponse("/response-product.json") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
+                        RequestHeader.ODATA_VERSION) //
+                .expectRequest("/Products(1)") //
+                .withPayload("/request-product-patch.json") //
+                .withMethod(HttpMethod.PATCH) //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.CONTENT_TYPE_JSON,
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = client.products(1).get();
@@ -149,7 +155,10 @@ public class DemoServiceTest {
 
     private static DemoService createClient(String path, String resource,
             RequestHeader... requestHeaders) {
-        return serviceBuilder().expectResponse(path, resource, requestHeaders) //
+        return serviceBuilder() //
+                .expectRequest(path) //
+                .withResponse(resource) //
+                .withRequestHeaders(requestHeaders) //
                 .build();
     }
 
