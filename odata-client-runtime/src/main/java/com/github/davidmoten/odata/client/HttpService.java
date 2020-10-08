@@ -86,7 +86,7 @@ public interface HttpService extends AutoCloseable {
         } else if (method == HttpMethod.PUT) {
             return put(url, requestHeaders, content, length, options);
         } else if (method == HttpMethod.POST) {
-            return put(url, requestHeaders, content, length, options);
+            return post(url, requestHeaders, content, length, options);
         } else {
             throw new IllegalArgumentException(
                     method + " not permitted for a submission with content");
