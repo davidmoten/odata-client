@@ -24,7 +24,7 @@
 
     <properties>
         <version.slf4j>1.7.7</version.slf4j>
-        <jetty.version>9.4.24.v20191120</jetty.version>
+        <jetty.version>9.4.32.v20200930</jetty.version>
     </properties>
 
     <dependencies>
