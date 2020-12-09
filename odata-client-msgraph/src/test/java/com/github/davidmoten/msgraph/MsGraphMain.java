@@ -32,6 +32,8 @@ public class MsGraphMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
         
+        client.me().get();
+        
         {
             String mailbox = System.getProperty("mailbox");
             while (true) {

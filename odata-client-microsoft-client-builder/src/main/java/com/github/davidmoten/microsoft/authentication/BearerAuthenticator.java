@@ -40,7 +40,7 @@ public final class BearerAuthenticator implements Authenticator {
                 m2.add(RequestHeader.create(AUTHORIZATION_HEADER_NAME,
                         OAUTH_BEARER_PREFIX + token));
             } catch (Throwable e) {
-                throw new ClientException("Unable to authenticate request", e);
+                throw ClientException.from(e);
             }
             return m2;
         }

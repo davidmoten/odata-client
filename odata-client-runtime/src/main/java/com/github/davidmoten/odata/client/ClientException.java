@@ -31,4 +31,17 @@ public final class ClientException extends RuntimeException {
     public Optional<Integer> getStatusCode() {
         return statusCode;
     }
+    
+    /**
+     * If e is a ClientException then returns e otherwise returns e wrapped in a ClientException.
+     * @param e throwable to return as ClientException
+     * @return client exception
+     */
+    public static ClientException from(Throwable e) {
+        if (e instanceof ClientException) {
+            return (ClientException) e;
+        } else {
+            return new ClientException(e);
+        }
+    }
 }
