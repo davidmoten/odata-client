@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.internal.Util;
 
 public final class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
@@ -155,7 +156,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             String json = Util.readString(con.getInputStream(), StandardCharsets.UTF_8);
 
             if (responseCode != OK) {
-                throw new IOException("Response code=" + responseCode + ", output=" + json);
+                throw new ClientException(responseCode, json);
             } else {
                 ObjectMapper om = new ObjectMapper();
                 JsonNode o = om.readTree(json);
