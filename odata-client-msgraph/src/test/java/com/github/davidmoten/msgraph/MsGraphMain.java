@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.github.davidmoten.odata.client.ClientException;
+
 import odata.msgraph.client.complex.AttachmentItem;
 import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.ItemBody;
@@ -31,8 +33,13 @@ public class MsGraphMain {
                 .clientSecret(System.getProperty("clientSecret")) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
-        
-        client.me().get();
+        try {
+            client.me().get();
+        } catch (ClientException e) {
+            System.out.println(e.getStatusCode().orElse(-1));
+            e.printStackTrace();
+            System.exit(0);
+        }
         
         {
             String mailbox = System.getProperty("mailbox");

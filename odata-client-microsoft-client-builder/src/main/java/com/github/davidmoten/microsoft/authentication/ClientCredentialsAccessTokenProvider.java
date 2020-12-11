@@ -2,6 +2,7 @@ package com.github.davidmoten.microsoft.authentication;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -13,6 +14,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -22,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.davidmoten.guavamini.Preconditions;
+import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.internal.Util;
 
@@ -170,7 +174,29 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
             // reset stuff
             expiryTime = 0;
             accessToken = null;
-            throw new RuntimeException(e);
+            
+            Optional<Integer> code = extractStatusCode(e.getMessage());
+            if (code.isPresent()) {
+                throw new ClientException(code.get(), e);
+            } else {
+                throw new ClientException(e);
+            }
+        }
+    }
+    
+    private static final Pattern RESPONSE_CODE_PATTERN = Pattern.compile("^Server returned HTTP response code: (\\d+) for.*");
+    
+    @VisibleForTesting
+    static Optional<Integer> extractStatusCode(String message) {
+        if (message == null) {
+            return Optional.empty();
+        }
+        Matcher m = RESPONSE_CODE_PATTERN.matcher(message);
+        if (m.find()) {
+            String code = m.group(1);
+            return Optional.of(Integer.parseInt(code));
+        } else {
+            return Optional.empty();
         }
     }
 

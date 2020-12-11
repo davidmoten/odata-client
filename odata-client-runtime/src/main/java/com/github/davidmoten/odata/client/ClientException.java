@@ -23,6 +23,11 @@ public final class ClientException extends RuntimeException {
         this.statusCode = Optional.empty();
     }
 
+    public ClientException(int statusCode, Throwable e) {
+        super(e);
+        this.statusCode = Optional.of(statusCode);
+    }
+    
     public ClientException(String message, Throwable e) {
         super(message, e);
         this.statusCode = Optional.empty();
