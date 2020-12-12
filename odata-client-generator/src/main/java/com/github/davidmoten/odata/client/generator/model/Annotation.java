@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import org.oasisopen.odata.csdl.v4.TPropertyValue;
 import org.oasisopen.odata.csdl.v4.TRecordExpression;
