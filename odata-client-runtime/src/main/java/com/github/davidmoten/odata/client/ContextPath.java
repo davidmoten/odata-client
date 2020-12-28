@@ -17,6 +17,10 @@ public final class ContextPath {
         return new ContextPath(context, path.addSegment(segment));
     }
     
+    public ContextPath appendToSegment(String s) {
+        return new ContextPath(context, path.appendToSegment(s));
+    }
+    
     public ContextPath addActionOrFunctionSegment(String fullyQualifiedName) {
         boolean useSimpleNameOnly = "true".equalsIgnoreCase(String.valueOf(context.getProperty(Properties.ACTION_OR_FUNCTION_SEGMENT_SIMPLE_NAME)));
         if (useSimpleNameOnly) {

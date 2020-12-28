@@ -22,6 +22,10 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
+            client._custom().getString("https://graph.microsoft.com/v1.0/reports/getMailboxUsageDetail(period%3D'D7')/content", RequestOptions.EMPTY);
+            System.exit(0);
+        }
+        {
             String count = client._custom().withRelativeUrls() //
                     .getString("me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
             System.out.println(count);

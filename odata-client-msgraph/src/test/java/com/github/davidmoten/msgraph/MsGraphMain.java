@@ -10,11 +10,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.odata.client.ClientException;
+import com.github.davidmoten.odata.client.RequestHeader;
+import com.github.davidmoten.odata.client.RequestOptions;
 
 import odata.msgraph.client.complex.AttachmentItem;
 import odata.msgraph.client.complex.EmailAddress;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.Recipient;
+import odata.msgraph.client.complex.Report;
 import odata.msgraph.client.complex.UploadSession;
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.FileAttachment;
@@ -33,14 +36,11 @@ public class MsGraphMain {
                 .clientSecret(System.getProperty("clientSecret")) //
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
-        try {
-            client.me().get();
-        } catch (ClientException e) {
-            System.out.println(e.getStatusCode().orElse(-1));
-            e.printStackTrace();
+        {
+            client._custom().getString("https://graph.microsoft.com/v1.0/reports/getMailboxUsageDetail(period%3D'D7')", RequestOptions.EMPTY, RequestHeader.ACCEPT_JSON);
+            Report report = client.reports().getMailboxUsageDetail("D7").get();
             System.exit(0);
         }
-        
         {
             String mailbox = System.getProperty("mailbox");
             while (true) {

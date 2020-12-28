@@ -52,6 +52,7 @@ import odata.msgraph.client.complex.InvitationParticipantInfo;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.PasswordCredential;
 import odata.msgraph.client.complex.Recipient;
+import odata.msgraph.client.complex.Report;
 import odata.msgraph.client.complex.ServiceHostedMediaConfig;
 import odata.msgraph.client.complex.UploadSession;
 import odata.msgraph.client.container.GraphService;
@@ -951,6 +952,17 @@ public class GraphServiceTest {
         System.out.println(m.getSubject());
         // mark as read
         m.withIsRead(true).patch();
+    }
+    
+    @Test
+    public void testFunctionWithInlineParameters() {
+        GraphService client = clientBuilder() //
+                .expectRequest("/reports/getMailboxUsageDetail(period%3D'D7')") //
+                .withResponse("/response-get-mailbox-usage-detail.txt") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION) //
+                .withResponseStatusCode(200) //
+                .build();
+        Report report = client.reports().getMailboxUsageDetail("D7").get();
     }
 
     @Test
