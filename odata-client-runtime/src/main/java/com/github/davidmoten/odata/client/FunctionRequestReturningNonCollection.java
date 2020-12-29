@@ -20,7 +20,7 @@ public final class FunctionRequestReturningNonCollection<T>
     public ODataValue<T> get() {
         Serializer serializer = contextPath.context().serializer();
         return RequestHelper.getWithParametricType( //
-                contextPath.addSegment(InlineParameterSyntax.encode(serializer, parameters)), //
+                contextPath.appendToSegment(InlineParameterSyntax.encode(serializer, parameters)), //
                 ODataValue.class, //
                 returnClass, //
                 options());

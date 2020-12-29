@@ -13,6 +13,7 @@ sed -i 's/<EntityType Name="chatMembersNotificationAudience"\/>/<!-- commented o
 sed -i 's/<EntityType Name="auditLogRoot">/<EntityType Name="auditLogRoot" BaseType="graph.entity">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
 sed -i 's/<EntityType Name="identityContainer">/<EntityType Name="identityContainer" BaseType="graph.entity">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
 sed -i 's/<EntityType Name="directory">/<EntityType Name="directory" BaseType="graph.entity">/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
+sed -i 's/<ReturnType Type="graph.report"/<ReturnType Type="Edm.Stream"/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
 
 ## not required, Microsoft removed this item from metadata
 #sed -i 's/<Singleton Name="settings" Type="microsoft.graph.entitlementManagementSettings"\/>/<Singleton Name="entitlementManagementSettings" Type="microsoft.graph.entitlementManagementSettings"\/>/g' ../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml

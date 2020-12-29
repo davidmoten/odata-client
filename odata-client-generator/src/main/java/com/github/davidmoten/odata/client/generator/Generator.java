@@ -59,6 +59,7 @@ import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollectionUnwrapped;
+import com.github.davidmoten.odata.client.FunctionRequestReturningStream;
 import com.github.davidmoten.odata.client.HasContext;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
@@ -755,12 +756,20 @@ public final class Generator {
 		Function.ReturnType returnType = function.getReturnType(imports);
 		boolean isNonCollectionEdm = !returnType.isCollection && returnType.innerType.startsWith("Edm.");
 		String methodName = disambiguateMethodName(function.getActionMethodName(), methodNames, "_Function");
-		p.format("%spublic %s<%s> %s(%s) {\n", //
+		final String typ;
+        if (returnType.isStream()) {
+            typ = imports.add(FunctionRequestReturningStream.class);
+        } else {
+            typ = (returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
+                    : isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
+                            : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class)) //
+                    + "<" + function.getReturnType(imports).innerImportedFullClassName + ">";
+        }
+		p.format("%spublic %s %s(%s) {\n", //
 				indent, //
-				returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
-						: isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
-						        : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class), //
-				function.getReturnType(imports).innerImportedFullClassName, methodName, paramsDeclaration);
+				typ, //
+				methodName, //
+				paramsDeclaration);
 		writeFunctionParameterMapAndNullChecksAndAsciiCheck(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
@@ -769,6 +778,12 @@ public final class Generator {
                     imports.add(CollectionPageNonEntityRequest.class), //
                     function.getFullType(), //
                     returnType.innerImportedFullClassName);
+        } else if (returnType.isStream()) {
+            p.format(
+                    "%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
+                    indent, //
+                    imports.add(FunctionRequestReturningStream.class), //
+                    function.getFullType());
         } else {
             p.format(
                     "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //

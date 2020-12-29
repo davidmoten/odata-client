@@ -52,7 +52,6 @@ import odata.msgraph.client.complex.InvitationParticipantInfo;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.PasswordCredential;
 import odata.msgraph.client.complex.Recipient;
-import odata.msgraph.client.complex.Report;
 import odata.msgraph.client.complex.ServiceHostedMediaConfig;
 import odata.msgraph.client.complex.UploadSession;
 import odata.msgraph.client.container.GraphService;
@@ -962,7 +961,7 @@ public class GraphServiceTest {
                 .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION) //
                 .withResponseStatusCode(200) //
                 .build();
-        Report report = client.reports().getMailboxUsageDetail("D7").get();
+        client.reports().getMailboxUsageDetail("D7");
     }
 
     @Test
@@ -998,6 +997,13 @@ public class GraphServiceTest {
     @Test
     public void testGetODataNameFromComplexType() {
         assertEquals("microsoft.graph.device", odataTypeNameFromAny(Device.class));
+    }
+    
+    @Test
+    @Ignore
+    public void testReportsReturnTypeMappedToStreamCompiles() {
+        GraphService client = clientBuilder().build();
+        client.reports().getMailboxUsageDetail("D7").getBytes();
     }
 
     @Test
