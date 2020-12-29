@@ -126,6 +126,10 @@ public final class Action implements Method {
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
         }
+
+        public boolean isStream() {
+            return "Edm.Stream".equals(innerType);
+        }
     }
 
     public boolean hasReturnType() {
