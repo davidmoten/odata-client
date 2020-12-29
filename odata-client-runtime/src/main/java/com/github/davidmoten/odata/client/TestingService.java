@@ -354,6 +354,13 @@ public final class TestingService {
                     return new ByteArrayInputStream(h.getText().getBytes(StandardCharsets.UTF_8));
                 }
 
+                @Override
+                public InputStream getStream(HttpMethod method, String url,
+                        List<RequestHeader> requestHeaders, InputStream content, int length,
+                        HttpRequestOptions options) {
+                    throw new UnsupportedOperationException();
+                }
+
             };
         }
 

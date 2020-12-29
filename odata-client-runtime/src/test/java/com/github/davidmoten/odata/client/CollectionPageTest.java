@@ -87,8 +87,14 @@ public class CollectionPageTest {
             @Override
             public InputStream getStream(String url, List<RequestHeader> requestHeaders,
                     HttpRequestOptions options) {
-                // TODO Auto-generated method stub
-                return null;
+               throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public InputStream getStream(HttpMethod method, String url,
+                    List<RequestHeader> requestHeaders, InputStream content, int length,
+                    HttpRequestOptions options) {
+                throw new UnsupportedOperationException();
             }
 
         };
