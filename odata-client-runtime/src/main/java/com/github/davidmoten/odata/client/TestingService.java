@@ -139,7 +139,7 @@ public final class TestingService {
                 this.statusCode = statusCode;
                 return this;
             }
-            
+
             public Builder<T, R> withRequestHeadersStandard() {
                 return withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
                         RequestHeader.ODATA_VERSION);
@@ -172,8 +172,7 @@ public final class TestingService {
                 String responseResourceName, HttpMethod method, int statusCode,
                 RequestHeader... requestHeaders) {
             String url = toUrl(path);
-            requests.put(toKey(method, url, asList(requestHeaders)),
-                    requestResourceName);
+            requests.put(toKey(method, url, asList(requestHeaders)), requestResourceName);
             responses.put(toKey(method, url, asList(requestHeaders)),
                     new Response(responseResourceName, statusCode));
             return (T) this;
@@ -356,8 +355,7 @@ public final class TestingService {
 
                 @Override
                 public InputStream getStream(HttpMethod method, String url,
-                        List<RequestHeader> requestHeaders, InputStream content, int length,
-                        HttpRequestOptions options) {
+                        List<RequestHeader> requestHeaders, HttpRequestOptions options) {
                     throw new UnsupportedOperationException();
                 }
 

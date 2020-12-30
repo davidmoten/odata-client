@@ -76,8 +76,8 @@ public final class GraphExplorerHttpService implements HttpService {
 
     @Override
     public InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
-        return s.getStream(method, convert(url), requestHeaders, content, length, options);
+            HttpRequestOptions options) {
+        return s.getStream(method, convert(url), requestHeaders, options);
     }
     
 }

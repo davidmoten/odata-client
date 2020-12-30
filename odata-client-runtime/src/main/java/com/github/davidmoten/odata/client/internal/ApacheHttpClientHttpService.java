@@ -142,9 +142,9 @@ public class ApacheHttpClientHttpService implements HttpService {
 
     @Override
     public InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
+            HttpRequestOptions options) {
         HttpRequestBase b = toRequestBase(method, url);
-        return getStream(requestHeaders, b, content, length, options);
+        return getStream(requestHeaders, b, null, 0, options);
     }
 
     private static HttpRequestBase toRequestBase(HttpMethod method, String url) {
@@ -230,12 +230,6 @@ public class ApacheHttpClientHttpService implements HttpService {
         log.info("closing client");
         client.close();
         log.info("closed client");
-    }
-
-    @Override
-    public InputStream getStream(String url, List<RequestHeader> requestHeaders,
-            HttpRequestOptions options) {
-        return getStream(HttpMethod.GET, url, requestHeaders, null, 0, options);
     }
 
     private static boolean isOk(int statusCode) {

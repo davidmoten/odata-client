@@ -139,14 +139,8 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public InputStream getStream(String url, List<RequestHeader> requestHeaders,
-            HttpRequestOptions options) {
-        return getStream(HttpMethod.GET, url, requestHeaders, null, 0, options);
-    }
-
-    @Override
     public InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
+            HttpRequestOptions options) {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
@@ -159,19 +153,11 @@ public final class DefaultHttpService implements HttpService {
                     contentLengthSet = true;
                 }
             }
-            if (content != null && !contentLengthSet) {
-                c.setRequestProperty("Content-Length", Integer.toString(length));
-            }
             c.setDoInput(true);
-            c.setDoOutput(content != null);
+            c.setDoOutput(false);
             // apply just before connection established so further configuration can take
             // place like timeouts
             consumer.accept(c);
-            if (content != null) {
-                try (OutputStream o = c.getOutputStream()) {
-                    Util.copy(content, o, 8192);
-                }
-            }
             // TODO check error code and throw message read from input stream
             return c.getInputStream();
         } catch (IOException e) {
