@@ -22,7 +22,7 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
-            client._custom().getString("https://graph.microsoft.com/v1.0/reports/getMailboxUsageDetail(period%3D'D7')/content", RequestOptions.EMPTY);
+            client.me().messages().get().stream().findFirst().ifPresent(a -> System.out.println(a.getSubject()));
             System.exit(0);
         }
         {
