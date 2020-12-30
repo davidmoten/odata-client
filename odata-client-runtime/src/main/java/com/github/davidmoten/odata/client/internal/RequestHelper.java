@@ -352,7 +352,7 @@ public final class RequestHelper {
                     options.getRequestHeaders(), options);
         }
     }
-
+    
     // for HasStream case (only for entities, not for complexTypes)
     public static Optional<StreamProvider> createStream(ContextPath contextPath,
             ODataEntityType entity) {

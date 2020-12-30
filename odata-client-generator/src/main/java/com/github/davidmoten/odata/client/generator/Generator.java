@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,6 +60,7 @@ import com.github.davidmoten.odata.client.ContextPath;
 import com.github.davidmoten.odata.client.EntityRequest;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollection;
 import com.github.davidmoten.odata.client.FunctionRequestReturningNonCollectionUnwrapped;
+import com.github.davidmoten.odata.client.FunctionRequestReturningStream;
 import com.github.davidmoten.odata.client.HasContext;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
@@ -682,43 +684,62 @@ public final class Generator {
 				.map(x -> String.format("%s %s", x.importedFullClassName, x.nameJava())) //
 				.collect(Collectors.joining(", "));
 		String methodName = disambiguateMethodName(action.getActionMethodName(), methodNames, "_Action");
-		if (action.hasReturnType()) {
-			ReturnType returnType = action.getReturnType(imports);
-			boolean isNonCollectionEdm = !returnType.isCollection && returnType.innerType.startsWith("Edm.");
-			p.format("%spublic %s<%s> %s(%s) {\n", //
-					indent, //
-					returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
-							: isNonCollectionEdm ? imports.add(ActionRequestReturningNonCollection.class) //
-					: imports.add(ActionRequestReturningNonCollectionUnwrapped.class), //
-					action.getReturnType(imports).innerImportedFullClassName, methodName, paramsDeclaration);
-			writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
-			if (returnType.isCollection) {
-				p.format(
-						"%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
-						indent, //
-						imports.add(CollectionPageNonEntityRequest.class), //
-						action.getFullType(), //
-						returnType.innerImportedFullClassName);
-			} else {
+        if (action.hasReturnType()) {
+            ReturnType returnType = action.getReturnType(imports);
+            boolean isNonCollectionEdm = !returnType.isCollection
+                    && returnType.innerType.startsWith("Edm.");
+            final String typ;
+            if (returnType.isStream()) {
+                typ = imports.add(FunctionRequestReturningStream.class);
+            } else {
+                typ = (returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
+                        : isNonCollectionEdm
+                                ? imports.add(ActionRequestReturningNonCollection.class) //
+                                : imports.add(ActionRequestReturningNonCollectionUnwrapped.class)) //
+                        + "<" //
+                        + action.getReturnType(imports).innerImportedFullClassName //
+                        + ">";
+            }
+            p.format("%spublic %s %s(%s) {\n", //
+                    indent, //
+                    typ, //
+                    methodName, //
+                    paramsDeclaration);
+            writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
+            if (returnType.isCollection) {
+                p.format(
+                        "%sreturn %s.forAction(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
+                        indent, //
+                        imports.add(CollectionPageNonEntityRequest.class), //
+                        action.getFullType(), //
+                        returnType.innerImportedFullClassName);
+            } else if (returnType.isStream()) {
+                p.format(
+                        "%sthrow new %s(\"Actions that return a stream are not supported yet. If you want this raise an issue at the project home\");\n", //
+                        indent, //
+                        imports.add(UnsupportedOperationException.class), //
+                        action.getFullType());
+            } else
                 p.format(
                         "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //
                         indent, //
-                        isNonCollectionEdm ? imports.add(ActionRequestReturningNonCollection.class) : imports.add(ActionRequestReturningNonCollectionUnwrapped.class), //
+                        isNonCollectionEdm ? imports.add(ActionRequestReturningNonCollection.class)
+                                : imports.add(ActionRequestReturningNonCollectionUnwrapped.class), //
                         returnType.innerImportedFullClassName, //
                         action.getFullType(), //
                         returnType.innerImportedFullClassName);
-            } 
-		} else {
-			p.format("%spublic %s %s(%s) {\n", //
-					indent, //
-					imports.add(ActionRequestNoReturn.class), //
-					methodName, paramsDeclaration);
-			writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
-			p.format("%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
-					indent, //
-					imports.add(ActionRequestNoReturn.class), //
-					action.getFullType());
-		}
+        } else {
+            p.format("%spublic %s %s(%s) {\n", //
+                    indent, //
+                    imports.add(ActionRequestNoReturn.class), //
+                    methodName, paramsDeclaration);
+            writeActionParameterMapAndNullChecksAndAsciiChecks(imports, indent, p, parameters);
+            p.format(
+                    "%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
+                    indent, //
+                    imports.add(ActionRequestNoReturn.class), //
+                    action.getFullType());
+        }
 		p.format("%s}\n", indent.left());
 	}
 
@@ -755,12 +776,20 @@ public final class Generator {
 		Function.ReturnType returnType = function.getReturnType(imports);
 		boolean isNonCollectionEdm = !returnType.isCollection && returnType.innerType.startsWith("Edm.");
 		String methodName = disambiguateMethodName(function.getActionMethodName(), methodNames, "_Function");
-		p.format("%spublic %s<%s> %s(%s) {\n", //
+		final String typ;
+        if (returnType.isStream()) {
+            typ = imports.add(FunctionRequestReturningStream.class);
+        } else {
+            typ = (returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
+                    : isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
+                            : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class)) //
+                    + "<" + function.getReturnType(imports).innerImportedFullClassName + ">";
+        }
+		p.format("%spublic %s %s(%s) {\n", //
 				indent, //
-				returnType.isCollection ? imports.add(CollectionPageNonEntityRequest.class)
-						: isNonCollectionEdm ? imports.add(FunctionRequestReturningNonCollection.class) //
-						        : imports.add(FunctionRequestReturningNonCollectionUnwrapped.class), //
-				function.getReturnType(imports).innerImportedFullClassName, methodName, paramsDeclaration);
+				typ, //
+				methodName, //
+				paramsDeclaration);
 		writeFunctionParameterMapAndNullChecksAndAsciiCheck(imports, indent, p, parameters);
         if (returnType.isCollection) {
             p.format(
@@ -769,6 +798,12 @@ public final class Generator {
                     imports.add(CollectionPageNonEntityRequest.class), //
                     function.getFullType(), //
                     returnType.innerImportedFullClassName);
+        } else if (returnType.isStream()) {
+            p.format(
+                    "%sreturn new %s(this.contextPath.addActionOrFunctionSegment(\"%s\"), _parameters);\n", //
+                    indent, //
+                    imports.add(FunctionRequestReturningStream.class), //
+                    function.getFullType());
         } else {
             p.format(
                     "%sreturn new %s<%s>(this.contextPath.addActionOrFunctionSegment(\"%s\"), %s.class, _parameters);\n", //

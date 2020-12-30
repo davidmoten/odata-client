@@ -34,8 +34,8 @@ public class CollectionPageTest {
 
         Context context = new Context(serializer, service, Arrays.asList(schemaInfo));
         CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,
-                new ContextPath(context, service.getBasePath()), 
-                Collections.emptyList(), HttpRequestOptions.EMPTY, x -> {
+                new ContextPath(context, service.getBasePath()), Collections.emptyList(),
+                HttpRequestOptions.EMPTY, x -> {
                 });
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
@@ -87,8 +87,13 @@ public class CollectionPageTest {
             @Override
             public InputStream getStream(String url, List<RequestHeader> requestHeaders,
                     HttpRequestOptions options) {
-                // TODO Auto-generated method stub
-                return null;
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public InputStream getStream(HttpMethod method, String url,
+                    List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+                throw new UnsupportedOperationException();
             }
 
         };
@@ -107,11 +112,10 @@ public class CollectionPageTest {
         ContextPath contextPath = new ContextPath(context,
                 new Path("https://blah", PathStyle.IDENTIFIERS_AS_SEGMENTS));
         CollectionPage<Person> page = serializer.deserializeCollectionPage(json, Person.class,
-                contextPath, Collections.emptyList(), HttpRequestOptions.EMPTY,
-                p -> {
+                contextPath, Collections.emptyList(), HttpRequestOptions.EMPTY, p -> {
                 });
-        assertEquals(Lists.newArrayList(1,2,3), page.unmappedFields().get("hello"));
-        
+        assertEquals(Lists.newArrayList(1, 2, 3), page.unmappedFields().get("hello"));
+
         // test serialization of unmapped fields
         String json2 = Serializer.INSTANCE.serialize(page);
         assertTrue(json2.contains("hello"));

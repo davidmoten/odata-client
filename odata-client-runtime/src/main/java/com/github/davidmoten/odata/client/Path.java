@@ -36,14 +36,18 @@ public class Path {
     private String append(String url, String s) {
         return url + encode(s);
     }
-
+    
     public Path addSegment(String segment) {
         String u = url;
         u = addSegmentDelimiter(u);
         u = append(u, segment);
         return new Path(u, queries, style);
     }
-
+    
+    public Path appendToSegment(String s) {
+        return new Path(url + encode(s), queries, style);
+    }
+    
     private static String addSegmentDelimiter(String url) {
         if (url.charAt(url.length() - 1) != '/') {
             return url + '/';
@@ -136,4 +140,5 @@ public class Path {
             throw new RuntimeException(e);
         }
     }
+
 }

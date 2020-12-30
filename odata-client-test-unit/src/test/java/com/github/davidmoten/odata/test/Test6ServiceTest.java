@@ -87,7 +87,7 @@ public class Test6ServiceTest {
     public void testFunctionParametersAreInlineSyntax() {
         Test6Service client = Test6Service.test() //
                 .expectRequest(
-                        "/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3D%5B1%2C2%2C3%5D)") //
+                        "/Products/1/Test6.A.functionToTestNulls(value%3D1%2Ccollection%3D%5B1%2C2%2C3%5D)") //
                 .withResponse("/function-return-1.json") //
                 .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION)
                 .build();
@@ -99,7 +99,7 @@ public class Test6ServiceTest {
     public void testFunctionParametersAreInlineSyntaxWhenNonCollectionParameterNull() {
         Test6Service client = Test6Service.test() //
                 .expectRequest(
-                        "/Products/1/Test6.A.functionToTestNulls/(value%3Dnull'Edm.Int32'%2Ccollection%3D%5B1%2C2%2C3%5D)") //
+                        "/Products/1/Test6.A.functionToTestNulls(value%3Dnull'Edm.Int32'%2Ccollection%3D%5B1%2C2%2C3%5D)") //
                 .withResponse("/function-return-1.json") //
                 .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION)
                 .build();
@@ -112,7 +112,7 @@ public class Test6ServiceTest {
     public void testFunctionParametersAreInlineSyntaxWhenCollectionParameterNull() {
         Test6Service client = Test6Service.test() //
                 .expectRequest(
-                        "/Products/1/Test6.A.functionToTestNulls/(value%3D1%2Ccollection%3Dnull'Collection(Edm.Int32)')") //
+                        "/Products/1/Test6.A.functionToTestNulls(value%3D1%2Ccollection%3Dnull'Collection(Edm.Int32)')") //
                 .withResponse("/function-return-1.json") //
                 .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION).build();
         int value = client.products(1).functionToTestNulls(1, null).get().value();
@@ -122,7 +122,7 @@ public class Test6ServiceTest {
     @Test
     public void testUnboundFunction() {
         Test6ServiceA client = Test6ServiceA.test() //
-                .expectRequest("/Test6.A.globalFunction/(productId%3D%221%22%2Cvalue%3D23)") //
+                .expectRequest("/Test6.A.globalFunction(productId%3D'1'%2Cvalue%3D23)") //
                 .withResponse("/function-return-1.json") //
                 .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION).build();
         assertEquals(456, (int) client.globalFunction("1", 23).get().value());

@@ -22,6 +22,10 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
+            client.me().messages().get().stream().findFirst().ifPresent(a -> System.out.println(a.getSubject()));
+            System.exit(0);
+        }
+        {
             String count = client._custom().withRelativeUrls() //
                     .getString("me/mailFolders/inbox/messages?$select=id&count=true", RequestOptions.EMPTY, RequestHeader.ODATA_VERSION);
             System.out.println(count);

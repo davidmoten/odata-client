@@ -117,6 +117,10 @@ public final class Function implements Method {
             this.isCollection = isCollection;
             this.innerImportedFullClassName = innerImportedFullClassName;
         }
+        
+        public boolean isStream() {
+            return "Edm.Stream".equals(innerType);
+        }
     }
 
     public ReturnType getReturnType(Imports imports) {

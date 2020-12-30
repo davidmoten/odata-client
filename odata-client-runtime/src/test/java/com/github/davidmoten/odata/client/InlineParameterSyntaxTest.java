@@ -17,7 +17,7 @@ public class InlineParameterSyntaxTest {
     public void testString() {
         Map<String, TypedObject> parameters = new HashMap<>();
         parameters.put("name", new TypedObject("Edm.String", "fred"));
-        assertEquals("(name=\"fred\")", encode(Serializer.INSTANCE, parameters));
+        assertEquals("(name='fred')", encode(Serializer.INSTANCE, parameters));
     }
 
     @Test

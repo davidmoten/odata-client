@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.HttpService;
@@ -71,6 +72,12 @@ public final class GraphExplorerHttpService implements HttpService {
     @Override
     public Path getBasePath() {
         return s.getBasePath();
+    }
+
+    @Override
+    public InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
+        return s.getStream(method, convert(url), requestHeaders, options);
     }
     
 }

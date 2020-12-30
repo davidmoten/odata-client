@@ -952,6 +952,17 @@ public class GraphServiceTest {
         // mark as read
         m.withIsRead(true).patch();
     }
+    
+    @Test
+    public void testFunctionWithInlineParameters() {
+        GraphService client = clientBuilder() //
+                .expectRequest("/reports/getMailboxUsageDetail(period%3D'D7')") //
+                .withResponse("/response-get-mailbox-usage-detail.txt") //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON, RequestHeader.ODATA_VERSION) //
+                .withResponseStatusCode(200) //
+                .build();
+        client.reports().getMailboxUsageDetail("D7");
+    }
 
     @Test
     @Ignore
@@ -986,6 +997,13 @@ public class GraphServiceTest {
     @Test
     public void testGetODataNameFromComplexType() {
         assertEquals("microsoft.graph.device", odataTypeNameFromAny(Device.class));
+    }
+    
+    @Test
+    @Ignore
+    public void testReportsReturnTypeMappedToStreamCompiles() {
+        GraphService client = clientBuilder().build();
+        client.reports().getMailboxUsageDetail("D7").getBytes();
     }
 
     @Test

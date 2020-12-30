@@ -39,12 +39,15 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.GET, true, null, HttpService.LENGTH_UNKNOWN);
+    public HttpResponse get(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
+        return getResponse(url, requestHeaders, HttpMethod.GET, true, null,
+                HttpService.LENGTH_UNKNOWN);
     }
 
     @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content,
+            int length, HttpRequestOptions options) {
         if (patchSupported) {
             try {
                 return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content, length);
@@ -67,17 +70,20 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content,
+            int length, HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.PUT, false, content, length);
     }
 
     @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content,
+            int length, HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.POST, true, content, length);
     }
 
     @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
         return getResponse(url, requestHeaders, HttpMethod.DELETE, false, null, -1);
     }
 
@@ -102,14 +108,13 @@ public final class DefaultHttpService implements HttpService {
             c.setDoInput(doInput);
             c.setDoOutput(content != null);
             // apply just before connection established so further configuration can take
-            // place
-            // like timeouts
+            // place like timeouts
             consumer.accept(c);
             if (content != null) {
                 try (OutputStream out = c.getOutputStream()) {
                     byte[] b = new byte[8192];
                     int len;
-                    while ((len = content.read(b))!= -1) {
+                    while ((len = content.read(b)) != -1) {
                         out.write(b, 0, len);
                     }
                 }
@@ -134,12 +139,13 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    public InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
         try {
             URL u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
             c.setInstanceFollowRedirects(true);
-            c.setRequestMethod(HttpMethod.GET.toString());
+            c.setRequestMethod(method.toString());
             for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
                 c.setRequestProperty(header.name(), header.value());
             }
@@ -149,11 +155,9 @@ public final class DefaultHttpService implements HttpService {
             // place like timeouts
             consumer.accept(c);
             // TODO check error code and throw message read from input stream
-
             return c.getInputStream();
         } catch (IOException e) {
             throw new ClientException(e);
         }
-
     }
 }

@@ -48,6 +48,8 @@ final class InlineParameterSyntax {
             final String value;
             if (entry.getValue().object() == null) {
                 value = "null'" + entry.getValue().typeWithNamespace() + "'";
+            } else if ("Edm.String".equals(entry.getValue().typeWithNamespace())){
+                value = "'" + entry.getValue().object() + "'";
             } else {
                 value = serializer.serialize(entry.getValue().object());
             }

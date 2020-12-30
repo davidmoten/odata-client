@@ -19,7 +19,7 @@ public final class FunctionRequestReturningNonCollectionUnwrapped<T>
     public T get() {
         Serializer serializer = contextPath.context().serializer();
         return RequestHelper.get( //
-                contextPath.addSegment(InlineParameterSyntax.encode(serializer, parameters)), //
+                contextPath.appendToSegment(InlineParameterSyntax.encode(serializer, parameters)), //
                 returnClass, //
                 options());
     }

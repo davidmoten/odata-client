@@ -29,8 +29,12 @@ public interface HttpService extends AutoCloseable {
     
     HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
 
-    InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
-
+    InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
+    
+    default InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return getStream(HttpMethod.GET, url, requestHeaders, options);
+    }
+    
     default Optional<Proxy> getProxy() {
         return Optional.empty();
     }
