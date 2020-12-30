@@ -146,12 +146,8 @@ public final class DefaultHttpService implements HttpService {
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
             c.setInstanceFollowRedirects(true);
             c.setRequestMethod(method.toString());
-            boolean contentLengthSet = false;
             for (RequestHeader header : requestHeadersModifier.apply(requestHeaders)) {
                 c.setRequestProperty(header.name(), header.value());
-                if ("Content-Length".equals(header.name())) {
-                    contentLengthSet = true;
-                }
             }
             c.setDoInput(true);
             c.setDoOutput(false);
