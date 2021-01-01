@@ -178,6 +178,7 @@ public class ApacheHttpClientHttpService implements HttpService {
         if (content != null && !contentLengthSet) {
             request.addHeader("Content-Length", Integer.toString(length));
         }
+        CloseableHttpResponse response = null;
         try {
             if (content != null && request instanceof HttpEntityEnclosingRequest) {
                 ((HttpEntityEnclosingRequest) request)
@@ -194,29 +195,36 @@ public class ApacheHttpClientHttpService implements HttpService {
             config = builder.build();
             request.setConfig(config);
             log.debug("executing request");
-            try (CloseableHttpResponse response = client.execute(request)) {
-                int statusCode = response.getStatusLine().getStatusCode();
-                log.debug("executed request, code={}", statusCode);
-                InputStream is = response.getEntity().getContent();
-                InputStream in = new InputStreamWithCloseable(is, response);
-                if (!isOk(statusCode)) {
-                    try {
-                        String msg = Util.readString(in, StandardCharsets.UTF_8);
-                        throw new ClientException(statusCode,
-                                "getStream returned HTTP " + statusCode + "\n" //
-                                        + "url=" + request.getURI() + "\n" //
-                                        + "headers=" + requestHeaders + "\n" //
-                                        + "response:\n" //
-                                        + msg);
-                    } finally {
-                        in.close();
-                    }
-                } else {
-                    return in;
+            response =  client.execute(request);
+            int statusCode = response.getStatusLine().getStatusCode();
+            log.debug("executed request, code={}", statusCode);
+            InputStream is = response.getEntity().getContent();
+            // ensure response is closed when input stream is closed
+            InputStream in = new InputStreamWithCloseable(is, response);
+            if (!isOk(statusCode)) {
+                try {
+                    String msg = Util.readString(in, StandardCharsets.UTF_8);
+                    throw new ClientException(statusCode,
+                            "getStream returned HTTP " + statusCode + "\n" //
+                                    + "url=" + request.getURI() + "\n" //
+                                    + "headers=" + requestHeaders + "\n" //
+                                    + "response:\n" //
+                                    + msg);
+                } finally {
+                    in.close();
                 }
-
+            } else {
+                return in;
             }
         } catch (IOException e) {
+            // ensure that response is closed on exception to avoid memory leak
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e1) {
+                   log.warn(e1.getMessage(), e);
+                }
+            }
             throw new ClientException(e);
         }
     }
