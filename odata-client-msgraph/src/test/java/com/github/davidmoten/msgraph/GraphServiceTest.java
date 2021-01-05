@@ -1005,6 +1005,13 @@ public class GraphServiceTest {
         GraphService client = clientBuilder().build();
         client.reports().getMailboxUsageDetail("D7").getBytes();
     }
+    
+    @Test
+    @Ignore
+    public void testGetStreamHigherUpCallChainCompiles() {
+        GraphService client = clientBuilder().build();
+        client.users("user").contacts("contact").photo().getStreamCurrentPath().get().get();
+    }
 
     @Test
     @Ignore

@@ -356,9 +356,14 @@ public final class RequestHelper {
     // for HasStream case (only for entities, not for complexTypes)
     public static Optional<StreamProvider> createStream(ContextPath contextPath,
             ODataEntityType entity) {
-        String editLink = (String) entity.getUnmappedFields().get("@odata.mediaEditLink");
-        if (editLink == null) {
-            editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
+        String editLink;
+        if (entity == null) {
+            editLink = null;
+        } else {
+            editLink = (String) entity.getUnmappedFields().get("@odata.mediaEditLink");
+            if (editLink == null) {
+                editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
+            }
         }
         String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         if (editLink == null && "false"

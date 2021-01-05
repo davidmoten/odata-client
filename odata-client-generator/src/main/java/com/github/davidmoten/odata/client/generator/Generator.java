@@ -1095,7 +1095,24 @@ public final class Generator {
 			p.format("%s}\n", indent.left());
 
 			indent.left();
-
+			
+			if (t.hasStream()) {
+                p.format("\n%s/**\n", indent);
+                p.format("%s * If returning a stream without using object metadata is not supported then", indent);
+                p.format("%s * returns {@code Optional.empty()}. Otherwise, returns a stream provider\n", indent);
+                p.format("%s * where the location of the stream is assumed to be the current path + {@code /$value}.\n", indent);
+                p.format("%s *\n", indent);
+                p.format("%s * @return StreamProvider if suitable metadata found otherwise returns\n", indent);
+                p.format("%s *         {@code Optional.empty()}\n", indent);
+                p.format("%s */\n", indent);
+                p.format("%s@%s\n", indent, imports.add(JsonIgnore.class));
+                p.format("%spublic %s<%s> getStreamCurrentPath() {\n", indent, imports.add(Optional.class),
+                        imports.add(StreamProvider.class));
+                p.format("%sreturn %s.createStream(contextPath, null);\n", indent.right(),
+                        imports.add(RequestHelper.class));
+                p.format("%s}\n", indent.left());
+            }
+			
 			// TODO also support navigation properties with complexTypes?
 			t.getNavigationProperties() //
 					.stream() //
