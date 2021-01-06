@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -125,15 +126,16 @@ public class ApacheHttpClientHttpService implements HttpService {
             try (CloseableHttpResponse response = client.execute(request)) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 log.debug("executed request, code={}", statusCode);
-                final String text;
+                final byte[] bytes;
                 if (doInput || isError(statusCode)) {
-                    text = Util.readString(response.getEntity().getContent(),
-                            StandardCharsets.UTF_8);
+                    bytes = Util.read(response.getEntity().getContent());
                 } else {
-                    text = null;
+                    bytes = null;
                 }
-                log.debug("response text=\n{}", text);
-                return new HttpResponse(statusCode, text);
+                if (log.isDebugEnabled() ) {
+                    log.debug("response text=\n{}", new String(bytes, StandardCharsets.UTF_8));
+                }
+                return new HttpResponse(statusCode, bytes);
             }
         } catch (IOException e) {
             throw new ClientException(e);

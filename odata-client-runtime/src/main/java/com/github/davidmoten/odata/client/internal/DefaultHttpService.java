@@ -119,13 +119,13 @@ public final class DefaultHttpService implements HttpService {
                     }
                 }
             }
-            final String text;
+            final byte[] bytes;
             if (doInput) {
-                text = Util.readString(c.getInputStream(), StandardCharsets.UTF_8);
+                bytes = Util.read(c.getInputStream());
             } else {
-                text = null;
+                bytes = null;
             }
-            return new HttpResponse(c.getResponseCode(), text);
+            return new HttpResponse(c.getResponseCode(), bytes);
         } catch (ProtocolException e) {
             throw new ProtocolRuntimeException(e);
         } catch (IOException e) {

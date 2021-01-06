@@ -217,8 +217,8 @@ public final class TestingService {
                             throw new RuntimeException(
                                     "resource not found on classpath: " + resourceName);
                         }
-                        String text = new String(Files.readAllBytes(Paths.get(resource.toURI())));
-                        return new HttpResponse(response.statusCode, text);
+                        byte[] bytes =  Files.readAllBytes(Paths.get(resource.toURI()));
+                        return new HttpResponse(response.statusCode, bytes);
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
@@ -295,12 +295,12 @@ public final class TestingService {
                                 + ", headers=" + requestHeaders);
                     }
                     try {
-                        String requestExpected = readResource(url, requestResourceName);
-                        if (Serializer.INSTANCE.matches(requestExpected, text)) {
+                        byte[] requestExpected = readResource(url, requestResourceName);
+                        if (Serializer.INSTANCE.matches(new String(requestExpected, StandardCharsets.UTF_8), text)) {
                             Response resp = responses
                                     .get(BuilderBase.toKey(HttpMethod.POST, url, requestHeaders));
                             String responseResourceName = resp.resource;
-                            String responseExpected = readResource(url, responseResourceName);
+                            byte[] responseExpected = readResource(url, responseResourceName);
 //                            final int responseCode;
 //                            if (resp.statusCode != HttpURLConnection.HTTP_OK) {
 //                                responseCode = resp.statusCode;
@@ -350,7 +350,7 @@ public final class TestingService {
                 public InputStream getStream(String url, List<RequestHeader> requestHeaders,
                         HttpRequestOptions options) {
                     HttpResponse h = get(url, requestHeaders, options);
-                    return new ByteArrayInputStream(h.getText().getBytes(StandardCharsets.UTF_8));
+                    return new ByteArrayInputStream(h.getBytes());
                 }
 
                 @Override
@@ -402,13 +402,13 @@ public final class TestingService {
         }
     }
 
-    private static String readResource(String url, String resourceName)
+    private static byte[] readResource(String url, String resourceName)
             throws IOException, URISyntaxException {
         if (resourceName == null) {
             throw new RuntimeException("resource not found for url=" + url);
         }
-        return new String(Files
-                .readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI())));
+        return Files
+                .readAllBytes(Paths.get(TestingService.class.getResource(resourceName).toURI()));
     }
 
 }

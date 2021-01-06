@@ -40,14 +40,16 @@ public class CollectionPageTest {
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
     }
-
+    
+    private static final byte[] EMPTY_ARRAY = new byte[0];
+    
     private static HttpService createHttpService(String json) {
         return new HttpService() {
 
             @Override
             public HttpResponse get(String url, List<RequestHeader> requestHeaders,
                     HttpRequestOptions options) {
-                return new HttpResponse(200, json);
+                return new HttpResponse(200, json.getBytes(StandardCharsets.UTF_8));
             }
 
             @Override
@@ -58,25 +60,25 @@ public class CollectionPageTest {
             @Override
             public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
                     InputStream content, int length, HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
+                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
             }
 
             @Override
             public HttpResponse put(String url, List<RequestHeader> requestHeaders,
                     InputStream content, int length, HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
+                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
             }
 
             @Override
             public HttpResponse post(String url, List<RequestHeader> h, InputStream content,
                     int length, HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_CREATED, "");
+                return new HttpResponse(HttpURLConnection.HTTP_CREATED, EMPTY_ARRAY);
             }
 
             @Override
             public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
                     HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, "");
+                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
             }
 
             @Override

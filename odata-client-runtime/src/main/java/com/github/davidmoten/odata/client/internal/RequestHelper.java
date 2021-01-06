@@ -357,15 +357,17 @@ public final class RequestHelper {
     public static Optional<StreamProvider> createStream(ContextPath contextPath,
             ODataEntityType entity) {
         String editLink;
+        String contentType;
         if (entity == null) {
             editLink = null;
+            contentType = null;
         } else {
             editLink = (String) entity.getUnmappedFields().get("@odata.mediaEditLink");
             if (editLink == null) {
                 editLink = (String) entity.getUnmappedFields().get("@odata.editLink");
             }
+            contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         }
-        String contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         if (editLink == null && "false"
                 .equals(contextPath.context().getProperty(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA))) {
             return Optional.empty();
@@ -383,7 +385,7 @@ public final class RequestHelper {
                 editLink = concatenate(contextPath.context().service().getBasePath().toUrl(),
                         editLink);
             }
-            if ("true".equals(contextPath.context().getProperty(Properties.MODIFY_STREAM_EDIT_LINK))) {
+            if ("true".equals(contextPath.context().getProperty(Properties.MODIFY_STREAM_EDIT_LINK)) && entity != null) {
                 // Bug fix for Microsoft Graph only?
                 // When a collection is returned the editLink is terminated with the subclass if
                 // the collection type has subclasses. For example when a collection of
