@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1007,10 +1008,17 @@ public class GraphServiceTest {
     }
     
     @Test
-    @Ignore
-    public void testGetStreamHigherUpCallChainCompiles() {
-        GraphService client = clientBuilder().build();
-        client.users("user").contacts("contact").photo().getStreamCurrentPath().get().get();
+    public void testGetStreamHigherUpCallChain() throws IOException {
+        GraphService client = clientBuilder() //
+                .expectRequest(
+                        "/users/fred/contacts/123/photo/%24value") //
+                .withResponse("/photo2.jpg") //
+                .withRequestHeaders() //
+                .build();
+        byte[] b = client.users("fred").contacts("123").photo().getStreamCurrentPath().get().getBytes();
+        int length = (int) new File("src/test/resources/photo2.jpg").length();
+        Files.write(new File("target/photo.jpg").toPath(), b);
+        assertEquals(length, b.length);
     }
 
     @Test
