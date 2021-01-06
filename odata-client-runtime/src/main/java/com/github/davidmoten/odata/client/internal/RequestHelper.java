@@ -112,10 +112,11 @@ public final class RequestHelper {
         checkResponseCode(cp, response, HttpURLConnection.HTTP_OK);
 
         // deserialize
-        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), cls, response.getText());
+        String text = response.getText();
+        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), cls, text);
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserializeWithParametricType(response.getText(), c,
+        return cp.context().serializer().deserializeWithParametricType(text, c,
                 parametricTypeClass, contextPath, false);
     }
 
@@ -157,12 +158,13 @@ public final class RequestHelper {
         // deserialize
         checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
+        String text = response.getText();
         // deserialize
         Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), responseClass,
-                response.getText());
+                text);
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
+        return cp.context().serializer().deserialize(text, c, contextPath, false);
     }
 
     public static <T, S> T postAnyWithParametricType(Object object, ContextPath contextPath,
@@ -179,11 +181,13 @@ public final class RequestHelper {
 
         checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
 
+        String text = response.getText();
+
         // deserialize
-        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), cls, response.getText());
+        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), cls, text);
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserializeWithParametricType(response.getText(), c,
+        return cp.context().serializer().deserializeWithParametricType(text, c,
                 parametricTypeClass, contextPath, false);
     }
 
