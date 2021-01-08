@@ -13,7 +13,11 @@ public class HttpResponse {
     }
 
     public String getText() {
-        return new String(bytes, StandardCharsets.UTF_8);
+        if (bytes == null) {
+            return null;
+        } else {
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
     }
 
     public int getResponseCode() {
