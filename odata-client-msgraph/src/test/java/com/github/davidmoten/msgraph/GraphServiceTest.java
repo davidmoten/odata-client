@@ -920,10 +920,30 @@ public class GraphServiceTest {
         Message m2 = m.move("Archive").metadataFull().get();
         assertEquals(m.getId(), m2.getId());
     }
+    
+    @Test
+    public void testPatchOfResourceNotFound() {
+        GraphService client = clientBuilder() //
+                .expectRequest("/users/1") //
+                .withResponse("/response-user.json") //
+                .withRequestHeadersStandard() //
+                .expectRequest("/users/1") //
+                .withPayload("/request-user-patch.json") //
+                .withResponseStatusCode(HttpURLConnection.HTTP_NOT_FOUND) //
+                .withMethod(HttpMethod.PATCH) //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_JSON, RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON) //
+                .build();
+        User user = client.users("1").get();
+        try {
+            user.withCity("Canberra").patch();
+        } catch (ClientException e) {
+            assertEquals(HttpURLConnection.HTTP_NOT_FOUND, (int) e.getStatusCode().get());
+        }
+    }
 
     @Test
     public void testMailRead() {
-
         GraphService client = clientBuilder() //
                 .expectRequest(
                         "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments") //

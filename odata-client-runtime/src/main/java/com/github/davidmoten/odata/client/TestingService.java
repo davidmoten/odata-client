@@ -108,7 +108,7 @@ public final class TestingService {
             private HttpMethod method = HttpMethod.GET;
             private final String path;
             private String responseResourcePath;
-            private int statusCode = 200;
+            private Integer statusCode;
 
             public Builder(BuilderBase<T, R> base, String path) {
                 this.base = base;
@@ -147,11 +147,11 @@ public final class TestingService {
 
             private T add() {
                 if (!payloadResourcePath.isPresent()) {
-                    return base.expectResponse(path, responseResourcePath, method, statusCode,
+                    return base.expectResponse(path, responseResourcePath, method, applyDefaultIfMissing(statusCode, method),
                             requestHeaders.toArray(new RequestHeader[] {}));
                 } else {
                     return base.expectRequestAndResponse(path, payloadResourcePath.get(),
-                            responseResourcePath, method, statusCode,
+                            responseResourcePath, method, applyDefaultIfMissing(statusCode, method),
                             requestHeaders.toArray(new RequestHeader[] {}));
                 }
             }
@@ -164,7 +164,17 @@ public final class TestingService {
             public Builder<T, R> expectRequest(String path) {
                 return (Builder<T, R>) add().expectRequest(path);
             }
-
+        }
+        
+        private static int applyDefaultIfMissing(Integer statusCode, HttpMethod method) {
+            if (statusCode != null) {
+                return statusCode;
+            } else if (method == HttpMethod.PUT || method == HttpMethod.PATCH
+                    || method == HttpMethod.DELETE) {
+                return HttpURLConnection.HTTP_NO_CONTENT;
+            } else {
+                return HttpURLConnection.HTTP_OK;
+            }
         }
 
         @SuppressWarnings("unchecked")
@@ -180,8 +190,9 @@ public final class TestingService {
 
         @SuppressWarnings("unchecked")
         public T expectDelete(String path, RequestHeader... requestHeaders) {
-            requests.put(toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders)),
-                    "DELETE");
+            String key = toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders));
+            requests.put(key, "DELETE");
+            responses.put(key, new Response(null, HttpURLConnection.HTTP_NO_CONTENT));
             return (T) this;
         }
 
@@ -234,7 +245,7 @@ public final class TestingService {
                 private HttpResponse patchOrPut(String url, List<RequestHeader> requestHeaders,
                         InputStream content, int length, HttpRequestOptions options,
                         HttpMethod method) {
-                    log(method + "called  at " + url);
+                    log(method + " called  at " + url);
                     String text = Util.utf8(content);
                     log(text);
                     log("Available requests:");
@@ -261,8 +272,14 @@ public final class TestingService {
                             matches = expected.equals(text);
                         }
                         if (matches) {
-                            return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
+                            Response response = responses.get(key);
+                            if (response == null) {
+                                throw new RuntimeException("response not found for key="+ key);
+                            }
+                            return new HttpResponse(response.statusCode, null);
                         } else {
+                            log("recevied:\n");
+                            log(text);
                             throw new RuntimeException(
                                     "request does not match expected.\n==== Received ====\n" + text
                                             + "\n==== Expected =====\n" + expected);
@@ -333,7 +350,11 @@ public final class TestingService {
                         throw new RuntimeException("DELETE request not expected for url=" + url
                                 + ", headers=" + requestHeaders);
                     }
-                    return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, null);
+                    Response response = responses.get(key);
+                    if (response == null) {
+                        throw new RuntimeException("response not found for key="+ key);
+                    }
+                    return new HttpResponse(response.statusCode, null);
                 }
 
                 @Override
