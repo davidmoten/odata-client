@@ -941,7 +941,7 @@ public class GraphServiceTest {
             assertEquals(HttpURLConnection.HTTP_NOT_FOUND, (int) e.getStatusCode().get());
         }
     }
-
+    
     @Test
     public void testMailRead() {
         GraphService client = clientBuilder() //
