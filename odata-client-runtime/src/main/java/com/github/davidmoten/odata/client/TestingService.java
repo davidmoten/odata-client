@@ -189,11 +189,15 @@ public final class TestingService {
         }
 
         @SuppressWarnings("unchecked")
-        public T expectDelete(String path, RequestHeader... requestHeaders) {
+        public T expectDelete(String path, int responseStatusCode, RequestHeader... requestHeaders) {
             String key = toKey(HttpMethod.DELETE, baseUrl + path, asList(requestHeaders));
             requests.put(key, "DELETE");
-            responses.put(key, new Response(null, HttpURLConnection.HTTP_NO_CONTENT));
+            responses.put(key, new Response(null, responseStatusCode));
             return (T) this;
+        }
+        
+        public T expectDelete(String path, RequestHeader... requestHeaders) {
+            return expectDelete(path, HttpURLConnection.HTTP_NO_CONTENT,requestHeaders);
         }
 
         private static String toKey(HttpMethod method, String url,
