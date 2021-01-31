@@ -6,6 +6,7 @@ import com.github.davidmoten.microsoft.authentication.GraphConstants;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder5;
 import com.github.davidmoten.msgraph.builder.GraphExplorerHttpService;
+import com.github.davidmoten.odata.client.PathStyle;
 
 import odata.msgraph.client.container.GraphService;
 
@@ -22,7 +23,9 @@ public final class MsGraph {
                 .baseUrl(MSGRAPH_1_0_BASE_URL) //
                 .creator(GraphService::new) //
                 .addSchema(odata.msgraph.client.schema.SchemaInfo.INSTANCE) //
-                .addSchema(odata.msgraph.client.callrecords.schema.SchemaInfo.INSTANCE).build() //
+                .addSchema(odata.msgraph.client.callrecords.schema.SchemaInfo.INSTANCE) //
+                .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
+                .build() //
                 .tenantName(tenantName) //
                 .resource(GraphConstants.RESOURCE_MS_GRAPH) //
                 .scope(GraphConstants.SCOPE_MS_GRAPH_DEFAULT);
