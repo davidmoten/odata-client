@@ -1,5 +1,5 @@
 # odata-client
-<a href="https://travis-ci.org/davidmoten/odata-client"><img src="https://travis-ci.org/davidmoten/odata-client.svg"/></a><br/>
+<a href="https://travis-ci.com/davidmoten/odata-client"><img src="https://travis-ci.com/davidmoten/odata-client.svg"/></a><br/>
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/odata-client-runtime/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/odata-client)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/odata-client/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/odata-client)<br/>
 
