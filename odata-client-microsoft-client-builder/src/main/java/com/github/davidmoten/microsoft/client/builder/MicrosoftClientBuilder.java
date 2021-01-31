@@ -66,14 +66,16 @@ public final class MicrosoftClientBuilder<T> {
     private Optional<AccessTokenProvider> accessTokenProvider = Optional.empty();
     private Optional<Authenticator> authenticator = Optional.empty();
     private Optional<Supplier<UsernamePassword>> basicCredentials = Optional.empty();
-    private List<SchemaInfo> schemas;
+    private final List<SchemaInfo> schemas;
+    private final PathStyle pathStyle;
 
-    MicrosoftClientBuilder(String baseUrl, Creator<T> creator, List<SchemaInfo> schemas) {
+    MicrosoftClientBuilder(String baseUrl, Creator<T> creator, List<SchemaInfo> schemas, PathStyle pathStyle) {
         Preconditions.checkNotNull(baseUrl);
         Preconditions.checkNotNull(creator);
         this.baseUrl = baseUrl;
         this.creator = creator;
         this.schemas = schemas;
+        this.pathStyle = pathStyle;
     }
     
     public static BuilderBuilder baseUrl(String baseUrl) {
@@ -100,6 +102,7 @@ public final class MicrosoftClientBuilder<T> {
         private final BuilderBuilder b;
         private Creator<T> creator;
         private final List<SchemaInfo> schemas = new ArrayList<>();
+        private PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
 
         BuilderBuilder2(BuilderBuilder b, Creator<T> creator) {
             this.b = b;
@@ -111,8 +114,18 @@ public final class MicrosoftClientBuilder<T> {
             return this;
         }
         
+        /**
+         * Sets the path style. Default is {@link PathStyle#IDENTIFIERS_AS_SEGMENTS}.
+         * @param pathStyle path style to use
+         * @return this
+         */
+        public BuilderBuilder2<T> pathStyle(PathStyle pathStyle) {
+            this.pathStyle = pathStyle;
+            return this;
+        }
+        
         public MicrosoftClientBuilder<T> build() {
-            return new MicrosoftClientBuilder<T>(b.baseUrl,creator, schemas);
+            return new MicrosoftClientBuilder<T>(b.baseUrl,creator, schemas, pathStyle);
         }
         
     }
@@ -198,7 +211,7 @@ public final class MicrosoftClientBuilder<T> {
             return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs,
                     b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint, b.httpServiceTransformer,b.schemas);
+                    b.authenticationEndpoint, b.httpServiceTransformer,b.schemas, b.pathStyle);
         }
 
     }
@@ -332,7 +345,7 @@ public final class MicrosoftClientBuilder<T> {
             b.proxyPassword = Optional.of(password);
             return this;
         }
-
+        
         /**
          * Do your own thing to create an Apache {@link HttpClient}. This method might
          * disappear if the underlying http service gets swapped out for another one.
@@ -419,7 +432,7 @@ public final class MicrosoftClientBuilder<T> {
                     b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
                     b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
                     b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider,
-                    b.authenticator, b.schemas);
+                    b.authenticator, b.schemas, b.pathStyle);
         }
 
     }
@@ -464,7 +477,7 @@ public final class MicrosoftClientBuilder<T> {
             String authenticationEndpoint, //
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer,
             Optional<AccessTokenProvider> accessTokenProviderOverride, //
-            Optional<Authenticator> authenticator, List<SchemaInfo> schemas) {
+            Optional<Authenticator> authenticator, List<SchemaInfo> schemas, PathStyle pathStyle) {
         final Authenticator auth;
         if (authenticator.isPresent()) {
             auth = authenticator.get();
@@ -486,7 +499,7 @@ public final class MicrosoftClientBuilder<T> {
         }
         return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
                 proxyUsername, proxyPassword, supplier, httpClientBuilderExtras, creator,
-                authenticationEndpoint, httpServiceTransformer, schemas);
+                authenticationEndpoint, httpServiceTransformer, schemas, pathStyle);
     }
 
     private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs,
@@ -513,11 +526,11 @@ public final class MicrosoftClientBuilder<T> {
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
             Creator<T> creator, String authenticationEndpoint, //
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer, //
-            List<SchemaInfo> schemas) {
+            List<SchemaInfo> schemas, PathStyle pathStyle) {
         final Supplier<CloseableHttpClient> clientSupplier = createClientSupplier(connectTimeoutMs,
                 readTimeoutMs, proxyHost, proxyPort, proxyUsername, proxyPassword, supplier,
                 httpClientBuilderExtras);
-        Path basePath = new Path(baseUrl, PathStyle.IDENTIFIERS_AS_SEGMENTS);
+        Path basePath = new Path(baseUrl, pathStyle);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
                 clientSupplier, //
