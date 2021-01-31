@@ -436,7 +436,8 @@
         <Member Name="domainJoinedDevice" Value="3"/>
         <Member Name="approvedApplication" Value="4"/>
         <Member Name="compliantApplication" Value="5"/>
-        <Member Name="unknownFutureValue" Value="6"/>
+        <Member Name="passwordChange" Value="6"/>
+        <Member Name="unknownFutureValue" Value="7"/>
       </EnumType>
       <EnumType Name="conditionalAccessPolicyState">
         <Member Name="enabled" Value="0"/>
@@ -2687,6 +2688,7 @@
         <Property Name="publisherDomain" Type="Edm.String"/>
         <Property Name="requiredResourceAccess" Type="Collection(graph.requiredResourceAccess)" Nullable="false"/>
         <Property Name="signInAudience" Type="Edm.String"/>
+        <Property Name="spa" Type="graph.spaApplication"/>
         <Property Name="tags" Type="Collection(Edm.String)" Nullable="false"/>
         <Property Name="tokenEncryptionKeyId" Type="Edm.Guid"/>
         <Property Name="web" Type="graph.webApplication"/>
@@ -2784,6 +2786,9 @@
       <ComplexType Name="resourceAccess">
         <Property Name="id" Type="Edm.Guid" Nullable="false"/>
         <Property Name="type" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="spaApplication">
+        <Property Name="redirectUris" Type="Collection(Edm.String)" Nullable="false"/>
       </ComplexType>
       <ComplexType Name="webApplication">
         <Property Name="homePageUrl" Type="Edm.String"/>
@@ -4630,6 +4635,7 @@
         <Property Name="locations" Type="graph.conditionalAccessLocations"/>
         <Property Name="platforms" Type="graph.conditionalAccessPlatforms"/>
         <Property Name="signInRiskLevels" Type="Collection(graph.riskLevel)" Nullable="false"/>
+        <Property Name="userRiskLevels" Type="Collection(graph.riskLevel)" Nullable="false"/>
         <Property Name="users" Type="graph.conditionalAccessUsers" Nullable="false"/>
       </ComplexType>
       <ComplexType Name="conditionalAccessLocations">
