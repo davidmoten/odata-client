@@ -39,7 +39,7 @@
         <changelog.version>2.2</changelog.version>
 
         <jackson.version>2.12.1</jackson.version>
-        <junit.version>4.13.1</junit.version>
+        <junit.version>4.13.2</junit.version>
         <olingo.version>4.8.0</olingo.version>
         <httpclient.version>4.5.13</httpclient.version>
         <slf4j.version>1.7.30</slf4j.version>
