@@ -79,6 +79,10 @@
                                     <namespace>microsoft.graph.termStore</namespace>
                                     <packageName>odata.msgraph.client.beta.termStore</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.ediscovery</namespace>
+                                    <packageName>odata.msgraph.client.beta.ediscovery</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>
