@@ -132,8 +132,8 @@ public class ApacheHttpClientHttpService implements HttpService {
                 } else {
                     bytes = null;
                 }
-                if (log.isDebugEnabled() ) {
-                    log.debug("response text=\n{}", new String(bytes, StandardCharsets.UTF_8));
+                if (log.isDebugEnabled()) {
+                    log.debug("response text=\n{}", bytes == null ? "null" :new String(bytes, StandardCharsets.UTF_8));
                 }
                 return new HttpResponse(statusCode, bytes);
             }
