@@ -14,8 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.glassfish.jaxb.runtime.v2.runtime.property.Property;
-
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
