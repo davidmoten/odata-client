@@ -46,6 +46,14 @@ public final class Context {
         return new HashMap<>(properties);
     }
     
+    public boolean propertyIsTrue(String name) {
+        return "true".equalsIgnoreCase(String.valueOf(properties.get(name)));
+    }
+    
+    public boolean propertyIsFalse(String name) {
+        return "false".equalsIgnoreCase(String.valueOf(properties.get(name)));
+    }
+    
     public List<SchemaInfo> schemas() {
         return schemas;
     }

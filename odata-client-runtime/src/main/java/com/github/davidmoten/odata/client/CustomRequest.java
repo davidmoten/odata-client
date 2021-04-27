@@ -125,7 +125,7 @@ public final class CustomRequest {
         UrlInfo info = getInfo(context, absoluteUrl, headers, options);
         HttpResponse response = context.service().submitWithContent(method, absoluteUrl, info.requestHeaders, content,
                 options);
-        RequestHelper.checkResponseCode(info.contextPath, response, 200, 299);
+        RequestHelper.checkResponseCodeOk(info.contextPath, response);
         return response.getText();
     }
     

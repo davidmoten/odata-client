@@ -88,8 +88,12 @@ public final class RequestHelper {
                             + expectedResponseCodeMax + "], message=\n" + response.getText());
         }
     }
+    
+    public static void checkResponseCodeOk(ContextPath cp, HttpResponse response) {
+        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
+    }
 
-    public static void checkResponseCode(ContextPath cp, HttpResponse response,
+    private static void checkResponseCode(ContextPath cp, HttpResponse response,
             int expectedResponseCodeMin, int expectedResponseCodeMax) {
         checkResponseCode(cp.toUrl(), response, expectedResponseCodeMin, expectedResponseCodeMax);
     }
@@ -98,7 +102,7 @@ public final class RequestHelper {
             int expectedResponseCode) {
         checkResponseCode(cp, response, expectedResponseCode, expectedResponseCode);
     }
-
+    
     public static <T, S> T getWithParametricType(ContextPath contextPath, Class<T> cls,
             Class<S> parametricTypeClass, RequestOptions options) {
         // build the url
@@ -140,7 +144,7 @@ public final class RequestHelper {
         HttpService service = cp.context().service();
         final HttpResponse response = service.post(url, h, json, options);
 
-        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
+        checkResponseCodeOk(cp, response);
     }
 
     public static <T> T postAny(Object object, ContextPath contextPath, Class<T> responseClass,
@@ -155,8 +159,8 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
 
-        // deserialize
-        checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
+        // TODO could be tightened to 201 for POST create but POST Action calls need to accept any successful code
+        checkResponseCodeOk(cp, response);
 
         String text = response.getText();
         // deserialize
@@ -254,7 +258,7 @@ public final class RequestHelper {
         // get the response
         HttpService service = cp.context().service();
         final HttpResponse response = service.submitWithContent(method, url, h, json, options);
-        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
+        checkResponseCodeOk(cp, response);
         // TODO is service returning the entity that we should use rather than the
         // original?
         return entity;
@@ -271,7 +275,7 @@ public final class RequestHelper {
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
         final HttpResponse response = service.submitWithContent(method, cp.toUrl(), h, in, length, options);
-        checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
+        checkResponseCodeOk(cp, response);
     }
 
     public static void addContentLengthHeader(List<RequestHeader> h, int length) {
@@ -372,8 +376,7 @@ public final class RequestHelper {
             }
             contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         }
-        if (editLink == null && "false"
-                .equals(contextPath.context().getProperty(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA))) {
+        if (editLink == null && contextPath.context().propertyIsFalse(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA)) {
             return Optional.empty();
         } else {
             if (contentType == null) {
@@ -389,7 +392,7 @@ public final class RequestHelper {
                 editLink = concatenate(contextPath.context().service().getBasePath().toUrl(),
                         editLink);
             }
-            if ("true".equals(contextPath.context().getProperty(Properties.MODIFY_STREAM_EDIT_LINK)) && entity != null) {
+            if (contextPath.context().propertyIsTrue(Properties.MODIFY_STREAM_EDIT_LINK) && entity != null) {
                 // Bug fix for Microsoft Graph only?
                 // When a collection is returned the editLink is terminated with the subclass if
                 // the collection type has subclasses. For example when a collection of
