@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -128,7 +129,12 @@ public class ApacheHttpClientHttpService implements HttpService {
                 log.debug("executed request, code={}", statusCode);
                 final byte[] bytes;
                 if (doInput || isError(statusCode)) {
-                    bytes = Util.read(response.getEntity().getContent());
+                    HttpEntity entity = response.getEntity();
+                    if (entity == null) {
+                        bytes = null;
+                    } else {
+                        bytes = Util.read(entity.getContent());
+                    }
                 } else {
                     bytes = null;
                 }
