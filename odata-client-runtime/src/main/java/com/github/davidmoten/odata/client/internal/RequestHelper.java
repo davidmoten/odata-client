@@ -453,6 +453,10 @@ public final class RequestHelper {
             ODataType item, String fieldName, String base64) {
         Preconditions.checkNotNull(fieldName);
         String readLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaReadLink");
+        if (readLink == null) {
+            // account for DriveItem special behaviour in Graph (annoying!)
+            readLink = (String) item.getUnmappedFields().get("@microsoft.graph.downloadUrl");
+        }
         String contentType = (String) item.getUnmappedFields()
                 .get(fieldName + "@odata.mediaContentType");
         if (readLink == null && base64 != null) {
