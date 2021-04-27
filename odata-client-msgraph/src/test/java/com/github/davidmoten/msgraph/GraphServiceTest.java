@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1164,6 +1166,38 @@ public class GraphServiceTest {
         .query("endDateTime", "2019-11-10T19:00:00-08:00") //
         .get();
     }
+    
+    @Test
+    public void testCreateCanReturn200Issue123() {
+        // doesn't comply with OData spec but we allow it for Graph
+        checkCreate(200);
+    }
+    
+    @Test
+    public void testCreateCanReturn201Issue123() {
+        // complies with OData spec
+        checkCreate(201);
+    }
+
+    private void checkCreate(int responseCode) {
+        GraphService client = clientBuilder() //
+                .expectRequest("/applications/abc/addPassword") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(responseCode) //
+                .withPayload("/request-applications-add-password.json") //
+                .withResponse("/response-applications-add-password.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON) //
+                .build();
+        client.applications("abc") //
+                .addPassword(PasswordCredential //
+                        .builder() //
+                        .displayName("fred") //
+                        .endDateTime(OffsetDateTime.of(2021, 3, 28, 13, 45, 21, 0, ZoneOffset.UTC)) //
+                        .build()) //
+                .get();
+    }
+    
 
     // test paged complex type
     //

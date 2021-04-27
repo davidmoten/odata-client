@@ -50,7 +50,7 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
             ContextPath cp = contextPath.addQueries(options.getQueries());
             List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal", false);
             HttpResponse r = cp.context().service().get(options.getUrlOverride().orElse(cp.toUrl()), h, options);
-            RequestHelper.checkResponseCode(cp, r, 200, 299);
+            RequestHelper.checkResponseCodeOk(cp, r);
             return cp.context().serializer().deserializeCollectionPage(r.getText(), cls, cp, h, options,
                     null);
         }

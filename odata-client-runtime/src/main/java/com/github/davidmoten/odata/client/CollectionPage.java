@@ -141,7 +141,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
             // odata 4 says the "value" element of the returned json is an array of
             // serialized T see example at
             // https://www.odata.org/getting-started/basic-tutorial/#entitySet
-            RequestHelper.checkResponseCode(contextPath, response, 200, 299);
+            RequestHelper.checkResponseCodeOk(contextPath, response);
             CollectionPage<T> page = contextPath.context().serializer().deserializeCollectionPage(
 			        response.getText(), cls, contextPath, requestHeaders, options, listener);
             listener.accept(page);

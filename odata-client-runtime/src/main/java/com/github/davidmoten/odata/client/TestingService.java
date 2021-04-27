@@ -216,8 +216,7 @@ public final class TestingService {
                 @Override
                 public HttpResponse get(String url, List<RequestHeader> requestHeaders,
                         HttpRequestOptions options) {
-                    log("Available responses:");
-                    responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    logExpected();
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
                     log("Getting:\n" + key);
                     Response response = responses.get(key);
@@ -239,6 +238,11 @@ public final class TestingService {
                     }
                 }
 
+                private void logExpected() {
+                    log("Expected responses:");
+                    responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                }
+
                 @Override
                 public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
                         InputStream content, int length, HttpRequestOptions options) {
@@ -252,8 +256,7 @@ public final class TestingService {
                     log(method + " called  at " + url);
                     String text = Util.utf8(content);
                     log(text);
-                    log("Available requests:");
-                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    logExpected();
                     log("Calling:");
                     String key = BuilderBase.toKey(method, url, requestHeaders);
                     log(key);
@@ -306,7 +309,7 @@ public final class TestingService {
                     log("POST called at " + url);
                     String text = Util.utf8(content);
                     log(text);
-                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    logExpected();
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.POST, url, requestHeaders);
                     log(key);
@@ -333,7 +336,7 @@ public final class TestingService {
                         } else {
                             throw new RuntimeException(
                                     "request does not match expected.\n==== Received ====\n" + text
-                                            + "\n==== Expected =====\n" + requestExpected);
+                                            + "\n==== Expected =====\n" + new String(requestExpected, StandardCharsets.UTF_8));
                         }
                     } catch (IOException | URISyntaxException e) {
                         throw new RuntimeException(e);
@@ -344,7 +347,7 @@ public final class TestingService {
                 public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
                         HttpRequestOptions options) {
                     log("DELETE called at " + url);
-                    requests.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
+                    logExpected();
                     log("Calling:");
                     String key = BuilderBase.toKey(HttpMethod.DELETE, url, requestHeaders);
                     log(key);
