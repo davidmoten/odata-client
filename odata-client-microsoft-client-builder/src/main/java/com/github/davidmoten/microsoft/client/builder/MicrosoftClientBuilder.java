@@ -544,7 +544,6 @@ public final class MicrosoftClientBuilder<T> {
         p.put(Properties.MODIFY_STREAM_EDIT_LINK, "true");
         p.put(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA, "true");
         p.put(Properties.ACTION_OR_FUNCTION_SEGMENT_SIMPLE_NAME, "true");
-        p.put(Properties.CREATE_RETURNS_ANY_HTTP_OK_STATUS_CODE, "true");
         return p;
     }
 

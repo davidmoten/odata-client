@@ -1170,16 +1170,30 @@ public class GraphServiceTest {
     @Test
     public void testCreateCanReturn200Issue123() {
         // doesn't comply with OData spec but we allow it for Graph
-        checkCreate(200);
+        checkCreateApplicationPassword(200);
+    }
+    
+    @Test
+    public void testNPEInRemovePasswordIssue123() {
+        GraphService client = clientBuilder() //
+                .expectRequest("/applications/abc/removePassword") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(200) //
+                .withPayload("/request-applications-remove-password.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON) //
+                .withResponse("/empty.txt") //
+                .build();
+        client.applications("abc").removePassword("123").call();
     }
     
     @Test
     public void testCreateCanReturn201Issue123() {
         // complies with OData spec
-        checkCreate(201);
+        checkCreateApplicationPassword(201);
     }
 
-    private void checkCreate(int responseCode) {
+    private void checkCreateApplicationPassword(int responseCode) {
         GraphService client = clientBuilder() //
                 .expectRequest("/applications/abc/addPassword") //
                 .withMethod(HttpMethod.POST) //

@@ -35,12 +35,4 @@ public final class Properties {
      */
     public static final String ATTEMPT_STREAM_WHEN_NO_METADATA = "attempt.stream.when.no.metadata";
 
-    
-    /**
-     * When a create action occurrs the OData specified response code is 201 (
-     * Created). If this property is set to "true" then any response code between
-     * 200 and 299 will be accepted.
-     */
-    public static final String CREATE_RETURNS_ANY_HTTP_OK_STATUS_CODE = "create.returns.any.http.ok.status.code";
-
 }

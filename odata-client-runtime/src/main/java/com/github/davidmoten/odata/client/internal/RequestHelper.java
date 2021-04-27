@@ -161,13 +161,8 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
 
-        if (contextPath.context()
-                .propertyIsTrue(Properties.CREATE_RETURNS_ANY_HTTP_OK_STATUS_CODE)) {
-            checkResponseCodeOk(cp, response);
-        } else {
-            // strict approach according to OData spec
-            checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
-        }
+        // TODO could be tightened to 201 for POST create but POST Action calls need to accept any successful code
+        checkResponseCodeOk(cp, response);
 
         String text = response.getText();
         // deserialize
