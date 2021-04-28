@@ -48,13 +48,13 @@ public final class RequestHelper {
     /**
      * Returns the json from an HTTP GET of the url built from the contextPath and
      * options. In the case where the returned object is actually a sub-class of T
-     * we lookup the sub-class from context schemaInfos based on the namespaced type of the
-     * return object.
+     * we lookup the sub-class from context schemaInfos based on the namespaced type
+     * of the return object.
      * 
-     * @param <T>              return object type
-     * @param contextPath      context and current path
-     * @param returnCls        return class
-     * @param options          request options
+     * @param <T>         return object type
+     * @param contextPath context and current path
+     * @param returnCls   return class
+     * @param options     request options
      * @return object hydrated from json
      */
     public static <T> T get(ContextPath contextPath, Class<T> returnCls, RequestOptions options) {
@@ -72,7 +72,8 @@ public final class RequestHelper {
         // Though cls might be Class<Attachment> we might actually want to return a
         // sub-class like FileAttachment (which extends Attachment). This method returns
         // the actual sub-class by inspecting the json response.
-        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), returnCls, response.getText());
+        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), returnCls,
+                response.getText());
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
         return cp.context().serializer().deserialize(response.getText(), c, contextPath, false);
@@ -88,7 +89,7 @@ public final class RequestHelper {
                             + expectedResponseCodeMax + "], message=\n" + response.getText());
         }
     }
-    
+
     public static void checkResponseCodeOk(ContextPath cp, HttpResponse response) {
         checkResponseCode(cp, response, HTTP_OK_MIN, HTTP_OK_MAX);
     }
@@ -102,7 +103,7 @@ public final class RequestHelper {
             int expectedResponseCode) {
         checkResponseCode(cp, response, expectedResponseCode, expectedResponseCode);
     }
-    
+
     public static <T, S> T getWithParametricType(ContextPath contextPath, Class<T> cls,
             Class<S> parametricTypeClass, RequestOptions options) {
         // build the url
@@ -120,8 +121,8 @@ public final class RequestHelper {
         Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), cls, text);
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserializeWithParametricType(text, c,
-                parametricTypeClass, contextPath, false);
+        return cp.context().serializer().deserializeWithParametricType(text, c, parametricTypeClass,
+                contextPath, false);
     }
 
     // designed for saving a new entity and returning that entity
@@ -159,7 +160,8 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
 
-        // TODO could be tightened to 201 for POST create but POST Action calls need to accept any successful code
+        // TODO could be tightened to 201 for POST create but POST Action calls need to
+        // accept any successful code
         checkResponseCodeOk(cp, response);
 
         String text = response.getText();
@@ -191,8 +193,8 @@ public final class RequestHelper {
         Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), cls, text);
         // check if we need to deserialize into a subclass of T (e.g. return a
         // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserializeWithParametricType(text, c,
-                parametricTypeClass, contextPath, false);
+        return cp.context().serializer().deserializeWithParametricType(text, c, parametricTypeClass,
+                contextPath, false);
     }
 
     public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
@@ -274,7 +276,8 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
-        final HttpResponse response = service.submitWithContent(method, cp.toUrl(), h, in, length, options);
+        final HttpResponse response = service.submitWithContent(method, cp.toUrl(), h, in, length,
+                options);
         checkResponseCodeOk(cp, response);
     }
 
@@ -297,7 +300,7 @@ public final class RequestHelper {
                     return c;
                 }
             }
-        } 
+        }
         return cls;
     }
 
@@ -360,7 +363,7 @@ public final class RequestHelper {
                     options.getRequestHeaders(), options);
         }
     }
-    
+
     // for HasStream case (only for entities, not for complexTypes)
     public static Optional<StreamProvider> createStream(ContextPath contextPath,
             ODataEntityType entity) {
@@ -376,7 +379,8 @@ public final class RequestHelper {
             }
             contentType = (String) entity.getUnmappedFields().get("@odata.mediaContentType");
         }
-        if (editLink == null && contextPath.context().propertyIsFalse(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA)) {
+        if (editLink == null && contextPath.context()
+                .propertyIsFalse(Properties.ATTEMPT_STREAM_WHEN_NO_METADATA)) {
             return Optional.empty();
         } else {
             if (contentType == null) {
@@ -392,7 +396,8 @@ public final class RequestHelper {
                 editLink = concatenate(contextPath.context().service().getBasePath().toUrl(),
                         editLink);
             }
-            if (contextPath.context().propertyIsTrue(Properties.MODIFY_STREAM_EDIT_LINK) && entity != null) {
+            if (contextPath.context().propertyIsTrue(Properties.MODIFY_STREAM_EDIT_LINK)
+                    && entity != null) {
                 // Bug fix for Microsoft Graph only?
                 // When a collection is returned the editLink is terminated with the subclass if
                 // the collection type has subclasses. For example when a collection of
@@ -453,21 +458,19 @@ public final class RequestHelper {
             ODataType item, String fieldName, String base64) {
         Preconditions.checkNotNull(fieldName);
         String readLink = (String) item.getUnmappedFields().get(fieldName + "@odata.mediaReadLink");
-        if (readLink == null) {
-            // account for DriveItem special behaviour in Graph (annoying!)
-            readLink = (String) item.getUnmappedFields().get("@microsoft.graph.downloadUrl");
-        }
         String contentType = (String) item.getUnmappedFields()
                 .get(fieldName + "@odata.mediaContentType");
-        if (readLink == null && base64 != null) {
-            return Optional.empty();
+        if (readLink == null && base64 == null) {
+           return Optional.empty();
         } else {
             if (contentType == null) {
                 contentType = CONTENT_TYPE_APPLICATION_OCTET_STREAM;
             }
             // TODO support relative editLink?
             Context context = contextPath.context();
-            Path path = new Path(readLink, contextPath.path().style()).addSegment("$value");
+            // path won't be used if readLink is null because base64 is not null
+            // $value is not appended for a stream property
+            Path path = new Path(readLink, contextPath.path().style());
             return Optional.of(new StreamProvider( //
                     new ContextPath(context, path), //
                     RequestOptions.EMPTY, //
