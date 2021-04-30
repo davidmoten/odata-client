@@ -121,23 +121,24 @@ public final class Generator {
 		schemas //
 				.forEach(s -> log("  " + s.getNamespace()));
 
+		log("Types:");
 		schemas //
 				.stream() //
 				.flatMap(s -> Util.filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
 						.map(t -> new SchemaAndType<TEntityType>(s, t))) //
 				.map(x -> names.toTypeWithNamespace(x.schema, x.type.getName())) //
-				.forEach(System.out::println);
+				.forEach(x -> log("  " + x);
 
 		log("-----------------------------------");
-		log("replacing aliases");
+		log("Replacing aliases");
 		Util.replaceAliases(schemas);
 
-		log("finding collection types");
+		log("Finding collection types");
 		Set<String> collectionTypes = findTypesUsedInCollections(names, schemas);
 
 		for (Schema schema : schemas) {
 
-			log("generating for namespace=" + schema.getNamespace());
+			log("Generating for namespace=" + schema.getNamespace());
 
 			log("  creating maps");
 			Map<String, List<Action>> typeActions = createTypeActions(schema, names, false);
@@ -168,7 +169,7 @@ public final class Generator {
 
 			// write entityTypes
 			log("  writing entities");
-			Util.types(schema, TEntityType.class) //
+			Util.types(schema, TEntityType.class) // 
 					.forEach(x -> writeEntity(x, typeActions, typeFunctions));
 
 			// write complexTypes
@@ -1195,8 +1196,14 @@ public final class Generator {
 	private static List<String> fieldNames(EntityType et) {
 	    if (et.isAbstract() && et.getKeys().isEmpty()) {
 	        return Collections.emptyList();
+	    } else {
+	        Optional<KeyElement> firstKeyType = et.getFirstKey();
+	        if (!firstKeyType.isPresent()) {
+	            return Collections.emptyList();
+	        } else {
+	            return fieldNames(firstKeyType.get());
+	        }
 	    }
-		return fieldNames(et.getFirstKey());
 	}
 
 	private static List<String> fieldNames(KeyElement key) {
@@ -1207,30 +1214,35 @@ public final class Generator {
 				.collect(Collectors.toList());
 	}
 
-	private KeyInfo getKeyInfo(EntityType et, Imports imports) {
-		KeyElement key = et.getFirstKey();
+    private KeyInfo getKeyInfo(EntityType et, Imports imports) {
+        Optional<KeyElement> firstKey = et.getFirstKey();
+        if (!firstKey.isPresent()) {
+            return new KeyInfo("", "");
+        } else {
+            KeyElement key = et.getFirstKey().get();
 
-		String typedParams = key //
-				.getPropertyRefs() //
-				.stream() //
-				.map(PropertyRef::getReferredProperty) //
-				.map(z -> String.format("%s %s", z.getImportedType(imports), z.getFieldName())) //
-				.collect(Collectors.joining(", "));
+            String typedParams = key //
+                    .getPropertyRefs() //
+                    .stream() //
+                    .map(PropertyRef::getReferredProperty) //
+                    .map(z -> String.format("%s %s", z.getImportedType(imports), z.getFieldName())) //
+                    .collect(Collectors.joining(", "));
 
-		String addKeys = getAddKeys(et, imports, key);
-		return new KeyInfo(typedParams, addKeys);
-	}
+            String addKeys = getAddKeys(et, imports, key);
+            return new KeyInfo(typedParams, addKeys);
+        }
+    }
 
 	private String getAddKeys(EntityType et, Imports imports) {
 	    if (et.isAbstract() && et.getKeys().isEmpty()) {
 	        return "";
 	    }
-		KeyElement key = et.getFirstKey();
-		return getAddKeys(et, imports, key);
+	    return et.getFirstKey().map(x -> getAddKeys(et, imports, x)).orElse("");
 	}
 
 	private String getAddKeys(EntityType et, Imports imports, KeyElement key) {
 		String addKeys = et.getFirstKey() //
+		        .get() //
 				.getPropertyRefs() //
 				.stream() //
 				.map(PropertyRef::getReferredProperty) //
@@ -1468,7 +1480,7 @@ public final class Generator {
 		fields //
 				.forEach(f -> p.format("%sprivate %s %s;\n", indent, f.importedType, f.fieldName));
 		if (!fields.isEmpty()) {
-			p.format("%sprivate %s changedFields = new %s();\n", indent, imports.add(ChangedFields.class),
+			p.format("%sprivate %s changedFields = ChangedFields.EMPTY;\n", indent, imports.add(ChangedFields.class),
 					imports.add(ChangedFields.class));
 		}
 
@@ -1503,7 +1515,11 @@ public final class Generator {
 		p.format("%s%s _x = new %s();\n", indent.right(), simpleClassName, simpleClassName);
 		p.format("%s_x.contextPath = null;\n", indent);
 		if (t instanceof EntityType) {
-			p.format("%s_x.changedFields = changedFields;\n", indent);
+		    if (fields.isEmpty()) {
+		        p.format("%s_x.changedFields = %s.EMPTY;\n", indent, imports.add(ChangedFields.class));
+		    } else {
+			    p.format("%s_x.changedFields = changedFields;\n", indent);
+		    }
 		}
 		p.format("%s_x.unmappedFields = new %s();\n", indent, imports.add(UnmappedFieldsImpl.class));
 		p.format("%s_x.odataType = \"%s\";\n", indent, t.getFullType());

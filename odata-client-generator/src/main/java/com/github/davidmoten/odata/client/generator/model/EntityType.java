@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client.generator.model;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.oasisopen.odata.csdl.v4.Schema;
@@ -128,11 +129,12 @@ public final class EntityType extends Structure<TEntityType> {
                 .isPresent();
     }
 
-    public KeyElement getFirstKey() {
+    public Optional<KeyElement> getFirstKey() {
         if (getKeys().isEmpty()) {
-            throw new IllegalStateException("Entity " + getName() + " has no keys!");
+            //throw new IllegalStateException("Entity " + getName() + " has no keys!");
+            return Optional.empty();
         }
-        return getKeys().get(0);
+        return Optional.of(getKeys().get(0));
     }
 
     @Override
