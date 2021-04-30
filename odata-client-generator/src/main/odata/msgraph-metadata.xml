@@ -21,11 +21,48 @@
         <Member Name="azureAD" Value="1"/>
         <Member Name="unknownFutureValue" Value="2"/>
       </EnumType>
+      <EnumType Name="initiatorType">
+        <Member Name="user" Value="0"/>
+        <Member Name="application" Value="1"/>
+        <Member Name="system" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
       <EnumType Name="operationResult">
         <Member Name="success" Value="0"/>
         <Member Name="failure" Value="1"/>
         <Member Name="timeout" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="provisioningAction">
+        <Member Name="other" Value="0"/>
+        <Member Name="create" Value="1"/>
+        <Member Name="delete" Value="2"/>
+        <Member Name="disable" Value="3"/>
+        <Member Name="update" Value="4"/>
+        <Member Name="stagedDelete" Value="5"/>
+        <Member Name="unknownFutureValue" Value="6"/>
+      </EnumType>
+      <EnumType Name="provisioningResult">
+        <Member Name="success" Value="0"/>
+        <Member Name="failure" Value="1"/>
+        <Member Name="skipped" Value="2"/>
+        <Member Name="warning" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="provisioningStatusErrorCategory">
+        <Member Name="failure" Value="0"/>
+        <Member Name="nonServiceFailure" Value="1"/>
+        <Member Name="success" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="provisioningStepType">
+        <Member Name="import" Value="0"/>
+        <Member Name="scoping" Value="1"/>
+        <Member Name="matching" Value="2"/>
+        <Member Name="processing" Value="3"/>
+        <Member Name="referenceResolution" Value="4"/>
+        <Member Name="export" Value="5"/>
+        <Member Name="unknownFutureValue" Value="6"/>
       </EnumType>
       <EnumType Name="riskDetail">
         <Member Name="none" Value="0"/>
@@ -102,6 +139,37 @@
         <Member Name="deviceBasedPush" Value="0"/>
         <Member Name="push" Value="1"/>
         <Member Name="any" Value="2"/>
+      </EnumType>
+      <EnumType Name="identityUserFlowAttributeDataType">
+        <Member Name="string" Value="1"/>
+        <Member Name="boolean" Value="2"/>
+        <Member Name="int64" Value="3"/>
+        <Member Name="stringCollection" Value="4"/>
+        <Member Name="dateTime" Value="5"/>
+        <Member Name="unknownFutureValue" Value="6"/>
+      </EnumType>
+      <EnumType Name="identityUserFlowAttributeInputType">
+        <Member Name="textBox" Value="1"/>
+        <Member Name="dateTimeDropdown" Value="2"/>
+        <Member Name="radioSingleSelect" Value="3"/>
+        <Member Name="dropdownSingleSelect" Value="4"/>
+        <Member Name="emailBox" Value="5"/>
+        <Member Name="checkboxMultiSelect" Value="6"/>
+      </EnumType>
+      <EnumType Name="identityUserFlowAttributeType">
+        <Member Name="builtIn" Value="1"/>
+        <Member Name="custom" Value="2"/>
+        <Member Name="required" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="userFlowType">
+        <Member Name="signUp" Value="1"/>
+        <Member Name="signIn" Value="2"/>
+        <Member Name="signUpOrSignIn" Value="3"/>
+        <Member Name="passwordReset" Value="4"/>
+        <Member Name="profileUpdate" Value="5"/>
+        <Member Name="resourceOwner" Value="6"/>
+        <Member Name="unknownFutureValue" Value="7"/>
       </EnumType>
       <EnumType Name="allowInvitesFrom">
         <Member Name="none" Value="0"/>
@@ -432,6 +500,34 @@
         <Member Name="third" Value="2"/>
         <Member Name="fourth" Value="3"/>
         <Member Name="last" Value="4"/>
+      </EnumType>
+      <EnumType Name="stagedFeatureName">
+        <Member Name="passthroughAuthentication" Value="0"/>
+        <Member Name="seamlessSso" Value="1"/>
+        <Member Name="passwordHashSync" Value="2"/>
+        <Member Name="emailAsAlternateId" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="accessReviewInstanceDecisionItemFilterByCurrentUserOptions">
+        <Member Name="reviewer" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="accessReviewInstanceFilterByCurrentUserOptions">
+        <Member Name="reviewer" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="accessReviewScheduleDefinitionFilterByCurrentUserOptions">
+        <Member Name="reviewer" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="consentRequestFilterByCurrentUserOptions">
+        <Member Name="reviewer" Value="0"/>
+        <Member Name="unknownFutureValue" Value="1"/>
+      </EnumType>
+      <EnumType Name="agreementAcceptanceState">
+        <Member Name="accepted" Value="2"/>
+        <Member Name="declined" Value="3"/>
+        <Member Name="unknownFutureValue" Value="5"/>
       </EnumType>
       <EnumType Name="cloudAppSecuritySessionControlType">
         <Member Name="mcasConfigured" Value="0"/>
@@ -1430,6 +1526,161 @@
         <Member Name="Completed" Value="2"/>
         <Member Name="Failed" Value="3"/>
       </EnumType>
+      <EnumType Name="printColorMode">
+        <Member Name="blackAndWhite" Value="0"/>
+        <Member Name="grayscale" Value="1"/>
+        <Member Name="color" Value="2"/>
+        <Member Name="auto" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="printDuplexMode">
+        <Member Name="flipOnLongEdge" Value="0"/>
+        <Member Name="flipOnShortEdge" Value="1"/>
+        <Member Name="oneSided" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="printerFeedOrientation">
+        <Member Name="longEdgeFirst" Value="0"/>
+        <Member Name="shortEdgeFirst" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="printerProcessingState">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="idle" Value="1"/>
+        <Member Name="processing" Value="2"/>
+        <Member Name="stopped" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="printerProcessingStateDetail">
+        <Member Name="paused" Value="0"/>
+        <Member Name="mediaJam" Value="2"/>
+        <Member Name="mediaNeeded" Value="3"/>
+        <Member Name="mediaLow" Value="4"/>
+        <Member Name="mediaEmpty" Value="5"/>
+        <Member Name="coverOpen" Value="6"/>
+        <Member Name="interlockOpen" Value="7"/>
+        <Member Name="outputTrayMissing" Value="9"/>
+        <Member Name="outputAreaFull" Value="10"/>
+        <Member Name="markerSupplyLow" Value="11"/>
+        <Member Name="markerSupplyEmpty" Value="12"/>
+        <Member Name="inputTrayMissing" Value="13"/>
+        <Member Name="outputAreaAlmostFull" Value="14"/>
+        <Member Name="markerWasteAlmostFull" Value="15"/>
+        <Member Name="markerWasteFull" Value="16"/>
+        <Member Name="fuserOverTemp" Value="17"/>
+        <Member Name="fuserUnderTemp" Value="18"/>
+        <Member Name="other" Value="19"/>
+        <Member Name="none" Value="20"/>
+        <Member Name="movingToPaused" Value="21"/>
+        <Member Name="shutdown" Value="22"/>
+        <Member Name="connectingToDevice" Value="23"/>
+        <Member Name="timedOut" Value="24"/>
+        <Member Name="stopping" Value="25"/>
+        <Member Name="stoppedPartially" Value="26"/>
+        <Member Name="tonerLow" Value="27"/>
+        <Member Name="tonerEmpty" Value="28"/>
+        <Member Name="spoolAreaFull" Value="29"/>
+        <Member Name="doorOpen" Value="30"/>
+        <Member Name="opticalPhotoConductorNearEndOfLife" Value="31"/>
+        <Member Name="opticalPhotoConductorLifeOver" Value="32"/>
+        <Member Name="developerLow" Value="33"/>
+        <Member Name="developerEmpty" Value="34"/>
+        <Member Name="interpreterResourceUnavailable" Value="35"/>
+        <Member Name="unknownFutureValue" Value="36"/>
+      </EnumType>
+      <EnumType Name="printEvent">
+        <Member Name="jobStarted" Value="0"/>
+        <Member Name="unknownFutureValue" Value="1"/>
+      </EnumType>
+      <EnumType Name="printFinishing">
+        <Member Name="none" Value="3"/>
+        <Member Name="staple" Value="4"/>
+        <Member Name="punch" Value="5"/>
+        <Member Name="cover" Value="6"/>
+        <Member Name="bind" Value="7"/>
+        <Member Name="saddleStitch" Value="8"/>
+        <Member Name="stitchEdge" Value="9"/>
+        <Member Name="stapleTopLeft" Value="20"/>
+        <Member Name="stapleBottomLeft" Value="21"/>
+        <Member Name="stapleTopRight" Value="22"/>
+        <Member Name="stapleBottomRight" Value="23"/>
+        <Member Name="stitchLeftEdge" Value="24"/>
+        <Member Name="stitchTopEdge" Value="25"/>
+        <Member Name="stitchRightEdge" Value="26"/>
+        <Member Name="stitchBottomEdge" Value="27"/>
+        <Member Name="stapleDualLeft" Value="28"/>
+        <Member Name="stapleDualTop" Value="29"/>
+        <Member Name="stapleDualRight" Value="30"/>
+        <Member Name="stapleDualBottom" Value="31"/>
+        <Member Name="unknownFutureValue" Value="32"/>
+      </EnumType>
+      <EnumType Name="printJobProcessingState">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="pending" Value="1"/>
+        <Member Name="processing" Value="2"/>
+        <Member Name="paused" Value="3"/>
+        <Member Name="stopped" Value="4"/>
+        <Member Name="completed" Value="5"/>
+        <Member Name="canceled" Value="6"/>
+        <Member Name="aborted" Value="7"/>
+        <Member Name="unknownFutureValue" Value="8"/>
+      </EnumType>
+      <EnumType Name="printJobStateDetail">
+        <Member Name="uploadPending" Value="0"/>
+        <Member Name="transforming" Value="1"/>
+        <Member Name="completedSuccessfully" Value="2"/>
+        <Member Name="completedWithWarnings" Value="3"/>
+        <Member Name="completedWithErrors" Value="4"/>
+        <Member Name="releaseWait" Value="5"/>
+        <Member Name="interpreting" Value="6"/>
+        <Member Name="unknownFutureValue" Value="7"/>
+      </EnumType>
+      <EnumType Name="printMultipageLayout">
+        <Member Name="clockwiseFromTopLeft" Value="0"/>
+        <Member Name="counterclockwiseFromTopLeft" Value="1"/>
+        <Member Name="counterclockwiseFromTopRight" Value="2"/>
+        <Member Name="clockwiseFromTopRight" Value="3"/>
+        <Member Name="counterclockwiseFromBottomLeft" Value="4"/>
+        <Member Name="clockwiseFromBottomLeft" Value="5"/>
+        <Member Name="counterclockwiseFromBottomRight" Value="6"/>
+        <Member Name="clockwiseFromBottomRight" Value="7"/>
+        <Member Name="unknownFutureValue" Value="8"/>
+      </EnumType>
+      <EnumType Name="printOperationProcessingState">
+        <Member Name="notStarted" Value="0"/>
+        <Member Name="running" Value="1"/>
+        <Member Name="succeeded" Value="2"/>
+        <Member Name="failed" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="printOrientation">
+        <Member Name="portrait" Value="3"/>
+        <Member Name="landscape" Value="4"/>
+        <Member Name="reverseLandscape" Value="5"/>
+        <Member Name="reversePortrait" Value="6"/>
+        <Member Name="unknownFutureValue" Value="7"/>
+      </EnumType>
+      <EnumType Name="printQuality">
+        <Member Name="low" Value="0"/>
+        <Member Name="medium" Value="1"/>
+        <Member Name="high" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="printScaling">
+        <Member Name="auto" Value="0"/>
+        <Member Name="shrinkToFit" Value="1"/>
+        <Member Name="fill" Value="2"/>
+        <Member Name="fit" Value="3"/>
+        <Member Name="none" Value="4"/>
+        <Member Name="unknownFutureValue" Value="5"/>
+      </EnumType>
+      <EnumType Name="printTaskProcessingState">
+        <Member Name="pending" Value="0"/>
+        <Member Name="processing" Value="1"/>
+        <Member Name="completed" Value="2"/>
+        <Member Name="aborted" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
       <EnumType Name="status">
         <Member Name="active" Value="0"/>
         <Member Name="updated" Value="1"/>
@@ -1749,6 +2000,12 @@
         <Member Name="typing" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
       </EnumType>
+      <EnumType Name="chatType">
+        <Member Name="oneOnOne" Value="0"/>
+        <Member Name="group" Value="1"/>
+        <Member Name="meeting" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
       <EnumType Name="clonableTeamParts" IsFlags="true">
         <Member Name="apps" Value="1"/>
         <Member Name="tabs" Value="2"/>
@@ -1765,6 +2022,12 @@
         <Member Name="store" Value="0"/>
         <Member Name="organization" Value="1"/>
         <Member Name="sideloaded" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="teamsAppPublishingState">
+        <Member Name="submitted" Value="0"/>
+        <Member Name="rejected" Value="1"/>
+        <Member Name="published" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
       </EnumType>
       <EnumType Name="teamsAsyncOperationStatus">
@@ -1798,6 +2061,10 @@
         <Member Name="public" Value="1"/>
         <Member Name="hiddenMembership" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="teamworkActivityTopicSource">
+        <Member Name="entityUrl" Value="0"/>
+        <Member Name="text" Value="1"/>
       </EnumType>
       <EnumType Name="scheduleChangeRequestActor">
         <Member Name="sender" Value="0"/>
@@ -1949,12 +2216,15 @@
         <Property Name="app" Type="graph.appIdentity"/>
         <Property Name="user" Type="graph.userIdentity"/>
       </ComplexType>
-      <ComplexType Name="userIdentity">
+      <ComplexType Name="identity" OpenType="true">
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="id" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="userIdentity" BaseType="graph.identity" OpenType="true">
         <Property Name="ipAddress" Type="Edm.String"/>
         <Property Name="userPrincipalName" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="detailsInfo" OpenType="true"/>
       <ComplexType Name="deviceDetail">
         <Property Name="browser" Type="Edm.String"/>
         <Property Name="deviceId" Type="Edm.String"/>
@@ -1969,6 +2239,9 @@
         <Property Name="latitude" Type="Edm.Double"/>
         <Property Name="longitude" Type="Edm.Double"/>
       </ComplexType>
+      <ComplexType Name="initiator" BaseType="graph.identity" OpenType="true">
+        <Property Name="initiatorType" Type="graph.initiatorType"/>
+      </ComplexType>
       <ComplexType Name="keyValue">
         <Property Name="key" Type="Edm.String"/>
         <Property Name="value" Type="Edm.String"/>
@@ -1977,6 +2250,32 @@
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="newValue" Type="Edm.String"/>
         <Property Name="oldValue" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="provisionedIdentity" BaseType="graph.identity" OpenType="true">
+        <Property Name="details" Type="graph.detailsInfo"/>
+        <Property Name="identityType" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="provisioningErrorInfo">
+        <Property Name="additionalDetails" Type="Edm.String"/>
+        <Property Name="errorCategory" Type="graph.provisioningStatusErrorCategory"/>
+        <Property Name="errorCode" Type="Edm.String"/>
+        <Property Name="reason" Type="Edm.String"/>
+        <Property Name="recommendedAction" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="provisioningServicePrincipal" BaseType="graph.identity" OpenType="true"/>
+      <ComplexType Name="provisioningStatusInfo">
+        <Property Name="errorInformation" Type="graph.provisioningErrorInfo"/>
+        <Property Name="status" Type="graph.provisioningResult"/>
+      </ComplexType>
+      <ComplexType Name="provisioningStep">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="details" Type="graph.detailsInfo"/>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="provisioningStepType" Type="graph.provisioningStepType"/>
+        <Property Name="status" Type="graph.provisioningResult"/>
+      </ComplexType>
+      <ComplexType Name="provisioningSystem" BaseType="graph.identity" OpenType="true">
+        <Property Name="details" Type="graph.detailsInfo"/>
       </ComplexType>
       <ComplexType Name="signInLocation">
         <Property Name="city" Type="Edm.String"/>
@@ -1999,6 +2298,7 @@
       </ComplexType>
       <EntityType Name="auditLogRoot" BaseType="graph.entity">
         <NavigationProperty Name="directoryAudits" Type="Collection(graph.directoryAudit)" ContainsTarget="true"/>
+        <NavigationProperty Name="provisioning" Type="Collection(graph.provisioningObjectSummary)" ContainsTarget="true"/>
         <NavigationProperty Name="restrictedSignIns" Type="Collection(graph.restrictedSignIn)" ContainsTarget="true"/>
         <NavigationProperty Name="signIns" Type="Collection(graph.signIn)" ContainsTarget="true"/>
       </EntityType>
@@ -2014,6 +2314,24 @@
         <Property Name="result" Type="graph.operationResult"/>
         <Property Name="resultReason" Type="Edm.String"/>
         <Property Name="targetResources" Type="Collection(graph.targetResource)"/>
+      </EntityType>
+      <EntityType Name="provisioningObjectSummary" BaseType="graph.entity">
+        <Property Name="activityDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="changeId" Type="Edm.String"/>
+        <Property Name="cycleId" Type="Edm.String"/>
+        <Property Name="durationInMilliseconds" Type="Edm.Int32"/>
+        <Property Name="initiatedBy" Type="graph.initiator"/>
+        <Property Name="jobId" Type="Edm.String"/>
+        <Property Name="modifiedProperties" Type="Collection(graph.modifiedProperty)"/>
+        <Property Name="provisioningAction" Type="graph.provisioningAction"/>
+        <Property Name="provisioningStatusInfo" Type="graph.provisioningStatusInfo"/>
+        <Property Name="provisioningSteps" Type="Collection(graph.provisioningStep)"/>
+        <Property Name="servicePrincipal" Type="graph.provisioningServicePrincipal"/>
+        <Property Name="sourceIdentity" Type="graph.provisionedIdentity"/>
+        <Property Name="sourceSystem" Type="graph.provisioningSystem"/>
+        <Property Name="targetIdentity" Type="graph.provisionedIdentity"/>
+        <Property Name="targetSystem" Type="graph.provisioningSystem"/>
+        <Property Name="tenantId" Type="Edm.String"/>
       </EntityType>
       <EntityType Name="signIn" BaseType="graph.entity">
         <Property Name="appDisplayName" Type="Edm.String"/>
@@ -2169,6 +2487,7 @@
         <NavigationProperty Name="drives" Type="Collection(graph.drive)" ContainsTarget="true"/>
         <NavigationProperty Name="followedSites" Type="Collection(graph.site)"/>
         <NavigationProperty Name="extensions" Type="Collection(graph.extension)" ContainsTarget="true"/>
+        <NavigationProperty Name="agreementAcceptances" Type="Collection(graph.agreementAcceptance)"/>
         <NavigationProperty Name="managedDevices" Type="Collection(graph.managedDevice)" ContainsTarget="true"/>
         <NavigationProperty Name="managedAppRegistrations" Type="Collection(graph.managedAppRegistration)"/>
         <NavigationProperty Name="deviceManagementTroubleshootingEvents" Type="Collection(graph.deviceManagementTroubleshootingEvent)" ContainsTarget="true"/>
@@ -2520,6 +2839,21 @@
         <NavigationProperty Name="onenote" Type="graph.onenote" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="extension" BaseType="graph.entity" Abstract="true" OpenType="true"/>
+      <EntityType Name="agreementAcceptance" BaseType="graph.entity">
+        <Property Name="agreementFileId" Type="Edm.String"/>
+        <Property Name="agreementId" Type="Edm.String"/>
+        <Property Name="deviceDisplayName" Type="Edm.String"/>
+        <Property Name="deviceId" Type="Edm.String"/>
+        <Property Name="deviceOSType" Type="Edm.String"/>
+        <Property Name="deviceOSVersion" Type="Edm.String"/>
+        <Property Name="expirationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="recordedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="state" Type="graph.agreementAcceptanceState"/>
+        <Property Name="userDisplayName" Type="Edm.String"/>
+        <Property Name="userEmail" Type="Edm.String"/>
+        <Property Name="userId" Type="Edm.String"/>
+        <Property Name="userPrincipalName" Type="Edm.String"/>
+      </EntityType>
       <EntityType Name="managedDevice" BaseType="graph.entity">
         <Property Name="activationLockBypassCode" Type="Edm.String"/>
         <Property Name="androidSecurityPatchLevel" Type="Edm.String"/>
@@ -2658,6 +2992,7 @@
       </EntityType>
       <EntityType Name="team" BaseType="graph.entity" OpenType="true">
         <Property Name="classification" Type="Edm.String"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="funSettings" Type="graph.teamFunSettings"/>
@@ -2684,6 +3019,10 @@
       <EntityType Name="todo" BaseType="graph.entity">
         <NavigationProperty Name="lists" Type="Collection(graph.todoTaskList)" ContainsTarget="true"/>
       </EntityType>
+      <ComplexType Name="applicationServicePrincipal">
+        <NavigationProperty Name="application" Type="graph.application"/>
+        <NavigationProperty Name="servicePrincipal" Type="graph.servicePrincipal"/>
+      </ComplexType>
       <EntityType Name="application" BaseType="graph.directoryObject" OpenType="true">
         <Property Name="addIns" Type="Collection(graph.addIn)" Nullable="false"/>
         <Property Name="api" Type="graph.apiApplication"/>
@@ -2719,6 +3058,52 @@
         <NavigationProperty Name="owners" Type="Collection(graph.directoryObject)"/>
         <NavigationProperty Name="tokenIssuancePolicies" Type="Collection(graph.tokenIssuancePolicy)"/>
         <NavigationProperty Name="tokenLifetimePolicies" Type="Collection(graph.tokenLifetimePolicy)"/>
+      </EntityType>
+      <EntityType Name="servicePrincipal" BaseType="graph.directoryObject" OpenType="true">
+        <Property Name="accountEnabled" Type="Edm.Boolean"/>
+        <Property Name="addIns" Type="Collection(graph.addIn)" Nullable="false"/>
+        <Property Name="alternativeNames" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="appDescription" Type="Edm.String"/>
+        <Property Name="appDisplayName" Type="Edm.String"/>
+        <Property Name="appId" Type="Edm.String"/>
+        <Property Name="applicationTemplateId" Type="Edm.String"/>
+        <Property Name="appOwnerOrganizationId" Type="Edm.Guid"/>
+        <Property Name="appRoleAssignmentRequired" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="appRoles" Type="Collection(graph.appRole)" Nullable="false"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="homepage" Type="Edm.String"/>
+        <Property Name="info" Type="graph.informationalUrl"/>
+        <Property Name="keyCredentials" Type="Collection(graph.keyCredential)" Nullable="false"/>
+        <Property Name="loginUrl" Type="Edm.String"/>
+        <Property Name="logoutUrl" Type="Edm.String"/>
+        <Property Name="notes" Type="Edm.String"/>
+        <Property Name="notificationEmailAddresses" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="oauth2PermissionScopes" Type="Collection(graph.permissionScope)" Nullable="false"/>
+        <Property Name="passwordCredentials" Type="Collection(graph.passwordCredential)" Nullable="false"/>
+        <Property Name="preferredSingleSignOnMode" Type="Edm.String"/>
+        <Property Name="preferredTokenSigningKeyThumbprint" Type="Edm.String"/>
+        <Property Name="replyUrls" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="samlSingleSignOnSettings" Type="graph.samlSingleSignOnSettings"/>
+        <Property Name="servicePrincipalNames" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="servicePrincipalType" Type="Edm.String"/>
+        <Property Name="signInAudience" Type="Edm.String"/>
+        <Property Name="tags" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="tokenEncryptionKeyId" Type="Edm.Guid"/>
+        <NavigationProperty Name="appRoleAssignedTo" Type="Collection(graph.appRoleAssignment)" ContainsTarget="true"/>
+        <NavigationProperty Name="appRoleAssignments" Type="Collection(graph.appRoleAssignment)" ContainsTarget="true"/>
+        <NavigationProperty Name="claimsMappingPolicies" Type="Collection(graph.claimsMappingPolicy)"/>
+        <NavigationProperty Name="createdObjects" Type="Collection(graph.directoryObject)"/>
+        <NavigationProperty Name="delegatedPermissionClassifications" Type="Collection(graph.delegatedPermissionClassification)" ContainsTarget="true"/>
+        <NavigationProperty Name="endpoints" Type="Collection(graph.endpoint)" ContainsTarget="true"/>
+        <NavigationProperty Name="homeRealmDiscoveryPolicies" Type="Collection(graph.homeRealmDiscoveryPolicy)"/>
+        <NavigationProperty Name="memberOf" Type="Collection(graph.directoryObject)"/>
+        <NavigationProperty Name="oauth2PermissionGrants" Type="Collection(graph.oAuth2PermissionGrant)"/>
+        <NavigationProperty Name="ownedObjects" Type="Collection(graph.directoryObject)"/>
+        <NavigationProperty Name="owners" Type="Collection(graph.directoryObject)"/>
+        <NavigationProperty Name="tokenIssuancePolicies" Type="Collection(graph.tokenIssuancePolicy)"/>
+        <NavigationProperty Name="tokenLifetimePolicies" Type="Collection(graph.tokenLifetimePolicy)"/>
+        <NavigationProperty Name="transitiveMemberOf" Type="Collection(graph.directoryObject)"/>
       </EntityType>
       <ComplexType Name="addIn">
         <Property Name="id" Type="Edm.Guid"/>
@@ -2811,51 +3196,15 @@
       <EntityType Name="homeRealmDiscoveryPolicy" BaseType="graph.stsPolicy"/>
       <EntityType Name="tokenIssuancePolicy" BaseType="graph.stsPolicy"/>
       <EntityType Name="tokenLifetimePolicy" BaseType="graph.stsPolicy"/>
-      <EntityType Name="servicePrincipal" BaseType="graph.directoryObject" OpenType="true">
-        <Property Name="accountEnabled" Type="Edm.Boolean"/>
-        <Property Name="addIns" Type="Collection(graph.addIn)" Nullable="false"/>
-        <Property Name="alternativeNames" Type="Collection(Edm.String)" Nullable="false"/>
-        <Property Name="appDescription" Type="Edm.String"/>
-        <Property Name="appDisplayName" Type="Edm.String"/>
-        <Property Name="appId" Type="Edm.String"/>
-        <Property Name="applicationTemplateId" Type="Edm.String"/>
-        <Property Name="appOwnerOrganizationId" Type="Edm.Guid"/>
-        <Property Name="appRoleAssignmentRequired" Type="Edm.Boolean" Nullable="false"/>
-        <Property Name="appRoles" Type="Collection(graph.appRole)" Nullable="false"/>
+      <EntityType Name="applicationTemplate" BaseType="graph.entity">
+        <Property Name="categories" Type="Collection(Edm.String)"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String"/>
-        <Property Name="homepage" Type="Edm.String"/>
-        <Property Name="info" Type="graph.informationalUrl"/>
-        <Property Name="keyCredentials" Type="Collection(graph.keyCredential)" Nullable="false"/>
-        <Property Name="loginUrl" Type="Edm.String"/>
-        <Property Name="logoutUrl" Type="Edm.String"/>
-        <Property Name="notes" Type="Edm.String"/>
-        <Property Name="notificationEmailAddresses" Type="Collection(Edm.String)" Nullable="false"/>
-        <Property Name="oauth2PermissionScopes" Type="Collection(graph.permissionScope)" Nullable="false"/>
-        <Property Name="passwordCredentials" Type="Collection(graph.passwordCredential)" Nullable="false"/>
-        <Property Name="preferredSingleSignOnMode" Type="Edm.String"/>
-        <Property Name="preferredTokenSigningKeyThumbprint" Type="Edm.String"/>
-        <Property Name="replyUrls" Type="Collection(Edm.String)" Nullable="false"/>
-        <Property Name="samlSingleSignOnSettings" Type="graph.samlSingleSignOnSettings"/>
-        <Property Name="servicePrincipalNames" Type="Collection(Edm.String)" Nullable="false"/>
-        <Property Name="servicePrincipalType" Type="Edm.String"/>
-        <Property Name="signInAudience" Type="Edm.String"/>
-        <Property Name="tags" Type="Collection(Edm.String)" Nullable="false"/>
-        <Property Name="tokenEncryptionKeyId" Type="Edm.Guid"/>
-        <NavigationProperty Name="appRoleAssignedTo" Type="Collection(graph.appRoleAssignment)" ContainsTarget="true"/>
-        <NavigationProperty Name="appRoleAssignments" Type="Collection(graph.appRoleAssignment)" ContainsTarget="true"/>
-        <NavigationProperty Name="claimsMappingPolicies" Type="Collection(graph.claimsMappingPolicy)"/>
-        <NavigationProperty Name="createdObjects" Type="Collection(graph.directoryObject)"/>
-        <NavigationProperty Name="delegatedPermissionClassifications" Type="Collection(graph.delegatedPermissionClassification)" ContainsTarget="true"/>
-        <NavigationProperty Name="endpoints" Type="Collection(graph.endpoint)" ContainsTarget="true"/>
-        <NavigationProperty Name="homeRealmDiscoveryPolicies" Type="Collection(graph.homeRealmDiscoveryPolicy)"/>
-        <NavigationProperty Name="memberOf" Type="Collection(graph.directoryObject)"/>
-        <NavigationProperty Name="oauth2PermissionGrants" Type="Collection(graph.oAuth2PermissionGrant)"/>
-        <NavigationProperty Name="ownedObjects" Type="Collection(graph.directoryObject)"/>
-        <NavigationProperty Name="owners" Type="Collection(graph.directoryObject)"/>
-        <NavigationProperty Name="tokenIssuancePolicies" Type="Collection(graph.tokenIssuancePolicy)"/>
-        <NavigationProperty Name="tokenLifetimePolicies" Type="Collection(graph.tokenLifetimePolicy)"/>
-        <NavigationProperty Name="transitiveMemberOf" Type="Collection(graph.directoryObject)"/>
+        <Property Name="homePageUrl" Type="Edm.String"/>
+        <Property Name="logoUrl" Type="Edm.String"/>
+        <Property Name="publisher" Type="Edm.String"/>
+        <Property Name="supportedProvisioningTypes" Type="Collection(Edm.String)"/>
+        <Property Name="supportedSingleSignOnModes" Type="Collection(Edm.String)"/>
       </EntityType>
       <ComplexType Name="permissionScope">
         <Property Name="adminConsentDescription" Type="Edm.String"/>
@@ -2923,6 +3272,7 @@
       </EntityType>
       <EntityType Name="policyRoot" BaseType="graph.entity">
         <NavigationProperty Name="authenticationMethodsPolicy" Type="graph.authenticationMethodsPolicy" ContainsTarget="true"/>
+        <NavigationProperty Name="authenticationFlowsPolicy" Type="graph.authenticationFlowsPolicy" ContainsTarget="true"/>
         <NavigationProperty Name="activityBasedTimeoutPolicies" Type="Collection(graph.activityBasedTimeoutPolicy)" ContainsTarget="true"/>
         <NavigationProperty Name="authorizationPolicy" Type="graph.authorizationPolicy" ContainsTarget="true"/>
         <NavigationProperty Name="claimsMappingPolicies" Type="Collection(graph.claimsMappingPolicy)" ContainsTarget="true"/>
@@ -2930,8 +3280,15 @@
         <NavigationProperty Name="permissionGrantPolicies" Type="Collection(graph.permissionGrantPolicy)" ContainsTarget="true"/>
         <NavigationProperty Name="tokenIssuancePolicies" Type="Collection(graph.tokenIssuancePolicy)" ContainsTarget="true"/>
         <NavigationProperty Name="tokenLifetimePolicies" Type="Collection(graph.tokenLifetimePolicy)" ContainsTarget="true"/>
+        <NavigationProperty Name="featureRolloutPolicies" Type="Collection(graph.featureRolloutPolicy)" ContainsTarget="true"/>
+        <NavigationProperty Name="adminConsentRequestPolicy" Type="graph.adminConsentRequestPolicy" ContainsTarget="true"/>
         <NavigationProperty Name="conditionalAccessPolicies" Type="Collection(graph.conditionalAccessPolicy)" ContainsTarget="true"/>
         <NavigationProperty Name="identitySecurityDefaultsEnforcementPolicy" Type="graph.identitySecurityDefaultsEnforcementPolicy" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="authenticationFlowsPolicy" BaseType="graph.entity">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="selfServiceSignUp" Type="graph.selfServiceSignUpAuthenticationFlowConfiguration"/>
       </EntityType>
       <EntityType Name="activityBasedTimeoutPolicy" BaseType="graph.stsPolicy"/>
       <EntityType Name="authorizationPolicy" BaseType="graph.policyBase">
@@ -2946,6 +3303,22 @@
         <NavigationProperty Name="excludes" Type="Collection(graph.permissionGrantConditionSet)" ContainsTarget="true"/>
         <NavigationProperty Name="includes" Type="Collection(graph.permissionGrantConditionSet)" ContainsTarget="true"/>
       </EntityType>
+      <EntityType Name="featureRolloutPolicy" BaseType="graph.entity">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String" Nullable="false"/>
+        <Property Name="feature" Type="graph.stagedFeatureName" Nullable="false"/>
+        <Property Name="isAppliedToOrganization" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="appliesTo" Type="Collection(graph.directoryObject)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="adminConsentRequestPolicy" BaseType="graph.entity">
+        <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="notifyReviewers" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="remindersEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="requestDurationInDays" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="reviewers" Type="Collection(graph.accessReviewReviewerScope)"/>
+        <Property Name="version" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>
       <EntityType Name="conditionalAccessPolicy" BaseType="graph.entity">
         <Property Name="conditions" Type="graph.conditionalAccessConditionSet" Nullable="false"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
@@ -2959,12 +3332,53 @@
       <EntityType Name="identitySecurityDefaultsEnforcementPolicy" BaseType="graph.policyBase">
         <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
       </EntityType>
-      <EntityType Name="identityContainer" BaseType="graph.entity">
-        <NavigationProperty Name="conditionalAccess" Type="graph.conditionalAccessRoot" ContainsTarget="true"/>
+      <ComplexType Name="apiAuthenticationConfigurationBase" Abstract="true"/>
+      <ComplexType Name="assignmentOrder">
+        <Property Name="order" Type="Collection(Edm.String)"/>
+      </ComplexType>
+      <ComplexType Name="basicAuthentication" BaseType="graph.apiAuthenticationConfigurationBase">
+        <Property Name="password" Type="Edm.String"/>
+        <Property Name="username" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="clientCertificateAuthentication" BaseType="graph.apiAuthenticationConfigurationBase">
+        <Property Name="certificateList" Type="Collection(graph.pkcs12CertificateInformation)"/>
+      </ComplexType>
+      <ComplexType Name="pkcs12CertificateInformation">
+        <Property Name="isActive" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="notAfter" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="notBefore" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="thumbprint" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="pkcs12Certificate" BaseType="graph.apiAuthenticationConfigurationBase">
+        <Property Name="password" Type="Edm.String"/>
+        <Property Name="pkcs12Value" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="selfServiceSignUpAuthenticationFlowConfiguration">
+        <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="userAttributeValuesItem">
+        <Property Name="isDefault" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="value" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="userFlowApiConnectorConfiguration">
+        <NavigationProperty Name="postAttributeCollection" Type="graph.identityApiConnector" ContainsTarget="true"/>
+        <NavigationProperty Name="postFederationSignup" Type="graph.identityApiConnector" ContainsTarget="true"/>
+      </ComplexType>
+      <EntityType Name="identityApiConnector" BaseType="graph.entity">
+        <Property Name="authenticationConfiguration" Type="graph.apiAuthenticationConfigurationBase"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="targetUrl" Type="Edm.String"/>
       </EntityType>
-      <EntityType Name="conditionalAccessRoot" BaseType="graph.entity">
-        <NavigationProperty Name="namedLocations" Type="Collection(graph.namedLocation)" ContainsTarget="true"/>
-        <NavigationProperty Name="policies" Type="Collection(graph.conditionalAccessPolicy)" ContainsTarget="true"/>
+      <EntityType Name="identityUserFlow" BaseType="graph.entity">
+        <Property Name="userFlowType" Type="graph.userFlowType" Nullable="false"/>
+        <Property Name="userFlowTypeVersion" Type="Edm.Single" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="b2xIdentityUserFlow" BaseType="graph.identityUserFlow">
+        <Property Name="apiConnectorConfiguration" Type="graph.userFlowApiConnectorConfiguration"/>
+        <NavigationProperty Name="identityProviders" Type="Collection(graph.identityProvider)"/>
+        <NavigationProperty Name="languages" Type="Collection(graph.userFlowLanguageConfiguration)" ContainsTarget="true"/>
+        <NavigationProperty Name="userAttributeAssignments" Type="Collection(graph.identityUserFlowAttributeAssignment)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="identityProvider" BaseType="graph.entity">
         <Property Name="clientId" Type="Edm.String"/>
@@ -2972,6 +3386,39 @@
         <Property Name="name" Type="Edm.String"/>
         <Property Name="type" Type="Edm.String"/>
       </EntityType>
+      <EntityType Name="userFlowLanguageConfiguration" BaseType="graph.entity">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="defaultPages" Type="Collection(graph.userFlowLanguagePage)" ContainsTarget="true"/>
+        <NavigationProperty Name="overridesPages" Type="Collection(graph.userFlowLanguagePage)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="identityUserFlowAttributeAssignment" BaseType="graph.entity">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="isOptional" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="requiresVerification" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="userAttributeValues" Type="Collection(graph.userAttributeValuesItem)"/>
+        <Property Name="userInputType" Type="graph.identityUserFlowAttributeInputType" Nullable="false"/>
+        <NavigationProperty Name="userAttribute" Type="graph.identityUserFlowAttribute"/>
+      </EntityType>
+      <EntityType Name="identityUserFlowAttribute" BaseType="graph.entity">
+        <Property Name="dataType" Type="graph.identityUserFlowAttributeDataType" Nullable="false"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="userFlowAttributeType" Type="graph.identityUserFlowAttributeType" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="identityBuiltInUserFlowAttribute" BaseType="graph.identityUserFlowAttribute"/>
+      <EntityType Name="identityContainer" BaseType="graph.entity">
+        <NavigationProperty Name="conditionalAccess" Type="graph.conditionalAccessRoot" ContainsTarget="true"/>
+        <NavigationProperty Name="apiConnectors" Type="Collection(graph.identityApiConnector)" ContainsTarget="true"/>
+        <NavigationProperty Name="b2xUserFlows" Type="Collection(graph.b2xIdentityUserFlow)" ContainsTarget="true"/>
+        <NavigationProperty Name="userFlowAttributes" Type="Collection(graph.identityUserFlowAttribute)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="conditionalAccessRoot" BaseType="graph.entity">
+        <NavigationProperty Name="namedLocations" Type="Collection(graph.namedLocation)" ContainsTarget="true"/>
+        <NavigationProperty Name="policies" Type="Collection(graph.conditionalAccessPolicy)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="identityCustomUserFlowAttribute" BaseType="graph.identityUserFlowAttribute"/>
+      <EntityType Name="userFlowLanguagePage" BaseType="graph.entity" HasStream="true"/>
       <ComplexType Name="alternativeSecurityId">
         <Property Name="identityProvider" Type="Edm.String"/>
         <Property Name="key" Type="Edm.Binary"/>
@@ -3004,10 +3451,6 @@
         <Property Name="lastActionDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="operation" Type="Edm.String"/>
         <Property Name="status" Type="Edm.String"/>
-      </ComplexType>
-      <ComplexType Name="identity" OpenType="true">
-        <Property Name="displayName" Type="Edm.String"/>
-        <Property Name="id" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="implicitGrantSettings">
         <Property Name="enableAccessTokenIssuance" Type="Edm.Boolean"/>
@@ -3323,9 +3766,22 @@
         <Property Name="tenantType" Type="Edm.String"/>
         <Property Name="verifiedDomains" Type="Collection(graph.verifiedDomain)" Nullable="false"/>
         <Property Name="mobileDeviceManagementAuthority" Type="graph.mdmAuthority" Nullable="false"/>
+        <NavigationProperty Name="branding" Type="graph.organizationalBranding" ContainsTarget="true"/>
         <NavigationProperty Name="certificateBasedAuthConfiguration" Type="Collection(graph.certificateBasedAuthConfiguration)"/>
         <NavigationProperty Name="extensions" Type="Collection(graph.extension)" ContainsTarget="true"/>
       </EntityType>
+      <EntityType Name="organizationalBrandingProperties" BaseType="graph.entity" Abstract="true">
+        <Property Name="backgroundColor" Type="Edm.String"/>
+        <Property Name="backgroundImage" Type="Edm.Stream"/>
+        <Property Name="bannerLogo" Type="Edm.Stream"/>
+        <Property Name="signInPageText" Type="Edm.String"/>
+        <Property Name="squareLogo" Type="Edm.Stream"/>
+        <Property Name="usernameHintText" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="organizationalBranding" BaseType="graph.organizationalBrandingProperties">
+        <NavigationProperty Name="localizations" Type="Collection(graph.organizationalBrandingLocalization)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="organizationalBrandingLocalization" BaseType="graph.organizationalBrandingProperties"/>
       <EntityType Name="orgContact" BaseType="graph.directoryObject" OpenType="true">
         <Property Name="addresses" Type="Collection(graph.physicalOfficeAddress)"/>
         <Property Name="companyName" Type="Edm.String"/>
@@ -3365,6 +3821,16 @@
         <Property Name="skuId" Type="Edm.Guid"/>
         <Property Name="skuPartNumber" Type="Edm.String"/>
       </EntityType>
+      <ComplexType Name="educationCourse">
+        <Property Name="courseNumber" Type="Edm.String"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="externalId" Type="Edm.String"/>
+        <Property Name="subject" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="educationOnPremisesInfo">
+        <Property Name="immutableId" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="educationStudent">
         <Property Name="birthDate" Type="Edm.Date"/>
         <Property Name="externalId" Type="Edm.String"/>
@@ -3397,12 +3863,15 @@
       </ComplexType>
       <EntityType Name="educationClass" BaseType="graph.entity">
         <Property Name="classCode" Type="Edm.String"/>
+        <Property Name="course" Type="graph.educationCourse"/>
         <Property Name="createdBy" Type="graph.identitySet"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String" Nullable="false"/>
         <Property Name="externalId" Type="Edm.String"/>
         <Property Name="externalName" Type="Edm.String"/>
         <Property Name="externalSource" Type="graph.educationExternalSource"/>
+        <Property Name="externalSourceDetail" Type="Edm.String"/>
+        <Property Name="grade" Type="Edm.String"/>
         <Property Name="mailNickname" Type="Edm.String" Nullable="false"/>
         <Property Name="term" Type="graph.educationTerm"/>
         <NavigationProperty Name="group" Type="graph.group"/>
@@ -3419,6 +3888,7 @@
         <Property Name="department" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="externalSource" Type="graph.educationExternalSource"/>
+        <Property Name="externalSourceDetail" Type="Edm.String"/>
         <Property Name="givenName" Type="Edm.String"/>
         <Property Name="mail" Type="Edm.String"/>
         <Property Name="mailingAddress" Type="graph.physicalAddress"/>
@@ -3426,6 +3896,7 @@
         <Property Name="middleName" Type="Edm.String"/>
         <Property Name="mobilePhone" Type="Edm.String"/>
         <Property Name="officeLocation" Type="Edm.String"/>
+        <Property Name="onPremisesInfo" Type="graph.educationOnPremisesInfo"/>
         <Property Name="passwordPolicies" Type="Edm.String"/>
         <Property Name="passwordProfile" Type="graph.passwordProfile"/>
         <Property Name="preferredLanguage" Type="Edm.String"/>
@@ -3442,12 +3913,14 @@
         <Property Name="userType" Type="Edm.String"/>
         <NavigationProperty Name="classes" Type="Collection(graph.educationClass)"/>
         <NavigationProperty Name="schools" Type="Collection(graph.educationSchool)"/>
+        <NavigationProperty Name="taughtClasses" Type="Collection(graph.educationClass)"/>
         <NavigationProperty Name="user" Type="graph.user"/>
       </EntityType>
       <EntityType Name="educationOrganization" BaseType="graph.entity" Abstract="true">
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String" Nullable="false"/>
         <Property Name="externalSource" Type="graph.educationExternalSource"/>
+        <Property Name="externalSourceDetail" Type="Edm.String"/>
       </EntityType>
       <EntityType Name="educationSchool" BaseType="graph.educationOrganization">
         <Property Name="address" Type="graph.physicalAddress"/>
@@ -3461,15 +3934,52 @@
         <Property Name="principalEmail" Type="Edm.String"/>
         <Property Name="principalName" Type="Edm.String"/>
         <Property Name="schoolNumber" Type="Edm.String"/>
+        <NavigationProperty Name="administrativeUnit" Type="graph.administrativeUnit"/>
         <NavigationProperty Name="classes" Type="Collection(graph.educationClass)"/>
         <NavigationProperty Name="users" Type="Collection(graph.educationUser)"/>
       </EntityType>
-      <EntityType Name="educationRoot" BaseType="graph.entity">
+      <EntityType Name="educationRoot">
         <NavigationProperty Name="classes" Type="Collection(graph.educationClass)" ContainsTarget="true"/>
         <NavigationProperty Name="me" Type="graph.educationUser" ContainsTarget="true"/>
         <NavigationProperty Name="schools" Type="Collection(graph.educationSchool)" ContainsTarget="true"/>
         <NavigationProperty Name="users" Type="Collection(graph.educationUser)" ContainsTarget="true"/>
       </EntityType>
+      <ComplexType Name="unifiedRolePermission">
+        <Property Name="allowedResourceActions" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="condition" Type="Edm.String"/>
+        <Property Name="excludedResourceActions" Type="Collection(Edm.String)"/>
+      </ComplexType>
+      <EntityType Name="appScope" BaseType="graph.entity">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="type" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="rbacApplication" BaseType="graph.entity">
+        <NavigationProperty Name="roleAssignments" Type="Collection(graph.unifiedRoleAssignment)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleDefinitions" Type="Collection(graph.unifiedRoleDefinition)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleAssignment" BaseType="graph.entity">
+        <Property Name="appScopeId" Type="Edm.String"/>
+        <Property Name="condition" Type="Edm.String"/>
+        <Property Name="directoryScopeId" Type="Edm.String"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="roleDefinitionId" Type="Edm.String"/>
+        <NavigationProperty Name="appScope" Type="graph.appScope" ContainsTarget="true"/>
+        <NavigationProperty Name="directoryScope" Type="graph.directoryObject"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="roleDefinition" Type="graph.unifiedRoleDefinition"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleDefinition" BaseType="graph.entity">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="isBuiltIn" Type="Edm.Boolean"/>
+        <Property Name="isEnabled" Type="Edm.Boolean"/>
+        <Property Name="resourceScopes" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="rolePermissions" Type="Collection(graph.unifiedRolePermission)" Nullable="false"/>
+        <Property Name="templateId" Type="Edm.String"/>
+        <Property Name="version" Type="Edm.String"/>
+        <NavigationProperty Name="inheritsPermissionsFrom" Type="Collection(graph.unifiedRoleDefinition)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="roleManagement"/>
       <ComplexType Name="Json"/>
       <ComplexType Name="workbookFilterCriteria">
         <Property Name="color" Type="Edm.String"/>
@@ -3733,6 +4243,7 @@
         <Property Name="includeResourceData" Type="Edm.Boolean"/>
         <Property Name="latestSupportedTlsVersion" Type="Edm.String"/>
         <Property Name="lifecycleNotificationUrl" Type="Edm.String"/>
+        <Property Name="notificationQueryOptions" Type="Edm.String"/>
         <Property Name="notificationUrl" Type="Edm.String" Nullable="false"/>
         <Property Name="resource" Type="Edm.String" Nullable="false"/>
       </EntityType>
@@ -4701,6 +5212,165 @@
         <NavigationProperty Name="operations" Type="Collection(graph.commsOperation)" ContainsTarget="true"/>
         <NavigationProperty Name="participants" Type="Collection(graph.participant)" ContainsTarget="true"/>
       </EntityType>
+      <ComplexType Name="accessReviewApplyAction" Abstract="true"/>
+      <ComplexType Name="accessReviewScope"/>
+      <ComplexType Name="accessReviewQueryScope" BaseType="graph.accessReviewScope">
+        <Property Name="query" Type="Edm.String"/>
+        <Property Name="queryRoot" Type="Edm.String"/>
+        <Property Name="queryType" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="accessReviewInactiveUsersQueryScope" BaseType="graph.accessReviewQueryScope">
+        <Property Name="inactiveDuration" Type="Edm.Duration"/>
+      </ComplexType>
+      <ComplexType Name="accessReviewInstanceDecisionItemResource">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="id" Type="Edm.String"/>
+        <Property Name="type" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="accessReviewReviewerScope">
+        <Property Name="query" Type="Edm.String"/>
+        <Property Name="queryRoot" Type="Edm.String"/>
+        <Property Name="queryType" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="accessReviewScheduleSettings">
+        <Property Name="applyActions" Type="Collection(graph.accessReviewApplyAction)"/>
+        <Property Name="autoApplyDecisionsEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="defaultDecision" Type="Edm.String"/>
+        <Property Name="defaultDecisionEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="instanceDurationInDays" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="justificationRequiredOnApproval" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="mailNotificationsEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="recommendationsEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="recurrence" Type="graph.patternedRecurrence"/>
+        <Property Name="reminderNotificationsEnabled" Type="Edm.Boolean" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="appConsentRequestScope">
+        <Property Name="displayName" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="disableAndDeleteUserApplyAction" BaseType="graph.accessReviewApplyAction"/>
+      <ComplexType Name="principalResourceMembershipsScope" BaseType="graph.accessReviewScope">
+        <Property Name="principalScopes" Type="Collection(graph.accessReviewScope)"/>
+        <Property Name="resourceScopes" Type="Collection(graph.accessReviewScope)"/>
+      </ComplexType>
+      <ComplexType Name="removeAccessApplyAction" BaseType="graph.accessReviewApplyAction"/>
+      <ComplexType Name="servicePrincipalIdentity" BaseType="graph.identity" OpenType="true">
+        <Property Name="appId" Type="Edm.String"/>
+      </ComplexType>
+      <EntityType Name="accessReviewInstance" BaseType="graph.entity">
+        <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="scope" Type="graph.accessReviewScope"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="status" Type="Edm.String"/>
+        <NavigationProperty Name="decisions" Type="Collection(graph.accessReviewInstanceDecisionItem)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="accessReviewInstanceDecisionItem" BaseType="graph.entity">
+        <Property Name="accessReviewId" Type="Edm.String" Nullable="false"/>
+        <Property Name="appliedBy" Type="graph.userIdentity"/>
+        <Property Name="appliedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="applyResult" Type="Edm.String"/>
+        <Property Name="decision" Type="Edm.String"/>
+        <Property Name="justification" Type="Edm.String"/>
+        <Property Name="principal" Type="graph.identity"/>
+        <Property Name="principalLink" Type="Edm.String"/>
+        <Property Name="recommendation" Type="Edm.String"/>
+        <Property Name="resource" Type="graph.accessReviewInstanceDecisionItemResource"/>
+        <Property Name="resourceLink" Type="Edm.String"/>
+        <Property Name="reviewedBy" Type="graph.userIdentity"/>
+        <Property Name="reviewedDateTime" Type="Edm.DateTimeOffset"/>
+      </EntityType>
+      <EntityType Name="accessReviewScheduleDefinition" BaseType="graph.entity">
+        <Property Name="createdBy" Type="graph.userIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="descriptionForAdmins" Type="Edm.String"/>
+        <Property Name="descriptionForReviewers" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="fallbackReviewers" Type="Collection(graph.accessReviewReviewerScope)"/>
+        <Property Name="instanceEnumerationScope" Type="graph.accessReviewScope"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="reviewers" Type="Collection(graph.accessReviewReviewerScope)"/>
+        <Property Name="scope" Type="graph.accessReviewScope"/>
+        <Property Name="settings" Type="graph.accessReviewScheduleSettings"/>
+        <Property Name="status" Type="Edm.String"/>
+        <NavigationProperty Name="instances" Type="Collection(graph.accessReviewInstance)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="accessReviewSet" BaseType="graph.entity">
+        <NavigationProperty Name="definitions" Type="Collection(graph.accessReviewScheduleDefinition)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="appConsentApprovalRoute" BaseType="graph.entity">
+        <NavigationProperty Name="appConsentRequests" Type="Collection(graph.appConsentRequest)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="appConsentRequest" BaseType="graph.entity">
+        <Property Name="appDisplayName" Type="Edm.String"/>
+        <Property Name="appId" Type="Edm.String" Nullable="false"/>
+        <Property Name="pendingScopes" Type="Collection(graph.appConsentRequestScope)"/>
+        <NavigationProperty Name="userConsentRequests" Type="Collection(graph.userConsentRequest)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="request" BaseType="graph.entity">
+        <Property Name="approvalId" Type="Edm.String"/>
+        <Property Name="completedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="createdBy" Type="graph.identitySet"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="customData" Type="Edm.String"/>
+        <Property Name="status" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="userConsentRequest" BaseType="graph.request">
+        <Property Name="reason" Type="Edm.String"/>
+        <NavigationProperty Name="approval" Type="graph.approval" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="approval" BaseType="graph.entity">
+        <NavigationProperty Name="stages" Type="Collection(graph.approvalStage)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="approvalStage" BaseType="graph.entity">
+        <Property Name="assignedToMe" Type="Edm.Boolean"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="justification" Type="Edm.String"/>
+        <Property Name="reviewedBy" Type="graph.identity"/>
+        <Property Name="reviewedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="reviewResult" Type="Edm.String"/>
+        <Property Name="status" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="identityGovernance">
+        <NavigationProperty Name="accessReviews" Type="graph.accessReviewSet" ContainsTarget="true"/>
+        <NavigationProperty Name="appConsent" Type="graph.appConsentApprovalRoute" ContainsTarget="true"/>
+        <NavigationProperty Name="termsOfUse" Type="graph.termsOfUseContainer" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="termsOfUseContainer" BaseType="graph.entity">
+        <NavigationProperty Name="agreementAcceptances" Type="Collection(graph.agreementAcceptance)" ContainsTarget="true"/>
+        <NavigationProperty Name="agreements" Type="Collection(graph.agreement)" ContainsTarget="true"/>
+      </EntityType>
+      <ComplexType Name="agreementFileData">
+        <Property Name="data" Type="Edm.Binary"/>
+      </ComplexType>
+      <ComplexType Name="termsExpiration">
+        <Property Name="frequency" Type="Edm.Duration"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+      </ComplexType>
+      <EntityType Name="agreement" BaseType="graph.entity">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="isPerDeviceAcceptanceRequired" Type="Edm.Boolean"/>
+        <Property Name="isViewingBeforeAcceptanceRequired" Type="Edm.Boolean"/>
+        <Property Name="termsExpiration" Type="graph.termsExpiration"/>
+        <Property Name="userReacceptRequiredFrequency" Type="Edm.Duration"/>
+        <NavigationProperty Name="acceptances" Type="Collection(graph.agreementAcceptance)" ContainsTarget="true"/>
+        <NavigationProperty Name="file" Type="graph.agreementFile" ContainsTarget="true"/>
+        <NavigationProperty Name="files" Type="Collection(graph.agreementFileLocalization)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="agreementFileProperties" BaseType="graph.entity">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="fileData" Type="graph.agreementFileData"/>
+        <Property Name="fileName" Type="Edm.String"/>
+        <Property Name="isDefault" Type="Edm.Boolean"/>
+        <Property Name="isMajorVersion" Type="Edm.Boolean"/>
+        <Property Name="language" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="agreementFile" BaseType="graph.agreementFileProperties">
+        <NavigationProperty Name="localizations" Type="Collection(graph.agreementFileLocalization)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="agreementFileLocalization" BaseType="graph.agreementFileProperties">
+        <NavigationProperty Name="versions" Type="Collection(graph.agreementFileVersion)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="agreementFileVersion" BaseType="graph.agreementFileProperties"/>
       <ComplexType Name="conditionalAccessSessionControl" Abstract="true">
         <Property Name="isEnabled" Type="Edm.Boolean"/>
       </ComplexType>
@@ -6360,7 +7030,24 @@
         <Property Name="virtualSecureMode" Type="Edm.String"/>
         <Property Name="windowsPE" Type="Edm.String"/>
       </ComplexType>
-      <EntityType Name="reportRoot" BaseType="graph.entity"/>
+      <EntityType Name="reportRoot" BaseType="graph.entity">
+        <NavigationProperty Name="dailyPrintUsageByPrinter" Type="Collection(graph.printUsageByPrinter)" ContainsTarget="true"/>
+        <NavigationProperty Name="dailyPrintUsageByUser" Type="Collection(graph.printUsageByUser)" ContainsTarget="true"/>
+        <NavigationProperty Name="monthlyPrintUsageByPrinter" Type="Collection(graph.printUsageByPrinter)" ContainsTarget="true"/>
+        <NavigationProperty Name="monthlyPrintUsageByUser" Type="Collection(graph.printUsageByUser)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="printUsage" BaseType="graph.entity" Abstract="true">
+        <Property Name="completedBlackAndWhiteJobCount" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="completedColorJobCount" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="incompleteJobCount" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="usageDate" Type="Edm.Date" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printUsageByPrinter" BaseType="graph.printUsage">
+        <Property Name="printerId" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printUsageByUser" BaseType="graph.printUsage">
+        <Property Name="userPrincipalName" Type="Edm.String" Nullable="false"/>
+      </EntityType>
       <EntityType Name="sharedPCConfiguration" BaseType="graph.deviceConfiguration">
         <Property Name="accountManagerPolicy" Type="graph.sharedPCAccountManagerPolicy"/>
         <Property Name="allowedAccounts" Type="graph.sharedPCAllowedAccountType" Nullable="false"/>
@@ -7339,6 +8026,234 @@
         <Property Name="content" Type="Edm.Stream"/>
         <Property Name="contentUrl" Type="Edm.String"/>
       </EntityType>
+      <ComplexType Name="archivedPrintJob">
+        <Property Name="acquiredByPrinter" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="acquiredDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="completionDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="copiesPrinted" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="createdBy" Type="graph.userIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="id" Type="Edm.String" Nullable="false"/>
+        <Property Name="printerId" Type="Edm.String"/>
+        <Property Name="processingState" Type="graph.printJobProcessingState" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="integerRange">
+        <Property Name="end" Type="Edm.Int64"/>
+        <Property Name="start" Type="Edm.Int64"/>
+      </ComplexType>
+      <ComplexType Name="printCertificateSigningRequest">
+        <Property Name="content" Type="Edm.String" Nullable="false"/>
+        <Property Name="transportKey" Type="Edm.String" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="printDocumentUploadProperties">
+        <Property Name="contentType" Type="Edm.String" Nullable="false"/>
+        <Property Name="documentName" Type="Edm.String" Nullable="false"/>
+        <Property Name="size" Type="Edm.Int64" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="printerCapabilities">
+        <Property Name="bottomMargins" Type="Collection(Edm.Int32)"/>
+        <Property Name="collation" Type="Edm.Boolean"/>
+        <Property Name="colorModes" Type="Collection(graph.printColorMode)"/>
+        <Property Name="contentTypes" Type="Collection(Edm.String)"/>
+        <Property Name="copiesPerJob" Type="graph.integerRange"/>
+        <Property Name="dpis" Type="Collection(Edm.Int32)"/>
+        <Property Name="duplexModes" Type="Collection(graph.printDuplexMode)"/>
+        <Property Name="feedOrientations" Type="Collection(graph.printerFeedOrientation)"/>
+        <Property Name="finishings" Type="Collection(graph.printFinishing)"/>
+        <Property Name="inputBins" Type="Collection(Edm.String)"/>
+        <Property Name="isColorPrintingSupported" Type="Edm.Boolean"/>
+        <Property Name="isPageRangeSupported" Type="Edm.Boolean"/>
+        <Property Name="leftMargins" Type="Collection(Edm.Int32)"/>
+        <Property Name="mediaColors" Type="Collection(Edm.String)"/>
+        <Property Name="mediaSizes" Type="Collection(Edm.String)"/>
+        <Property Name="mediaTypes" Type="Collection(Edm.String)"/>
+        <Property Name="multipageLayouts" Type="Collection(graph.printMultipageLayout)"/>
+        <Property Name="orientations" Type="Collection(graph.printOrientation)"/>
+        <Property Name="outputBins" Type="Collection(Edm.String)"/>
+        <Property Name="pagesPerSheet" Type="Collection(Edm.Int32)"/>
+        <Property Name="qualities" Type="Collection(graph.printQuality)"/>
+        <Property Name="rightMargins" Type="Collection(Edm.Int32)"/>
+        <Property Name="scalings" Type="Collection(graph.printScaling)"/>
+        <Property Name="supportsFitPdfToPage" Type="Edm.Boolean"/>
+        <Property Name="topMargins" Type="Collection(Edm.Int32)"/>
+      </ComplexType>
+      <ComplexType Name="printerDefaults">
+        <Property Name="colorMode" Type="graph.printColorMode"/>
+        <Property Name="contentType" Type="Edm.String"/>
+        <Property Name="copiesPerJob" Type="Edm.Int32"/>
+        <Property Name="dpi" Type="Edm.Int32"/>
+        <Property Name="duplexMode" Type="graph.printDuplexMode"/>
+        <Property Name="finishings" Type="Collection(graph.printFinishing)"/>
+        <Property Name="fitPdfToPage" Type="Edm.Boolean"/>
+        <Property Name="inputBin" Type="Edm.String"/>
+        <Property Name="mediaColor" Type="Edm.String"/>
+        <Property Name="mediaSize" Type="Edm.String"/>
+        <Property Name="mediaType" Type="Edm.String"/>
+        <Property Name="multipageLayout" Type="graph.printMultipageLayout"/>
+        <Property Name="orientation" Type="graph.printOrientation"/>
+        <Property Name="outputBin" Type="Edm.String"/>
+        <Property Name="pagesPerSheet" Type="Edm.Int32"/>
+        <Property Name="quality" Type="graph.printQuality"/>
+        <Property Name="scaling" Type="graph.printScaling"/>
+      </ComplexType>
+      <ComplexType Name="printerLocation">
+        <Property Name="altitudeInMeters" Type="Edm.Int32"/>
+        <Property Name="building" Type="Edm.String"/>
+        <Property Name="city" Type="Edm.String"/>
+        <Property Name="countryOrRegion" Type="Edm.String"/>
+        <Property Name="floor" Type="Edm.String"/>
+        <Property Name="floorDescription" Type="Edm.String"/>
+        <Property Name="latitude" Type="Edm.Double"/>
+        <Property Name="longitude" Type="Edm.Double"/>
+        <Property Name="organization" Type="Collection(Edm.String)"/>
+        <Property Name="postalCode" Type="Edm.String"/>
+        <Property Name="roomDescription" Type="Edm.String"/>
+        <Property Name="roomName" Type="Edm.String"/>
+        <Property Name="site" Type="Edm.String"/>
+        <Property Name="stateOrProvince" Type="Edm.String"/>
+        <Property Name="streetAddress" Type="Edm.String"/>
+        <Property Name="subdivision" Type="Collection(Edm.String)"/>
+        <Property Name="subunit" Type="Collection(Edm.String)"/>
+      </ComplexType>
+      <ComplexType Name="printerStatus">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="details" Type="Collection(graph.printerProcessingStateDetail)" Nullable="false"/>
+        <Property Name="state" Type="graph.printerProcessingState" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="printJobConfiguration">
+        <Property Name="collate" Type="Edm.Boolean"/>
+        <Property Name="colorMode" Type="graph.printColorMode"/>
+        <Property Name="copies" Type="Edm.Int32"/>
+        <Property Name="dpi" Type="Edm.Int32"/>
+        <Property Name="duplexMode" Type="graph.printDuplexMode"/>
+        <Property Name="feedOrientation" Type="graph.printerFeedOrientation"/>
+        <Property Name="finishings" Type="Collection(graph.printFinishing)"/>
+        <Property Name="fitPdfToPage" Type="Edm.Boolean"/>
+        <Property Name="inputBin" Type="Edm.String"/>
+        <Property Name="margin" Type="graph.printMargin"/>
+        <Property Name="mediaSize" Type="Edm.String"/>
+        <Property Name="mediaType" Type="Edm.String"/>
+        <Property Name="multipageLayout" Type="graph.printMultipageLayout"/>
+        <Property Name="orientation" Type="graph.printOrientation"/>
+        <Property Name="outputBin" Type="Edm.String"/>
+        <Property Name="pageRanges" Type="Collection(graph.integerRange)"/>
+        <Property Name="pagesPerSheet" Type="Edm.Int32"/>
+        <Property Name="quality" Type="graph.printQuality"/>
+        <Property Name="scaling" Type="graph.printScaling"/>
+      </ComplexType>
+      <ComplexType Name="printMargin">
+        <Property Name="bottom" Type="Edm.Int32"/>
+        <Property Name="left" Type="Edm.Int32"/>
+        <Property Name="right" Type="Edm.Int32"/>
+        <Property Name="top" Type="Edm.Int32"/>
+      </ComplexType>
+      <ComplexType Name="printJobStatus">
+        <Property Name="description" Type="Edm.String" Nullable="false"/>
+        <Property Name="details" Type="Collection(graph.printJobStateDetail)" Nullable="false"/>
+        <Property Name="isAcquiredByPrinter" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="state" Type="graph.printJobProcessingState" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="printOperationStatus">
+        <Property Name="description" Type="Edm.String" Nullable="false"/>
+        <Property Name="state" Type="graph.printOperationProcessingState" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="printSettings">
+        <Property Name="documentConversionEnabled" Type="Edm.Boolean" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="printTaskStatus">
+        <Property Name="description" Type="Edm.String" Nullable="false"/>
+        <Property Name="state" Type="graph.printTaskProcessingState" Nullable="false"/>
+      </ComplexType>
+      <EntityType Name="print">
+        <Property Name="settings" Type="graph.printSettings"/>
+        <NavigationProperty Name="connectors" Type="Collection(graph.printConnector)" ContainsTarget="true"/>
+        <NavigationProperty Name="operations" Type="Collection(graph.printOperation)" ContainsTarget="true"/>
+        <NavigationProperty Name="printers" Type="Collection(graph.printer)" ContainsTarget="true"/>
+        <NavigationProperty Name="services" Type="Collection(graph.printService)" ContainsTarget="true"/>
+        <NavigationProperty Name="shares" Type="Collection(graph.printerShare)" ContainsTarget="true"/>
+        <NavigationProperty Name="taskDefinitions" Type="Collection(graph.printTaskDefinition)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="printConnector" BaseType="graph.entity">
+        <Property Name="appVersion" Type="Edm.String" Nullable="false"/>
+        <Property Name="displayName" Type="Edm.String" Nullable="false"/>
+        <Property Name="fullyQualifiedDomainName" Type="Edm.String" Nullable="false"/>
+        <Property Name="location" Type="graph.printerLocation"/>
+        <Property Name="operatingSystem" Type="Edm.String" Nullable="false"/>
+        <Property Name="registeredDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printOperation" BaseType="graph.entity" Abstract="true">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="status" Type="graph.printOperationStatus" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printerBase" BaseType="graph.entity" Abstract="true">
+        <Property Name="capabilities" Type="graph.printerCapabilities"/>
+        <Property Name="defaults" Type="graph.printerDefaults"/>
+        <Property Name="displayName" Type="Edm.String" Nullable="false"/>
+        <Property Name="isAcceptingJobs" Type="Edm.Boolean"/>
+        <Property Name="location" Type="graph.printerLocation"/>
+        <Property Name="manufacturer" Type="Edm.String"/>
+        <Property Name="model" Type="Edm.String"/>
+        <Property Name="status" Type="graph.printerStatus" Nullable="false"/>
+        <NavigationProperty Name="jobs" Type="Collection(graph.printJob)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="printer" BaseType="graph.printerBase">
+        <Property Name="hasPhysicalDevice" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="isShared" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="registeredDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <NavigationProperty Name="connectors" Type="Collection(graph.printConnector)"/>
+        <NavigationProperty Name="shares" Type="Collection(graph.printerShare)"/>
+        <NavigationProperty Name="taskTriggers" Type="Collection(graph.printTaskTrigger)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="printService" BaseType="graph.entity">
+        <NavigationProperty Name="endpoints" Type="Collection(graph.printServiceEndpoint)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="printerShare" BaseType="graph.printerBase">
+        <Property Name="allowAllUsers" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <NavigationProperty Name="allowedGroups" Type="Collection(graph.group)"/>
+        <NavigationProperty Name="allowedUsers" Type="Collection(graph.user)"/>
+        <NavigationProperty Name="printer" Type="graph.printer"/>
+      </EntityType>
+      <EntityType Name="printTaskDefinition" BaseType="graph.entity">
+        <Property Name="createdBy" Type="graph.appIdentity" Nullable="false"/>
+        <Property Name="displayName" Type="Edm.String" Nullable="false"/>
+        <NavigationProperty Name="tasks" Type="Collection(graph.printTask)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="printDocument" BaseType="graph.entity" HasStream="true">
+        <Property Name="contentType" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="size" Type="Edm.Int64" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printTaskTrigger" BaseType="graph.entity">
+        <Property Name="event" Type="graph.printEvent" Nullable="false"/>
+        <NavigationProperty Name="definition" Type="graph.printTaskDefinition" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printJob" BaseType="graph.entity">
+        <Property Name="configuration" Type="graph.printJobConfiguration" Nullable="false"/>
+        <Property Name="createdBy" Type="graph.userIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="isFetchable" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="redirectedFrom" Type="Edm.String"/>
+        <Property Name="redirectedTo" Type="Edm.String"/>
+        <Property Name="status" Type="graph.printJobStatus" Nullable="false"/>
+        <NavigationProperty Name="documents" Type="Collection(graph.printDocument)" ContainsTarget="true"/>
+        <NavigationProperty Name="tasks" Type="Collection(graph.printTask)"/>
+      </EntityType>
+      <EntityType Name="printerCreateOperation" BaseType="graph.printOperation">
+        <Property Name="certificate" Type="Edm.String"/>
+        <NavigationProperty Name="printer" Type="graph.printer"/>
+      </EntityType>
+      <EntityType Name="printTask" BaseType="graph.entity">
+        <Property Name="parentUrl" Type="Edm.String" Nullable="false"/>
+        <Property Name="status" Type="graph.printTaskStatus" Nullable="false"/>
+        <NavigationProperty Name="definition" Type="graph.printTaskDefinition" Nullable="false"/>
+        <NavigationProperty Name="trigger" Type="graph.printTaskTrigger" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="printServiceEndpoint" BaseType="graph.entity">
+        <Property Name="displayName" Type="Edm.String" Nullable="false"/>
+        <Property Name="uri" Type="Edm.String" Nullable="false"/>
+      </EntityType>
       <ComplexType Name="imageInfo">
         <Property Name="addImageQuery" Type="Edm.Boolean"/>
         <Property Name="alternateText" Type="Edm.String"/>
@@ -7847,6 +8762,14 @@
         <Property Name="validationTokens" Type="Collection(Edm.String)"/>
         <Property Name="value" Type="Collection(graph.changeNotification)" Nullable="false"/>
       </ComplexType>
+      <ComplexType Name="teamworkNotificationRecipient" Abstract="true"/>
+      <ComplexType Name="aadUserNotificationRecipient" BaseType="graph.teamworkNotificationRecipient">
+        <Property Name="userId" Type="Edm.String" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="channelIdentity">
+        <Property Name="channelId" Type="Edm.String"/>
+        <Property Name="teamId" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="chatMessageAttachment">
         <Property Name="content" Type="Edm.String"/>
         <Property Name="contentType" Type="Edm.String"/>
@@ -7915,12 +8838,19 @@
         <Property Name="removeUrl" Type="Edm.String"/>
         <Property Name="websiteUrl" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="teamworkActivityTopic">
+        <Property Name="source" Type="graph.teamworkActivityTopicSource"/>
+        <Property Name="value" Type="Edm.String" Nullable="false"/>
+        <Property Name="webUrl" Type="Edm.String"/>
+      </ComplexType>
       <EntityType Name="conversationMember" BaseType="graph.entity" Abstract="true">
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="roles" Type="Collection(Edm.String)"/>
+        <Property Name="visibleHistoryStartDateTime" Type="Edm.DateTimeOffset"/>
       </EntityType>
       <EntityType Name="aadUserConversationMember" BaseType="graph.conversationMember">
         <Property Name="email" Type="Edm.String"/>
+        <Property Name="tenantId" Type="Edm.String"/>
         <Property Name="userId" Type="Edm.String"/>
         <NavigationProperty Name="user" Type="graph.user"/>
       </EntityType>
@@ -7934,6 +8864,7 @@
         <NavigationProperty Name="appDefinitions" Type="Collection(graph.teamsAppDefinition)"/>
       </EntityType>
       <EntityType Name="channel" BaseType="graph.entity">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String" Nullable="false"/>
         <Property Name="email" Type="Edm.String"/>
@@ -7948,6 +8879,8 @@
       <EntityType Name="chatMessage" BaseType="graph.entity">
         <Property Name="attachments" Type="Collection(graph.chatMessageAttachment)"/>
         <Property Name="body" Type="graph.itemBody" Nullable="false"/>
+        <Property Name="channelIdentity" Type="graph.channelIdentity"/>
+        <Property Name="chatId" Type="Edm.String"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="deletedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="etag" Type="Edm.String"/>
@@ -7973,8 +8906,25 @@
         <Property Name="webUrl" Type="Edm.String"/>
         <NavigationProperty Name="teamsApp" Type="graph.teamsApp"/>
       </EntityType>
-      <EntityType Name="chat" BaseType="graph.entity"/>
-      <EntityType Name="chatMessageHostedContent" BaseType="graph.entity" HasStream="true"/>
+      <EntityType Name="chat" BaseType="graph.entity">
+        <Property Name="chatType" Type="graph.chatType" Nullable="false"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastUpdatedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="topic" Type="Edm.String"/>
+        <NavigationProperty Name="installedApps" Type="Collection(graph.teamsAppInstallation)" ContainsTarget="true"/>
+        <NavigationProperty Name="members" Type="Collection(graph.conversationMember)" ContainsTarget="true"/>
+        <NavigationProperty Name="messages" Type="Collection(graph.chatMessage)" ContainsTarget="true"/>
+        <NavigationProperty Name="tabs" Type="Collection(graph.teamsTab)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="teamsAppInstallation" BaseType="graph.entity">
+        <NavigationProperty Name="teamsApp" Type="graph.teamsApp"/>
+        <NavigationProperty Name="teamsAppDefinition" Type="graph.teamsAppDefinition"/>
+      </EntityType>
+      <EntityType Name="teamworkHostedContent" BaseType="graph.entity" HasStream="true">
+        <Property Name="contentBytes" Type="Edm.Binary"/>
+        <Property Name="contentType" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="chatMessageHostedContent" BaseType="graph.teamworkHostedContent"/>
       <EntityType Name="schedule" BaseType="graph.entity">
         <Property Name="enabled" Type="Edm.Boolean"/>
         <Property Name="offerShiftRequestsEnabled" Type="Edm.Boolean"/>
@@ -7996,10 +8946,6 @@
         <NavigationProperty Name="timeOffRequests" Type="Collection(graph.timeOffRequest)" ContainsTarget="true"/>
         <NavigationProperty Name="timesOff" Type="Collection(graph.timeOff)" ContainsTarget="true"/>
       </EntityType>
-      <EntityType Name="teamsAppInstallation" BaseType="graph.entity">
-        <NavigationProperty Name="teamsApp" Type="graph.teamsApp"/>
-        <NavigationProperty Name="teamsAppDefinition" Type="graph.teamsAppDefinition"/>
-      </EntityType>
       <EntityType Name="teamsAsyncOperation" BaseType="graph.entity" OpenType="true">
         <Property Name="attemptsCount" Type="Edm.Int32" Nullable="false"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
@@ -8012,10 +8958,17 @@
       </EntityType>
       <EntityType Name="teamsTemplate" BaseType="graph.entity"/>
       <EntityType Name="teamsAppDefinition" BaseType="graph.entity">
+        <Property Name="createdBy" Type="graph.identitySet"/>
+        <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="publishingState" Type="graph.teamsAppPublishingState"/>
+        <Property Name="shortDescription" Type="Edm.String"/>
         <Property Name="teamsAppId" Type="Edm.String"/>
         <Property Name="version" Type="Edm.String"/>
+        <NavigationProperty Name="bot" Type="graph.teamworkBot" ContainsTarget="true"/>
       </EntityType>
+      <EntityType Name="teamworkBot" BaseType="graph.entity"/>
       <EntityType Name="teamwork" BaseType="graph.entity">
         <NavigationProperty Name="workforceIntegrations" Type="Collection(graph.workforceIntegration)" ContainsTarget="true"/>
       </EntityType>
@@ -8190,6 +9143,14 @@
       <Term Name="downloadUrl" Type="Edm.String" AppliesTo="microsoft.graph.driveItem"/>
       <Term Name="sharedChanged" Type="Edm.Boolean" AppliesTo="microsoft.graph.driveItem"/>
       <Term Name="sourceUrl" Type="Edm.String" AppliesTo="microsoft.graph.driveItem"/>
+      <Term Name="channelCreationMode" Type="Edm.String" AppliesTo="microsoft.graph.channel"/>
+      <Term Name="teamCreationMode" Type="Edm.String" AppliesTo="microsoft.graph.team"/>
+      <Term Name="temporaryId" Type="Edm.String" AppliesTo="microsoft.graph.chatMessageHostedContent"/>
+      <Action Name="instantiate" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.applicationTemplate"/>
+        <Parameter Name="displayName" Type="Edm.String" Unicode="false"/>
+        <ReturnType Type="graph.applicationServicePrincipal"/>
+      </Action>
       <Action Name="addKey" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.application" Nullable="false"/>
         <Parameter Name="keyCredential" Type="graph.keyCredential" Nullable="false"/>
@@ -8232,6 +9193,24 @@
         <Parameter Name="bindingParameter" Type="graph.servicePrincipal" Nullable="false"/>
         <Parameter Name="keyId" Type="Edm.Guid" Nullable="false"/>
       </Action>
+      <Action Name="setOrder" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.identityUserFlowAttributeAssignment)"/>
+        <Parameter Name="newAssignmentOrder" Type="graph.assignmentOrder"/>
+      </Action>
+      <Function Name="getOrder" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.identityUserFlowAttributeAssignment)"/>
+        <ReturnType Type="graph.assignmentOrder"/>
+      </Function>
+      <Action Name="uploadClientCertificate" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.identityApiConnector"/>
+        <Parameter Name="pkcs12Value" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="password" Type="Edm.String" Unicode="false"/>
+        <ReturnType Type="graph.identityApiConnector"/>
+      </Action>
+      <Function Name="availableProviderTypes" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.identityProvider)"/>
+        <ReturnType Type="Collection(Edm.String)" Unicode="false"/>
+      </Function>
       <Action Name="assignLicense" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.group" Nullable="false"/>
         <Parameter Name="addLicenses" Type="Collection(graph.assignedLicense)" Nullable="false"/>
@@ -8428,6 +9407,18 @@
         <Parameter Name="bindingParameter" Type="Collection(graph.user)"/>
         <ReturnType Type="Collection(graph.user)"/>
       </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.educationClass)"/>
+        <ReturnType Type="Collection(graph.educationClass)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.educationSchool)"/>
+        <ReturnType Type="Collection(graph.educationSchool)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.educationUser)"/>
+        <ReturnType Type="Collection(graph.educationUser)"/>
+      </Function>
       <Action Name="delta" IsBound="true">
         <Parameter Name="bindparameter" Type="graph.workbookFunctions"/>
         <Parameter Name="number1" Type="graph.Json"/>
@@ -8462,6 +9453,10 @@
         <Parameter Name="bindingParameter" Type="graph.driveItem"/>
         <Parameter Name="token" Type="Edm.String" Unicode="false"/>
         <ReturnType Type="Collection(graph.driveItem)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="messages" Type="Collection(graph.chatMessage)"/>
+        <ReturnType Type="Collection(graph.chatMessage)"/>
       </Function>
       <Function Name="delta" IsBound="true">
         <Parameter Name="bindingParameter" Type="Collection(graph.todoTask)"/>
@@ -11238,6 +12233,9 @@
         <Parameter Name="bindingParameter" Type="graph.event"/>
         <Parameter Name="Comment" Type="Edm.String" Unicode="false"/>
       </Action>
+      <Action Name="cancel" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.printJob"/>
+      </Action>
       <Action Name="decline" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.event"/>
         <Parameter Name="ProposedNewTime" Type="graph.timeSlot"/>
@@ -11352,6 +12350,11 @@
         <Parameter Name="bindingParameter" Type="graph.driveItem"/>
         <Parameter Name="item" Type="graph.driveItemUploadableProperties"/>
         <Parameter Name="deferCommit" Type="Edm.Boolean"/>
+        <ReturnType Type="graph.uploadSession"/>
+      </Action>
+      <Action Name="createUploadSession" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.printDocument"/>
+        <Parameter Name="properties" Type="graph.printDocumentUploadProperties" Nullable="false"/>
         <ReturnType Type="graph.uploadSession"/>
       </Action>
       <Action Name="getSchedule" IsBound="true">
@@ -11523,6 +12526,56 @@
         <Parameter Name="groupId" Type="Edm.String" Nullable="false" Unicode="false"/>
         <ReturnType Type="Edm.Boolean" Nullable="false"/>
       </Action>
+      <Action Name="acceptRecommendations" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewInstance"/>
+      </Action>
+      <Action Name="applyDecisions" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewInstance"/>
+      </Action>
+      <Action Name="batchRecordDecisions" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewInstance"/>
+        <Parameter Name="decision" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="justification" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="principalId" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="resourceId" Type="Edm.String" Unicode="false"/>
+      </Action>
+      <Action Name="resetDecisions" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewInstance"/>
+      </Action>
+      <Action Name="sendReminder" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewInstance"/>
+      </Action>
+      <Action Name="stop" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewInstance"/>
+      </Action>
+      <Action Name="stop" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessReviewScheduleDefinition"/>
+      </Action>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.accessReviewInstance)"/>
+        <Parameter Name="on" Type="graph.accessReviewInstanceFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.accessReviewInstance)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.accessReviewInstanceDecisionItem)"/>
+        <Parameter Name="on" Type="graph.accessReviewInstanceDecisionItemFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.accessReviewInstanceDecisionItem)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.accessReviewScheduleDefinition)"/>
+        <Parameter Name="on" Type="graph.accessReviewScheduleDefinitionFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.accessReviewScheduleDefinition)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.appConsentRequest)"/>
+        <Parameter Name="on" Type="graph.consentRequestFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.appConsentRequest)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.userConsentRequest)"/>
+        <Parameter Name="on" Type="graph.consentRequestFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.userConsentRequest)"/>
+      </Function>
       <Action Name="assign" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.managedDeviceMobileAppConfiguration"/>
         <Parameter Name="assignments" Type="Collection(graph.managedDeviceMobileAppConfigurationAssignment)"/>
@@ -12013,6 +13066,27 @@
         <Parameter Name="period" Type="Edm.String" Nullable="false" Unicode="false"/>
         <ReturnType Type="Edm.Stream" Nullable="false"/>
       </Function>
+      <Function Name="getGroupArchivedPrintJobs" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.reportRoot"/>
+        <Parameter Name="groupId" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="startDateTime" Type="Edm.DateTimeOffset"/>
+        <Parameter Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <ReturnType Type="Collection(graph.archivedPrintJob)"/>
+      </Function>
+      <Function Name="getPrinterArchivedPrintJobs" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.reportRoot"/>
+        <Parameter Name="printerId" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="startDateTime" Type="Edm.DateTimeOffset"/>
+        <Parameter Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <ReturnType Type="Collection(graph.archivedPrintJob)"/>
+      </Function>
+      <Function Name="getUserArchivedPrintJobs" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.reportRoot"/>
+        <Parameter Name="userId" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="startDateTime" Type="Edm.DateTimeOffset"/>
+        <Parameter Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <ReturnType Type="Collection(graph.archivedPrintJob)"/>
+      </Function>
       <Action Name="setPriority" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.deviceEnrollmentConfiguration"/>
         <Parameter Name="priority" Type="Edm.Int32" Nullable="false"/>
@@ -12186,6 +13260,39 @@
         <Parameter Name="includePersonalNotebooks" Type="Edm.Boolean" Nullable="false"/>
         <ReturnType Type="Collection(graph.recentNotebook)"/>
       </Function>
+      <Action Name="abort" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.printJob"/>
+        <Parameter Name="reason" Type="Edm.String" Unicode="false"/>
+      </Action>
+      <Action Name="redirect" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.printJob"/>
+        <Parameter Name="destinationPrinterId" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="configuration" Type="graph.printJobConfiguration"/>
+        <ReturnType Type="graph.printJob"/>
+      </Action>
+      <Action Name="redirect" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.call"/>
+        <Parameter Name="targets" Type="Collection(graph.invitationParticipantInfo)" Nullable="false"/>
+        <Parameter Name="timeout" Type="Edm.Int32"/>
+        <Parameter Name="callbackUri" Type="Edm.String" Unicode="false"/>
+      </Action>
+      <Action Name="start" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.printJob"/>
+        <ReturnType Type="graph.printJobStatus"/>
+      </Action>
+      <Action Name="create" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.printer)"/>
+        <Parameter Name="displayName" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="manufacturer" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="model" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="physicalDeviceId" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="hasPhysicalDevice" Type="Edm.Boolean"/>
+        <Parameter Name="certificateSigningRequest" Type="graph.printCertificateSigningRequest" Nullable="false"/>
+        <Parameter Name="connectorId" Type="Edm.String" Unicode="false"/>
+      </Action>
+      <Action Name="restoreFactoryDefaults" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.printer"/>
+      </Action>
       <Action Name="answer" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.call"/>
         <Parameter Name="callbackUri" Type="Edm.String" Nullable="false" Unicode="false"/>
@@ -12231,12 +13338,6 @@
         <Parameter Name="stopTones" Type="Collection(Edm.String)" Unicode="false"/>
         <Parameter Name="clientContext" Type="Edm.String" Unicode="false"/>
         <ReturnType Type="graph.recordOperation"/>
-      </Action>
-      <Action Name="redirect" IsBound="true">
-        <Parameter Name="bindingParameter" Type="graph.call"/>
-        <Parameter Name="targets" Type="Collection(graph.invitationParticipantInfo)" Nullable="false"/>
-        <Parameter Name="timeout" Type="Edm.Int32"/>
-        <Parameter Name="callbackUri" Type="Edm.String" Unicode="false"/>
       </Action>
       <Action Name="reject" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.call"/>
@@ -12295,6 +13396,38 @@
         <Parameter Name="visibility" Type="graph.teamVisibilityType" Nullable="false"/>
         <Parameter Name="partsToClone" Type="graph.clonableTeamParts" Nullable="false"/>
       </Action>
+      <Action Name="completeMigration" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.team"/>
+      </Action>
+      <Action Name="completeMigration" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.channel"/>
+      </Action>
+      <Action Name="sendActivityNotification" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.team"/>
+        <Parameter Name="topic" Type="graph.teamworkActivityTopic"/>
+        <Parameter Name="activityType" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="chainId" Type="Edm.Int64"/>
+        <Parameter Name="previewText" Type="graph.itemBody"/>
+        <Parameter Name="templateParameters" Type="Collection(graph.keyValuePair)"/>
+        <Parameter Name="recipient" Type="graph.teamworkNotificationRecipient"/>
+      </Action>
+      <Action Name="sendActivityNotification" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.chat"/>
+        <Parameter Name="topic" Type="graph.teamworkActivityTopic"/>
+        <Parameter Name="activityType" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="chainId" Type="Edm.Int64"/>
+        <Parameter Name="previewText" Type="graph.itemBody"/>
+        <Parameter Name="templateParameters" Type="Collection(graph.keyValuePair)"/>
+        <Parameter Name="recipient" Type="graph.teamworkNotificationRecipient"/>
+      </Action>
+      <Action Name="sendActivityNotification" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.userTeamwork"/>
+        <Parameter Name="topic" Type="graph.teamworkActivityTopic"/>
+        <Parameter Name="activityType" Type="Edm.String" Unicode="false"/>
+        <Parameter Name="chainId" Type="Edm.Int64"/>
+        <Parameter Name="previewText" Type="graph.itemBody"/>
+        <Parameter Name="templateParameters" Type="Collection(graph.keyValuePair)"/>
+      </Action>
       <Action Name="unarchive" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.team"/>
       </Action>
@@ -12333,6 +13466,7 @@
           <NavigationPropertyBinding Path="registeredDevices" Target="directoryObjects"/>
           <NavigationPropertyBinding Path="transitiveMemberOf" Target="directoryObjects"/>
         </EntitySet>
+        <EntitySet Name="applicationTemplates" EntityType="microsoft.graph.applicationTemplate"/>
         <EntitySet Name="authenticationMethodConfigurations" EntityType="microsoft.graph.authenticationMethodConfiguration"/>
         <EntitySet Name="identityProviders" EntityType="microsoft.graph.identityProvider"/>
         <EntitySet Name="applications" EntityType="microsoft.graph.application">
@@ -12371,6 +13505,7 @@
         </EntitySet>
         <EntitySet Name="groupSettings" EntityType="microsoft.graph.groupSetting"/>
         <EntitySet Name="groupSettingTemplates" EntityType="microsoft.graph.groupSettingTemplate"/>
+        <EntitySet Name="localizations" EntityType="microsoft.graph.organizationalBrandingLocalization"/>
         <EntitySet Name="oauth2PermissionGrants" EntityType="microsoft.graph.oAuth2PermissionGrant"/>
         <EntitySet Name="organization" EntityType="microsoft.graph.organization">
           <NavigationPropertyBinding Path="certificateBasedAuthConfiguration" Target="certificateBasedAuthConfiguration"/>
@@ -12393,6 +13528,8 @@
         <EntitySet Name="sites" EntityType="microsoft.graph.site"/>
         <EntitySet Name="schemaExtensions" EntityType="microsoft.graph.schemaExtension"/>
         <EntitySet Name="groupLifecyclePolicies" EntityType="microsoft.graph.groupLifecyclePolicy"/>
+        <EntitySet Name="agreementAcceptances" EntityType="microsoft.graph.agreementAcceptance"/>
+        <EntitySet Name="agreements" EntityType="microsoft.graph.agreement"/>
         <EntitySet Name="dataPolicyOperations" EntityType="microsoft.graph.dataPolicyOperation"/>
         <EntitySet Name="subscriptions" EntityType="microsoft.graph.subscription"/>
         <EntitySet Name="chats" EntityType="microsoft.graph.chat"/>
@@ -12404,6 +13541,7 @@
         <Singleton Name="auditLogs" Type="microsoft.graph.auditLogRoot"/>
         <Singleton Name="authenticationMethodsPolicy" Type="microsoft.graph.authenticationMethodsPolicy"/>
         <Singleton Name="identity" Type="microsoft.graph.identityContainer"/>
+        <Singleton Name="branding" Type="microsoft.graph.organizationalBranding"/>
         <Singleton Name="directory" Type="microsoft.graph.directory"/>
         <Singleton Name="me" Type="microsoft.graph.user">
           <NavigationPropertyBinding Path="createdObjects" Target="directoryObjects"/>
@@ -12417,23 +13555,36 @@
         </Singleton>
         <Singleton Name="policies" Type="microsoft.graph.policyRoot"/>
         <Singleton Name="education" Type="microsoft.graph.educationRoot">
+          <NavigationPropertyBinding Path="classes/group" Target="directoryObjects"/>
           <NavigationPropertyBinding Path="classes/members" Target="education/users"/>
           <NavigationPropertyBinding Path="classes/schools" Target="education/schools"/>
           <NavigationPropertyBinding Path="classes/teachers" Target="education/users"/>
           <NavigationPropertyBinding Path="me/classes" Target="education/classes"/>
           <NavigationPropertyBinding Path="me/schools" Target="education/schools"/>
+          <NavigationPropertyBinding Path="me/taughtClasses" Target="education/classes"/>
+          <NavigationPropertyBinding Path="me/user" Target="directoryObjects"/>
+          <NavigationPropertyBinding Path="schools/administrativeUnit" Target="directoryObjects"/>
           <NavigationPropertyBinding Path="schools/classes" Target="education/classes"/>
           <NavigationPropertyBinding Path="schools/users" Target="education/users"/>
           <NavigationPropertyBinding Path="users/classes" Target="education/classes"/>
           <NavigationPropertyBinding Path="users/schools" Target="education/schools"/>
+          <NavigationPropertyBinding Path="users/taughtClasses" Target="education/classes"/>
+          <NavigationPropertyBinding Path="users/user" Target="directoryObjects"/>
         </Singleton>
+        <Singleton Name="roleManagement" Type="microsoft.graph.roleManagement"/>
         <Singleton Name="drive" Type="microsoft.graph.drive"/>
         <Singleton Name="communications" Type="microsoft.graph.cloudCommunications"/>
+        <Singleton Name="identityGovernance" Type="microsoft.graph.identityGovernance"/>
         <Singleton Name="deviceAppManagement" Type="microsoft.graph.deviceAppManagement"/>
         <Singleton Name="deviceManagement" Type="microsoft.graph.deviceManagement"/>
         <Singleton Name="reports" Type="microsoft.graph.reportRoot"/>
         <Singleton Name="search" Type="microsoft.graph.searchEntity"/>
-        <Singleton Name="planner" Type="microsoft.graph.planner"/>
+        <Singleton Name="planner" Type="microsoft.graph.planner">
+          <NavigationPropertyBinding Path="buckets/tasks" Target="planner/tasks"/>
+          <NavigationPropertyBinding Path="plans/buckets" Target="planner/buckets"/>
+          <NavigationPropertyBinding Path="plans/tasks" Target="planner/tasks"/>
+        </Singleton>
+        <Singleton Name="print" Type="microsoft.graph.print"/>
         <Singleton Name="security" Type="microsoft.graph.security"/>
         <Singleton Name="appCatalogs" Type="microsoft.graph.appCatalogs"/>
         <Singleton Name="teamwork" Type="microsoft.graph.teamwork"/>
@@ -12451,6 +13602,19 @@
           </Record>
         </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.provisioningObjectSummary">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
       </Annotations>
       <Annotations Target="microsoft.graph.signIn">
@@ -12494,6 +13658,27 @@
           </Record>
         </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.NavigationRestrictions">
+          <Record>
+            <PropertyValue Property="Referenceable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
         <Annotation Term="Org.OData.Core.V1.Description" String="Represents an Azure Active Directory object. The directoryObject type is the base type for many other directory entity types."/>
       </Annotations>
       <Annotations Target="microsoft.graph.user">
@@ -12830,6 +14015,35 @@
             <PropertyValue Property="Updatable" Bool="false"/>
           </Record>
         </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.agreementAcceptance">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
       </Annotations>
       <Annotations Target="microsoft.graph.user/deviceEnrollmentLimit">
         <Annotation Term="Org.OData.Core.V1.Description" String="The limit on the maximum number of devices that the user is permitted to enroll. Allowed values are 5 or 1000."/>
@@ -13221,6 +14435,13 @@
         <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
         <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
       </Annotations>
+      <Annotations Target="microsoft.graph.educationClass/course">
+        <Annotation Term="graph.TransparentContainerProperty" Qualifier="course.courseNumber" String="extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber"/>
+        <Annotation Term="graph.TransparentContainerProperty" Qualifier="course.description" String="extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription"/>
+        <Annotation Term="graph.TransparentContainerProperty" Qualifier="course.displayName" String="extension_fe2174665583431c953114ff7268b7b3_Education_CourseName"/>
+        <Annotation Term="graph.TransparentContainerProperty" Qualifier="course.externalId" String="extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId"/>
+        <Annotation Term="graph.TransparentContainerProperty" Qualifier="course.subject" String="extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject"/>
+      </Annotations>
       <Annotations Target="microsoft.graph.educationClass/createdBy">
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="createdBy.application.displayName" String="extension_fe2174665583431c953114ff7268b7b3_Education_CreatedByAppDisplayName"/>
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="createdBy.application.id" String="extension_fe2174665583431c953114ff7268b7b3_Education_CreatedByAppId"/>
@@ -13232,6 +14453,27 @@
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="term.endDate" String="extension_fe2174665583431c953114ff7268b7b3_Education_TermEndDate"/>
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="term.externalId" String="extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_TermId"/>
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="term.startDate" String="extension_fe2174665583431c953114ff7268b7b3_Education_TermStartDate"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.educationRoot/classes">
+        <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
+          <Record>
+            <PropertyValue Property="Supported" Bool="true"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.educationRoot/schools">
+        <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
+          <Record>
+            <PropertyValue Property="Supported" Bool="true"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.educationRoot/users">
+        <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
+          <Record>
+            <PropertyValue Property="Supported" Bool="true"/>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="microsoft.graph.educationSchool/address">
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="address.city" String="extension_fe2174665583431c953114ff7268b7b3_Education_City"/>
@@ -13259,6 +14501,9 @@
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="mailingAddress.state" String="extension_fe2174665583431c953114ff7268b7b3_Education_MailingState"/>
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="mailingAddress.street" String="extension_fe2174665583431c953114ff7268b7b3_Education_MailingAddress"/>
       </Annotations>
+      <Annotations Target="microsoft.graph.educationUser/onPremisesInfo">
+        <Annotation Term="graph.TransparentContainerProperty" Qualifier="onPremisesInfo.immutableId" String="onPremisesImmutableId"/>
+      </Annotations>
       <Annotations Target="microsoft.graph.educationUser/residenceAddress">
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="residenceAddress.city" String="extension_fe2174665583431c953114ff7268b7b3_Education_ResidenceCity"/>
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="residenceAddress.countryOrRegion" String="extension_fe2174665583431c953114ff7268b7b3_Education_ResidenceCountry"/>
@@ -13277,6 +14522,12 @@
       <Annotations Target="microsoft.graph.educationUser/teacher">
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="teacher.externalId" String="extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_TeacherId"/>
         <Annotation Term="graph.TransparentContainerProperty" Qualifier="teacher.teacherNumber" String="extension_fe2174665583431c953114ff7268b7b3_Education_TeacherNumber"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.appScope/displayName">
+        <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.appScope/type">
+        <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
       </Annotations>
       <Annotations Target="microsoft.graph.subscription">
         <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
@@ -13868,6 +15119,122 @@
             <PropertyValue Property="Updatable" Bool="false"/>
           </Record>
         </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.agreement">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.agreementFile">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.agreementFileLocalization">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.agreementFileVersion">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
       </Annotations>
       <Annotations Target="microsoft.graph.namedLocation">
         <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
@@ -20303,6 +21670,13 @@
           </Record>
         </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.channel/messages">
+        <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
+          <Record>
+            <PropertyValue Property="Supported" Bool="true"/>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="microsoft.graph.changeTrackedEntity/createdDateTime">
         <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
