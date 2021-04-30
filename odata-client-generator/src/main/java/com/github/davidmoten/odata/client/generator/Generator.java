@@ -127,7 +127,7 @@ public final class Generator {
 				.flatMap(s -> Util.filter(s.getComplexTypeOrEntityTypeOrTypeDefinition(), TEntityType.class)
 						.map(t -> new SchemaAndType<TEntityType>(s, t))) //
 				.map(x -> names.toTypeWithNamespace(x.schema, x.type.getName())) //
-				.forEach(x -> log("  " + x);
+				.forEach(x -> log("  " + x));
 
 		log("-----------------------------------");
 		log("Replacing aliases");
