@@ -13,6 +13,8 @@ import java.util.stream.StreamSupport;
 public final class ChangedFields implements Iterable<String> {
 
     private final Set<String> set;
+    
+    public static final ChangedFields EMPTY = new ChangedFields();
 
     private ChangedFields(Set<String> set) {
         this.set = set;

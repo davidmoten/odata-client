@@ -61,8 +61,13 @@ public class GeneratorTest {
                 "microsoft.graph.beta.termStore.generated");
         SchemaOptions schemaOptions4 = new SchemaOptions("microsoft.graph.ediscovery",
                 "microsoft.graph.beta.ediscovery.generated");
+        SchemaOptions schemaOptions5 = new SchemaOptions("microsoft.graph.externalConnectors",
+                "microsoft.graph.beta.external.connectors");
+        SchemaOptions schemaOptions6 = new SchemaOptions("microsoft.graph.windowsUpdates",
+                "microsoft.graph.beta.windows.updates");
         
-        Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2, schemaOptions3, schemaOptions4));
+        Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2,
+                schemaOptions3, schemaOptions4, schemaOptions5, schemaOptions6));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
     }

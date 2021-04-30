@@ -148,6 +148,16 @@
                             <metadata>src/main/odata/metadata8.xml</metadata>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>test9</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <metadata>src/main/odata/metadata9.xml</metadata>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

@@ -76,7 +76,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         private byte[] contentBytes;
         private String contentId;
         private String contentLocation;
-        private ChangedFields changedFields = new ChangedFields();
+        private ChangedFields changedFields = ChangedFields.EMPTY;
 
         Builder() {
             // prevent instantiation
