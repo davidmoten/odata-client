@@ -47,11 +47,6 @@ public abstract class Structure<T> {
 
     public abstract List<TProperty> getProperties();
 
-    public final List<Property> getProperties2() {
-        return getProperties().stream().map(x -> new Property(x, names))
-                .collect(Collectors.toList());
-    }
-
     public abstract List<TNavigationProperty> getNavigationProperties();
 
     public abstract boolean isEntityType();

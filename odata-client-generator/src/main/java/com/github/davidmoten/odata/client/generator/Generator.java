@@ -104,7 +104,8 @@ import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
 
 public final class Generator {
 
-	private static final String COLLECTION_PREFIX = "Collection(";
+	private static final String IMPORTSHERE = "IMPORTSHERE";
+    private static final String COLLECTION_PREFIX = "Collection(";
 	// private final Schema schema;
 	private final Names names;
 	private final List<Schema> schemas;
@@ -225,7 +226,7 @@ public final class Generator {
 		StringWriter w = new StringWriter();
 		try (PrintWriter p = new PrintWriter(w)) {
 			p.format("package %s;\n\n", t.getPackage());
-			p.format("IMPORTSHERE");
+			p.format(IMPORTSHERE);
 
 			String baseCollectionClassName = t.getBaseCollectionRequestClassName(imports);
 			p.format("%spublic final class %s extends %s {\n", //
@@ -407,7 +408,7 @@ public final class Generator {
 			StringWriter w = new StringWriter();
 			try (PrintWriter p = new PrintWriter(w)) {
 				p.format("package %s;\n\n", names.getPackageSchema(schema));
-				p.format("IMPORTSHERE");
+				p.format(IMPORTSHERE);
 				p.format("public enum %s implements %s {\n\n", simpleClassName, imports.add(SchemaInfo.class));
 
 				// add enum
@@ -467,7 +468,7 @@ public final class Generator {
 				// close class
 				p.format("}\n");
 			}
-			byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+			byte[] bytes = w.toString().replace(IMPORTSHERE, imports.toString()).getBytes(StandardCharsets.UTF_8);
 			Files.write(names.getClassFileSchema(schema).toPath(), bytes);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
@@ -484,7 +485,7 @@ public final class Generator {
 			StringWriter w = new StringWriter();
 			try (PrintWriter p = new PrintWriter(w)) {
 				p.format("package %s;\n\n", names.getPackageEnum(schema));
-				p.format("IMPORTSHERE");
+				p.format(IMPORTSHERE);
 				p.format("public enum %s implements %s {\n", simpleClassName,
 						imports.add(com.github.davidmoten.odata.client.Enum.class));
 
@@ -528,7 +529,7 @@ public final class Generator {
 				// close class
 				p.format("}\n");
 			}
-			byte[] bytes = w.toString().replace("IMPORTSHERE", imports.toString()).getBytes(StandardCharsets.UTF_8);
+			byte[] bytes = w.toString().replace(IMPORTSHERE, imports.toString()).getBytes(StandardCharsets.UTF_8);
 			Files.write(names.getClassFileEnum(schema, t.getName()).toPath(), bytes);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -546,7 +547,7 @@ public final class Generator {
 		StringWriter w = new StringWriter();
 		try (PrintWriter p = new PrintWriter(w)) {
 			p.format("package %s;\n\n", t.getPackage());
-			p.format("IMPORTSHERE");
+			p.format(IMPORTSHERE);
 
 			t.printJavadoc(p, indent);
 			printPropertyOrder(imports, p, t.getProperties());
@@ -997,7 +998,7 @@ public final class Generator {
 	private void writeToFile(Imports imports, StringWriter w, File classFile) throws IOException {
 		byte[] bytes = w //
 				.toString() //
-				.replace("IMPORTSHERE", imports.toString()) //
+				.replace(IMPORTSHERE, imports.toString()) //
 				.getBytes(StandardCharsets.UTF_8);
 		Files.write(classFile.toPath(), bytes);
 	}
@@ -1012,7 +1013,7 @@ public final class Generator {
 		StringWriter w = new StringWriter();
 		try (PrintWriter p = new PrintWriter(w)) {
 			p.format("package %s;\n\n", t.getPackage());
-			p.format("IMPORTSHERE");
+			p.format(IMPORTSHERE);
 
 			t.printJavadoc(p, indent);
 			printPropertyOrder(imports, p, t.getProperties());
@@ -1077,7 +1078,7 @@ public final class Generator {
 		StringWriter w = new StringWriter();
 		try (PrintWriter p = new PrintWriter(w)) {
 			p.format("package %s;\n\n", t.getPackageEntityRequest());
-			p.format("IMPORTSHERE");
+			p.format(IMPORTSHERE);
 
 			p.format("@%s\n", imports.add(JsonIgnoreType.class));
 			// don't make class final because can get extended by EntitySet
@@ -1267,7 +1268,7 @@ public final class Generator {
 		StringWriter w = new StringWriter();
 		try (PrintWriter p = new PrintWriter(w)) {
 			p.format("package %s;\n\n", names.getPackageContainer(schema));
-			p.format("IMPORTSHERE");
+			p.format(IMPORTSHERE);
 
 			final String extension;
 			if (t.getExtends() != null) {
@@ -1384,7 +1385,7 @@ public final class Generator {
 		StringWriter w = new StringWriter();
 		try (PrintWriter p = new PrintWriter(w)) {
 			p.format("package %s;\n\n", names.getPackageCollectionRequest(schema));
-			p.format("IMPORTSHERE");
+			p.format(IMPORTSHERE);
 			p.format("public class %s extends %s<%s, %s>{\n\n", simpleClassName,
 					imports.add(CollectionPageEntityRequest.class),
 					imports.add(names.getFullClassNameFromTypeWithoutNamespace(schema, t.getName())), //
