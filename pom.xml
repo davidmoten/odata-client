@@ -32,6 +32,7 @@
         <jxr.version>3.1.1</jxr.version>
         <taglist.version>2.4</taglist.version>
         <changelog.version>2.2</changelog.version>
+        <nexus.staging.version>1.6.8</nexus.staging.version>
 
         <jackson.version>2.12.3</jackson.version>
         <junit.version>4.13.2</junit.version>
@@ -309,7 +310,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.8</version>
+                        <version>${nexus.staging.version}</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
