@@ -44,7 +44,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <slf4j.version>1.7.30</slf4j.version>
         <release.plugin.version>2.5.1</release.plugin.version>
-        <jacoco.plugin.version>0.8.6</jacoco.plugin.version>
+        <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
         <spotbugs.plugin.version>4.2.3</spotbugs.plugin.version>
         <bundle.plugin.version>5.1.2</bundle.plugin.version>
         <log4j.version>2.14.1</log4j.version>
