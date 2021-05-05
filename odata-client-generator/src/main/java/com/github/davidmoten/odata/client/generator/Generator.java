@@ -1091,9 +1091,10 @@ public final class Generator {
 			p.format("%spublic %s(%s contextPath, %s<%s> value) {\n", indent, //
 			        simpleClassName, imports.add(ContextPath.class), //
 			        imports.add(Optional.class), imports.add(Object.class));
-			p.format("%ssuper(%s.class, contextPath, value);\n", //
+			p.format("%ssuper(%s.class, contextPath, value, %s);\n", //
 					indent.right(), //
-					imports.add(t.getFullClassNameEntity()));
+					imports.add(t.getFullClassNameEntity()), //
+					t.isMediaEntityOrHasStreamProperty());
 			p.format("%s}\n", indent.left());
 
 			indent.left();

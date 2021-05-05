@@ -8,12 +8,14 @@ public abstract class EntityRequest<T extends ODataEntityType> {
 
     private final Class<T> cls;
     protected final ContextPath contextPath;
-    private Optional<Object> value;
+    private final Optional<Object> value;
+    private final boolean isMediaEntityOrHasStreamProperty;
 
-    public EntityRequest(Class<T> cls, ContextPath contextPath, Optional<Object> value) {
+    public EntityRequest(Class<T> cls, ContextPath contextPath, Optional<Object> value, boolean isMediaEntityOrHasStreamProperty) {
         this.cls = cls;
         this.contextPath = contextPath;
         this.value = value;
+        this.isMediaEntityOrHasStreamProperty = isMediaEntityOrHasStreamProperty;
     }
 
     T get(EntityRequestOptions<T> options) {
@@ -38,47 +40,51 @@ public abstract class EntityRequest<T extends ODataEntityType> {
     }
 
     public T get() {
-        return new EntityRequestOptionsBuilder<T>(this).get();
+        return builder().get();
     }
 
     public void delete() {
-        new EntityRequestOptionsBuilder<T>(this).delete();
+        builder().delete();
     }
 
     public T patch(T entity) {
-        return new EntityRequestOptionsBuilder<T>(this).patch(entity);
+        return builder().patch(entity);
     }
 
     public T put(T entity) {
-        return new EntityRequestOptionsBuilder<T>(this).put(entity);
+        return builder().put(entity);
     }
 
     public EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
-        return new EntityRequestOptionsBuilder<T>(this).requestHeader(key, value);
+        return builder().requestHeader(key, value);
     }
 
     public EntityRequestOptionsBuilder<T> query(String name, String value) {
-        return new EntityRequestOptionsBuilder<T>(this).query(name, value);
+        return builder().query(name, value);
     }
     
     public EntityRequestOptionsBuilder<T> select(String clause) {
-        return new EntityRequestOptionsBuilder<T>(this).select(clause);
+        return builder().select(clause);
     }
 
     public EntityRequestOptionsBuilder<T> expand(String clause) {
-        return new EntityRequestOptionsBuilder<T>(this).expand(clause);
+        return builder().expand(clause);
     }
 
     public EntityRequestOptionsBuilder<T> metadataFull() {
-        return new EntityRequestOptionsBuilder<T>(this).metadataFull();
+        return builder().metadataFull();
     }
 
     public EntityRequestOptionsBuilder<T> metadataMinimal() {
-        return new EntityRequestOptionsBuilder<T>(this).metadataMinimal();
+        return builder().metadataMinimal();
     }
 
     public EntityRequestOptionsBuilder<T> metadataNone() {
-        return new EntityRequestOptionsBuilder<T>(this).metadataNone();
+        return builder().metadataNone();
+    }
+    
+    private EntityRequestOptionsBuilder<T> builder() {
+        return new EntityRequestOptionsBuilder<T>(this, isMediaEntityOrHasStreamProperty);
     }
 
 }

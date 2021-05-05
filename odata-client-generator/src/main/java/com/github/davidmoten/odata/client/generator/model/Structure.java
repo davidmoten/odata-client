@@ -82,6 +82,13 @@ public abstract class Structure<T> {
                         .flatMap(x -> toFields(x, imports)))
                 .collect(Collectors.toList());
     }
+    
+    public final boolean isMediaEntityOrHasStreamProperty() {
+        return getHeirarchy() //
+                .stream() //
+                .flatMap(x -> x.getProperties().stream()) //
+                .anyMatch(x -> "Edm.Stream".equals(names.getType(x)));
+    }
 
     public static final class FieldName {
         public final String name;
