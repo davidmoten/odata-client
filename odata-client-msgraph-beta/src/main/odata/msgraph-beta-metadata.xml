@@ -57525,6 +57525,243 @@
           </Record>
         </Annotation>
       </Annotations>
+      <Annotations Target="microsoft.graph.deviceConfigurationDeviceActivity(microsoft.graph.reportRoot)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for the device configuration device activity report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.deviceConfigurationUserActivity(microsoft.graph.reportRoot)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for the device configuration user activity report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.managedDeviceEnrollmentAbandonmentDetails(microsoft.graph.reportRoot, Edm.Int32, Edm.Int32, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for Enrollment abandonment details report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.managedDeviceEnrollmentAbandonmentSummary(microsoft.graph.reportRoot, Edm.Int32, Edm.Int32, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for Enrollment abandonment summary report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.managedDeviceEnrollmentFailureTrends(microsoft.graph.reportRoot)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for the enrollment failure trends report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.cancel(microsoft.graph.bookingAppointment, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Cancels the giving booking appointment, sending a message to the involved parties."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.publish(microsoft.graph.bookingBusiness)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Makes the scheduling page of this business available to the general public."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.unpublish(microsoft.graph.bookingBusiness)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Prevents the general public from seeing the scheduling page of this business."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.activateDeviceEsim(microsoft.graph.managedDevice, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Activate eSIM on the device."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.bypassActivationLock(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Bypass activation lock"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.cleanWindowsDevice(microsoft.graph.managedDevice, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Clean Windows device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.deleteUserFromSharedAppleDevice(microsoft.graph.managedDevice, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Delete user from shared Apple device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.disableLostMode(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Disable lost mode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.enableLostMode(microsoft.graph.managedDevice, Edm.String, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Enable lost mode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.locateDevice(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Locate a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.logoutSharedAppleDeviceActiveUser(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Logout shared Apple device active user"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.playLostModeSound(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Remote lock"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.rebootNow(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Reboot device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.recoverPasscode(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Recover passcode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.remoteLock(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Remote lock"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.requestRemoteAssistance(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request remote assistance"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.resetPasscode(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Reset passcode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.retire(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retire a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.revokeAppleVppLicenses(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Revoke all Apple Vpp licenses for a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.rotateBitLockerKeys(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Rotate BitLockerKeys"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.setDeviceName(microsoft.graph.managedDevice, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Set device name of the device."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.shutDown(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Shut down device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.triggerConfigurationManagerAction(microsoft.graph.managedDevice, microsoft.graph.configurationManagerAction)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Trigger action on ConfigurationManager client"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.wipe(microsoft.graph.managedDevice, Edm.Boolean, Edm.Boolean, Edm.String, Edm.Boolean, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Wipe a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.setMobileDeviceManagementAuthority(microsoft.graph.organization)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Set mobile device management authority"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.removeAllDevicesFromManagement(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retire all devices from management for this user"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.unblockManagedApps(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Unblocks the managed app user from app check-in."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.wipeAndBlockManagedApps(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Blocks the managed app user from app check-in."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.wipeManagedAppRegistrationByDeviceTag(microsoft.graph.user, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Issues a wipe operation on an app registration with specified device tag."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.wipeManagedAppRegistrationsByDeviceTag(microsoft.graph.user, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Issues a wipe operation on an app registration with specified device tag."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getManagedAppDiagnosticStatuses(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Gets diagnostics validation status for a given user."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getManagedAppPolicies(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Gets app restrictions for a given user."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.isManagedAppUserBlocked(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Gets the blocked state of a managed app user."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getManagedDevicesWithAppFailures(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retrieves the list of devices with failed apps"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getManagedDevicesWithFailedOrPendingApps(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retrieves the list of devices with failed or pending apps"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getResourcesFolderUrl(microsoft.graph.educationAssignment)">
+        <Annotation Term="Org.OData.Core.V1.Revisions">
+          <Collection>
+            <Record>
+              <PropertyValue Property="Date" Date="2021-04-30"/>
+              <PropertyValue Property="Description" String="The getResourcesFolderUrl API is deprecated and will stop returning data on May 17, 2021. Please use the new property resourcesFolderUrl exposed on educationAssignment entity to fetch this info."/>
+              <PropertyValue Property="Kind">
+                <EnumMember>Org.OData.Core.V1.RevisionKind/Deprecated</EnumMember>
+              </PropertyValue>
+              <PropertyValue Property="RemovalDate" Date="2021-05-17"/>
+              <PropertyValue Property="Version" String="2021-04/BreakingChanges"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.createGooglePlayWebToken(microsoft.graph.androidManagedStoreAccountEnterpriseSettings, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Generates a web token that is used in an embeddable component."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.setAndroidDeviceOwnerFullyManagedEnrollmentState(microsoft.graph.androidManagedStoreAccountEnterpriseSettings, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Sets the AndroidManagedStoreAccountEnterpriseSettings AndroidDeviceOwnerFullyManagedEnrollmentEnabled to the given value."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.commit(microsoft.graph.mobileAppContentFile, microsoft.graph.fileEncryptionInfo)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Commits a file of a given app."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.renewUpload(microsoft.graph.mobileAppContentFile)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Renews the SAS URI for an application file upload."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.revokeAllLicenses(microsoft.graph.iosVppApp, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Revoke all assigned iOS VPP licenses for given app."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.revokeDeviceLicense(microsoft.graph.iosVppApp, Edm.String, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Revoke assigned iOS VPP device license for given app."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.revokeUserLicense(microsoft.graph.iosVppApp, Edm.String, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Revoke assigned iOS VPP user license for given app."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.enableUnlicensedAdminstrators(microsoft.graph.deviceManagement)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Upon enabling, users assigned as administrators via Role Assignment Memberships will no longer require an assigned Intune license. You are limited to 350 unlicensed direct members for each AAD security group in a role assignment, but you can assign multiple AAD security groups to a role if you need to support more than 350 unlicensed administrators. Licensed administrators will continue to function as-is in that transitive memberships apply and are not subject to the 350 member limit."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getAssignedRoleDetails(microsoft.graph.deviceManagement)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retrieves the assigned role definitions and role assignments of the currently authenticated user."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.extendFeatureUpdatesPause(microsoft.graph.windowsUpdateForBusinessConfiguration)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Extend Feature Updates Pause for a Windows Update for Business ring."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.extendQualityUpdatesPause(microsoft.graph.windowsUpdateForBusinessConfiguration)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Extend Quality Updates Pause for a Windows Update for Business ring."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.revokeLicenses(microsoft.graph.vppToken, Edm.Boolean, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Revoke licenses associated with a specific appleVolumePurchaseProgramToken"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.syncLicenses(microsoft.graph.vppToken)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Syncs licenses associated with a specific appleVolumePurchaseProgramToken"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.syncMicrosoftStoreForBusinessApps(microsoft.graph.deviceAppManagement)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Syncs Intune account with Microsoft Store For Business"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getGlobalScriptHighestAvailableVersion(microsoft.graph.deviceHealthScript)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Update the Proprietary Device Health Script"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.updateGlobalScript(microsoft.graph.deviceHealthScript, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Update the Proprietary Device Health Script"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getRemediationHistory(microsoft.graph.deviceHealthScript)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Function to get the number of remediations by a device health scripts"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.generateApplePushNotificationCertificateSigningRequest(microsoft.graph.applePushNotificationCertificate)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Download Apple push notification certificate signing request"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.downloadApplePushNotificationCertificateSigningRequest(microsoft.graph.applePushNotificationCertificate)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Download Apple push notification certificate signing request"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.assignResourceAccountToDevice(microsoft.graph.windowsAutopilotDeviceIdentity, Edm.String, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Assigns resource account to Autopilot devices."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.assignUserToDevice(microsoft.graph.windowsAutopilotDeviceIdentity, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Assigns user to Autopilot devices."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.unassignResourceAccountFromDevice(microsoft.graph.windowsAutopilotDeviceIdentity)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Unassigns the resource account from an Autopilot device."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.unassignUserFromDevice(microsoft.graph.windowsAutopilotDeviceIdentity)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Unassigns the user from an Autopilot device."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.updateDeviceProperties(microsoft.graph.windowsAutopilotDeviceIdentity, Edm.String, Edm.String, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Updates properties on Autopilot devices."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.generateEncryptionPublicKey(microsoft.graph.depOnboardingSetting)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Generate a public key to use to encrypt the Apple device enrollment program token"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.syncWithAppleDeviceEnrollmentProgram(microsoft.graph.depOnboardingSetting)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Synchronizes between Apple Device Enrollment Program and Intune"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.uploadDepToken(microsoft.graph.depOnboardingSetting, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Uploads a new Device Enrollment Program token"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getEncryptionPublicKey(microsoft.graph.depOnboardingSetting)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Get a public key to use to encrypt the Apple device enrollment program token"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.exportMobileConfig(microsoft.graph.enrollmentProfile)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Exports the mobile configuration"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.sync(microsoft.graph.windowsAutopilotSettings)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Initiates a sync of all AutoPilot registered devices from Store for Business and other portals. If the sync successful, this action returns a 204 No Content response code. If a sync is already in progress, the action returns a 409 Conflict response code.  If this sync action is called within 10 minutes of the previous sync, the action returns a 429 Too Many Requests response code."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.sendTestMessage(microsoft.graph.notificationMessageTemplate)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Sends test message using the specified notificationMessageTemplate in the default locale"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.updateStatus(microsoft.graph.deviceAppManagementTask, microsoft.graph.deviceAppManagementTaskStatus, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Set the task's status and attach a note."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.beginOnboarding(microsoft.graph.remoteAssistancePartner)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="A request to start onboarding.  Must be coupled with the appropriate TeamViewer account information"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.disconnect(microsoft.graph.remoteAssistancePartner)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="A request to remove the active TeamViewer connector"/>
+      </Annotations>
     </Schema>
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="microsoft.graph.ediscovery">
       <EnumType Name="additionalDataOptions" IsFlags="true">

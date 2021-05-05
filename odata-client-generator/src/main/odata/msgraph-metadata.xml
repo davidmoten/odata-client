@@ -21976,6 +21976,105 @@
           </Record>
         </Annotation>
       </Annotations>
+      <Annotations Target="microsoft.graph.removeAllDevicesFromManagement(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retire all devices from management for this user"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.wipeManagedAppRegistrationsByDeviceTag(microsoft.graph.user, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Issues a wipe operation on an app registration with specified device tag."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getManagedAppDiagnosticStatuses(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Gets diagnostics validation status for a given user."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getManagedAppPolicies(microsoft.graph.user)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Gets app restrictions for a given user."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.commit(microsoft.graph.mobileAppContentFile, microsoft.graph.fileEncryptionInfo)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Commits a file of a given app."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.renewUpload(microsoft.graph.mobileAppContentFile)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Renews the SAS URI for an application file upload."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.deviceConfigurationDeviceActivity(microsoft.graph.reportRoot)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for the device configuration device activity report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.deviceConfigurationUserActivity(microsoft.graph.reportRoot)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for the device configuration user activity report"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.setMobileDeviceManagementAuthority(microsoft.graph.organization)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Set mobile device management authority"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.syncLicenses(microsoft.graph.vppToken)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Syncs licenses associated with a specific appleVolumePurchaseProgramToken"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.syncMicrosoftStoreForBusinessApps(microsoft.graph.deviceAppManagement)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Syncs Intune account with Microsoft Store For Business"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.getEffectivePermissions(microsoft.graph.deviceManagement, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retrieves the effective permissions of the currently authenticated user"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.bypassActivationLock(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Bypass activation lock"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.cleanWindowsDevice(microsoft.graph.managedDevice, Edm.Boolean)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Clean Windows device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.deleteUserFromSharedAppleDevice(microsoft.graph.managedDevice, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Delete user from shared Apple device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.disableLostMode(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Disable lost mode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.locateDevice(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Locate a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.logoutSharedAppleDeviceActiveUser(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Logout shared Apple device active user"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.rebootNow(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Reboot device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.recoverPasscode(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Recover passcode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.remoteLock(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Remote lock"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.requestRemoteAssistance(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Request remote assistance"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.resetPasscode(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Reset passcode"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.retire(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Retire a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.shutDown(microsoft.graph.managedDevice)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Shut down device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.wipe(microsoft.graph.managedDevice, Edm.Boolean, Edm.Boolean, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Wipe a device"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.downloadApplePushNotificationCertificateSigningRequest(microsoft.graph.applePushNotificationCertificate)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Download Apple push notification certificate signing request"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.assignUserToDevice(microsoft.graph.windowsAutopilotDeviceIdentity, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Assigns user to Autopilot devices."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.unassignUserFromDevice(microsoft.graph.windowsAutopilotDeviceIdentity)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Unassigns the user from an Autopilot device."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.updateDeviceProperties(microsoft.graph.windowsAutopilotDeviceIdentity, Edm.String, Edm.String, Edm.String, Edm.String)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Updates properties on Autopilot devices."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.sendTestMessage(microsoft.graph.notificationMessageTemplate)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Sends test message using the specified notificationMessageTemplate in the default locale"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.beginOnboarding(microsoft.graph.remoteAssistancePartner)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="A request to start onboarding.  Must be coupled with the appropriate TeamViewer account information"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.disconnect(microsoft.graph.remoteAssistancePartner)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="A request to remove the active TeamViewer connector"/>
+      </Annotations>
     </Schema>
     <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="microsoft.graph.callRecords">
       <EnumType Name="callType">
