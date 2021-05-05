@@ -14,15 +14,17 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
     private final EntityRequest<T> request;
     private final List<RequestHeader> requestHeaders = new ArrayList<>();
     private final Map<String, String> queries = new HashMap<>();
+    private final boolean isMediaEntityOrHasStreamProperty;
     private Optional<String> select = Optional.empty();
     private Optional<String> expand = Optional.empty();
     private boolean useCaches = false;
-    private String metadata = "minimal";
+    private String metadata = null; // set this later if not present
     private Optional<Long> connectTimeoutMs = Optional.empty();
     private Optional<Long> readTimeoutMs = Optional.empty();
 
-    EntityRequestOptionsBuilder(EntityRequest<T> request) {
+    EntityRequestOptionsBuilder(EntityRequest<T> request, boolean isMediaEntityOrHasStreamProperty) {
         this.request = request;
+        this.isMediaEntityOrHasStreamProperty = isMediaEntityOrHasStreamProperty;
     }
 
     public EntityRequestOptionsBuilder<T> requestHeader(String key, String value) {
@@ -87,22 +89,36 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
     }
     
     public T get() {
+        updateMetadataForReturningObject();
         return request.get(build());
     }
 
     public T patch(T entity) {
+        updateMetadataForReturningObject();
         return request.patch(build(), entity);
     }
 
     public T put(T entity) {
+        updateMetadataForReturningObject();
         return request.put(build(), entity);
     }
 
     public void delete() {
         request.delete(build());
     }
+    
+    private void updateMetadataForReturningObject() {
+        if (metadata == null && isMediaEntityOrHasStreamProperty) {
+            // ensure the stream url is returned in the metadata so users don't get nasty surprises
+            // about the need to specify full metadata
+            metadata = "full";
+        }
+    }
 
     private EntityRequestOptions<T> build() {
+        if (metadata == null) {
+            metadata = "minimal";
+        }
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new EntityRequestOptions<T>(requestHeaders, select, expand, useCaches, //
         		connectTimeoutMs, readTimeoutMs, queries);

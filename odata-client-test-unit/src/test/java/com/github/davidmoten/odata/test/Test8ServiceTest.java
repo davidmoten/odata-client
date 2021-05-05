@@ -27,7 +27,7 @@ public class Test8ServiceTest {
                 .withRequestHeadersStandard() //
                 .withResponse("/response-thing.json") //
                 .build();
-        assertFalse(client.things(123).get().getPhoto().isPresent());
+        assertFalse(client.things(123).metadataMinimal().get().getPhoto().isPresent());
     }
 
     @Test
@@ -41,7 +41,9 @@ public class Test8ServiceTest {
                         RequestHeader.ODATA_VERSION) //
                 .withResponse("/response-thing-full-metadata.json") //
                 .build();
-        Optional<StreamProvider> photo = client.things(123).metadataFull().get().getPhoto();
+        // note that odata-client fetches full metadata by default for Media Entities
+        // or Entities with stream properties
+        Optional<StreamProvider> photo = client.things(123).get().getPhoto();
         assertTrue(photo.isPresent());
         try {
             // not pretty to use a try-catch but oh well
@@ -62,7 +64,7 @@ public class Test8ServiceTest {
                 .withRequestHeadersStandard() //
                 .withResponse("/response-thing-inline-photo.json") //
                 .build();
-        Optional<StreamProvider> photo = client.things(123).get().getPhoto();
+        Optional<StreamProvider> photo = client.things(123).metadataMinimal().get().getPhoto();
         assertTrue(photo.isPresent());
         assertEquals("hello", photo.get().getStringUtf8());
     }

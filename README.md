@@ -681,7 +681,7 @@ Output:
 ```
 ## Usage Notes
 ### Streams
-To find the read url for a property that is of type `Edm.Stream` you generally need to read the entity containing the stream property with the `Accept: odata.metadata=full` request header (set `.metadataFull()` before calling `get()` on an entity).
+To find the read url for a property that is of type `Edm.Stream` you generally need to read the entity containing the stream property with the `Accept: odata.metadata=full` request header (set `.metadataFull()` before calling `get()` on an entity). As of 0.1.54 this request header is the default for Media Entities or entities with stream properties (but not for collections of these entities).
 
 ## Implementation Notes
 ### Generator
