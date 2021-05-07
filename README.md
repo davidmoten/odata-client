@@ -652,6 +652,40 @@ When the above code is called, the line `OutlookItem item = a.getItem().get()` w
 
 This support is present for both Entity requests and Enitty Collection requests.
 
+## Logging
+The default http client Apache *httpclient* uses *Apache Commons Logging* and the odata-client libraries use *slf4j*. To get full access to all logs you'll need to ensure that the right adapters are present that pipe logs to your preferred logging library. Tests in *odata-client-msgraph* demonstrate the use of *log4j* as the preferred logger. You'll note that these dependencies are present:
+
+```xml
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>jcl-over-slf4j</artifactId>
+    <version>${slf4j.version}</version>
+</dependency>
+
+ <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+    <version>${log4j.version}</version>
+</dependency>
+```
+A configuration file for log4j is also present (in `src/test/resources`):
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
+```
+
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
 
