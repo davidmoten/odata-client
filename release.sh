@@ -14,6 +14,9 @@ mvn clean install
 git commit -am "prepare for release $VERSION"
 git tag -a $VERSION -m "$VERSION"
 git push origin $VERSION
+mvn versions:set -DnextSnapshot=true
+git commit -am "set versions to next snapshot"
+git push
 echo =========================================================================
 echo At this point the tag has been pushed to the git repository on GitHub
 echo and you should go to the GitHub UI to indicate that that tag is the 
