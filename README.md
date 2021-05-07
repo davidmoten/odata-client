@@ -668,8 +668,9 @@ The default http client Apache *httpclient* uses *Apache Commons Logging* and th
     <version>${log4j.version}</version>
 </dependency>
 ```
-A configuration file for log4j is also present (in `src/test/resources`):
+A configuration file for log4j is also present (in `src/test/resources` but you might want it in `src/main/resources`):
 
+**log4j2.xml**
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
@@ -685,6 +686,7 @@ A configuration file for log4j is also present (in `src/test/resources`):
   </Loggers>
 </Configuration>
 ```
+If you want DEBUG logging just set the Root level to DEBUG.
 
 ## Serialization
 *odata-client* generated classes are annotated with Jackson JSON annotations specifically to support internal serialization and deserialization for communication with the service. Since 0.1.20 entities are annotated with `@JsonInclude(Include.NON_NULL)` so that default serialization with Jackson will exclude null values (internally this annotation is overriden for certain use cases such as when we want tell the service to update a field to null).
