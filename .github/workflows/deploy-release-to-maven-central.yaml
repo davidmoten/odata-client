@@ -38,7 +38,7 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Sign and publish to Maven Central
-        run: mvn -P ossrh,release deploy
+        run: mvn -P release deploy
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
