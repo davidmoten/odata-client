@@ -76,6 +76,10 @@
                                     <namespace>microsoft.graph.callRecords</namespace>
                                     <packageName>odata.msgraph.client.callrecords</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.externalConnectors</namespace>
+                                    <packageName>odata.msgraph.client.externalconnectors</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

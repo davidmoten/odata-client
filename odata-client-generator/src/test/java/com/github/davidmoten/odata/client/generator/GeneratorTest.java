@@ -35,7 +35,9 @@ public class GeneratorTest {
                 "microsoft.graph.generated");
         SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords",
                 "microsoft.graph.callrecords.generated");
-        Options options = new Options(GENERATED, Lists.newArrayList(schemaOptions1, schemaOptions2));
+        SchemaOptions schemaOptions3 = new SchemaOptions("microsoft.graph.externalConnectors", 
+                "microsoft.graph.externalconnectors.generated");
+        Options options = new Options(GENERATED, Lists.newArrayList(schemaOptions1, schemaOptions2, schemaOptions3));
         Generator g = new Generator(options,
                 t.getDataServices().getSchema());
         g.generate();
