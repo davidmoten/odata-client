@@ -65,7 +65,9 @@
                         </goals>
                         <configuration>
                             <packageName>org.oasisopen.odata.csdl.v4</packageName>
-                            <schemaDirectory>src/xsd</schemaDirectory>
+                            <sources>
+                                <source>src/main/xsd/</source>
+                            </sources>
                             <clearOutputDir>false</clearOutputDir>
                         </configuration>
                     </execution>
