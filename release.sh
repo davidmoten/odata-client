@@ -14,7 +14,7 @@ mvn clean install
 git commit -am "prepare for release $VERSION"
 git tag -a $VERSION -m "$VERSION"
 git push origin $VERSION
-mvn versions:set -DnextSnapshot=true
+mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false
 git commit -am "set versions to next snapshot"
 git push origin master
 echo =========================================================================
