@@ -83,6 +83,14 @@
                                     <namespace>microsoft.graph.ediscovery</namespace>
                                     <packageName>odata.msgraph.client.beta.ediscovery</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.windowsUpdates</namespace>
+                                    <packageName>odata.msgraph.client.beta.windows.updates</packageName>
+                                </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.managedTenants</namespace>
+                                    <packageName>odata.msgraph.client.beta.managed.tenants</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

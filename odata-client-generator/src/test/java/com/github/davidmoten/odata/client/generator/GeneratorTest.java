@@ -67,9 +67,13 @@ public class GeneratorTest {
                 "microsoft.graph.beta.external.connectors");
         SchemaOptions schemaOptions6 = new SchemaOptions("microsoft.graph.windowsUpdates",
                 "microsoft.graph.beta.windows.updates");
+        // microsoft.graph.managedTenants
+        SchemaOptions schemaOptions7 = new SchemaOptions("microsoft.graph.managedTenants",
+                "microsoft.graph.beta.managed.tenants");
+        
         
         Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2,
-                schemaOptions3, schemaOptions4, schemaOptions5, schemaOptions6));
+                schemaOptions3, schemaOptions4, schemaOptions5, schemaOptions6, schemaOptions7));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
     }
