@@ -2,7 +2,6 @@ package com.github.davidmoten.microsoft.authentication;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -342,24 +341,44 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
 
         public Builder5 proxyHost(String proxyHost) {
             Preconditions.checkNotNull(proxyHost);
-            b.proxyHost = Optional.of(proxyHost);
-            return this;
+            return proxyHost(Optional.of(proxyHost));
         }
 
         public Builder5 proxyPort(int proxyPort) {
-            b.proxyPort = Optional.of(proxyPort);
-            return this;
+            return proxyPort(Optional.of(proxyPort));
         }
 
         public Builder5 proxyUsername(String username) {
             Preconditions.checkNotNull(username);
-            b.proxyUsername = Optional.of(username);
-            return this;
+            return proxyUsername (Optional.of(username));
         }
 
         public Builder5 proxyPassword(String password) {
             Preconditions.checkNotNull(password);
-            b.proxyPassword = Optional.of(password);
+            return proxyPassword(Optional.of(password));
+        }
+        
+        public Builder5 proxyHost(Optional<String> proxyHost) {
+            Preconditions.checkNotNull(proxyHost);
+            b.proxyHost = proxyHost;
+            return this;
+        }
+
+        public Builder5 proxyPort(Optional<Integer> proxyPort) {
+            Preconditions.checkNotNull(proxyPort);
+            b.proxyPort = proxyPort;
+            return this;
+        }
+
+        public Builder5 proxyUsername(Optional<String> username) {
+            Preconditions.checkNotNull(username);
+            b.proxyUsername = username;
+            return this;
+        }
+
+        public Builder5 proxyPassword(Optional<String> password) {
+            Preconditions.checkNotNull(password);
+            b.proxyPassword = password;
             return this;
         }
 

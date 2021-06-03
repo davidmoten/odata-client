@@ -494,6 +494,10 @@ public final class MicrosoftClientBuilder<T> {
                             .refreshBeforeExpiry(refreshBeforeExpiryDurationMs,
                                     TimeUnit.MILLISECONDS) //
                             .authenticationEndpoint(authenticationEndpoint) //
+                            .proxyHost(proxyHost) //
+                            .proxyPort(proxyPort) //
+                            .proxyUsername(proxyUsername) //
+                            .proxyPassword(proxyPassword) //
                             .build());
             auth = new BearerAuthenticator(accessTokenProvider, baseUrl);
         }
