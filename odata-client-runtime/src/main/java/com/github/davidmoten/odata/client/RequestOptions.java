@@ -12,7 +12,7 @@ public interface RequestOptions  extends HttpRequestOptions {
     Map<String, String> getQueries();
     
     Optional<String> getUrlOverride();
-
+    
     RequestOptions EMPTY = new RequestOptions() {
 
         @Override
