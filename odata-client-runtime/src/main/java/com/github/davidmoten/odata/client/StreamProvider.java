@@ -1,9 +1,11 @@
 package com.github.davidmoten.odata.client;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
+import com.github.davidmoten.odata.client.internal.RequestOptionsImpl;
 
 public final class StreamProvider implements StreamProviderBase {
 
@@ -21,7 +23,24 @@ public final class StreamProvider implements StreamProviderBase {
         this.contentType = contentType;
         this.base64 = base64;
     }
-
+    
+    public StreamProvider requestHeader(String name, String value) {
+        RequestOptionsImpl o = new RequestOptionsImpl(options).withRequestHeader(name, value);
+        return new StreamProvider(contextPath, o, contentType, base64);
+    }
+    
+    public StreamProvider connectTimeout(long duration, TimeUnit unit) {
+        Preconditions.checkNotNull(unit);
+        RequestOptionsImpl o = new RequestOptionsImpl(options).withConnectTimeoutMs(duration, unit);
+        return new StreamProvider(contextPath, o, contentType, base64);
+    }
+    
+    public StreamProvider readTimeout(long duration, TimeUnit unit) {
+        Preconditions.checkNotNull(unit);
+        RequestOptionsImpl o = new RequestOptionsImpl(options).withReadTimeoutMs(duration, unit);
+        return new StreamProvider(contextPath, o, contentType, base64);
+    }
+    
     public InputStream get() {
         return RequestHelper.getStream(contextPath, options, base64);
     }
