@@ -23,7 +23,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <version.slf4j>1.7.30</version.slf4j>
+        <version.slf4j>1.7.31</version.slf4j>
         <jetty.version>9.4.42.v20210604</jetty.version>
     </properties>
 
