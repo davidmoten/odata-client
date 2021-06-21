@@ -23,7 +23,6 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <version.slf4j>1.7.31</version.slf4j>
         <jetty.version>9.4.42.v20210604</jetty.version>
     </properties>
 
@@ -83,13 +82,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${version.slf4j}</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${version.slf4j}</version>
+            <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
