@@ -37,7 +37,7 @@ public final class Dynamics {
         /**
          * Expected URL is like https://SOLUTION.crm4.dynamics.com.
          * @param baseUrl
-         * @return
+         * @return builder
          */
         public Builder3<T> baseUrl(String baseUrl) {
             Preconditions.checkNotNull(baseUrl);
