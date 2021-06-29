@@ -41,9 +41,92 @@ Microsoft Graph is an OData 4 service with a Java SDK being developed at https:/
 ## How to generate java classes for an OData service
 Add *odata-client-maven-plugin* and *build-helper-maven-plugin* to your `pom.xml` as per [odata-client-msgraph/pom.xml](odata-client-msgraph/pom.xml). You'll also need to save a copy of the service metadata (at http://SERVICE_ROOT/$metadata) to a file in your `src/odata` directory. Once everything is in place a build of your maven project will generate the classes and make them available as source (that's what the *build-helper-maven-plugin* does).
 
+Your plugin section will have to look like this:
+```xml
+<plugin>
+   <groupId>com.github.davidmoten</groupId>
+   <artifactId>odata-client-maven-plugin</artifactId>
+   <version>{currentLibVersion, e.g: 0.1.60}</version>
+   <executions>
+     <execution>
+       <id>generate-odata-models</id>
+       <phase>generate-sources</phase>
+       <goals>
+         <goal>generate</goal>
+       </goals>
+       <configuration>
+         <metadata>src/main/odata/PATH_TO_THE_METADATA_XML_FILE</metadata>
+         <schemas>
+           <schema>
+            <namespace>NAMESPACE_IN_YOUR_METADATA_FILE</namespace>
+            <packageName>package.of.generated.classes</packageName>
+           </schema>
+           <!-- More schemas -->
+         </schemas>
+       </configuration>
+     </execution>
+   </executions>
+</plugin>
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <version>3.2.0</version>
+     <executions>
+      <execution>
+        <id>add-source</id>
+         <phase>generate-sources</phase>
+         <goals>
+           <goal>add-source</goal>
+         </goals>
+        <configuration>
+          <sources>
+            <source>${project.build.directory}/generated-sources/java</source>
+          </sources>
+        </configuration>
+     </execution>
+    </executions>
+</plugin>
+```
+The sources will be generated to your `target/generated-sources/java` folder and you need to copy them to your project.
+
 ## Limitations
 * Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation). I've yet to come across a service that uses multiple keys but it is possible.
 * see [TODO](#todo)
+
+### Generate a Client for your OData Service (non-Microsoft API) with Bearer Tokens. 
+
+This example considers a custom OData api available at `$API_ENDPOINT` that authorizes using Bearer tokens in the Authorization header. The custom api has a users list. The example has hardcoded token for simplicity.
+The `SchemaInfo` List, should contain the `SchemaInfos` generated for your service metadata. (See generated classes)
+
+```java
+    HttpClientBuilder b =
+        HttpClientBuilder
+            .create()
+            .useSystemProperties();
+    BearerAuthenticator authenticator =
+        new BearerAuthenticator(
+            () ->
+                "INSERT_TOKEN_HERE",
+            "$API_END_POINT");
+    HttpService httpService =
+        new ApacheHttpClientHttpService( //
+            new Path(
+                "$API_END_POINT",
+                PathStyle.IDENTIFIERS_AS_SEGMENTS),
+            b::build,
+            authenticator::authenticate);
+    final List<com.github.davidmoten.odata.client.SchemaInfo> schemaInfos =
+        Arrays.asList(SchemaInfo.INSTANCE);
+    Context context =
+        new Context(Serializer.INSTANCE, httpService, Collections.emptyMap(), schemaInfos);
+
+    final Container client = new Container(context);
+    final List<Optional<String>> names =
+        client.users()
+	.stream()
+        .map(User::getEmail)
+        .collect(Collectors.toList());
+```
 
 ## MsGraph Client 
 Use this dependency:
