@@ -41,12 +41,12 @@ Microsoft Graph is an OData 4 service with a Java SDK being developed at https:/
 ## How to generate java classes for an OData service
 Add *odata-client-maven-plugin* and *build-helper-maven-plugin* to your `pom.xml` as per [odata-client-msgraph/pom.xml](odata-client-msgraph/pom.xml). You'll also need to save a copy of the service metadata (at http://SERVICE_ROOT/$metadata) to a file in your `src/odata` directory. Once everything is in place a build of your maven project will generate the classes and make them available as source (that's what the *build-helper-maven-plugin* does).
 
-Your plugin section will have to look like this:
+Your plugin section will look like this:
 ```xml
 <plugin>
    <groupId>com.github.davidmoten</groupId>
    <artifactId>odata-client-maven-plugin</artifactId>
-   <version>{currentLibVersion, e.g: 0.1.60}</version>
+   <version>VERSION_HERE</version>
    <executions>
      <execution>
        <id>generate-odata-models</id>
@@ -89,25 +89,24 @@ Your plugin section will have to look like this:
 ```
 The sources will be generated to your `target/generated-sources/java` folder and you need to copy them to your project.
 
-## Limitations
-* Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation). I've yet to come across a service that uses multiple keys but it is possible.
-* see [TODO](#todo)
+### How to create a Client for your OData Service (non-Microsoft API) with Bearer Tokens. 
 
-### Generate a Client for your OData Service (non-Microsoft API) with Bearer Tokens. 
+This example considers a custom OData api available at `$API_ENDPOINT` that authorizes using Bearer tokens in the Authorization header. The custom api has a users list that we want to return with a call to the service. The example has a hardcoded token for simplicity.
 
-This example considers a custom OData api available at `$API_ENDPOINT` that authorizes using Bearer tokens in the Authorization header. The custom api has a users list. The example has hardcoded token for simplicity.
-The `SchemaInfo` List, should contain the `SchemaInfos` generated for your service metadata. (See generated classes)
+The `SchemaInfo` List should contain the `SchemaInfos` generated for your service metadata. (See generated classes in packages ending in `.schema`).
 
 ```java
     HttpClientBuilder b =
         HttpClientBuilder
             .create()
             .useSystemProperties();
+            
     BearerAuthenticator authenticator =
         new BearerAuthenticator(
             () ->
                 "INSERT_TOKEN_HERE",
             "$API_END_POINT");
+            
     HttpService httpService =
         new ApacheHttpClientHttpService( //
             new Path(
@@ -115,11 +114,14 @@ The `SchemaInfo` List, should contain the `SchemaInfos` generated for your servi
                 PathStyle.IDENTIFIERS_AS_SEGMENTS),
             b::build,
             authenticator::authenticate);
+            
     final List<com.github.davidmoten.odata.client.SchemaInfo> schemaInfos =
-        Arrays.asList(SchemaInfo.INSTANCE);
+        Arrays.asList(generate.pkg.schema.SchemaInfo.INSTANCE);
+        
     Context context =
         new Context(Serializer.INSTANCE, httpService, Collections.emptyMap(), schemaInfos);
 
+    // in this example Container is the name of the Container element in the metadata
     final Container client = new Container(context);
     final List<Optional<String>> names =
         client.users()
@@ -127,6 +129,9 @@ The `SchemaInfo` List, should contain the `SchemaInfos` generated for your servi
         .map(User::getEmail)
         .collect(Collectors.toList());
 ```
+## Limitations
+* Just one key (with multiple properties if desired) per entity is supported (secondary keys are ignored in terms of code generation). I've yet to come across a service that uses multiple keys but it is possible.
+* see [TODO](#todo)
 
 ## MsGraph Client 
 Use this dependency:
