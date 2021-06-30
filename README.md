@@ -87,7 +87,6 @@ Your plugin section will look like this:
     </executions>
 </plugin>
 ```
-The sources will be generated to your `target/generated-sources/java` folder and you need to copy them to your project.
 
 ### How to create a Client for your OData Service (non-Microsoft API) with Bearer Tokens. 
 
