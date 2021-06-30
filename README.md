@@ -122,11 +122,13 @@ The `SchemaInfo` List should contain the `SchemaInfos` generated for your servic
         new Context(Serializer.INSTANCE, httpService, Collections.emptyMap(), schemaInfos);
 
     // in this example Container is the name of the Container element in the metadata
-    final Container client = new Container(context);
-    final List<Optional<String>> names =
+    Container client = new Container(context);
+    List<String> userEmails =
         client.users()
 	.stream()
         .map(User::getEmail)
+        .filter(Optional::isPresent)
+        .map(x -> x.get())
         .collect(Collectors.toList());
 ```
 ## Limitations
