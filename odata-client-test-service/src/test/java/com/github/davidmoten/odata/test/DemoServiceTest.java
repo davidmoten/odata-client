@@ -49,6 +49,8 @@ public class DemoServiceTest {
                 RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, RequestHeader.ODATA_VERSION);
         List<PersonDetail> page = client.personDetails().get().currentPage();
         assertEquals(7, page.size());
+        assertEquals(21, page.get(0).getAge().get().getValue());
+        assertTrue(Serializer.INSTANCE.serialize(page.get(0)).contains("\"Age\":21,"));
     }
 
     @Test
