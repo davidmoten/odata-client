@@ -11,7 +11,7 @@ public interface StreamProviderBase {
      * Returns a {@link InputStream} for the requested content every time this
      * method is called. Note that the returned `InputStream` <b>must</b> be closed
      * after read otherwise the http client may hang on a later request. Use the
-     * {@link #contentType()} method to get the mime type of the content delivered
+     * {@link StreamProvider#contentType()} method to get the mime type of the content delivered
      * via the InputStream.
      *
      * @return InputStream for the requested content that must be closed after use
