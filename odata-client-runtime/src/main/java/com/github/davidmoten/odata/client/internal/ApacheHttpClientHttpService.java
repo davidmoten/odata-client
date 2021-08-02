@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -59,32 +58,32 @@ public class ApacheHttpClientHttpService implements HttpService {
     @Override
     public HttpResponse get(String url, List<RequestHeader> requestHeaders,
             HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpGet(url), true, null, -1, options);
+        return getResponse(requestHeaders, new HttpGet(url), null, -1, options);
     }
 
     @Override
     public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content,
             int length, HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpPatch(url), false, content, length, options);
+        return getResponse(requestHeaders, new HttpPatch(url), content, length, options);
     }
 
     @Override
     public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content,
             int length, HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpPut(url), false, content, length, options);
+        return getResponse(requestHeaders, new HttpPut(url), content, length, options);
     }
 
     @Override
     public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content,
             int length, HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpPost(url), true, content, length, options);
+        return getResponse(requestHeaders, new HttpPost(url), content, length, options);
     }
 
     @Override
     public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
             HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpDelete(url), false, null,
-                HttpService.LENGTH_UNKNOWN, options);
+        return getResponse(requestHeaders, new HttpDelete(url), null, HttpService.LENGTH_UNKNOWN,
+                options);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class ApacheHttpClientHttpService implements HttpService {
     }
 
     private HttpResponse getResponse(List<RequestHeader> requestHeaders, HttpRequestBase request,
-            boolean doInput, InputStream content, int length, HttpRequestOptions options) {
+            InputStream content, int length, HttpRequestOptions options) {
         Preconditions.checkNotNull(options);
         log.debug("{} from url {}", request.getMethod(), request.getURI());
         log.debug("requestHeaders={}", requestHeaders);
@@ -127,19 +126,16 @@ public class ApacheHttpClientHttpService implements HttpService {
             try (CloseableHttpResponse response = client.execute(request)) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 log.debug("executed request, code={}", statusCode);
+                HttpEntity entity = response.getEntity();
                 final byte[] bytes;
-                if (doInput || isError(statusCode)) {
-                    HttpEntity entity = response.getEntity();
-                    if (entity == null) {
-                        bytes = null;
-                    } else {
-                        bytes = Util.read(entity.getContent());
-                    }
-                } else {
+                if (entity == null) {
                     bytes = null;
+                } else {
+                    bytes = Util.read(entity.getContent());
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("response text=\n{}", bytes == null ? "null" : new String(bytes, StandardCharsets.UTF_8));
+                    log.debug("response text=\n{}",
+                            bytes == null ? "null" : new String(bytes, StandardCharsets.UTF_8));
                 }
                 return new HttpResponse(statusCode, bytes);
             }
@@ -203,7 +199,7 @@ public class ApacheHttpClientHttpService implements HttpService {
             config = builder.build();
             request.setConfig(config);
             log.debug("executing request");
-            response =  client.execute(request);
+            response = client.execute(request);
             int statusCode = response.getStatusLine().getStatusCode();
             log.debug("executed request, code={}", statusCode);
             InputStream is = response.getEntity().getContent();
@@ -230,15 +226,11 @@ public class ApacheHttpClientHttpService implements HttpService {
                 try {
                     response.close();
                 } catch (IOException e1) {
-                   log.warn(e1.getMessage(), e);
+                    log.warn(e1.getMessage(), e);
                 }
             }
             throw new ClientException(e);
         }
-    }
-
-    private static boolean isError(int statusCode) {
-        return statusCode >= 400;
     }
 
     @Override
