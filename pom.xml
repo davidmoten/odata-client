@@ -5,7 +5,7 @@
 
     <groupId>com.github.davidmoten</groupId>
     <artifactId>odata-client-parent</artifactId>
-    <version>0.1.62-SNAPSHOT</version>
+    <version>0.1.61</version>
 
     <name>${project.artifactId}</name>
     <description>Generates odata clients</description>
