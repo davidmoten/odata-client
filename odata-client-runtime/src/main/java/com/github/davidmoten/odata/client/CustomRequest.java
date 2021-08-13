@@ -79,7 +79,7 @@ public final class CustomRequest {
     public <T> T post(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
-        return RequestHelper.postAny(context, info.contextPath, responseClass, info);
+        return RequestHelper.postAny(content, info.contextPath, responseClass, info);
     }
 
     public void postString(String url, String content, RequestOptions options,

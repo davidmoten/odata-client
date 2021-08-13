@@ -86,10 +86,32 @@ public class GraphServiceTest {
     }
 
     @Test
+    public void testDriveIssue173() {
+        GraphService client = clientBuilder()
+                .expectRequest("/drives/123/items/456:/filename.txt:/createuploadsession")
+                .withMethod(HttpMethod.POST) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON)
+                .withResponse("/response-drive.json") //
+                .build();
+
+        UploadSession u = client //
+                ._custom() //
+                .post( //
+                        "https://graph.microsoft.com/v1.0/drives/123/items/456:/filename.txt:/createuploadsession", //
+                        null, //
+                        UploadSession.class, //
+                        HttpRequestOptions.EMPTY, //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.CONTENT_TYPE_JSON);
+        assertEquals("https://blah", u.getUploadUrl().get());
+    }
+
+    @Test
     public void testGetEntityWithComplexTypeCollection() {
         GraphService client = clientBuilder() //
                 .expectRequest("/users/1") //
-                .withResponse( "/response-user.json") //
+                .withResponse("/response-user.json") //
                 .withRequestHeadersStandard() //
                 .build();
         User user = client.users("1").get();
@@ -203,8 +225,7 @@ public class GraphServiceTest {
                 .withResponse("/response-contacts.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest("/me/contacts?$skip=10") //
-                .withResponse("/response-contacts-next-page.json")
-                .withRequestHeadersStandard() //
+                .withResponse("/response-contacts-next-page.json").withRequestHeadersStandard() //
                 .build();
         CollectionPage<Contact> c = client.me().contacts().get();
         assertNotNull(c);
@@ -349,24 +370,24 @@ public class GraphServiceTest {
                 .withPayload("/request-create-upload.json") //
                 .withResponse("/response-create-upload.json") //
                 .withMethod(HttpMethod.POST) //
-                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED)
-                .withRequestHeaders( //
+                .withResponseStatusCode(HttpURLConnection.HTTP_CREATED).withRequestHeaders( //
                         RequestHeader.ACCEPT_JSON, //
                         RequestHeader.CONTENT_TYPE_JSON, //
-                        RequestHeader.ODATA_VERSION) 
+                        RequestHeader.ODATA_VERSION)
                 ////////////////////////////////////////////
-                .expectRequest("https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345") //
+                .expectRequest(
+                        "https://outlook.office.com/api/v2.0/Users('123')/Messages('ABC')/AttachmentSessions('ABC123')?authtoken=abc12345") //
                 .withMethod(HttpMethod.PUT) //
                 .withPayload("/hello.txt") //
-                .withRequestHeaders(
-                        RequestHeader.ODATA_VERSION, //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, //
                         RequestHeader.ACCEPT_JSON, //
                         RequestHeader.CONTENT_TYPE_OCTET_STREAM,
                         RequestHeader.contentRange(0, 4, 5))
                 .build();
-        AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE).contentType("text/plain")
-                .name("att.txt").size(5000000L).build();
-        UploadSession u = client.users("me").messages("1").attachments().createUploadSession(item).get();
+        AttachmentItem item = AttachmentItem.builder().attachmentType(AttachmentType.FILE)
+                .contentType("text/plain").name("att.txt").size(5000000L).build();
+        UploadSession u = client.users("me").messages("1").attachments().createUploadSession(item)
+                .get();
         assertNotNull(u);
         assertTrue(u.getUploadUrl().isPresent());
 
@@ -479,8 +500,8 @@ public class GraphServiceTest {
     public void testGetCollectionWithSelect() {
         GraphService client = clientBuilder() //
                 .expectRequest("/groups?$select=id%2CgroupTypes") //
-                .withResponse( "/response-groups-select.json") //
-                .withRequestHeadersStandard() // 
+                .withResponse("/response-groups-select.json") //
+                .withRequestHeadersStandard() //
                 .build();
         CollectionPage<Group> c = client.groups().select("id,groupTypes").get();
         assertNotNull(c);
@@ -495,17 +516,19 @@ public class GraphServiceTest {
                 .withResponse("/response-message.json") //
                 .withRequestHeadersStandard() //
                 .build();
-        
+
         Message m = client.me().messages("1").get();
         assertTrue(m.getSubject().get().startsWith("MyAnalytics"));
         assertEquals("MyAnalytics", m.getFrom().get().getEmailAddress().get().getName().get());
         assertEquals(Importance.NORMAL, m.getImportance().get());
-        assertEquals(Sets.newHashSet("@odata.etag", "@odata.context"), m.getUnmappedFields().keySet());
-        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"", m.getUnmappedFields().get("@odata.etag"));
+        assertEquals(Sets.newHashSet("@odata.etag", "@odata.context"),
+                m.getUnmappedFields().keySet());
+        assertEquals("W/\"CQAAABYAAAAiIsqMbYjsT5e/T7KzowPTAAEMTBu8\"",
+                m.getUnmappedFields().get("@odata.etag"));
         assertEquals(
                 "https://graph.microsoft.com/v1.0/$metadata#users('48d31887-5fad-4d73-a9f5-3c356e68a038')/messages/$entity",
                 m.getUnmappedFields().get("@odata.context"));
-        
+
         // check can modify unmapped fields
         m = m.withUnmappedField("nombre", "david");
         assertTrue(Serializer.INSTANCE.serialize(m).contains("nombre"));
@@ -592,8 +615,8 @@ public class GraphServiceTest {
                         .build()) //
                 .build();
         assertEquals(1,
-                application.getPasswordCredentials(
-                        HttpRequestOptions.connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS))
+                application.getPasswordCredentials(HttpRequestOptions
+                        .connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS))
                         .currentPage().size());
     }
 
@@ -618,8 +641,8 @@ public class GraphServiceTest {
                 .metadataMinimal() //
                 .iterator() //
                 .next();
-        assertEquals(Arrays.asList("lamp_thin.png"),
-                m.getAttachments().stream().map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
+        assertEquals(Arrays.asList("lamp_thin.png"), m.getAttachments().stream()
+                .map(x -> x.getName().orElse("?")).collect(Collectors.toList()));
     }
 
     @Test
@@ -629,12 +652,13 @@ public class GraphServiceTest {
                 .withResponse("/response-users-delta-empty.json") //
                 .withRequestHeadersStandard() //
                 .build();
-        List<ObjectOrDeltaLink<User>> list = client.users().delta().deltaTokenLatest().get().streamWithDeltaLink()
-                .collect(Collectors.toList());
+        List<ObjectOrDeltaLink<User>> list = client.users().delta().deltaTokenLatest().get()
+                .streamWithDeltaLink().collect(Collectors.toList());
         assertEquals(1, list.size());
         ObjectOrDeltaLink<User> x = list.get(0);
         assertFalse(x.object().isPresent());
-        assertEquals("https://graph.microsoft.com/v1.0/users/delta?$deltatoken=3enys", x.deltaLink().get());
+        assertEquals("https://graph.microsoft.com/v1.0/users/delta?$deltatoken=3enys",
+                x.deltaLink().get());
     }
 
     @Test
@@ -645,7 +669,8 @@ public class GraphServiceTest {
                 .withRequestHeadersStandard() //
                 .build();
         assertEquals(31, client.users().stream().count());
-        List<ObjectOrDeltaLink<User>> list = client.users().get().streamWithDeltaLink().collect(Collectors.toList());
+        List<ObjectOrDeltaLink<User>> list = client.users().get().streamWithDeltaLink()
+                .collect(Collectors.toList());
         assertEquals(32, list.size());
         ObjectOrDeltaLink<User> x = list.get(list.size() - 1);
         assertFalse(x.object().isPresent());
@@ -661,7 +686,8 @@ public class GraphServiceTest {
                 .withRequestHeadersStandard() //
                 .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments") //
                 .withResponse("/response-attachments.json") //
-                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.ACCEPT_JSON_METADATA_FULL) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION,
+                        RequestHeader.ACCEPT_JSON_METADATA_FULL) //
                 .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments/123/%24value") //
                 .withResponse("/response-item-attachment-raw.txt") //
                 .withRequestHeaders() //
@@ -699,12 +725,12 @@ public class GraphServiceTest {
         assertEquals(1, list.size());
         assertEquals(2016, (int) list.get(0).getSize().orElse(0));
     }
-    
+
     @Test
     public void testExpandEntityRequest() {
         GraphService client = clientBuilder() //
                 .expectRequest("/users/fred?$expand=drive") //
-                .withResponse( "/response-user-expand-with-drive.json") //
+                .withResponse("/response-user-expand-with-drive.json") //
                 .withRequestHeadersStandard() //
                 .build();
         User user = client.users("fred").expand("drive").get();
@@ -850,24 +876,28 @@ public class GraphServiceTest {
                 .withResponse("/response-list-items-expand-fields.json") //
                 .withRequestHeadersStandard() //
                 .build();
-        CollectionPage<ListItem> listItems = client.sites().lists("d7689e2b-941a-4cd3-bb24-55cddee54294").items()
-                .expand("fields").get();
+        CollectionPage<ListItem> listItems = client.sites()
+                .lists("d7689e2b-941a-4cd3-bb24-55cddee54294").items().expand("fields").get();
         assertNotNull(listItems);
         assertEquals(3, listItems.currentPage().size());
         ListItem firstListItem = listItems.currentPage().get(0);
 
         // Verify UnmappedFields from separate ListItems:
         assertEquals("Contoso Home", //
-                ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields")).get("Title"));
+                ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields"))
+                        .get("Title"));
         assertEquals("Microsoft Demos", //
-                ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields().get("fields")).get("Title"));
+                ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields()
+                        .get("fields")).get("Title"));
 
         // Verify that different UnmappedFields instances from the same ListItem Jackson
         // deserialization call have distinct contents:
         assertEquals("provisioninguser1@m365x214355.onmicrosoft.com", //
-                firstListItem.getCreatedBy().get().getUser().get().getUnmappedFields().get("email"));
+                firstListItem.getCreatedBy().get().getUser().get().getUnmappedFields()
+                        .get("email"));
         assertEquals("different.test.email@m365x214355.onmicrosoft.com", //
-                firstListItem.getLastModifiedBy().get().getUser().get().getUnmappedFields().get("email"));
+                firstListItem.getLastModifiedBy().get().getUser().get().getUnmappedFields()
+                        .get("email"));
     }
 
     @Test
@@ -922,7 +952,7 @@ public class GraphServiceTest {
         Message m2 = m.move("Archive").metadataFull().get();
         assertEquals(m.getId(), m2.getId());
     }
-    
+
     @Test
     public void testPatchOfResourceNotFound() {
         GraphService client = clientBuilder() //
@@ -943,7 +973,7 @@ public class GraphServiceTest {
             assertEquals(HttpURLConnection.HTTP_NOT_FOUND, (int) e.getStatusCode().get());
         }
     }
-    
+
     @Test
     public void testMailRead() {
         GraphService client = clientBuilder() //
@@ -975,7 +1005,7 @@ public class GraphServiceTest {
         // mark as read
         m.withIsRead(true).patch();
     }
-    
+
     @Test
     public void testFunctionWithInlineParameters() {
         GraphService client = clientBuilder() //
@@ -1009,7 +1039,8 @@ public class GraphServiceTest {
     @Ignore
     public void testSetTimeoutsForRequestForReadMe() {
         GraphService client = clientBuilder().build();
-        client.users().connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).toList();
+        client.users().connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS)
+                .toList();
     }
 
     @Test
@@ -1021,23 +1052,23 @@ public class GraphServiceTest {
     public void testGetODataNameFromComplexType() {
         assertEquals("microsoft.graph.device", odataTypeNameFromAny(Device.class));
     }
-    
+
     @Test
     @Ignore
     public void testReportsReturnTypeMappedToStreamCompiles() {
         GraphService client = clientBuilder().build();
         client.reports().getMailboxUsageDetail("D7").getBytes();
     }
-    
+
     @Test
     public void testGetStreamHigherUpCallChain() throws IOException {
         GraphService client = clientBuilder() //
-                .expectRequest(
-                        "/users/fred/contacts/123/photo/%24value") //
+                .expectRequest("/users/fred/contacts/123/photo/%24value") //
                 .withResponse("/photo2.jpg") //
                 .withRequestHeaders() //
                 .build();
-        byte[] b = client.users("fred").contacts("123").photo().getStreamCurrentPath().get().getBytes();
+        byte[] b = client.users("fred").contacts("123").photo().getStreamCurrentPath().get()
+                .getBytes();
         int length = (int) new File("src/test/resources/photo2.jpg").length();
         Files.write(new File("target/photo.jpg").toPath(), b);
         assertEquals(length, b.length);
@@ -1146,33 +1177,33 @@ public class GraphServiceTest {
                 .readTimeout(10, TimeUnit.MINUTES) //
                 .upload(file, 512 * 1024);
     }
-    
+
     @Test
     @Ignore
     public void testDownloadWholeEmailCompiles() {
         GraphService client = clientBuilder().build();
         client.me().messages("123").get().getStream().get().getBytes(); //
     }
-    
+
     @Test
     @Ignore
     public void testCalendarViewCompiles() {
         GraphService client = clientBuilder().build();
         client //
-        .me() //
-        .calendar()//
-        .calendarView() //
-        .query("startDateTime", "2019-11-08T19:00:00-08:00") //
-        .query("endDateTime", "2019-11-10T19:00:00-08:00") //
-        .get();
+                .me() //
+                .calendar()//
+                .calendarView() //
+                .query("startDateTime", "2019-11-08T19:00:00-08:00") //
+                .query("endDateTime", "2019-11-10T19:00:00-08:00") //
+                .get();
     }
-    
+
     @Test
     public void testCreateCanReturn200Issue123() {
         // doesn't comply with OData spec but we allow it for Graph
         checkCreateApplicationPassword(200);
     }
-    
+
     @Test
     public void testNPEInRemovePasswordIssue123() {
         GraphService client = clientBuilder() //
@@ -1186,7 +1217,7 @@ public class GraphServiceTest {
                 .build();
         client.applications("abc").removePassword("123").call();
     }
-    
+
     @Test
     public void testCreateCanReturn201Issue123() {
         // complies with OData spec
@@ -1211,7 +1242,6 @@ public class GraphServiceTest {
                         .build()) //
                 .get();
     }
-    
 
     // test paged complex type
     //

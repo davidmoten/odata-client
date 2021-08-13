@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class TestingService {
@@ -82,14 +81,6 @@ public final class TestingService {
             return (T) this;
         }
 
-        @SuppressWarnings("unchecked")
-        private T expectResponse(String path, String responseResourceName, HttpMethod method,
-                int statusCode, RequestHeader... requestHeaders) {
-            responses.put(toKey(method, baseUrl + path, asList(requestHeaders)),
-                    new Response(responseResourceName, statusCode));
-            return (T) this;
-        }
-
         private String toUrl(String path) {
             final String url;
             if (path.startsWith("https://")) {
@@ -108,7 +99,7 @@ public final class TestingService {
 
             private final List<RequestHeader> requestHeaders = new ArrayList<>();
             private final BuilderBase<T, R> base;
-            private Optional<String> payloadResourcePath = Optional.empty();
+            private String payloadResourcePath = "/empty.txt";
             private HttpMethod method = HttpMethod.GET;
             private final String path;
             private String responseResourcePath;
@@ -120,7 +111,7 @@ public final class TestingService {
             }
 
             public Builder<T, R> withPayload(String resourcePath) {
-                this.payloadResourcePath = Optional.of(resourcePath);
+                this.payloadResourcePath = resourcePath;
                 return this;
             }
 
@@ -150,17 +141,11 @@ public final class TestingService {
             }
 
             private T add() {
-                if (!payloadResourcePath.isPresent()) {
-                    return base.expectResponse(path, responseResourcePath, method,
-                            applyDefaultIfMissing(statusCode, method),
-                            requestHeaders.toArray(new RequestHeader[] {}));
-                } else {
-                    return base.expectRequestAndResponse(path, payloadResourcePath.get(),
-                            responseResourcePath, method, applyDefaultIfMissing(statusCode, method),
-                            requestHeaders.toArray(new RequestHeader[] {}));
-                }
+                return base.expectRequestAndResponse(path, payloadResourcePath,
+                        responseResourcePath, method, applyDefaultIfMissing(statusCode, method),
+                        requestHeaders.toArray(new RequestHeader[] {}));
             }
-
+            
             public R build() {
                 return add().build();
             }

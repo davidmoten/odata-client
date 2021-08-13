@@ -153,7 +153,12 @@ public final class RequestHelper {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
 
-        String json = Serializer.INSTANCE.serialize(object);
+        String json;
+        if (object == null) {
+            json = "";
+        } else {
+            json = Serializer.INSTANCE.serialize(object);
+        }
 
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
 

@@ -1,0 +1,6 @@
+{
+  "@odata.context" : "https://graph.microsoft.com/v1.0/$metadata#microsoft.graph.uploadSession",
+  "expirationDateTime" : "2021-07-22T19:55:17.832Z",
+  "nextExpectedRanges" : [ "0-" ],
+  "uploadUrl" : "https://blah"
+}
