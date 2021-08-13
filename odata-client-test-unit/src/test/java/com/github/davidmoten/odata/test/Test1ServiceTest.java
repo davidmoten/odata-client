@@ -49,10 +49,6 @@ public class Test1ServiceTest {
                 .test() //
                 .expectRequest("/Products") //
                 .withPayload("/request-post.json") //
-                .withMethod(HttpMethod.POST) //
-                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL,
-                        RequestHeader.CONTENT_TYPE_JSON, RequestHeader.ODATA_VERSION) //
-                .expectRequest("/Products") //
                 .withResponse("/response-post.json") //
                 .withMethod(HttpMethod.POST) //
                 .withResponseStatusCode(HttpURLConnection.HTTP_CREATED) //

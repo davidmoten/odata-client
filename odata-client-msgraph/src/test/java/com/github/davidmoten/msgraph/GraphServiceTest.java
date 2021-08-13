@@ -1192,6 +1192,28 @@ public class GraphServiceTest {
         // complies with OData spec
         checkCreateApplicationPassword(201);
     }
+    
+    @Test
+    public void testDriveIssue173() {
+        GraphService client = clientBuilder()
+                .expectRequest("/drives/123/items/456:/filename.txt:/createuploadsession")
+                .withMethod(HttpMethod.POST) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON)
+                .withResponse("/response-drive.json") //
+                .build();
+
+        UploadSession u = client //
+                ._custom() //
+                .post( //
+                        "https://graph.microsoft.com/v1.0/drives/123/items/456:/filename.txt:/createuploadsession", //
+                        null, //
+                        UploadSession.class, //
+                        HttpRequestOptions.EMPTY, //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.CONTENT_TYPE_JSON);
+        assertEquals("https://blah", u.getUploadUrl().get());
+    }
 
     private void checkCreateApplicationPassword(int responseCode) {
         GraphService client = clientBuilder() //
