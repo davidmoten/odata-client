@@ -147,8 +147,13 @@ public final class RequestHelper {
 
         checkResponseCodeOk(cp, response);
     }
-
+    
     public static <T> T postAny(Object object, ContextPath contextPath, Class<T> responseClass,
+            RequestOptions options) {
+        return submitAny(HttpMethod.POST, object, contextPath, responseClass, options);
+    }
+    
+    public static <T> T submitAny(HttpMethod method, Object object, ContextPath contextPath, Class<T> responseClass,
             RequestOptions options) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
@@ -264,7 +269,7 @@ public final class RequestHelper {
         }
         // get the response
         HttpService service = cp.context().service();
-        final HttpResponse response = service.submitWithContent(method, url, h, json, options);
+        final HttpResponse response = service.submit(method, url, h, json, options);
         checkResponseCodeOk(cp, response);
         // TODO is service returning the entity that we should use rather than the
         // original?
@@ -281,7 +286,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
         ContextPath cp = contextPath.addQueries(options.getQueries());
         HttpService service = cp.context().service();
-        final HttpResponse response = service.submitWithContent(method, cp.toUrl(), h, in, length,
+        final HttpResponse response = service.submit(method, cp.toUrl(), h, in, length,
                 options);
         checkResponseCodeOk(cp, response);
     }

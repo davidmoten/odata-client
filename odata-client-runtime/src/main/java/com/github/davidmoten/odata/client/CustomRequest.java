@@ -116,14 +116,14 @@ public final class CustomRequest {
             RequestHeader... headers) {
         String absoluteUrl = toAbsoluteUrl(url);
         UrlInfo info = getInfo(context, absoluteUrl, headers, options);
-        context.service().submitWithContent(method, absoluteUrl, info.requestHeaders, content, options);
+        context.service().submit(method, absoluteUrl, info.requestHeaders, content, options);
     }
 
     public String submitStringReturnsString(HttpMethod method, String url, String content, RequestOptions options,
             RequestHeader... headers) {
         String absoluteUrl = toAbsoluteUrl(url);
         UrlInfo info = getInfo(context, absoluteUrl, headers, options);
-        HttpResponse response = context.service().submitWithContent(method, absoluteUrl, info.requestHeaders, content,
+        HttpResponse response = context.service().submit(method, absoluteUrl, info.requestHeaders, content,
                 options);
         RequestHelper.checkResponseCodeOk(info.contextPath, response);
         return response.getText();

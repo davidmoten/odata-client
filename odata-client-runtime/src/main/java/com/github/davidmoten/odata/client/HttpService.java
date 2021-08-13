@@ -74,38 +74,18 @@ public interface HttpService extends AutoCloseable {
             throw new UncheckedIOException(e);
         }
     }
+    
+    default HttpResponse submit(HttpMethod method,String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
+        byte[] b = content.getBytes(StandardCharsets.UTF_8);
+        try (InputStream in = new ByteArrayInputStream(b)) {
+            return submit(method, url, requestHeaders, in, b.length, options);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        byte[] b = content.getBytes(StandardCharsets.UTF_8);
-        try (InputStream in = new ByteArrayInputStream(b)) {
-            return post(url, requestHeaders, in, b.length, options);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
-        if (method == HttpMethod.PATCH) {
-            return patch(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.PUT) {
-            return put(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.POST) {
-            return post(url, requestHeaders, content, length, options);
-        } else {
-            throw new IllegalArgumentException(
-                    method + " not permitted for a submission with content");
-        }
-    }
-
-    default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        byte[] b = content.getBytes(StandardCharsets.UTF_8);
-        try (InputStream in = new ByteArrayInputStream(b)) {
-            return submitWithContent(method, url, requestHeaders, in, b.length, options);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        return submit(HttpMethod.POST, url, requestHeaders, content, options);
     }
 
     default HttpResponse get(String url, HttpRequestOptions options) {
