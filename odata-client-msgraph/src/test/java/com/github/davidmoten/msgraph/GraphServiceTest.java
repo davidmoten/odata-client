@@ -1194,7 +1194,7 @@ public class GraphServiceTest {
     }
     
     @Test
-    public void testDriveIssue173() {
+    public void testDriveIssue173Post() {
         GraphService client = clientBuilder()
                 .expectRequest("/drives/123/items/456:/filename.txt:/createuploadsession")
                 .withMethod(HttpMethod.POST) //
@@ -1214,6 +1214,32 @@ public class GraphServiceTest {
                         RequestHeader.CONTENT_TYPE_JSON);
         assertEquals("https://blah", u.getUploadUrl().get());
     }
+
+    @Test
+    @Ignore
+    public void testDriveIssue173Put() {
+        GraphService client = clientBuilder()
+                .expectRequest("/drives/123/items/456:/filename.txt:/createuploadsession")
+                .withMethod(HttpMethod.POST) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON)
+                .withResponse("/response-drive.json") //
+                .build();
+
+        UploadSession u = client //
+                ._custom() //
+                .post( //
+                        "https://graph.microsoft.com/v1.0//drives/{drive-id}/items/{parent-id}:/{filename}:/content", //
+                        null, //
+                        UploadSession.class, //
+                        HttpRequestOptions.EMPTY, //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.CONTENT_TYPE_JSON);
+        assertEquals("https://blah", u.getUploadUrl().get());
+    }
+
+    
+//    /drives/{drive-id}/items/{parent-id}:/{filename}:/content
 
     private void checkCreateApplicationPassword(int responseCode) {
         GraphService client = clientBuilder() //

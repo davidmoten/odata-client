@@ -18,19 +18,37 @@ import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 public interface HttpService extends AutoCloseable {
     
     static int LENGTH_UNKNOWN = -1;
-
-    HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
-
-    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
-
-    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
-
-    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
     
-    HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
+    Path getBasePath();
+    
+    HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
 
     InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
     
+    default HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return submit(method, url, requestHeaders, null, LENGTH_UNKNOWN, options);
+    }
+
+    default HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return submit(HttpMethod.GET, url, requestHeaders, options);
+    }
+
+    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+        return submit(HttpMethod.PATCH, url, requestHeaders, content, length, options);
+    }
+
+    default HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+        return submit(HttpMethod.PUT, url, requestHeaders, content, length, options);
+    }
+
+    default HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
+        return submit(HttpMethod.POST, url, requestHeaders, content, length, options);
+    }
+    
+    default HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+        return submit(HttpMethod.DELETE, url, requestHeaders, options);
+    }
+
     default InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
         return getStream(HttpMethod.GET, url, requestHeaders, options);
     }
@@ -38,24 +56,7 @@ public interface HttpService extends AutoCloseable {
     default Optional<Proxy> getProxy() {
         return Optional.empty();
     }
-
-    Path getBasePath();
     
-    
-    default HttpResponse send(HttpMethod method, String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
-        if (method == HttpMethod.PATCH) {
-            return patch(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.POST) {
-            return post(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.PUT) {
-            return put(url, requestHeaders, content, length, options);
-        } else {
-            throw new ClientException(
-                    "method not supported for update: " + method + ", url=" + url);
-        }
-    }
-
     default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
         byte[] b = content.getBytes(StandardCharsets.UTF_8);
         try (InputStream in = new ByteArrayInputStream(b)) {
