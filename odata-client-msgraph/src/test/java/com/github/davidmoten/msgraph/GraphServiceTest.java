@@ -1228,21 +1228,21 @@ public class GraphServiceTest {
                 .build();
 
         String url = "https://graph.microsoft.com/v1.0/drives/123/items/456:/filename.txt:/content";
-        List<RequestHeader> headers = Collections
-                .singletonList(RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
         String content = "hello";
         {
             // use HttpService
+            List<RequestHeader> headers = Collections
+                    .singletonList(RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
             HttpResponse u = client //
                     ._service() //
                     .submit(HttpMethod.PUT, url, headers, content, HttpRequestOptions.EMPTY);
             assertTrue(u.getText().contains("0123456789abc"));
         }
         {
-            // use CustomRequest
+            // use CustomRequest (with bytes content this time)
             String json = client //
                     ._custom() //
-                    .submitStringReturnsString(HttpMethod.PUT, url, content,
+                    .submitBytesReturnsString(HttpMethod.PUT, url, content.getBytes(StandardCharsets.UTF_8),
                             HttpRequestOptions.EMPTY, RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
             assertTrue(json.contains("0123456789abc"));
         }
