@@ -32,38 +32,16 @@ public final class GraphExplorerHttpService implements HttpService {
     }
     
     @Override
+    public HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            InputStream content, int length, HttpRequestOptions options) {
+        return s.submit(method, convert(url), requestHeaders, content, length, options);
+    }
+    
+    @Override
     public void close() throws Exception {
         s.close();
     }
-
-    @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-        return s.get(convert(url), requestHeaders, options);
-    }
-
-    @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
-        return s.patch(convert(url), requestHeaders, content, length, options);
-    }
-
-    @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
-        return s.put(convert(url), requestHeaders, content, length, options);
-    }
-
-    @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
-        return s.post(convert(url), requestHeaders, content, length, options);
-    }
-
-    @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-        return s.delete(convert(url), requestHeaders, options);
-    }
-
+    
     @Override
     public InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
         return s.getStream(convert(url), requestHeaders, options);
@@ -79,5 +57,5 @@ public final class GraphExplorerHttpService implements HttpService {
             HttpRequestOptions options) {
         return s.getStream(method, convert(url), requestHeaders, options);
     }
-    
+
 }

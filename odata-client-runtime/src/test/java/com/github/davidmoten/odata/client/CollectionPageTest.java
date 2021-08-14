@@ -40,45 +40,30 @@ public class CollectionPageTest {
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
     }
-    
+
     private static final byte[] EMPTY_ARRAY = new byte[0];
-    
+
     private static HttpService createHttpService(String json) {
         return new HttpService() {
 
             @Override
-            public HttpResponse get(String url, List<RequestHeader> requestHeaders,
+            public HttpResponse submit(HttpMethod method, String url,
+                    List<RequestHeader> requestHeaders, InputStream content, int length,
                     HttpRequestOptions options) {
-                return new HttpResponse(200, json.getBytes(StandardCharsets.UTF_8));
+                if (method == HttpMethod.GET) {
+                    return new HttpResponse(HttpURLConnection.HTTP_OK,
+                            json.getBytes(StandardCharsets.UTF_8));
+                } else if (method == HttpMethod.POST) {
+                    return new HttpResponse(HttpURLConnection.HTTP_CREATED, EMPTY_ARRAY);
+                } else {
+                    return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
+                }
             }
 
+            
             @Override
             public Path getBasePath() {
                 return new Path("https://base", PathStyle.IDENTIFIERS_AS_SEGMENTS);
-            }
-
-            @Override
-            public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-                    InputStream content, int length, HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
-            }
-
-            @Override
-            public HttpResponse put(String url, List<RequestHeader> requestHeaders,
-                    InputStream content, int length, HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
-            }
-
-            @Override
-            public HttpResponse post(String url, List<RequestHeader> h, InputStream content,
-                    int length, HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_CREATED, EMPTY_ARRAY);
-            }
-
-            @Override
-            public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
-                    HttpRequestOptions options) {
-                return new HttpResponse(HttpURLConnection.HTTP_NO_CONTENT, EMPTY_ARRAY);
             }
 
             @Override
@@ -97,7 +82,6 @@ public class CollectionPageTest {
                     List<RequestHeader> requestHeaders, HttpRequestOptions options) {
                 throw new UnsupportedOperationException();
             }
-
         };
     }
 

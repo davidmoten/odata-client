@@ -39,6 +39,7 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
+import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.ObjectOrDeltaLink;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
@@ -1194,7 +1195,7 @@ public class GraphServiceTest {
     }
     
     @Test
-    public void testDriveIssue173() {
+    public void testDriveIssue173Post() {
         GraphService client = clientBuilder()
                 .expectRequest("/drives/123/items/456:/filename.txt:/createuploadsession")
                 .withMethod(HttpMethod.POST) //
@@ -1213,6 +1214,38 @@ public class GraphServiceTest {
                         RequestHeader.ODATA_VERSION, //
                         RequestHeader.CONTENT_TYPE_JSON);
         assertEquals("https://blah", u.getUploadUrl().get());
+    }
+
+    @Test
+    public void testDriveIssue173Put() {
+        GraphService client = clientBuilder()
+                .expectRequest("/drives/123/items/456:/filename.txt:/content")
+                .withMethod(HttpMethod.PUT) //
+                .withPayload("/request-upload-bytes.txt") //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_TEXT_PLAIN)
+                .withResponseStatusCode(201) //
+                .withResponse("/response-drive-item-put.json") //
+                .build();
+
+        String url = "https://graph.microsoft.com/v1.0/drives/123/items/456:/filename.txt:/content";
+        String content = "hello";
+        {
+            // use HttpService
+            List<RequestHeader> headers = Collections
+                    .singletonList(RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
+            HttpResponse u = client //
+                    ._service() //
+                    .submit(HttpMethod.PUT, url, headers, content, HttpRequestOptions.EMPTY);
+            assertTrue(u.getText().contains("0123456789abc"));
+        }
+        {
+            // use CustomRequest (with bytes content this time)
+            String json = client //
+                    ._custom() //
+                    .submitBytesReturnsString(HttpMethod.PUT, url, content.getBytes(StandardCharsets.UTF_8),
+                            HttpRequestOptions.EMPTY, RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
+            assertTrue(json.contains("0123456789abc"));
+        }
     }
 
     private void checkCreateApplicationPassword(int responseCode) {

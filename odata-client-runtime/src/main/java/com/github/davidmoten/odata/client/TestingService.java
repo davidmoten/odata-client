@@ -19,14 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class TestingService {
+import com.fasterxml.jackson.core.JsonParseException;
+import com.github.davidmoten.guavamini.Preconditions;
 
-    private static final InputStream EMPTY = new InputStream() {
-        @Override
-        public int read() throws IOException {
-            return -1;
-        }
-    };
+public final class TestingService {
 
     public static Builder baseUrl(String url) {
         if (url.endsWith("/")) {
@@ -145,7 +141,7 @@ public final class TestingService {
                         responseResourcePath, method, applyDefaultIfMissing(statusCode, method),
                         requestHeaders.toArray(new RequestHeader[] {}));
             }
-            
+
             public R build() {
                 return add().build();
             }
@@ -205,7 +201,19 @@ public final class TestingService {
             return new HttpService() {
 
                 @Override
-                public HttpResponse get(String url, List<RequestHeader> requestHeaders,
+                public HttpResponse submit(HttpMethod method, String url,
+                        List<RequestHeader> requestHeaders, InputStream content, int length,
+                        HttpRequestOptions options) {
+                    if (method == HttpMethod.GET) {
+                        Preconditions.checkArgument(content == null);
+                        return _get(url, requestHeaders, options);
+                    } else {
+                        return postPatchPutOrDelete(url, requestHeaders, content, length, options,
+                                method);
+                    }
+                }
+
+                private HttpResponse _get(String url, List<RequestHeader> requestHeaders,
                         HttpRequestOptions options) {
                     logExpected();
                     String key = BuilderBase.toKey(HttpMethod.GET, url, requestHeaders);
@@ -234,40 +242,17 @@ public final class TestingService {
                     responses.entrySet().forEach(r -> log(r.getKey() + "\n=>" + r.getValue()));
                 }
 
-                @Override
-                public HttpResponse patch(String url, List<RequestHeader> requestHeaders,
-                        InputStream content, int length, HttpRequestOptions options) {
-                    return postPatchPutOrDelete(url, requestHeaders, content, length, options,
-                            HttpMethod.PATCH);
-                }
-
-                @Override
-                public HttpResponse put(String url, List<RequestHeader> requestHeaders,
-                        InputStream content, int length, HttpRequestOptions options) {
-                    return postPatchPutOrDelete(url, requestHeaders, content, length, options,
-                            HttpMethod.PUT);
-                }
-
-                @Override
-                public HttpResponse post(String url, List<RequestHeader> requestHeaders,
-                        InputStream content, int length, HttpRequestOptions options) {
-                    return postPatchPutOrDelete(url, requestHeaders, content, length, options,
-                            HttpMethod.POST);
-                }
-
-                @Override
-                public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
-                        HttpRequestOptions options) {
-                    return postPatchPutOrDelete(url, requestHeaders, EMPTY, 0, options,
-                            HttpMethod.DELETE);
-                }
-
                 private HttpResponse postPatchPutOrDelete(String url,
                         List<RequestHeader> requestHeaders, InputStream content, int length,
                         HttpRequestOptions options, HttpMethod method) {
                     log(method + " called at " + url);
-                    String text = Util.utf8(content);
-                    log(text);
+                    final String text;
+                    if (content == null) {
+                        text = "";
+                    } else {
+                        text = Util.utf8(content);
+                    }
+                    log("content=" + text);
                     logExpected();
                     log("Calling:");
                     String key = BuilderBase.toKey(method, url, requestHeaders);
@@ -281,8 +266,7 @@ public final class TestingService {
                         System.out.println("requestResourceName=" + requestResourceName);
                         byte[] requestExpected = readResource(url, requestResourceName);
                         String expectedText = new String(requestExpected, StandardCharsets.UTF_8);
-                        if (expectedText.equals(text)
-                                || Serializer.INSTANCE.matches(expectedText, text)) {
+                        if (expectedText.equals(text) || jsonEquals(text, expectedText)) {
                             Response resp = responses
                                     .get(BuilderBase.toKey(method, url, requestHeaders));
                             String responseResourceName = resp.resource;
@@ -337,6 +321,14 @@ public final class TestingService {
         }
 
         public abstract R build();
+    }
+
+    private static boolean jsonEquals(final String text, String expectedText) throws IOException {
+        try {
+            return Serializer.INSTANCE.matches(expectedText, text);
+        } catch (JsonParseException e) {
+            return false;
+        }
     }
 
     public static abstract class ContainerBuilder<T> extends BuilderBase<ContainerBuilder<T>, T> {

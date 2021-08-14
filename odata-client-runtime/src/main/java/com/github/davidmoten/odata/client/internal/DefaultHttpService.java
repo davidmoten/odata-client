@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -39,23 +38,21 @@ public final class DefaultHttpService implements HttpService {
     }
 
     @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders,
-            HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.GET, true, null,
-                HttpService.LENGTH_UNKNOWN);
-    }
-
-    @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content,
-            int length, HttpRequestOptions options) {
-        if (patchSupported) {
-            try {
-                return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content, length);
-            } catch (ProtocolRuntimeException e) {
+    public HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            InputStream content, int length, HttpRequestOptions options) {
+        if (method == HttpMethod.PATCH) {
+            if (patchSupported) {
+                try {
+                    return getResponse(url, requestHeaders, HttpMethod.PATCH, false, content,
+                            length);
+                } catch (ProtocolRuntimeException e) {
+                    return getResponsePatchOverride(url, requestHeaders, content, length);
+                }
+            } else {
                 return getResponsePatchOverride(url, requestHeaders, content, length);
             }
         } else {
-            return getResponsePatchOverride(url, requestHeaders, content, length);
+            return getResponse(url, requestHeaders, method, true, content, length);
         }
     }
 
@@ -63,28 +60,10 @@ public final class DefaultHttpService implements HttpService {
             InputStream content, int length) {
         List<RequestHeader> list = Lists.newArrayList(requestHeaders);
         list.add(new RequestHeader("X-HTTP-Method-Override", "PATCH"));
-        HttpResponse result = getResponse(url, list, HttpMethod.POST, false, content, length);
+        HttpResponse result = getResponse(url, list, HttpMethod.POST, true, content, length);
         // only indicate patch not supported if the result is returned ok
         patchSupported = false;
         return result;
-    }
-
-    @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content,
-            int length, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.PUT, false, content, length);
-    }
-
-    @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content,
-            int length, HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.POST, true, content, length);
-    }
-
-    @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
-            HttpRequestOptions options) {
-        return getResponse(url, requestHeaders, HttpMethod.DELETE, false, null, -1);
     }
 
     @Override
@@ -160,4 +139,5 @@ public final class DefaultHttpService implements HttpService {
             throw new ClientException(e);
         }
     }
+
 }

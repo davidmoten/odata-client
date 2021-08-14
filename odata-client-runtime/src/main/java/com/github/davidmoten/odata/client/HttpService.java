@@ -16,47 +16,58 @@ import java.util.function.Function;
 import com.github.davidmoten.odata.client.internal.DefaultHttpService;
 
 public interface HttpService extends AutoCloseable {
-    
+
     static int LENGTH_UNKNOWN = -1;
 
-    HttpResponse get(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
+    Path getBasePath();
 
-    HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
+    HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            InputStream content, int length, HttpRequestOptions options);
 
-    HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
+    InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options);
 
-    HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options);
-    
-    HttpResponse delete(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
+    default HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
+        return submit(method, url, requestHeaders, null, LENGTH_UNKNOWN, options);
+    }
 
-    InputStream getStream(HttpMethod method, String url, List<RequestHeader> requestHeaders, HttpRequestOptions options);
-    
-    default InputStream getStream(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    default HttpResponse get(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
+        return submit(HttpMethod.GET, url, requestHeaders, options);
+    }
+
+    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content,
+            int length, HttpRequestOptions options) {
+        return submit(HttpMethod.PATCH, url, requestHeaders, content, length, options);
+    }
+
+    default HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content,
+            int length, HttpRequestOptions options) {
+        return submit(HttpMethod.PUT, url, requestHeaders, content, length, options);
+    }
+
+    default HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content,
+            int length, HttpRequestOptions options) {
+        return submit(HttpMethod.POST, url, requestHeaders, content, length, options);
+    }
+
+    default HttpResponse delete(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
+        return submit(HttpMethod.DELETE, url, requestHeaders, options);
+    }
+
+    default InputStream getStream(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
         return getStream(HttpMethod.GET, url, requestHeaders, options);
     }
-    
+
     default Optional<Proxy> getProxy() {
         return Optional.empty();
     }
 
-    Path getBasePath();
-    
-    
-    default HttpResponse send(HttpMethod method, String url, List<RequestHeader> requestHeaders,
-            InputStream content, int length, HttpRequestOptions options) {
-        if (method == HttpMethod.PATCH) {
-            return patch(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.POST) {
-            return post(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.PUT) {
-            return put(url, requestHeaders, content, length, options);
-        } else {
-            throw new ClientException(
-                    "method not supported for update: " + method + ", url=" + url);
-        }
-    }
-
-    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
+    default HttpResponse patch(String url, List<RequestHeader> requestHeaders, String content,
+            HttpRequestOptions options) {
         byte[] b = content.getBytes(StandardCharsets.UTF_8);
         try (InputStream in = new ByteArrayInputStream(b)) {
             return patch(url, requestHeaders, in, b.length, options);
@@ -65,7 +76,8 @@ public interface HttpService extends AutoCloseable {
         }
     }
 
-    default HttpResponse put(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
+    default HttpResponse put(String url, List<RequestHeader> requestHeaders, String content,
+            HttpRequestOptions options) {
         byte[] b = content.getBytes(StandardCharsets.UTF_8);
         try (InputStream in = new ByteArrayInputStream(b)) {
             return put(url, requestHeaders, in, b.length, options);
@@ -74,37 +86,24 @@ public interface HttpService extends AutoCloseable {
         }
     }
 
-    default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        byte[] b = content.getBytes(StandardCharsets.UTF_8);
-        try (InputStream in = new ByteArrayInputStream(b)) {
-            return post(url, requestHeaders, in, b.length, options);
+    default HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            byte[] content, HttpRequestOptions options) {
+        try (InputStream in = new ByteArrayInputStream(content)) {
+            return submit(method, url, requestHeaders, in, content.length, options);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, InputStream content, int length, HttpRequestOptions options) {
-        if (method == HttpMethod.PATCH) {
-            return patch(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.PUT) {
-            return put(url, requestHeaders, content, length, options);
-        } else if (method == HttpMethod.POST) {
-            return post(url, requestHeaders, content, length, options);
-        } else {
-            throw new IllegalArgumentException(
-                    method + " not permitted for a submission with content");
-        }
+    default HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            String content, HttpRequestOptions options) {
+        byte[] b = content.getBytes(StandardCharsets.UTF_8);
+        return submit(method, url, requestHeaders, b, options);
     }
 
-    default HttpResponse submitWithContent(HttpMethod method, String url,
-            List<RequestHeader> requestHeaders, String content, HttpRequestOptions options) {
-        byte[] b = content.getBytes(StandardCharsets.UTF_8);
-        try (InputStream in = new ByteArrayInputStream(b)) {
-            return submitWithContent(method, url, requestHeaders, in, b.length, options);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    default HttpResponse post(String url, List<RequestHeader> requestHeaders, String content,
+            HttpRequestOptions options) {
+        return submit(HttpMethod.POST, url, requestHeaders, content, options);
     }
 
     default HttpResponse get(String url, HttpRequestOptions options) {
@@ -119,7 +118,8 @@ public interface HttpService extends AutoCloseable {
         return getBytes(url, Collections.emptyList(), options);
     }
 
-    default byte[] getBytes(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    default byte[] getBytes(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
         return Util.toByteArray(getStream(url, requestHeaders, options));
     }
 
@@ -127,13 +127,14 @@ public interface HttpService extends AutoCloseable {
         return getStringUtf8(url, Collections.emptyList(), options);
     }
 
-    default String getStringUtf8(String url, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
+    default String getStringUtf8(String url, List<RequestHeader> requestHeaders,
+            HttpRequestOptions options) {
         return new String(getBytes(url, requestHeaders, options), StandardCharsets.UTF_8);
     }
 
     static HttpService createDefaultService(Path path,
-                                            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier,
-                                            Consumer<HttpURLConnection> consumer) {
+            Function<List<RequestHeader>, List<RequestHeader>> requestHeadersModifier,
+            Consumer<HttpURLConnection> consumer) {
         return new DefaultHttpService(path, requestHeadersModifier, consumer);
     }
 

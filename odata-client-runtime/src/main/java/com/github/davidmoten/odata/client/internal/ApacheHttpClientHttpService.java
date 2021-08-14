@@ -17,7 +17,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.InputStreamEntity;
@@ -54,38 +53,13 @@ public class ApacheHttpClientHttpService implements HttpService {
         this(basePath, () -> HttpClientBuilder.create().useSystemProperties().build(),
                 (url, m) -> m);
     }
-
+    
     @Override
-    public HttpResponse get(String url, List<RequestHeader> requestHeaders,
-            HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpGet(url), null, -1, options);
+    public HttpResponse submit(HttpMethod method, String url, List<RequestHeader> requestHeaders,
+            InputStream content, int length, HttpRequestOptions options) {
+        return getResponse(requestHeaders, toRequestBase(method, url), content, length, options);
     }
-
-    @Override
-    public HttpResponse patch(String url, List<RequestHeader> requestHeaders, InputStream content,
-            int length, HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpPatch(url), content, length, options);
-    }
-
-    @Override
-    public HttpResponse put(String url, List<RequestHeader> requestHeaders, InputStream content,
-            int length, HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpPut(url), content, length, options);
-    }
-
-    @Override
-    public HttpResponse post(String url, List<RequestHeader> requestHeaders, InputStream content,
-            int length, HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpPost(url), content, length, options);
-    }
-
-    @Override
-    public HttpResponse delete(String url, List<RequestHeader> requestHeaders,
-            HttpRequestOptions options) {
-        return getResponse(requestHeaders, new HttpDelete(url), null, HttpService.LENGTH_UNKNOWN,
-                options);
-    }
-
+   
     @Override
     public Path getBasePath() {
         return basePath;

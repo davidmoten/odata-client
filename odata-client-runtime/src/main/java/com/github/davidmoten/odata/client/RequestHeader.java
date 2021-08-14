@@ -49,6 +49,8 @@ public final class RequestHeader {
 
     public static final RequestHeader TRANSFER_ENCODING_CHUNKED = RequestHeader.create("Transfer-Encoding", "chunked");
 
+    public static final RequestHeader CONTENT_TYPE_TEXT_PLAIN = RequestHeader.create("Content-Type", "text/plain");
+
     public boolean isAcceptJsonWithMetadata() {
         return name.equals("Accept") && value.contains("application/json;odata.metadata=");
     }
