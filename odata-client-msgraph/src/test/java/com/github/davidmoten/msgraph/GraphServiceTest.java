@@ -39,6 +39,7 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.CollectionPage;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.HttpRequestOptions;
+import com.github.davidmoten.odata.client.HttpResponse;
 import com.github.davidmoten.odata.client.ObjectOrDeltaLink;
 import com.github.davidmoten.odata.client.PathStyle;
 import com.github.davidmoten.odata.client.RequestHeader;
@@ -1216,30 +1217,36 @@ public class GraphServiceTest {
     }
 
     @Test
-    @Ignore
     public void testDriveIssue173Put() {
         GraphService client = clientBuilder()
-                .expectRequest("/drives/123/items/456:/filename.txt:/createuploadsession")
-                .withMethod(HttpMethod.POST) //
-                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
-                        RequestHeader.ACCEPT_JSON)
-                .withResponse("/response-drive.json") //
+                .expectRequest("/drives/123/items/456:/filename.txt:/content")
+                .withMethod(HttpMethod.PUT) //
+                .withPayload("/request-upload-bytes.txt") //
+                .withRequestHeaders(RequestHeader.CONTENT_TYPE_TEXT_PLAIN)
+                .withResponseStatusCode(201) //
+                .withResponse("/response-drive-item-put.json") //
                 .build();
 
-        UploadSession u = client //
-                ._custom() //
-                .post( //
-                        "https://graph.microsoft.com/v1.0//drives/{drive-id}/items/{parent-id}:/{filename}:/content", //
-                        null, //
-                        UploadSession.class, //
-                        HttpRequestOptions.EMPTY, //
-                        RequestHeader.ODATA_VERSION, //
-                        RequestHeader.CONTENT_TYPE_JSON);
-        assertEquals("https://blah", u.getUploadUrl().get());
+        String url = "https://graph.microsoft.com/v1.0/drives/123/items/456:/filename.txt:/content";
+        List<RequestHeader> headers = Collections
+                .singletonList(RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
+        String content = "hello";
+        {
+            // use HttpService
+            HttpResponse u = client //
+                    ._service() //
+                    .submit(HttpMethod.PUT, url, headers, content, HttpRequestOptions.EMPTY);
+            assertTrue(u.getText().contains("0123456789abc"));
+        }
+        {
+            // use CustomRequest
+            String json = client //
+                    ._custom() //
+                    .submitStringReturnsString(HttpMethod.PUT, url, content,
+                            HttpRequestOptions.EMPTY, RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
+            assertTrue(json.contains("0123456789abc"));
+        }
     }
-
-    
-//    /drives/{drive-id}/items/{parent-id}:/{filename}:/content
 
     private void checkCreateApplicationPassword(int responseCode) {
         GraphService client = clientBuilder() //

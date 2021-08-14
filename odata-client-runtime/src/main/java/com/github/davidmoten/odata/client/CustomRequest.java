@@ -1,6 +1,9 @@
 package com.github.davidmoten.odata.client;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -75,14 +78,35 @@ public final class CustomRequest {
         UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         RequestHelper.post(content, info.contextPath, contentClass, info);
     }
-
-    public <T> T post(String url, Object content, Class<T> responseClass,
+    
+    public <T> T submit(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         return RequestHelper.postAny(content, info.contextPath, responseClass, info);
     }
+    
+    public <T> T submit(HttpMethod method, String url, Object content, Class<T> responseClass,
+            HttpRequestOptions options, RequestHeader... headers) {
+        UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
+        return RequestHelper.submitAny(method, content, info.contextPath, responseClass, info);
+    }
 
-    public void postString(String url, String content, RequestOptions options,
+    public <T> T post(String url, Object content, Class<T> responseClass,
+            HttpRequestOptions options, RequestHeader... headers) {
+        return submit(HttpMethod.POST, url, content, responseClass, options, headers);
+    }
+    
+    public <T> T put(String url, Object content, Class<T> responseClass,
+            HttpRequestOptions options, RequestHeader... headers) {
+        return submit(HttpMethod.PUT, url, content, responseClass, options, headers);
+    }
+    
+    public <T> T patch(String url, Object content, Class<T> responseClass,
+            HttpRequestOptions options, RequestHeader... headers) {
+        return submit(HttpMethod.PATCH, url, content, responseClass, options, headers);
+    }
+
+    public void postString(String url, String content, HttpRequestOptions options,
             RequestHeader... headers) {
         submitString(HttpMethod.POST, url, content, options, headers);
     }
@@ -92,41 +116,55 @@ public final class CustomRequest {
         return submitStringReturnsString(HttpMethod.POST, url, content, options, headers);
     }
     
-    public void patchString(String url, String content, RequestOptions options,
+    public void patchString(String url, String content, HttpRequestOptions options,
             RequestHeader... headers) {
         submitString(HttpMethod.PATCH, url, content, options, headers);
     }
 
-    public String patchStringReturnsString(String url, String content, RequestOptions options,
+    public String patchStringReturnsString(String url, String content, HttpRequestOptions options,
             RequestHeader... headers) {
         return submitStringReturnsString(HttpMethod.PATCH, url, content, options, headers);
     }
 
-    public void putString(String url, String content, RequestOptions options,
+    public void putString(String url, String content, HttpRequestOptions options,
             RequestHeader... headers) {
         submitString(HttpMethod.PUT, url, content, options, headers);
     }
 
-    public String putStringReturnsString(String url, String content, RequestOptions options,
+    public String putStringReturnsString(String url, String content, HttpRequestOptions options,
             RequestHeader... headers) {
         return submitStringReturnsString(HttpMethod.PUT, url, content, options, headers);
     }
 
-    public void submitString(HttpMethod method, String url, String content, RequestOptions options,
+    public void submitString(HttpMethod method, String url, String content, HttpRequestOptions options,
             RequestHeader... headers) {
         String absoluteUrl = toAbsoluteUrl(url);
         UrlInfo info = getInfo(context, absoluteUrl, headers, options);
         context.service().submit(method, absoluteUrl, info.requestHeaders, content, options);
     }
-
-    public String submitStringReturnsString(HttpMethod method, String url, String content, RequestOptions options,
+    
+    public String submitInputStreamReturnsString(HttpMethod method, String url, InputStream content, int length, HttpRequestOptions options,
             RequestHeader... headers) {
         String absoluteUrl = toAbsoluteUrl(url);
         UrlInfo info = getInfo(context, absoluteUrl, headers, options);
-        HttpResponse response = context.service().submit(method, absoluteUrl, info.requestHeaders, content,
+        HttpResponse response = context.service().submit(method, absoluteUrl, info.requestHeaders, content, length,
                 options);
         RequestHelper.checkResponseCodeOk(info.contextPath, response);
         return response.getText();
+    }
+    
+    public String submitBytesReturnsString(HttpMethod method, String url, byte[] content, HttpRequestOptions options,
+            RequestHeader... headers) {
+        try (InputStream in = new ByteArrayInputStream(content)) {
+            return submitInputStreamReturnsString(method, url, in, content.length, options, headers);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public String submitStringReturnsString(HttpMethod method, String url, String content, HttpRequestOptions options,
+            RequestHeader... headers) {
+        return submitBytesReturnsString(method, url, content.getBytes(StandardCharsets.UTF_8), options, headers);
     }
     
     private static UrlInfo getInfo(Context context, String url, RequestHeader[] requestHeaders,

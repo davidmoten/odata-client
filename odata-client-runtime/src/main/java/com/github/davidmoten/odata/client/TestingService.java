@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class TestingService {
@@ -251,7 +252,7 @@ public final class TestingService {
                     } else {
                         text = Util.utf8(content);
                     }
-                    log("content="+text);
+                    log("content=" + text);
                     logExpected();
                     log("Calling:");
                     String key = BuilderBase.toKey(method, url, requestHeaders);
@@ -265,8 +266,7 @@ public final class TestingService {
                         System.out.println("requestResourceName=" + requestResourceName);
                         byte[] requestExpected = readResource(url, requestResourceName);
                         String expectedText = new String(requestExpected, StandardCharsets.UTF_8);
-                        if (expectedText.equals(text)
-                                || Serializer.INSTANCE.matches(expectedText, text)) {
+                        if (expectedText.equals(text) || jsonEquals(text, expectedText)) {
                             Response resp = responses
                                     .get(BuilderBase.toKey(method, url, requestHeaders));
                             String responseResourceName = resp.resource;
@@ -321,6 +321,14 @@ public final class TestingService {
         }
 
         public abstract R build();
+    }
+
+    private static boolean jsonEquals(final String text, String expectedText) throws IOException {
+        try {
+            return Serializer.INSTANCE.matches(expectedText, text);
+        } catch (JsonParseException e) {
+            return false;
+        }
     }
 
     public static abstract class ContainerBuilder<T> extends BuilderBase<ContainerBuilder<T>, T> {
