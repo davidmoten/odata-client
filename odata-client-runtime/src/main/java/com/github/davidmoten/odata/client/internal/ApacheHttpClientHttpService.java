@@ -17,6 +17,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.InputStreamEntity;
@@ -135,7 +136,7 @@ public class ApacheHttpClientHttpService implements HttpService {
         } else if (method == HttpMethod.PUT) {
             return new HttpPut(url);
         } else if (method == HttpMethod.POST) {
-            return new HttpPut(url);
+            return new HttpPost(url);
         } else {
             throw new UnsupportedOperationException(method.toString() + " not recognized");
         }
