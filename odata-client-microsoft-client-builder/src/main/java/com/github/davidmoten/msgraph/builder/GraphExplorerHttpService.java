@@ -28,7 +28,7 @@ public final class GraphExplorerHttpService implements HttpService {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-        return "https://proxy.apisandbox.msdn.microsoft.com/svc?url=" + x;
+        return "https://graph.office.net/en-us/graph/api/proxy?url=" + x;
     }
     
     @Override
