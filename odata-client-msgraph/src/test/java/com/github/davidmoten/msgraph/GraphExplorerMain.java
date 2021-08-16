@@ -22,7 +22,7 @@ public class GraphExplorerMain {
 
         GraphService client = MsGraph.explorer().build();
         {
-            client.me().messages().get().stream().findFirst().ifPresent(a -> System.out.println(a.getSubject()));
+            client.me().messages().get().stream().findFirst().ifPresent(a -> System.out.println(a.getSubject().orElse("?")));
             System.exit(0);
         }
         {

@@ -10,7 +10,7 @@ import com.github.davidmoten.odata.client.RequestHeader;
 
 public final class BearerAuthenticator implements Authenticator {
 
-    private static final String GRAPH_EXPLORER_BASE_URL= "https://proxy.apisandbox.msdn.microsoft.com";
+    private static final String GRAPH_EXPLORER_BASE_URL= "https://graph.office.net";
 	private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String OAUTH_BEARER_PREFIX = "Bearer ";
 
