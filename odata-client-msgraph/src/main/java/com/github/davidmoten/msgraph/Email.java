@@ -13,12 +13,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.odata.client.Retries;
 import com.github.davidmoten.odata.client.StreamUploaderChunked;
 import com.github.davidmoten.odata.client.internal.Util;
 
 import odata.msgraph.client.complex.AttachmentItem;
 import odata.msgraph.client.complex.EmailAddress;
+import odata.msgraph.client.complex.InternetMessageHeader;
 import odata.msgraph.client.complex.ItemBody;
 import odata.msgraph.client.complex.Recipient;
 import odata.msgraph.client.container.GraphService;
@@ -43,6 +45,8 @@ public final class Email {
 		private final List<String> to = new ArrayList<>();
 		private final List<String> cc = new ArrayList<>();
 		private final List<String> bcc = new ArrayList<>();
+		private final List<Header> headers = new ArrayList<>();
+		
 		private String draftFolder = "Drafts";
 		private BodyType bodyType;
 		private final List<BuilderAttachment> attachments = new ArrayList<>();
@@ -137,6 +141,13 @@ public final class Email {
 			b.draftFolder = draftFolder;
 			return this;
 		}
+		
+		Builder4 header(String name, String value) {
+		    Preconditions.checkNotNull(name);
+		    Preconditions.checkNotNull(value);
+		    b.headers.add(new Header(name, value));
+		    return this;
+		}
 
 		Builder6 attachment(String contentUtf8) {
 			return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
@@ -179,6 +190,17 @@ public final class Email {
 			}
 			if (!b.bcc.isEmpty()) {
 				builder = builder.ccRecipients(recipients(b.bcc));
+			}
+			if (!b.headers.isEmpty()) {
+			    List<InternetMessageHeader> headers = b.headers //
+			        .stream() //
+			        .map(x -> InternetMessageHeader //
+			                .builder() //
+			                .name(x.name) //
+			                .value(x.value) //
+			                .build()) //
+			        .collect(Collectors.toList());
+			    builder = builder.internetMessageHeaders(headers);
 			}
 			Message m = drafts.messages().post(builder.build());
 
@@ -365,5 +387,15 @@ public final class Email {
 			attachment.sender.send(client);
 		}
 
+	}
+	
+	private static final class Header {
+	    final String name; 
+	    final String value;
+
+	    private Header(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
 	}
 }

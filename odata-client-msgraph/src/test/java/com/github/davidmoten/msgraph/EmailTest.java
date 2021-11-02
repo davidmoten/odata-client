@@ -22,6 +22,7 @@ public final class EmailTest {
 				.body("Just a quick test") //
 				.to("dave@gmail.com") //
 				.bcc("sarah@gmail.com", "andrew@gmail.com") //
+				.header("x-security-classification", "OFFICIAL") //
 				.attachment(new File("info.txt")) //
 				.contentMimeType("text/plain") //
 				.readTimeout(10, TimeUnit.MINUTES) //
