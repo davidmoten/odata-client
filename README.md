@@ -588,6 +588,7 @@ Email
   .subject("hi there " + new Date())
   .body("hello there how are you")
   .to("davidmoten@gmail.com")
+  .header("x-security-classification", "OFFICIAL")
   .attachment(file)
   .name("list.txt")
   .contentMimeType("text/plain")
