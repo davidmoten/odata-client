@@ -56,17 +56,17 @@ public final class Email {
 			this.from = mailbox;
 		}
 
-		Builder2 subject(String subject) {
+		public Builder1 subject(String subject) {
 			this.subject = subject;
-			return new Builder2(this);
+			return new Builder1(this);
 		}
 
 	}
 
-	public static final class Builder11 {
+	public static final class Builder1 {
 		private final Builder b;
 
-		Builder11(Builder b) {
+		Builder1(Builder b) {
 			this.b = b;
 		}
 
@@ -84,7 +84,7 @@ public final class Email {
 			this.b = b;
 		}
 
-		Builder4 body(String body) {
+		public Builder4 body(String body) {
 			b.body = body;
 			return new Builder4(b);
 		}
@@ -99,73 +99,73 @@ public final class Email {
 			this.b = b;
 		}
 
-		Builder4 from(String emailAddress) {
+		public Builder4 from(String emailAddress) {
 			b.from = emailAddress;
 			return new Builder4(b);
 		}
 
-		Builder4 to(String... emailAddresses) {
+		public Builder4 to(String... emailAddresses) {
 			return to(Arrays.asList(emailAddresses));
 		}
 
-		Builder4 to(Iterable<String> emailAddresses) {
+		public Builder4 to(Iterable<String> emailAddresses) {
 			for (String a : emailAddresses) {
 				b.to.add(a);
 			}
 			return this;
 		}
 
-		Builder4 cc(String... emailAddresses) {
+		public Builder4 cc(String... emailAddresses) {
 			return cc(Arrays.asList(emailAddresses));
 		}
 
-		Builder4 cc(Iterable<String> emailAddresses) {
+		public Builder4 cc(Iterable<String> emailAddresses) {
 			for (String a : emailAddresses) {
 				b.cc.add(a);
 			}
 			return this;
 		}
 
-		Builder4 bcc(String... emailAddresses) {
+		public Builder4 bcc(String... emailAddresses) {
 			return bcc(Arrays.asList(emailAddresses));
 		}
 
-		Builder4 bcc(List<String> emailAddresses) {
+		public Builder4 bcc(List<String> emailAddresses) {
 			for (String a : emailAddresses) {
 				b.bcc.add(a);
 			}
 			return this;
 		}
 
-		Builder4 saveDraftToFolder(String draftFolder) {
+		public Builder4 saveDraftToFolder(String draftFolder) {
 			b.draftFolder = draftFolder;
 			return this;
 		}
 		
-		Builder4 header(String name, String value) {
+		public Builder4 header(String name, String value) {
 		    Preconditions.checkNotNull(name);
 		    Preconditions.checkNotNull(value);
 		    b.headers.add(new Header(name, value));
 		    return this;
 		}
 
-		Builder6 attachment(String contentUtf8) {
+		public Builder6 attachment(String contentUtf8) {
 			return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
 		}
 
-		Builder6 attachment(byte[] content) {
+		public Builder6 attachment(byte[] content) {
 			return new BuilderAttachment(this).bytes(content);
 		}
 		
-		Builder5 attachment(InputStream content) {
+		public Builder5 attachment(InputStream content) {
 			return new BuilderAttachment(this).inputStream(content);
 		}
 		
-		Builder6 attachment(File file) {
+		public Builder6 attachment(File file) {
 			return new BuilderAttachment(this).file(file);
 		}
 
-		void send(GraphService client) {
+		public void send(GraphService client) {
 			MailFolderRequest drafts = client //
 					.users(b.mailbox) //
 					.mailFolders(b.draftFolder);

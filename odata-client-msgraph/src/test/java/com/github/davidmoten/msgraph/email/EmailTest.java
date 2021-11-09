@@ -1,4 +1,4 @@
-package com.github.davidmoten.msgraph;
+package com.github.davidmoten.msgraph.email;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -6,9 +6,11 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.github.davidmoten.msgraph.Email;
 import com.github.davidmoten.odata.client.Retries;
 
 import odata.msgraph.client.container.GraphService;
+import odata.msgraph.client.enums.BodyType;
 
 public final class EmailTest {
 
@@ -19,6 +21,7 @@ public final class EmailTest {
 		Email //
 				.mailbox("sender@marathon.com") //
 				.subject("Hi there") //
+				.bodyType(BodyType.TEXT) //
 				.body("Just a quick test") //
 				.to("dave@gmail.com") //
 				.bcc("sarah@gmail.com", "andrew@gmail.com") //
