@@ -79,6 +79,7 @@ public class MsGraphMain {
 
             Email.mailbox(mailbox) //
                     .subject("hi there " + new Date()) //
+                    .bodyType(BodyType.TEXT) //
                     .body("hello there how are you") //
                     .to("davidmoten@gmail.com") //
                     .attachment(file) //

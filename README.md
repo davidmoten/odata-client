@@ -586,6 +586,7 @@ To help send an email a helper utility class called `Email` exists. Here's an ex
 Email
   .mailbox(mailbox) 
   .subject("hi there " + new Date())
+  .bodyType(BodyType.TEXT)
   .body("hello there how are you")
   .to("davidmoten@gmail.com")
   .header("x-security-classification", "OFFICIAL")
