@@ -1,5 +1,6 @@
 package com.github.davidmoten.msgraph.email;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,13 @@ public final class EmailTest {
 				.attachment("some info for you") //
 				.name("info2.txt") //
 				.chunkSize(512 * 1024) //
+				.attachment(new byte[] {})
+				.contentMimeType("text/plain")
+				.name("empty.txt")
+				.attachment(new ByteArrayInputStream(new byte[] {0, 1})) //
+				.length(2) //
+				.name("two-bytes") //
+				.contentMimeType("application/octet-stream") //
 				.send(client);
 	}
 
