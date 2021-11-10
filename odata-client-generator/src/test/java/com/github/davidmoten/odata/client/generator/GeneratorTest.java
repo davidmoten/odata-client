@@ -31,13 +31,17 @@ public class GeneratorTest {
         TEdmx t = unmarshaller.unmarshal(
                 new StreamSource(new FileInputStream("src/main/odata/msgraph-metadata.xml")),
                 TEdmx.class).getValue();
-        SchemaOptions schemaOptions1 = new SchemaOptions("microsoft.graph",
+        SchemaOptions o1 = new SchemaOptions("microsoft.graph",
                 "microsoft.graph.generated");
-        SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords",
+        SchemaOptions o2 = new SchemaOptions("microsoft.graph.callRecords",
                 "microsoft.graph.callrecords.generated");
-        SchemaOptions schemaOptions3 = new SchemaOptions("microsoft.graph.externalConnectors", 
+        SchemaOptions o3 = new SchemaOptions("microsoft.graph.externalConnectors", 
                 "microsoft.graph.externalconnectors.generated");
-        Options options = new Options(GENERATED, Lists.newArrayList(schemaOptions1, schemaOptions2, schemaOptions3));
+        SchemaOptions o4 = new SchemaOptions("microsoft.graph.ediscovery", 
+                "microsoft.graph.ediscovery.generated");
+        SchemaOptions o5 = new SchemaOptions("microsoft.graph.termStore", 
+                "microsoft.graph.termstore.generated");
+        Options options = new Options(GENERATED, Lists.newArrayList(o1, o2, o3, o4, o5));
         Generator g = new Generator(options,
                 t.getDataServices().getSchema());
         g.generate();
@@ -55,25 +59,26 @@ public class GeneratorTest {
                         "../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml")),
                 TEdmx.class).getValue();
         t.getDataServices().getSchema().forEach(s -> System.out.println(s.getNamespace()));
-        SchemaOptions schemaOptions = new SchemaOptions("microsoft.graph",
+        SchemaOptions o1 = new SchemaOptions("microsoft.graph",
                 "microsoft.graph.beta.generated");
-        SchemaOptions schemaOptions2 = new SchemaOptions("microsoft.graph.callRecords",
+        SchemaOptions o2 = new SchemaOptions("microsoft.graph.callRecords",
                 "microsoft.graph.beta.callRecords.generated");
-        SchemaOptions schemaOptions3 = new SchemaOptions("microsoft.graph.termStore",
+        SchemaOptions o3 = new SchemaOptions("microsoft.graph.termStore",
                 "microsoft.graph.beta.termStore.generated");
-        SchemaOptions schemaOptions4 = new SchemaOptions("microsoft.graph.ediscovery",
+        SchemaOptions o4 = new SchemaOptions("microsoft.graph.ediscovery",
                 "microsoft.graph.beta.ediscovery.generated");
-        SchemaOptions schemaOptions5 = new SchemaOptions("microsoft.graph.externalConnectors",
+        SchemaOptions o5 = new SchemaOptions("microsoft.graph.externalConnectors",
                 "microsoft.graph.beta.external.connectors");
-        SchemaOptions schemaOptions6 = new SchemaOptions("microsoft.graph.windowsUpdates",
+        SchemaOptions o6 = new SchemaOptions("microsoft.graph.windowsUpdates",
                 "microsoft.graph.beta.windows.updates");
         // microsoft.graph.managedTenants
-        SchemaOptions schemaOptions7 = new SchemaOptions("microsoft.graph.managedTenants",
+        SchemaOptions o7 = new SchemaOptions("microsoft.graph.managedTenants",
                 "microsoft.graph.beta.managed.tenants");
+        SchemaOptions o8 = new SchemaOptions("microsoft.graph.search",
+                "microsoft.graph.beta.search");
         
-        
-        Options options = new Options(GENERATED, Arrays.asList(schemaOptions, schemaOptions2,
-                schemaOptions3, schemaOptions4, schemaOptions5, schemaOptions6, schemaOptions7));
+        Options options = new Options(GENERATED, Arrays.asList(o1, o2,
+                o3, o4, o5, o6, o7, o8));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
     }
@@ -86,8 +91,8 @@ public class GeneratorTest {
                 new StreamSource(
                         new FileInputStream("src/main/odata/odata-test-service-metadata.xml")),
                 TEdmx.class).getValue();
-        SchemaOptions schemaOptions = new SchemaOptions("ODataDemo", "odata.test.generated");
-        Options options = new Options(GENERATED, Collections.singletonList(schemaOptions));
+        SchemaOptions o = new SchemaOptions("ODataDemo", "odata.test.generated");
+        Options options = new Options(GENERATED, Collections.singletonList(o));
         Generator g = new Generator(options,
                 Collections.singletonList(t.getDataServices().getSchema().get(0)));
         g.generate();
