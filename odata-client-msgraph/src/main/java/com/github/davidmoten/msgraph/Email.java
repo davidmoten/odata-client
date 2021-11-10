@@ -331,15 +331,21 @@ public final class Email {
     
     }
     
+    private static final int DEFAULT_READ_TIMEOUT_MS = -1; // use default
+    private static final Retries DEFAULT_RETRIES = Retries.NONE;
+    private static final int DEFAULT_CHUNK_SIZE = 512 * 1024;
+    private static final String DEFAULT_CONTENT_MIME_TYPE = "application/octet-stream";
+    private static final String DEFAULT_ATTACHMENT_NAME = "attachment";
+    
     public static final class AttachmentBuilder {
-        private long readTimeoutMs = -1; // use default
-        private String name = "attachment";
-        private String contentMimeType = "application/octet-stream";
+        private long readTimeoutMs = DEFAULT_READ_TIMEOUT_MS; 
+        private String name = DEFAULT_ATTACHMENT_NAME;
+        private String contentMimeType = DEFAULT_CONTENT_MIME_TYPE;
         private File file;
         private InputStream inputStream;
         private long length;
-        private int chunkSize = 512 * 1024;
-        private Retries retries = Retries.NONE;
+        private int chunkSize = DEFAULT_CHUNK_SIZE;
+        private Retries retries = DEFAULT_RETRIES;
         
         AttachmentBuilder() {
             // prevent public instantiation
@@ -419,15 +425,15 @@ public final class Email {
 
     public static final class BuilderAttachment {
 
-        private long readTimeoutMs = -1; // use default
-        private String name = "attachment";
+        private long readTimeoutMs = DEFAULT_READ_TIMEOUT_MS; // use default
+        private String name = DEFAULT_ATTACHMENT_NAME;
         private final Builder4 sender;
-        private String contentMimeType = "application/octet-stream";
+        private String contentMimeType = DEFAULT_CONTENT_MIME_TYPE;
         private File file;
         private InputStream inputStream;
         private long length;
-        private int chunkSize = 512 * 1024;
-        private Retries retries = Retries.NONE;
+        private int chunkSize = DEFAULT_CHUNK_SIZE;
+        private Retries retries = DEFAULT_RETRIES;
 
         BuilderAttachment(Builder4 sender) {
             this.sender = sender;
