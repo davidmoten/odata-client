@@ -36,7 +36,9 @@ public final class EmailTest {
                 .attachment("some info for you") //
                 .name("info2.txt") //
                 .chunkSize(512 * 1024) //
-                .attachment(new byte[] {}).contentMimeType("text/plain").name("empty.txt")
+                .attachment(new byte[] {}) //
+                .contentMimeType("text/plain") //
+                .name("empty.txt")
                 .attachment(new ByteArrayInputStream(new byte[] {0, 1})) //
                 .length(2) //
                 .name("two-bytes") //
