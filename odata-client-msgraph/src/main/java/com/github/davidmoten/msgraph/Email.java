@@ -148,6 +148,16 @@ public final class Email {
             b.headers.add(new Header(name, value));
             return this;
         }
+        
+        public Builder4 attachments(List<Attachment> attachments) {
+            b.attachments.addAll(attachments);
+            return this;
+        }
+        
+        public Builder4 attachments(Attachment... attachments) {
+            b.attachments.addAll(Arrays.asList(attachments));
+            return this;
+        }
 
         public Builder6 attachment(String contentUtf8) {
             return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
@@ -244,7 +254,7 @@ public final class Email {
                             .build();
 
                     StreamUploaderChunked uploader = client //
-                            .users(a.sender.b.mailbox) //
+                            .users(b.mailbox) //
                             .messages(m.getId().get()) //
                             .attachments() //
                             .createUploadSession(ai) //
@@ -290,10 +300,9 @@ public final class Email {
         final long length;
         final int chunkSize;
         final Retries retries;
-        final Builder4 sender;
         
         Attachment(long readTimeoutMs, String name, String contentMimeType, File file,
-                InputStream inputStream, long length, int chunkSize, Retries retries, Builder4 sender) {
+                InputStream inputStream, long length, int chunkSize, Retries retries) {
             this.readTimeoutMs = readTimeoutMs;
             this.name = name;
             this.contentMimeType = contentMimeType;
@@ -302,7 +311,109 @@ public final class Email {
             this.length = length;
             this.chunkSize = chunkSize;
             this.retries = retries;
-            this.sender = sender;
+        }
+        
+        public static AttachmentBuilderHasLength file(File file) {
+            return new AttachmentBuilder().file(file);
+        }
+
+        public static AttachmentBuilderInputStream inputStream(InputStream in) {
+            return new AttachmentBuilder().inputStream(in);
+        }
+
+        public static AttachmentBuilderHasLength bytes(byte[] bytes) {
+            return new AttachmentBuilder().bytes(bytes);            
+        }
+
+        public static AttachmentBuilderHasLength contentTextUtf8(String text) {
+            return new AttachmentBuilder().contentTextUtf8(text);
+        }
+    
+    }
+    
+    public static final class AttachmentBuilder {
+        private long readTimeoutMs = -1; // use default
+        private String name = "attachment";
+        private String contentMimeType = "application/octet-stream";
+        private File file;
+        private InputStream inputStream;
+        private long length;
+        private int chunkSize = 512 * 1024;
+        private Retries retries = Retries.NONE;
+        
+        AttachmentBuilder() {
+            // prevent public instantiation
+        }
+        
+        public AttachmentBuilderHasLength file(File file) {
+            this.file = file;
+            this.name = file.getName();
+            return new AttachmentBuilderHasLength(this);
+        }
+
+        public AttachmentBuilderInputStream inputStream(InputStream in) {
+            this.inputStream = in;
+            return new AttachmentBuilderInputStream(this);
+        }
+
+        public AttachmentBuilderHasLength bytes(byte[] bytes) {
+            return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
+        }
+
+        public AttachmentBuilderHasLength contentTextUtf8(String text) {
+            return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
+        }
+    }
+    
+    public static final class AttachmentBuilderInputStream {
+
+        private final AttachmentBuilder b;
+
+        AttachmentBuilderInputStream(AttachmentBuilder b) {
+            this.b = b;
+        }
+
+        public AttachmentBuilderHasLength length(int length) {
+            b.length = length;
+            return new AttachmentBuilderHasLength(b);
+        }
+    }
+    
+    public static final class AttachmentBuilderHasLength {
+
+        private final AttachmentBuilder b;
+
+        AttachmentBuilderHasLength(AttachmentBuilder b) {
+            this.b = b;
+        }
+        
+        public AttachmentBuilderHasLength contentMimeType(String mimeType) {
+            b.contentMimeType = mimeType;
+            return this;
+        }
+
+        public AttachmentBuilderHasLength readTimeout(long duration, TimeUnit unit) {
+            b.readTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
+
+        public AttachmentBuilderHasLength chunkSize(int chunkSize) {
+            b.chunkSize = chunkSize;
+            return this;
+        }
+
+        public AttachmentBuilderHasLength retries(Retries retries) {
+            b.retries = retries;
+            return this;
+        }
+        
+        public AttachmentBuilderHasLength name(String name) {
+            b.name = name;
+            return this;
+        }
+        
+        public Attachment build() {
+            return new Attachment(b.readTimeoutMs, b.name, b.contentMimeType, b.file, b.inputStream, b.length, b.chunkSize, b.retries);
         }
     }
 
@@ -343,7 +454,7 @@ public final class Email {
         
         // this should not be public
         Attachment createAttachment() {
-            return new Attachment(readTimeoutMs, name, contentMimeType, file, inputStream, length, chunkSize, retries, sender);
+            return new Attachment(readTimeoutMs, name, contentMimeType, file, inputStream, length, chunkSize, retries);
         }
 
     }
