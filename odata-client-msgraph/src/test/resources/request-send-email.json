@@ -1,0 +1,1 @@
+{"@odata.type":"microsoft.graph.message","body":{"@odata.type":"microsoft.graph.itemBody","content":"how are you going?","contentType":"text"},"from":{"@odata.type":"microsoft.graph.recipient","emailAddress":{"@odata.type":"microsoft.graph.emailAddress","address":"me@thing.com"}},"subject":"hi there"}

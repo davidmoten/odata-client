@@ -1247,6 +1247,29 @@ public class GraphServiceTest {
             assertTrue(json.contains("0123456789abc"));
         }
     }
+    
+    @Test
+    public void testEmailBuilder() {
+        GraphService client = clientBuilder() //
+                .expectRequest("/users/me%40thing.com/mailFolders/Drafts/messages") //
+                .withPayload("/request-send-email.json") //
+                .withMethod(HttpMethod.POST) //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .withResponse("/response-send-email.json") //
+                .expectRequest("/users/me%40thing.com/messages/anId/send") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON) //
+                .withPayload("/empty.json") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(200) //
+                .build();
+        Email.mailbox("me@thing.com") //
+                .subject("hi there") //
+                .bodyType(BodyType.TEXT) //
+                .body("how are you going?") //
+                .send(client);
+    }
 
     private void checkCreateApplicationPassword(int responseCode) {
         GraphService client = clientBuilder() //
