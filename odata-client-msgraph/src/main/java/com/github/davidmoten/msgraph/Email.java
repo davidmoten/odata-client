@@ -49,7 +49,7 @@ public final class Email {
         
         private String draftFolder = "Drafts";
         private BodyType bodyType;
-        private final List<BuilderAttachment> attachments = new ArrayList<>();
+        private final List<Attachment> attachments = new ArrayList<>();
 
         Builder(String mailbox) {
             this.mailbox = mailbox;
@@ -205,14 +205,17 @@ public final class Email {
             Message m = drafts.messages().post(builder.build());
 
             // upload attachments
-            for (BuilderAttachment a : b.attachments) {
+            for (Attachment a : b.attachments) {
                 // Upload attachment to the new mail
                 // We use different methods depending on the size of the attachment
                 // because will fail if doesn't match the right size window
+                long length;
                 if (a.file != null) {
-                    a.length = a.file.length();
+                    length = a.file.length();
+                } else {
+                    length = a.length;
                 }
-                if (a.length < ATTACHMENT_SIZE_THRESHOLD) {
+                if (length < ATTACHMENT_SIZE_THRESHOLD) {
                     final byte[] contentBytes;
                     if (a.file != null) {
                         try {
@@ -237,7 +240,7 @@ public final class Email {
                             .attachmentType(AttachmentType.FILE) //
                             .contentType(a.contentMimeType) //
                             .name(a.name) //
-                            .size(a.length) //
+                            .size(length) //
                             .build();
 
                     StreamUploaderChunked uploader = client //
@@ -253,7 +256,7 @@ public final class Email {
                     if (a.file != null) {
                         uploader.upload(a.file, a.chunkSize, a.retries);
                     } else {
-                        uploader.upload(a.inputStream, a.length, a.chunkSize, a.retries);
+                        uploader.upload(a.inputStream, length, a.chunkSize, a.retries);
                     }
                 }
             }
@@ -276,6 +279,31 @@ public final class Email {
                         .address(emailAddress) //
                         .build()) //
                 .build();
+    }
+    
+    public static final class Attachment {
+        final long readTimeoutMs;
+        final String name;
+        final String contentMimeType;
+        final File file;
+        final InputStream inputStream;
+        final long length;
+        final int chunkSize;
+        final Retries retries;
+        final Builder4 sender;
+        
+        Attachment(long readTimeoutMs, String name, String contentMimeType, File file,
+                InputStream inputStream, long length, int chunkSize, Retries retries, Builder4 sender) {
+            this.readTimeoutMs = readTimeoutMs;
+            this.name = name;
+            this.contentMimeType = contentMimeType;
+            this.file = file;
+            this.inputStream = inputStream;
+            this.length = length;
+            this.chunkSize = chunkSize;
+            this.retries = retries;
+            this.sender = sender;
+        }
     }
 
     public static final class BuilderAttachment {
@@ -311,6 +339,11 @@ public final class Email {
 
         public Builder6 contentTextUtf8(String text) {
             return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
+        }
+        
+        // this should not be public
+        Attachment createAttachment() {
+            return new Attachment(readTimeoutMs, name, contentMimeType, file, inputStream, length, chunkSize, retries, sender);
         }
 
     }
@@ -363,27 +396,27 @@ public final class Email {
         }
 
         public Builder6 attachment(File file) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(file);
         }
         
         public Builder5 attachment(InputStream content) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(byte[] content) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(String content) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
 
         public void send(GraphService client) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             attachment.sender.send(client);
         }
 
