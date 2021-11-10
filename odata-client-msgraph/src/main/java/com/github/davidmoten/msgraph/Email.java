@@ -49,7 +49,7 @@ public final class Email {
         
         private String draftFolder = "Drafts";
         private BodyType bodyType;
-        private final List<BuilderAttachment> attachments = new ArrayList<>();
+        private final List<Attachment> attachments = new ArrayList<>();
 
         Builder(String mailbox) {
             this.mailbox = mailbox;
@@ -148,6 +148,16 @@ public final class Email {
             b.headers.add(new Header(name, value));
             return this;
         }
+        
+        public Builder4 attachments(List<Attachment> attachments) {
+            b.attachments.addAll(attachments);
+            return this;
+        }
+        
+        public Builder4 attachments(Attachment... attachments) {
+            b.attachments.addAll(Arrays.asList(attachments));
+            return this;
+        }
 
         public Builder6 attachment(String contentUtf8) {
             return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
@@ -205,14 +215,17 @@ public final class Email {
             Message m = drafts.messages().post(builder.build());
 
             // upload attachments
-            for (BuilderAttachment a : b.attachments) {
+            for (Attachment a : b.attachments) {
                 // Upload attachment to the new mail
                 // We use different methods depending on the size of the attachment
                 // because will fail if doesn't match the right size window
+                long length;
                 if (a.file != null) {
-                    a.length = a.file.length();
+                    length = a.file.length();
+                } else {
+                    length = a.length;
                 }
-                if (a.length < ATTACHMENT_SIZE_THRESHOLD) {
+                if (length < ATTACHMENT_SIZE_THRESHOLD) {
                     final byte[] contentBytes;
                     if (a.file != null) {
                         try {
@@ -237,11 +250,11 @@ public final class Email {
                             .attachmentType(AttachmentType.FILE) //
                             .contentType(a.contentMimeType) //
                             .name(a.name) //
-                            .size(a.length) //
+                            .size(length) //
                             .build();
 
                     StreamUploaderChunked uploader = client //
-                            .users(a.sender.b.mailbox) //
+                            .users(b.mailbox) //
                             .messages(m.getId().get()) //
                             .attachments() //
                             .createUploadSession(ai) //
@@ -253,7 +266,7 @@ public final class Email {
                     if (a.file != null) {
                         uploader.upload(a.file, a.chunkSize, a.retries);
                     } else {
-                        uploader.upload(a.inputStream, a.length, a.chunkSize, a.retries);
+                        uploader.upload(a.inputStream, length, a.chunkSize, a.retries);
                     }
                 }
             }
@@ -277,18 +290,150 @@ public final class Email {
                         .build()) //
                 .build();
     }
+    
+    public static final class Attachment {
+        final long readTimeoutMs;
+        final String name;
+        final String contentMimeType;
+        final File file;
+        final InputStream inputStream;
+        final long length;
+        final int chunkSize;
+        final Retries retries;
+        
+        Attachment(long readTimeoutMs, String name, String contentMimeType, File file,
+                InputStream inputStream, long length, int chunkSize, Retries retries) {
+            this.readTimeoutMs = readTimeoutMs;
+            this.name = name;
+            this.contentMimeType = contentMimeType;
+            this.file = file;
+            this.inputStream = inputStream;
+            this.length = length;
+            this.chunkSize = chunkSize;
+            this.retries = retries;
+        }
+        
+        public static AttachmentBuilderHasLength file(File file) {
+            return new AttachmentBuilder().file(file);
+        }
 
-    public static final class BuilderAttachment {
+        public static AttachmentBuilderInputStream inputStream(InputStream in) {
+            return new AttachmentBuilder().inputStream(in);
+        }
 
-        private long readTimeoutMs = -1; // use default
-        private String name = "attachment";
-        private final Builder4 sender;
-        private String contentMimeType = "application/octet-stream";
+        public static AttachmentBuilderHasLength bytes(byte[] bytes) {
+            return new AttachmentBuilder().bytes(bytes);            
+        }
+
+        public static AttachmentBuilderHasLength contentTextUtf8(String text) {
+            return new AttachmentBuilder().contentTextUtf8(text);
+        }
+    
+    }
+    
+    private static final int DEFAULT_READ_TIMEOUT_MS = -1; // use default
+    private static final Retries DEFAULT_RETRIES = Retries.NONE;
+    private static final int DEFAULT_CHUNK_SIZE = 512 * 1024;
+    private static final String DEFAULT_CONTENT_MIME_TYPE = "application/octet-stream";
+    private static final String DEFAULT_ATTACHMENT_NAME = "attachment";
+    
+    public static final class AttachmentBuilder {
+        private long readTimeoutMs = DEFAULT_READ_TIMEOUT_MS; 
+        private String name = DEFAULT_ATTACHMENT_NAME;
+        private String contentMimeType = DEFAULT_CONTENT_MIME_TYPE;
         private File file;
         private InputStream inputStream;
         private long length;
-        private int chunkSize = 512 * 1024;
-        private Retries retries = Retries.NONE;
+        private int chunkSize = DEFAULT_CHUNK_SIZE;
+        private Retries retries = DEFAULT_RETRIES;
+        
+        AttachmentBuilder() {
+            // prevent public instantiation
+        }
+        
+        public AttachmentBuilderHasLength file(File file) {
+            this.file = file;
+            this.name = file.getName();
+            return new AttachmentBuilderHasLength(this);
+        }
+
+        public AttachmentBuilderInputStream inputStream(InputStream in) {
+            this.inputStream = in;
+            return new AttachmentBuilderInputStream(this);
+        }
+
+        public AttachmentBuilderHasLength bytes(byte[] bytes) {
+            return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
+        }
+
+        public AttachmentBuilderHasLength contentTextUtf8(String text) {
+            return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
+        }
+    }
+    
+    public static final class AttachmentBuilderInputStream {
+
+        private final AttachmentBuilder b;
+
+        AttachmentBuilderInputStream(AttachmentBuilder b) {
+            this.b = b;
+        }
+
+        public AttachmentBuilderHasLength length(int length) {
+            b.length = length;
+            return new AttachmentBuilderHasLength(b);
+        }
+    }
+    
+    public static final class AttachmentBuilderHasLength {
+
+        private final AttachmentBuilder b;
+
+        AttachmentBuilderHasLength(AttachmentBuilder b) {
+            this.b = b;
+        }
+        
+        public AttachmentBuilderHasLength contentMimeType(String mimeType) {
+            b.contentMimeType = mimeType;
+            return this;
+        }
+
+        public AttachmentBuilderHasLength readTimeout(long duration, TimeUnit unit) {
+            b.readTimeoutMs = unit.toMillis(duration);
+            return this;
+        }
+
+        public AttachmentBuilderHasLength chunkSize(int chunkSize) {
+            b.chunkSize = chunkSize;
+            return this;
+        }
+
+        public AttachmentBuilderHasLength retries(Retries retries) {
+            b.retries = retries;
+            return this;
+        }
+        
+        public AttachmentBuilderHasLength name(String name) {
+            b.name = name;
+            return this;
+        }
+        
+        public Attachment build() {
+            return new Attachment(b.readTimeoutMs, b.name, b.contentMimeType, b.file, b.inputStream, b.length, b.chunkSize, b.retries);
+        }
+    }
+
+    public static final class BuilderAttachment {
+
+        private long readTimeoutMs = DEFAULT_READ_TIMEOUT_MS; // use default
+        private String name = DEFAULT_ATTACHMENT_NAME;
+        private final Builder4 sender;
+        private String contentMimeType = DEFAULT_CONTENT_MIME_TYPE;
+        private File file;
+        private InputStream inputStream;
+        private long length;
+        private int chunkSize = DEFAULT_CHUNK_SIZE;
+        private Retries retries = DEFAULT_RETRIES;
 
         BuilderAttachment(Builder4 sender) {
             this.sender = sender;
@@ -311,6 +456,11 @@ public final class Email {
 
         public Builder6 contentTextUtf8(String text) {
             return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
+        }
+        
+        // this should not be public
+        Attachment createAttachment() {
+            return new Attachment(readTimeoutMs, name, contentMimeType, file, inputStream, length, chunkSize, retries);
         }
 
     }
@@ -363,27 +513,27 @@ public final class Email {
         }
 
         public Builder6 attachment(File file) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(file);
         }
         
         public Builder5 attachment(InputStream content) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(byte[] content) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(String content) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
 
         public void send(GraphService client) {
-            attachment.sender.b.attachments.add(attachment);
+            attachment.sender.b.attachments.add(attachment.createAttachment());
             attachment.sender.send(client);
         }
 
