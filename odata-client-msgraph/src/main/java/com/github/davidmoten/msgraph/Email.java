@@ -33,6 +33,7 @@ import odata.msgraph.client.enums.BodyType;
 public final class Email {
 
     public static Builder mailbox(String mailbox) {
+        Preconditions.checkNotNull(mailbox);
         return new Builder(mailbox);
     }
 
@@ -57,6 +58,7 @@ public final class Email {
         }
 
         public Builder1 subject(String subject) {
+            Preconditions.checkNotNull(subject);
             this.subject = subject;
             return new Builder1(this);
         }
@@ -71,6 +73,7 @@ public final class Email {
         }
 
         public Builder2 bodyType(BodyType bodyType) {
+            Preconditions.checkNotNull(bodyType);
             b.bodyType = bodyType;
             return new Builder2(b);
         }
@@ -85,6 +88,7 @@ public final class Email {
         }
 
         public Builder4 body(String body) {
+            Preconditions.checkNotNull(body);
             b.body = body;
             return new Builder4(b);
         }
@@ -100,15 +104,18 @@ public final class Email {
         }
 
         public Builder4 from(String emailAddress) {
+            Preconditions.checkNotNull(emailAddress);
             b.from = emailAddress;
             return new Builder4(b);
         }
 
         public Builder4 to(String... emailAddresses) {
+            Preconditions.checkNotNull(emailAddresses);
             return to(Arrays.asList(emailAddresses));
         }
 
         public Builder4 to(Iterable<String> emailAddresses) {
+            Preconditions.checkNotNull(emailAddresses);
             for (String a : emailAddresses) {
                 b.to.add(a);
             }
@@ -116,10 +123,12 @@ public final class Email {
         }
 
         public Builder4 cc(String... emailAddresses) {
+            Preconditions.checkNotNull(emailAddresses);
             return cc(Arrays.asList(emailAddresses));
         }
 
         public Builder4 cc(Iterable<String> emailAddresses) {
+            Preconditions.checkNotNull(emailAddresses);
             for (String a : emailAddresses) {
                 b.cc.add(a);
             }
@@ -127,10 +136,12 @@ public final class Email {
         }
 
         public Builder4 bcc(String... emailAddresses) {
+            Preconditions.checkNotNull(emailAddresses);
             return bcc(Arrays.asList(emailAddresses));
         }
 
         public Builder4 bcc(List<String> emailAddresses) {
+            Preconditions.checkNotNull(emailAddresses);
             for (String a : emailAddresses) {
                 b.bcc.add(a);
             }
@@ -138,6 +149,7 @@ public final class Email {
         }
 
         public Builder4 saveDraftToFolder(String draftFolder) {
+            Preconditions.checkNotNull(draftFolder);
             b.draftFolder = draftFolder;
             return this;
         }
@@ -150,32 +162,39 @@ public final class Email {
         }
         
         public Builder4 attachments(List<Attachment> attachments) {
+            Preconditions.checkNotNull(attachments);
             b.attachments.addAll(attachments);
             return this;
         }
         
         public Builder4 attachments(Attachment... attachments) {
+            Preconditions.checkNotNull(attachments);
             b.attachments.addAll(Arrays.asList(attachments));
             return this;
         }
 
         public Builder6 attachment(String contentUtf8) {
+            Preconditions.checkNotNull(contentUtf8);
             return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
         }
 
         public Builder6 attachment(byte[] content) {
+            Preconditions.checkNotNull(content);
             return new BuilderAttachment(this).bytes(content);
         }
         
         public Builder5 attachment(InputStream content) {
+            Preconditions.checkNotNull(content);
             return new BuilderAttachment(this).inputStream(content);
         }
         
         public Builder6 attachment(File file) {
+            Preconditions.checkNotNull(file);
             return new BuilderAttachment(this).file(file);
         }
 
         public void send(GraphService client) {
+            Preconditions.checkNotNull(client);
             MailFolderRequest drafts = client //
                     .users(b.mailbox) //
                     .mailFolders(b.draftFolder);
@@ -314,18 +333,22 @@ public final class Email {
         }
         
         public static AttachmentBuilderHasLength file(File file) {
+            Preconditions.checkNotNull(file);
             return new AttachmentBuilder().file(file);
         }
 
         public static AttachmentBuilderInputStream inputStream(InputStream in) {
+            Preconditions.checkNotNull(in);
             return new AttachmentBuilder().inputStream(in);
         }
 
         public static AttachmentBuilderHasLength bytes(byte[] bytes) {
+            Preconditions.checkNotNull(bytes);
             return new AttachmentBuilder().bytes(bytes);            
         }
 
         public static AttachmentBuilderHasLength contentTextUtf8(String text) {
+            Preconditions.checkNotNull(text);
             return new AttachmentBuilder().contentTextUtf8(text);
         }
     
@@ -352,21 +375,25 @@ public final class Email {
         }
         
         public AttachmentBuilderHasLength file(File file) {
+            Preconditions.checkNotNull(file);
             this.file = file;
             this.name = file.getName();
             return new AttachmentBuilderHasLength(this);
         }
 
         public AttachmentBuilderInputStream inputStream(InputStream in) {
+            Preconditions.checkNotNull(in);
             this.inputStream = in;
             return new AttachmentBuilderInputStream(this);
         }
 
         public AttachmentBuilderHasLength bytes(byte[] bytes) {
+            Preconditions.checkNotNull(bytes);
             return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
         }
 
         public AttachmentBuilderHasLength contentTextUtf8(String text) {
+            Preconditions.checkNotNull(text);
             return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
         }
     }
@@ -380,6 +407,7 @@ public final class Email {
         }
 
         public AttachmentBuilderHasLength length(int length) {
+            Preconditions.checkArgument(length >= 0, "length must be >=0");
             b.length = length;
             return new AttachmentBuilderHasLength(b);
         }
@@ -394,26 +422,32 @@ public final class Email {
         }
         
         public AttachmentBuilderHasLength contentMimeType(String mimeType) {
+            Preconditions.checkNotNull(mimeType);
             b.contentMimeType = mimeType;
             return this;
         }
 
         public AttachmentBuilderHasLength readTimeout(long duration, TimeUnit unit) {
+            Preconditions.checkArgument(duration > 0, "duration must be greater than 0");
+            Preconditions.checkNotNull(unit);
             b.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
         public AttachmentBuilderHasLength chunkSize(int chunkSize) {
+            Preconditions.checkArgument(chunkSize > 0, "chunkSize must be greater than 0");
             b.chunkSize = chunkSize;
             return this;
         }
 
         public AttachmentBuilderHasLength retries(Retries retries) {
+            Preconditions.checkNotNull(retries);
             b.retries = retries;
             return this;
         }
         
         public AttachmentBuilderHasLength name(String name) {
+            Preconditions.checkNotNull(name);
             b.name = name;
             return this;
         }
@@ -440,21 +474,25 @@ public final class Email {
         }
 
         public Builder6 file(File file) {
+            Preconditions.checkNotNull(file);
             this.file = file;
             this.name = file.getName();
             return new Builder6(this);
         }
 
         public Builder5 inputStream(InputStream in) {
+            Preconditions.checkNotNull(in);
             this.inputStream = in;
             return new Builder5(this);
         }
 
         public Builder6 bytes(byte[] bytes) {
+            Preconditions.checkNotNull(bytes);
             return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
         }
 
         public Builder6 contentTextUtf8(String text) {
+            Preconditions.checkNotNull(text);
             return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
         }
         
@@ -474,6 +512,7 @@ public final class Email {
         }
 
         public Builder6 length(long length) {
+            Preconditions.checkArgument(length >=0, "length must be >= 0");
             attachment.length = length;
             return new Builder6(attachment);
         }
@@ -488,51 +527,62 @@ public final class Email {
         }
 
         public Builder6 contentMimeType(String mimeType) {
+            Preconditions.checkNotNull(mimeType);
             attachment.contentMimeType = mimeType;
             return this;
         }
 
         public Builder6 readTimeout(long duration, TimeUnit unit) {
+            Preconditions.checkArgument(duration > 0, "duration must be > 0");
+            Preconditions.checkNotNull(unit);
             attachment.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
         public Builder6 chunkSize(int chunkSize) {
+            Preconditions.checkArgument(chunkSize > 0, "chunkSize must be > 0");
             attachment.chunkSize = chunkSize;
             return this;
         }
 
         public Builder6 retries(Retries retries) {
+            Preconditions.checkNotNull(retries);
             attachment.retries = retries;
             return this;
         }
         
         public Builder6 name(String name) {
+            Preconditions.checkNotNull(name);
             attachment.name = name;
             return this;
         }
 
         public Builder6 attachment(File file) {
+            Preconditions.checkNotNull(file);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(file);
         }
         
         public Builder5 attachment(InputStream content) {
+            Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(byte[] content) {
+            Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(String content) {
+            Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
 
         public void send(GraphService client) {
+            Preconditions.checkNotNull(client);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             attachment.sender.send(client);
         }
