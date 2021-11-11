@@ -474,21 +474,25 @@ public final class Email {
         }
 
         public Builder6 file(File file) {
+            Preconditions.checkNotNull(file);
             this.file = file;
             this.name = file.getName();
             return new Builder6(this);
         }
 
         public Builder5 inputStream(InputStream in) {
+            Preconditions.checkNotNull(in);
             this.inputStream = in;
             return new Builder5(this);
         }
 
         public Builder6 bytes(byte[] bytes) {
+            Preconditions.checkNotNull(bytes);
             return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
         }
 
         public Builder6 contentTextUtf8(String text) {
+            Preconditions.checkNotNull(text);
             return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
         }
         
@@ -508,6 +512,7 @@ public final class Email {
         }
 
         public Builder6 length(long length) {
+            Preconditions.checkArgument(length >=0, "length must be >= 0");
             attachment.length = length;
             return new Builder6(attachment);
         }
@@ -522,51 +527,62 @@ public final class Email {
         }
 
         public Builder6 contentMimeType(String mimeType) {
+            Preconditions.checkNotNull(mimeType);
             attachment.contentMimeType = mimeType;
             return this;
         }
 
         public Builder6 readTimeout(long duration, TimeUnit unit) {
+            Preconditions.checkArgument(duration > 0, "duration must be > 0");
+            Preconditions.checkNotNull(unit);
             attachment.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
         public Builder6 chunkSize(int chunkSize) {
+            Preconditions.checkArgument(chunkSize > 0, "chunkSize must be > 0");
             attachment.chunkSize = chunkSize;
             return this;
         }
 
         public Builder6 retries(Retries retries) {
+            Preconditions.checkNotNull(retries);
             attachment.retries = retries;
             return this;
         }
         
         public Builder6 name(String name) {
+            Preconditions.checkNotNull(name);
             attachment.name = name;
             return this;
         }
 
         public Builder6 attachment(File file) {
+            Preconditions.checkNotNull(file);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(file);
         }
         
         public Builder5 attachment(InputStream content) {
+            Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(byte[] content) {
+            Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
         public Builder6 attachment(String content) {
+            Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
 
         public void send(GraphService client) {
+            Preconditions.checkNotNull(client);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             attachment.sender.send(client);
         }
