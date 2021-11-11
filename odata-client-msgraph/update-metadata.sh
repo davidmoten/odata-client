@@ -18,4 +18,5 @@ sed -i 's/<ReturnType Type="graph.report"/<ReturnType Type="Edm.Stream"/g' ../od
 ## not required, Microsoft removed this item from metadata
 #sed -i 's/<Singleton Name="settings" Type="microsoft.graph.entitlementManagementSettings"\/>/<Singleton Name="entitlementManagementSettings" Type="microsoft.graph.entitlementManagementSettings"\/>/g' ../odata-client-msgraph-beta/src/main/odata/msgraph-beta-metadata.xml
 
-
+## remove bad targets 
+sed -i 's/^.*NavigationPropertyBinding.*sites\/contentTypes\/.*$/<!-- remove dodgy NavigationPropertyBinding with non-existent target -->/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
