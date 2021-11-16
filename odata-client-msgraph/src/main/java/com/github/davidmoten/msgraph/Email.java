@@ -58,64 +58,64 @@ public final class Email {
             this.from = mailbox;
         }
 
-        public Builder1 subject(String subject) {
+        public BuilderHasSubject subject(String subject) {
             Preconditions.checkNotNull(subject);
             this.subject = subject;
-            return new Builder1(this);
+            return new BuilderHasSubject(this);
         }
 
     }
 
-    public static final class Builder1 {
+    public static final class BuilderHasSubject {
         private final Builder b;
 
-        Builder1(Builder b) {
+        BuilderHasSubject(Builder b) {
             this.b = b;
         }
 
-        public Builder2 bodyType(BodyType bodyType) {
+        public BuilderHasBodyType bodyType(BodyType bodyType) {
             Preconditions.checkNotNull(bodyType);
             b.bodyType = bodyType;
-            return new Builder2(b);
+            return new BuilderHasBodyType(b);
         }
     }
 
-    public static final class Builder2 {
+    public static final class BuilderHasBodyType {
 
         private final Builder b;
 
-        Builder2(Builder b) {
+        BuilderHasBodyType(Builder b) {
             this.b = b;
         }
 
-        public Builder4 body(String body) {
+        public BuilderFinal body(String body) {
             Preconditions.checkNotNull(body);
             b.body = body;
-            return new Builder4(b);
+            return new BuilderFinal(b);
         }
     }
 
-    public static final class Builder4 {
+    public static final class BuilderFinal {
 
         private static final int ATTACHMENT_SIZE_THRESHOLD = 3000000;
         private final Builder b;
 
-        Builder4(Builder b) {
+        BuilderFinal(Builder b) {
             this.b = b;
         }
 
-        public Builder4 from(String emailAddress) {
+        public BuilderFinal from(String emailAddress) {
             Preconditions.checkNotNull(emailAddress);
             b.from = emailAddress;
-            return new Builder4(b);
+            return new BuilderFinal(b);
         }
 
-        public Builder4 to(String... emailAddresses) {
+        public BuilderFinal to(String... emailAddresses) {
             Preconditions.checkNotNull(emailAddresses);
             return to(Arrays.asList(emailAddresses));
         }
 
-        public Builder4 to(Iterable<String> emailAddresses) {
+        public BuilderFinal to(Iterable<String> emailAddresses) {
             Preconditions.checkNotNull(emailAddresses);
             for (String a : emailAddresses) {
                 b.to.add(a);
@@ -123,12 +123,12 @@ public final class Email {
             return this;
         }
 
-        public Builder4 cc(String... emailAddresses) {
+        public BuilderFinal cc(String... emailAddresses) {
             Preconditions.checkNotNull(emailAddresses);
             return cc(Arrays.asList(emailAddresses));
         }
 
-        public Builder4 cc(Iterable<String> emailAddresses) {
+        public BuilderFinal cc(Iterable<String> emailAddresses) {
             Preconditions.checkNotNull(emailAddresses);
             for (String a : emailAddresses) {
                 b.cc.add(a);
@@ -136,12 +136,12 @@ public final class Email {
             return this;
         }
 
-        public Builder4 bcc(String... emailAddresses) {
+        public BuilderFinal bcc(String... emailAddresses) {
             Preconditions.checkNotNull(emailAddresses);
             return bcc(Arrays.asList(emailAddresses));
         }
 
-        public Builder4 bcc(List<String> emailAddresses) {
+        public BuilderFinal bcc(List<String> emailAddresses) {
             Preconditions.checkNotNull(emailAddresses);
             for (String a : emailAddresses) {
                 b.bcc.add(a);
@@ -149,13 +149,13 @@ public final class Email {
             return this;
         }
 
-        public Builder4 saveDraftToFolder(String draftFolder) {
+        public BuilderFinal saveDraftToFolder(String draftFolder) {
             Preconditions.checkNotNull(draftFolder);
             b.draftFolder = draftFolder;
             return this;
         }
         
-        public Builder4 header(String name, Optional<String> value) {
+        public BuilderFinal header(String name, Optional<String> value) {
             Preconditions.checkNotNull(name);
             Preconditions.checkNotNull(value);
             if (value.isPresent()) {
@@ -165,41 +165,41 @@ public final class Email {
             }
         }
         
-        public Builder4 header(String name, String value) {
+        public BuilderFinal header(String name, String value) {
             Preconditions.checkNotNull(name);
             Preconditions.checkNotNull(value);
             b.headers.add(new Header(name, value));
             return this;
         }
         
-        public Builder4 attachments(List<Attachment> attachments) {
+        public BuilderFinal attachments(List<Attachment> attachments) {
             Preconditions.checkNotNull(attachments);
             b.attachments.addAll(attachments);
             return this;
         }
         
-        public Builder4 attachments(Attachment... attachments) {
+        public BuilderFinal attachments(Attachment... attachments) {
             Preconditions.checkNotNull(attachments);
             b.attachments.addAll(Arrays.asList(attachments));
             return this;
         }
 
-        public Builder6 attachment(String contentUtf8) {
+        public BuilderAttachmentHasLength attachment(String contentUtf8) {
             Preconditions.checkNotNull(contentUtf8);
             return new BuilderAttachment(this).contentTextUtf8(contentUtf8);
         }
 
-        public Builder6 attachment(byte[] content) {
+        public BuilderAttachmentHasLength attachment(byte[] content) {
             Preconditions.checkNotNull(content);
             return new BuilderAttachment(this).bytes(content);
         }
         
-        public Builder5 attachment(InputStream content) {
+        public BuilderAttachmentRequiresLength attachment(InputStream content) {
             Preconditions.checkNotNull(content);
             return new BuilderAttachment(this).inputStream(content);
         }
         
-        public Builder6 attachment(File file) {
+        public BuilderAttachmentHasLength attachment(File file) {
             Preconditions.checkNotNull(file);
             return new BuilderAttachment(this).file(file);
         }
@@ -472,7 +472,7 @@ public final class Email {
 
         private long readTimeoutMs = DEFAULT_READ_TIMEOUT_MS; // use default
         private String name = DEFAULT_ATTACHMENT_NAME;
-        private final Builder4 sender;
+        private final BuilderFinal sender;
         private String contentMimeType = DEFAULT_CONTENT_MIME_TYPE;
         private File file;
         private InputStream inputStream;
@@ -480,29 +480,29 @@ public final class Email {
         private int chunkSize = DEFAULT_CHUNK_SIZE;
         private Retries retries = DEFAULT_RETRIES;
 
-        BuilderAttachment(Builder4 sender) {
+        BuilderAttachment(BuilderFinal sender) {
             this.sender = sender;
         }
 
-        public Builder6 file(File file) {
+        public BuilderAttachmentHasLength file(File file) {
             Preconditions.checkNotNull(file);
             this.file = file;
             this.name = file.getName();
-            return new Builder6(this);
+            return new BuilderAttachmentHasLength(this);
         }
 
-        public Builder5 inputStream(InputStream in) {
+        public BuilderAttachmentRequiresLength inputStream(InputStream in) {
             Preconditions.checkNotNull(in);
             this.inputStream = in;
-            return new Builder5(this);
+            return new BuilderAttachmentRequiresLength(this);
         }
 
-        public Builder6 bytes(byte[] bytes) {
+        public BuilderAttachmentHasLength bytes(byte[] bytes) {
             Preconditions.checkNotNull(bytes);
             return inputStream(new ByteArrayInputStream(bytes)).length(bytes.length);
         }
 
-        public Builder6 contentTextUtf8(String text) {
+        public BuilderAttachmentHasLength contentTextUtf8(String text) {
             Preconditions.checkNotNull(text);
             return bytes(text.getBytes(StandardCharsets.UTF_8)).contentMimeType("text/plain");
         }
@@ -514,79 +514,79 @@ public final class Email {
 
     }
 
-    public static final class Builder5 {
+    public static final class BuilderAttachmentRequiresLength {
 
         private final BuilderAttachment attachment;
 
-        Builder5(BuilderAttachment attachment) {
+        BuilderAttachmentRequiresLength(BuilderAttachment attachment) {
             this.attachment = attachment;
         }
 
-        public Builder6 length(long length) {
+        public BuilderAttachmentHasLength length(long length) {
             Preconditions.checkArgument(length >=0, "length must be >= 0");
             attachment.length = length;
-            return new Builder6(attachment);
+            return new BuilderAttachmentHasLength(attachment);
         }
     }
 
-    public static final class Builder6 {
+    public static final class BuilderAttachmentHasLength {
 
         private final BuilderAttachment attachment;
 
-        public Builder6(BuilderAttachment attachment) {
+        public BuilderAttachmentHasLength(BuilderAttachment attachment) {
             this.attachment = attachment;
         }
 
-        public Builder6 contentMimeType(String mimeType) {
+        public BuilderAttachmentHasLength contentMimeType(String mimeType) {
             Preconditions.checkNotNull(mimeType);
             attachment.contentMimeType = mimeType;
             return this;
         }
 
-        public Builder6 readTimeout(long duration, TimeUnit unit) {
+        public BuilderAttachmentHasLength readTimeout(long duration, TimeUnit unit) {
             Preconditions.checkArgument(duration > 0, "duration must be > 0");
             Preconditions.checkNotNull(unit);
             attachment.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder6 chunkSize(int chunkSize) {
+        public BuilderAttachmentHasLength chunkSize(int chunkSize) {
             Preconditions.checkArgument(chunkSize > 0, "chunkSize must be > 0");
             attachment.chunkSize = chunkSize;
             return this;
         }
 
-        public Builder6 retries(Retries retries) {
+        public BuilderAttachmentHasLength retries(Retries retries) {
             Preconditions.checkNotNull(retries);
             attachment.retries = retries;
             return this;
         }
         
-        public Builder6 name(String name) {
+        public BuilderAttachmentHasLength name(String name) {
             Preconditions.checkNotNull(name);
             attachment.name = name;
             return this;
         }
 
-        public Builder6 attachment(File file) {
+        public BuilderAttachmentHasLength attachment(File file) {
             Preconditions.checkNotNull(file);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(file);
         }
         
-        public Builder5 attachment(InputStream content) {
+        public BuilderAttachmentRequiresLength attachment(InputStream content) {
             Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
-        public Builder6 attachment(byte[] content) {
+        public BuilderAttachmentHasLength attachment(byte[] content) {
             Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
         }
         
-        public Builder6 attachment(String content) {
+        public BuilderAttachmentHasLength attachment(String content) {
             Preconditions.checkNotNull(content);
             attachment.sender.b.attachments.add(attachment.createAttachment());
             return attachment.sender.attachment(content);
