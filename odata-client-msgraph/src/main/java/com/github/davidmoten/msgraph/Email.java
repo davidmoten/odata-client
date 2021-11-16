@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -152,6 +153,16 @@ public final class Email {
             Preconditions.checkNotNull(draftFolder);
             b.draftFolder = draftFolder;
             return this;
+        }
+        
+        public Builder4 header(String name, Optional<String> value) {
+            Preconditions.checkNotNull(name);
+            Preconditions.checkNotNull(value);
+            if (value.isPresent()) {
+                return header(name, value.get());
+            } else {
+                return this;
+            }
         }
         
         public Builder4 header(String name, String value) {
