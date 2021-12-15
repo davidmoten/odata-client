@@ -1,6 +1,8 @@
-package com.github.davidmoten.msgraph;
+package com.github.davidmoten.msgraph.email;
 
 import java.util.concurrent.TimeUnit;
+
+import com.github.davidmoten.msgraph.MsGraph;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.Attachment;
@@ -35,7 +37,7 @@ public class EmptyAttachmentMain {
 		// if request header not set to identity then Graph API returns 0 bytes with
 		// gzip content-type which is invalid and EOFException is thrown
 		String content = f.getStream().get() //
-				.requestHeader("Accept-Encoding", "identity") //
+//				.requestHeader("Accept-Encoding", "identity") //
 				.getStringUtf8();
 		System.out.println("content=" + content);
 	}
