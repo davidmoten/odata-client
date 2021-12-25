@@ -147,7 +147,7 @@ Use this dependency:
 
 You can also use artifactId *odata-client-msgraph-beta* to access the beta endpoint (and they have different package names so you can use both clients in the same project if you want).
 
-If you are running on less than Java 11 then you can exclude some dependencies but only if you are running *odata-client* version < 0.1.46 (from 0.1.46 jaxb libraries moved to the jakarta jaxb libraries):
+If you are running on less than Java 11 then you can exclude some dependencies but only if you are running *odata-client* version:
 ```xml
 <dependency>
     <groupId>com.github.davidmoten</groupId>
