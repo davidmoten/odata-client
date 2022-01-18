@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -166,7 +167,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
                 // update the cached values
                 expiryTime = o.get("expires_on").asLong() * 1000;
                 accessToken = o.get("access_token").asText();
-                log.debug("refreshed access token");
+                log.debug("refreshed access token, expires on " + new Date(expiryTime));
                 return accessToken;
             }
         } catch (IOException e) {
