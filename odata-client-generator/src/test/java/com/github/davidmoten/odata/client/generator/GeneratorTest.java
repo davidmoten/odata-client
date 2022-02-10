@@ -76,9 +76,11 @@ public class GeneratorTest {
                 "microsoft.graph.beta.managed.tenants");
         SchemaOptions o8 = new SchemaOptions("microsoft.graph.search",
                 "microsoft.graph.beta.search");
+        SchemaOptions o9 = new SchemaOptions("microsoft.graph.security",
+                "microsoft.graph.beta.security");
         
         Options options = new Options(GENERATED, Arrays.asList(o1, o2,
-                o3, o4, o5, o6, o7, o8));
+                o3, o4, o5, o6, o7, o8, o9));
         Generator g = new Generator(options, t.getDataServices().getSchema());
         g.generate();
     }
