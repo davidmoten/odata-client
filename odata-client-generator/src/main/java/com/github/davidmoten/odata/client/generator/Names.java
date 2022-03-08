@@ -35,7 +35,7 @@ public final class Names {
             "native", "new", "null", "package", "private", "protected", "public", "return", "short",
             "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws",
             "transient", "true", "try", "void", "volatile", "while", "var");
-
+    
     private static final String COLLECTION_PREFIX = "Collection(";
 
     private final File output;
@@ -203,6 +203,9 @@ public final class Names {
     public static String getGetterMethodWithoutGet(String name) {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
+        }
+        if (javaReservedWords.contains(name)) {
+            name += "_";
         }
         return lowerFirst(name);
     }
