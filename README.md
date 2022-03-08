@@ -846,7 +846,7 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * support updating/creating streams
 * support geographical primitive types (where's the spec?!!)
 * support references to other metadata files (imports)
-* auto-rerequest with odata.metadata=full header if Edm.Stream is read
+* <strike>auto-rerequest with odata.metadata=full header if Edm.Stream is read</strike>
 * support TypeDefinition
 * only generate classes that are actually used (e.g. not every Entity or ComplexType needs a corresponding Collection request)
 * remove context property "modify.stream.edit.link" from MsGraph client once they support their own @odata.mediaEditLink!
