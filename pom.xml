@@ -32,7 +32,7 @@
         <jxr.version>3.2.0</jxr.version>
         <taglist.version>3.0.0</taglist.version>
         <changelog.version>2.2</changelog.version>
-        <nexus.staging.version>1.6.13</nexus.staging.version>
+        <nexus.staging.version>1.6.12</nexus.staging.version>
 
         <jackson.version>2.13.2</jackson.version>
         <jackson.databind.version>2.13.2.2</jackson.databind.version>
