@@ -644,6 +644,13 @@
         <Member Name="approvalStatus" Value="17"/>
         <Member Name="unknownFutureValue" Value="18"/>
       </EnumType>
+      <EnumType Name="longRunningOperationStatus">
+        <Member Name="notStarted" Value="0"/>
+        <Member Name="running" Value="1"/>
+        <Member Name="succeeded" Value="2"/>
+        <Member Name="failed" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
       <EnumType Name="stagedFeatureName">
         <Member Name="passthroughAuthentication" Value="0"/>
         <Member Name="seamlessSso" Value="1"/>
@@ -1902,6 +1909,11 @@
         <Member Name="modification" Value="1"/>
         <Member Name="unknownFutureValue" Value="2"/>
       </EnumType>
+      <EnumType Name="plannerContainerType">
+        <Member Name="group" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+        <Member Name="roster" Value="3"/>
+      </EnumType>
       <EnumType Name="plannerPreviewType">
         <Member Name="automatic" Value="0"/>
         <Member Name="noPreview" Value="1"/>
@@ -1937,6 +1949,57 @@
         <Member Name="Running" Value="1"/>
         <Member Name="Completed" Value="2"/>
         <Member Name="Failed" Value="3"/>
+      </EnumType>
+      <EnumType Name="roleAssignmentScheduleFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="roleAssignmentScheduleInstanceFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="roleAssignmentScheduleRequestFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="createdBy" Value="2"/>
+        <Member Name="approver" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="roleEligibilityScheduleFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="roleEligibilityScheduleInstanceFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="roleEligibilityScheduleRequestFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="createdBy" Value="2"/>
+        <Member Name="approver" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="unifiedRoleManagementPolicyRuleTargetOperations">
+        <Member Name="all" Value="0"/>
+        <Member Name="activate" Value="1"/>
+        <Member Name="deactivate" Value="2"/>
+        <Member Name="assign" Value="3"/>
+        <Member Name="update" Value="4"/>
+        <Member Name="remove" Value="5"/>
+        <Member Name="extend" Value="6"/>
+        <Member Name="renew" Value="7"/>
+        <Member Name="unknownFutureValue" Value="8"/>
+      </EnumType>
+      <EnumType Name="unifiedRoleScheduleRequestActions">
+        <Member Name="adminAssign" Value="1"/>
+        <Member Name="adminUpdate" Value="2"/>
+        <Member Name="adminRemove" Value="3"/>
+        <Member Name="selfActivate" Value="4"/>
+        <Member Name="selfDeactivate" Value="5"/>
+        <Member Name="adminExtend" Value="6"/>
+        <Member Name="adminRenew" Value="7"/>
+        <Member Name="selfExtend" Value="8"/>
+        <Member Name="selfRenew" Value="9"/>
+        <Member Name="unknownFutureValue" Value="10"/>
       </EnumType>
       <EnumType Name="printColorMode">
         <Member Name="blackAndWhite" Value="0"/>
@@ -3326,6 +3389,7 @@
         <Member Name="skypeUser" Value="5"/>
         <Member Name="phoneUser" Value="6"/>
         <Member Name="unknownFutureValue" Value="7"/>
+        <Member Name="emailUser" Value="8"/>
       </EnumType>
       <EnumType Name="scheduleChangeRequestActor">
         <Member Name="sender" Value="0"/>
@@ -3695,6 +3759,7 @@
         <Property Name="passwordPolicies" Type="Edm.String"/>
         <Property Name="passwordProfile" Type="graph.passwordProfile"/>
         <Property Name="postalCode" Type="Edm.String"/>
+        <Property Name="preferredDataLocation" Type="Edm.String"/>
         <Property Name="preferredLanguage" Type="Edm.String"/>
         <Property Name="provisionedPlans" Type="Collection(graph.provisionedPlan)" Nullable="false"/>
         <Property Name="proxyAddresses" Type="Collection(Edm.String)" Nullable="false"/>
@@ -4097,6 +4162,7 @@
         <NavigationProperty Name="externalColumns" Type="Collection(graph.columnDefinition)"/>
         <NavigationProperty Name="items" Type="Collection(graph.baseItem)" ContainsTarget="true"/>
         <NavigationProperty Name="lists" Type="Collection(graph.list)" ContainsTarget="true"/>
+        <NavigationProperty Name="operations" Type="Collection(graph.richLongRunningOperation)" ContainsTarget="true"/>
         <NavigationProperty Name="permissions" Type="Collection(graph.permission)" ContainsTarget="true"/>
         <NavigationProperty Name="sites" Type="Collection(graph.site)" ContainsTarget="true"/>
         <NavigationProperty Name="termStore" Type="microsoft.graph.termStore.store" ContainsTarget="true"/>
@@ -4344,6 +4410,7 @@
         <Property Name="publicClient" Type="graph.publicClientApplication"/>
         <Property Name="publisherDomain" Type="Edm.String"/>
         <Property Name="requiredResourceAccess" Type="Collection(graph.requiredResourceAccess)" Nullable="false"/>
+        <Property Name="serviceManagementReference" Type="Edm.String"/>
         <Property Name="signInAudience" Type="Edm.String"/>
         <Property Name="spa" Type="graph.spaApplication"/>
         <Property Name="tags" Type="Collection(Edm.String)" Nullable="false"/>
@@ -4614,6 +4681,8 @@
         <NavigationProperty Name="adminConsentRequestPolicy" Type="graph.adminConsentRequestPolicy" ContainsTarget="true"/>
         <NavigationProperty Name="conditionalAccessPolicies" Type="Collection(graph.conditionalAccessPolicy)" ContainsTarget="true"/>
         <NavigationProperty Name="identitySecurityDefaultsEnforcementPolicy" Type="graph.identitySecurityDefaultsEnforcementPolicy" ContainsTarget="true"/>
+        <NavigationProperty Name="roleManagementPolicies" Type="Collection(graph.unifiedRoleManagementPolicy)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleManagementPolicyAssignments" Type="Collection(graph.unifiedRoleManagementPolicyAssignment)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="authenticationFlowsPolicy" BaseType="graph.entity">
         <Property Name="description" Type="Edm.String"/>
@@ -4662,6 +4731,24 @@
       </EntityType>
       <EntityType Name="identitySecurityDefaultsEnforcementPolicy" BaseType="graph.policyBase">
         <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicy" BaseType="graph.entity">
+        <Property Name="description" Type="Edm.String" Nullable="false"/>
+        <Property Name="displayName" Type="Edm.String" Nullable="false"/>
+        <Property Name="isOrganizationDefault" Type="Edm.Boolean"/>
+        <Property Name="lastModifiedBy" Type="graph.identity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="scopeId" Type="Edm.String" Nullable="false"/>
+        <Property Name="scopeType" Type="Edm.String" Nullable="false"/>
+        <NavigationProperty Name="effectiveRules" Type="Collection(graph.unifiedRoleManagementPolicyRule)" ContainsTarget="true"/>
+        <NavigationProperty Name="rules" Type="Collection(graph.unifiedRoleManagementPolicyRule)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicyAssignment" BaseType="graph.entity">
+        <Property Name="policyId" Type="Edm.String" Nullable="false"/>
+        <Property Name="roleDefinitionId" Type="Edm.String"/>
+        <Property Name="scopeId" Type="Edm.String" Nullable="false"/>
+        <Property Name="scopeType" Type="Edm.String" Nullable="false"/>
+        <NavigationProperty Name="policy" Type="graph.unifiedRoleManagementPolicy"/>
       </EntityType>
       <EntityType Name="bitlocker" BaseType="graph.entity">
         <NavigationProperty Name="recoveryKeys" Type="Collection(graph.bitlockerRecoveryKey)" ContainsTarget="true"/>
@@ -5231,7 +5318,21 @@
         <NavigationProperty Name="contentTypes" Type="Collection(graph.contentType)" ContainsTarget="true"/>
         <NavigationProperty Name="drive" Type="graph.drive" ContainsTarget="true"/>
         <NavigationProperty Name="items" Type="Collection(graph.listItem)" ContainsTarget="true"/>
+        <NavigationProperty Name="operations" Type="Collection(graph.richLongRunningOperation)" ContainsTarget="true"/>
         <NavigationProperty Name="subscriptions" Type="Collection(graph.subscription)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="longRunningOperation" BaseType="graph.entity">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastActionDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="resourceLocation" Type="Edm.String"/>
+        <Property Name="status" Type="graph.longRunningOperationStatus"/>
+        <Property Name="statusDetail" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="richLongRunningOperation" BaseType="graph.longRunningOperation">
+        <Property Name="error" Type="graph.publicError"/>
+        <Property Name="percentageComplete" Type="Edm.Int32"/>
+        <Property Name="resourceId" Type="Edm.String"/>
+        <Property Name="type" Type="Edm.String"/>
       </EntityType>
       <EntityType Name="permission" BaseType="graph.entity">
         <Property Name="expirationDateTime" Type="Edm.DateTimeOffset"/>
@@ -5654,6 +5755,12 @@
       <EntityType Name="rbacApplication" BaseType="graph.entity">
         <NavigationProperty Name="roleAssignments" Type="Collection(graph.unifiedRoleAssignment)" ContainsTarget="true"/>
         <NavigationProperty Name="roleDefinitions" Type="Collection(graph.unifiedRoleDefinition)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleAssignmentScheduleInstances" Type="Collection(graph.unifiedRoleAssignmentScheduleInstance)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleAssignmentScheduleRequests" Type="Collection(graph.unifiedRoleAssignmentScheduleRequest)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleAssignmentSchedules" Type="Collection(graph.unifiedRoleAssignmentSchedule)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleEligibilityScheduleInstances" Type="Collection(graph.unifiedRoleEligibilityScheduleInstance)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleEligibilityScheduleRequests" Type="Collection(graph.unifiedRoleEligibilityScheduleRequest)" ContainsTarget="true"/>
+        <NavigationProperty Name="roleEligibilitySchedules" Type="Collection(graph.unifiedRoleEligibilitySchedule)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="unifiedRoleAssignment" BaseType="graph.entity">
         <Property Name="appScopeId" Type="Edm.String"/>
@@ -5676,6 +5783,98 @@
         <Property Name="templateId" Type="Edm.String"/>
         <Property Name="version" Type="Edm.String"/>
         <NavigationProperty Name="inheritsPermissionsFrom" Type="Collection(graph.unifiedRoleDefinition)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleScheduleInstanceBase" BaseType="graph.entity">
+        <Property Name="appScopeId" Type="Edm.String"/>
+        <Property Name="directoryScopeId" Type="Edm.String"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="roleDefinitionId" Type="Edm.String"/>
+        <NavigationProperty Name="appScope" Type="graph.appScope"/>
+        <NavigationProperty Name="directoryScope" Type="graph.directoryObject"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="roleDefinition" Type="graph.unifiedRoleDefinition"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleAssignmentScheduleInstance" BaseType="graph.unifiedRoleScheduleInstanceBase">
+        <Property Name="assignmentType" Type="Edm.String"/>
+        <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="memberType" Type="Edm.String"/>
+        <Property Name="roleAssignmentOriginId" Type="Edm.String"/>
+        <Property Name="roleAssignmentScheduleId" Type="Edm.String"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="activatedUsing" Type="graph.unifiedRoleEligibilityScheduleInstance"/>
+      </EntityType>
+      <EntityType Name="request" BaseType="graph.entity">
+        <Property Name="approvalId" Type="Edm.String"/>
+        <Property Name="completedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="createdBy" Type="graph.identitySet"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="customData" Type="Edm.String"/>
+        <Property Name="status" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleAssignmentScheduleRequest" BaseType="graph.request">
+        <Property Name="action" Type="graph.unifiedRoleScheduleRequestActions"/>
+        <Property Name="appScopeId" Type="Edm.String"/>
+        <Property Name="directoryScopeId" Type="Edm.String"/>
+        <Property Name="isValidationOnly" Type="Edm.Boolean"/>
+        <Property Name="justification" Type="Edm.String"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="roleDefinitionId" Type="Edm.String"/>
+        <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
+        <Property Name="targetScheduleId" Type="Edm.String"/>
+        <Property Name="ticketInfo" Type="graph.ticketInfo"/>
+        <NavigationProperty Name="activatedUsing" Type="graph.unifiedRoleEligibilitySchedule"/>
+        <NavigationProperty Name="appScope" Type="graph.appScope"/>
+        <NavigationProperty Name="directoryScope" Type="graph.directoryObject"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="roleDefinition" Type="graph.unifiedRoleDefinition"/>
+        <NavigationProperty Name="targetSchedule" Type="graph.unifiedRoleAssignmentSchedule"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleScheduleBase" BaseType="graph.entity">
+        <Property Name="appScopeId" Type="Edm.String"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="createdUsing" Type="Edm.String"/>
+        <Property Name="directoryScopeId" Type="Edm.String"/>
+        <Property Name="modifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="roleDefinitionId" Type="Edm.String"/>
+        <Property Name="status" Type="Edm.String"/>
+        <NavigationProperty Name="appScope" Type="graph.appScope"/>
+        <NavigationProperty Name="directoryScope" Type="graph.directoryObject"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="roleDefinition" Type="graph.unifiedRoleDefinition"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleAssignmentSchedule" BaseType="graph.unifiedRoleScheduleBase">
+        <Property Name="assignmentType" Type="Edm.String"/>
+        <Property Name="memberType" Type="Edm.String"/>
+        <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
+        <NavigationProperty Name="activatedUsing" Type="graph.unifiedRoleEligibilitySchedule"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleEligibilityScheduleInstance" BaseType="graph.unifiedRoleScheduleInstanceBase">
+        <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="memberType" Type="Edm.String"/>
+        <Property Name="roleEligibilityScheduleId" Type="Edm.String"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleEligibilityScheduleRequest" BaseType="graph.request">
+        <Property Name="action" Type="graph.unifiedRoleScheduleRequestActions"/>
+        <Property Name="appScopeId" Type="Edm.String"/>
+        <Property Name="directoryScopeId" Type="Edm.String"/>
+        <Property Name="isValidationOnly" Type="Edm.Boolean"/>
+        <Property Name="justification" Type="Edm.String"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="roleDefinitionId" Type="Edm.String"/>
+        <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
+        <Property Name="targetScheduleId" Type="Edm.String"/>
+        <Property Name="ticketInfo" Type="graph.ticketInfo"/>
+        <NavigationProperty Name="appScope" Type="graph.appScope"/>
+        <NavigationProperty Name="directoryScope" Type="graph.directoryObject"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="roleDefinition" Type="graph.unifiedRoleDefinition"/>
+        <NavigationProperty Name="targetSchedule" Type="graph.unifiedRoleEligibilitySchedule"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleEligibilitySchedule" BaseType="graph.unifiedRoleScheduleBase">
+        <Property Name="memberType" Type="Edm.String"/>
+        <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
       </EntityType>
       <EntityType Name="roleManagement">
         <NavigationProperty Name="directory" Type="graph.rbacApplication" ContainsTarget="true"/>
@@ -7302,14 +7501,6 @@
         <Property Name="appId" Type="Edm.String" Nullable="false"/>
         <Property Name="pendingScopes" Type="Collection(graph.appConsentRequestScope)"/>
         <NavigationProperty Name="userConsentRequests" Type="Collection(graph.userConsentRequest)" ContainsTarget="true"/>
-      </EntityType>
-      <EntityType Name="request" BaseType="graph.entity">
-        <Property Name="approvalId" Type="Edm.String"/>
-        <Property Name="completedDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="createdBy" Type="graph.identitySet"/>
-        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="customData" Type="Edm.String"/>
-        <Property Name="status" Type="Edm.String" Nullable="false"/>
       </EntityType>
       <EntityType Name="userConsentRequest" BaseType="graph.request">
         <Property Name="reason" Type="Edm.String"/>
@@ -10178,11 +10369,30 @@
       <ComplexType Name="plannerAssignments" OpenType="true"/>
       <ComplexType Name="plannerCategoryDescriptions">
         <Property Name="category1" Type="Edm.String"/>
+        <Property Name="category10" Type="Edm.String"/>
+        <Property Name="category11" Type="Edm.String"/>
+        <Property Name="category12" Type="Edm.String"/>
+        <Property Name="category13" Type="Edm.String"/>
+        <Property Name="category14" Type="Edm.String"/>
+        <Property Name="category15" Type="Edm.String"/>
+        <Property Name="category16" Type="Edm.String"/>
+        <Property Name="category17" Type="Edm.String"/>
+        <Property Name="category18" Type="Edm.String"/>
+        <Property Name="category19" Type="Edm.String"/>
         <Property Name="category2" Type="Edm.String"/>
+        <Property Name="category20" Type="Edm.String"/>
+        <Property Name="category21" Type="Edm.String"/>
+        <Property Name="category22" Type="Edm.String"/>
+        <Property Name="category23" Type="Edm.String"/>
+        <Property Name="category24" Type="Edm.String"/>
+        <Property Name="category25" Type="Edm.String"/>
         <Property Name="category3" Type="Edm.String"/>
         <Property Name="category4" Type="Edm.String"/>
         <Property Name="category5" Type="Edm.String"/>
         <Property Name="category6" Type="Edm.String"/>
+        <Property Name="category7" Type="Edm.String"/>
+        <Property Name="category8" Type="Edm.String"/>
+        <Property Name="category9" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="plannerChecklistItem">
         <Property Name="isChecked" Type="Edm.Boolean"/>
@@ -10201,6 +10411,11 @@
       </ComplexType>
       <ComplexType Name="plannerExternalReferences" OpenType="true"/>
       <ComplexType Name="plannerOrderHintsByAssignee" OpenType="true"/>
+      <ComplexType Name="plannerPlanContainer">
+        <Property Name="containerId" Type="Edm.String" Nullable="false"/>
+        <Property Name="type" Type="graph.plannerContainerType" Nullable="false"/>
+        <Property Name="url" Type="Edm.String" Nullable="false"/>
+      </ComplexType>
       <ComplexType Name="plannerUserIds" OpenType="true"/>
       <EntityType Name="planner" BaseType="graph.entity">
         <NavigationProperty Name="buckets" Type="Collection(graph.plannerBucket)" ContainsTarget="true"/>
@@ -10214,6 +10429,7 @@
         <NavigationProperty Name="tasks" Type="Collection(graph.plannerTask)"/>
       </EntityType>
       <EntityType Name="plannerPlan" BaseType="graph.entity">
+        <Property Name="container" Type="graph.plannerPlanContainer"/>
         <Property Name="createdBy" Type="graph.identitySet"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="owner" Type="Edm.String"/>
@@ -10240,6 +10456,7 @@
         <Property Name="percentComplete" Type="Edm.Int32"/>
         <Property Name="planId" Type="Edm.String"/>
         <Property Name="previewType" Type="graph.plannerPreviewType"/>
+        <Property Name="priority" Type="Edm.Int32"/>
         <Property Name="referenceCount" Type="Edm.Int32"/>
         <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="title" Type="Edm.String" Nullable="false"/>
@@ -10456,6 +10673,62 @@
       <EntityType Name="onenoteResource" BaseType="graph.onenoteEntityBaseModel" HasStream="true">
         <Property Name="content" Type="Edm.Stream"/>
         <Property Name="contentUrl" Type="Edm.String"/>
+      </EntityType>
+      <ComplexType Name="approvalSettings">
+        <Property Name="approvalMode" Type="Edm.String"/>
+        <Property Name="approvalStages" Type="Collection(graph.unifiedApprovalStage)"/>
+        <Property Name="isApprovalRequired" Type="Edm.Boolean"/>
+        <Property Name="isApprovalRequiredForExtension" Type="Edm.Boolean"/>
+        <Property Name="isRequestorJustificationRequired" Type="Edm.Boolean"/>
+      </ComplexType>
+      <ComplexType Name="unifiedApprovalStage">
+        <Property Name="approvalStageTimeOutInDays" Type="Edm.Int32"/>
+        <Property Name="escalationApprovers" Type="Collection(graph.subjectSet)"/>
+        <Property Name="escalationTimeInMinutes" Type="Edm.Int32"/>
+        <Property Name="isApproverJustificationRequired" Type="Edm.Boolean"/>
+        <Property Name="isEscalationEnabled" Type="Edm.Boolean"/>
+        <Property Name="primaryApprovers" Type="Collection(graph.subjectSet)"/>
+      </ComplexType>
+      <ComplexType Name="requestSchedule">
+        <Property Name="expiration" Type="graph.expirationPattern"/>
+        <Property Name="recurrence" Type="graph.patternedRecurrence"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+      </ComplexType>
+      <ComplexType Name="ticketInfo">
+        <Property Name="ticketNumber" Type="Edm.String"/>
+        <Property Name="ticketSystem" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="unifiedRoleManagementPolicyRuleTarget">
+        <Property Name="caller" Type="Edm.String"/>
+        <Property Name="enforcedSettings" Type="Collection(Edm.String)"/>
+        <Property Name="inheritableSettings" Type="Collection(Edm.String)"/>
+        <Property Name="level" Type="Edm.String"/>
+        <Property Name="operations" Type="Collection(graph.unifiedRoleManagementPolicyRuleTargetOperations)"/>
+        <NavigationProperty Name="targetObjects" Type="Collection(graph.directoryObject)"/>
+      </ComplexType>
+      <EntityType Name="unifiedRoleManagementPolicyRule" BaseType="graph.entity" Abstract="true">
+        <Property Name="target" Type="graph.unifiedRoleManagementPolicyRuleTarget"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicyApprovalRule" BaseType="graph.unifiedRoleManagementPolicyRule">
+        <Property Name="setting" Type="graph.approvalSettings"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicyAuthenticationContextRule" BaseType="graph.unifiedRoleManagementPolicyRule">
+        <Property Name="claimValue" Type="Edm.String"/>
+        <Property Name="isEnabled" Type="Edm.Boolean"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicyEnablementRule" BaseType="graph.unifiedRoleManagementPolicyRule">
+        <Property Name="enabledRules" Type="Collection(Edm.String)"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicyExpirationRule" BaseType="graph.unifiedRoleManagementPolicyRule">
+        <Property Name="isExpirationRequired" Type="Edm.Boolean"/>
+        <Property Name="maximumDuration" Type="Edm.Duration"/>
+      </EntityType>
+      <EntityType Name="unifiedRoleManagementPolicyNotificationRule" BaseType="graph.unifiedRoleManagementPolicyRule">
+        <Property Name="isDefaultRecipientsEnabled" Type="Edm.Boolean"/>
+        <Property Name="notificationLevel" Type="Edm.String"/>
+        <Property Name="notificationRecipients" Type="Collection(Edm.String)"/>
+        <Property Name="notificationType" Type="Edm.String"/>
+        <Property Name="recipientType" Type="Edm.String"/>
       </EntityType>
       <ComplexType Name="archivedPrintJob">
         <Property Name="acquiredByPrinter" Type="Edm.Boolean" Nullable="false"/>
@@ -11764,6 +12037,12 @@
         <Parameter Name="bindingParameter" Type="graph.accessPackageAssignmentRequest"/>
       </Action>
       <Action Name="cancel" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.unifiedRoleAssignmentScheduleRequest"/>
+      </Action>
+      <Action Name="cancel" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.unifiedRoleEligibilityScheduleRequest"/>
+      </Action>
+      <Action Name="cancel" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.printJob"/>
       </Action>
       <Action Name="publish" IsBound="true">
@@ -11962,6 +12241,10 @@
         <Parameter Name="parentReference" Type="graph.itemReference"/>
         <Parameter Name="name" Type="Edm.String" Unicode="false"/>
         <ReturnType Type="graph.driveItem"/>
+      </Action>
+      <Action Name="setMobileDeviceManagementAuthority" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.organization"/>
+        <ReturnType Type="Edm.Int32" Nullable="false"/>
       </Action>
       <Action Name="forceDelete" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.domain" Nullable="false"/>
@@ -15027,6 +15310,15 @@
         <Parameter Name="contentType" Type="Edm.String" Nullable="false" Unicode="false"/>
         <ReturnType Type="graph.contentType"/>
       </Action>
+      <Action Name="addCopyFromContentTypeHub" IsBound="true" EntitySetPath="bindingParameter">
+        <Parameter Name="bindingParameter" Type="Collection(graph.contentType)"/>
+        <Parameter Name="contentTypeId" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <ReturnType Type="graph.contentType"/>
+      </Action>
+      <Function Name="getCompatibleHubContentTypes" IsBound="true" EntitySetPath="bindingParameter" IsComposable="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.contentType)"/>
+        <ReturnType Type="Collection(graph.contentType)"/>
+      </Function>
       <Action Name="associateWithHubSites" IsBound="true" EntitySetPath="bindingParameter">
         <Parameter Name="bindingParameter" Type="graph.contentType"/>
         <Parameter Name="hubSiteUrls" Type="Collection(Edm.String)" Nullable="false" Unicode="false"/>
@@ -15260,6 +15552,36 @@
         <Parameter Name="on" Type="graph.accessPackageAssignmentRequestFilterByCurrentUserOptions" Nullable="false"/>
         <ReturnType Type="Collection(graph.accessPackageAssignmentRequest)"/>
       </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleAssignmentSchedule)"/>
+        <Parameter Name="on" Type="graph.roleAssignmentScheduleFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.unifiedRoleAssignmentSchedule)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleAssignmentScheduleInstance)"/>
+        <Parameter Name="on" Type="graph.roleAssignmentScheduleInstanceFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.unifiedRoleAssignmentScheduleInstance)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleAssignmentScheduleRequest)"/>
+        <Parameter Name="on" Type="graph.roleAssignmentScheduleRequestFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.unifiedRoleAssignmentScheduleRequest)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleEligibilitySchedule)"/>
+        <Parameter Name="on" Type="graph.roleEligibilityScheduleFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.unifiedRoleEligibilitySchedule)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleEligibilityScheduleInstance)"/>
+        <Parameter Name="on" Type="graph.roleEligibilityScheduleInstanceFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.unifiedRoleEligibilityScheduleInstance)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleEligibilityScheduleRequest)"/>
+        <Parameter Name="on" Type="graph.roleEligibilityScheduleRequestFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.unifiedRoleEligibilityScheduleRequest)"/>
+      </Function>
       <Action Name="confirmCompromised" IsBound="true">
         <Parameter Name="bindingParameter" Type="Collection(graph.riskyUser)"/>
         <Parameter Name="userIds" Type="Collection(Edm.String)" Unicode="false"/>
@@ -15267,6 +15589,12 @@
       <Action Name="dismiss" IsBound="true">
         <Parameter Name="bindingParameter" Type="Collection(graph.riskyUser)"/>
         <Parameter Name="userIds" Type="Collection(Edm.String)" Unicode="false"/>
+      </Action>
+      <Action Name="reprocess" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessPackageAssignmentRequest"/>
+      </Action>
+      <Action Name="reprocess" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.accessPackageAssignment"/>
       </Action>
       <Action Name="getApplicablePolicyRequirements" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.accessPackage"/>
@@ -15791,10 +16119,6 @@
       <Action Name="setPriority" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.deviceEnrollmentConfiguration"/>
         <Parameter Name="priority" Type="Edm.Int32" Nullable="false"/>
-      </Action>
-      <Action Name="setMobileDeviceManagementAuthority" IsBound="true">
-        <Parameter Name="bindingParameter" Type="graph.organization"/>
-        <ReturnType Type="Edm.Int32" Nullable="false"/>
       </Action>
       <Action Name="sync" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.deviceManagementExchangeConnector"/>
@@ -27422,6 +27746,21 @@
       <Annotations Target="microsoft.graph.windowsInformationProtectionNetworkLearningSummary/url">
         <Annotation Term="Org.OData.Core.V1.Description" String="Website url"/>
       </Annotations>
+      <Annotations Target="microsoft.graph.plannerPlan/owner">
+        <Annotation Term="Org.OData.Core.V1.Revisions">
+          <Collection>
+            <Record>
+              <PropertyValue Property="Date" Date="2022-04-25"/>
+              <PropertyValue Property="Description" String="Owner property is deprecated and will be removed in April 2024. Please use the container property instead."/>
+              <PropertyValue Property="Kind">
+                <EnumMember>Org.OData.Core.V1.RevisionKind/Deprecated</EnumMember>
+              </PropertyValue>
+              <PropertyValue Property="RemovalDate" Date="2024-04-25"/>
+              <PropertyValue Property="Version" String="2022-04/Tasks_And_Plans"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
       <Annotations Target="microsoft.graph.sharingDetail/sharingReference">
         <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
       </Annotations>
@@ -27687,6 +28026,9 @@
       <Annotations Target="microsoft.graph.getManagedAppPolicies(microsoft.graph.user)">
         <Annotation Term="Org.OData.Core.V1.Description" String="Gets app restrictions for a given user."/>
       </Annotations>
+      <Annotations Target="microsoft.graph.setMobileDeviceManagementAuthority(microsoft.graph.organization)">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Set mobile device management authority"/>
+      </Annotations>
       <Annotations Target="microsoft.graph.commit(microsoft.graph.mobileAppContentFile, microsoft.graph.fileEncryptionInfo)">
         <Annotation Term="Org.OData.Core.V1.Description" String="Commits a file of a given app."/>
       </Annotations>
@@ -27698,9 +28040,6 @@
       </Annotations>
       <Annotations Target="microsoft.graph.deviceConfigurationUserActivity(microsoft.graph.reportRoot)">
         <Annotation Term="Org.OData.Core.V1.Description" String="Metadata for the device configuration user activity report"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.setMobileDeviceManagementAuthority(microsoft.graph.organization)">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Set mobile device management authority"/>
       </Annotations>
       <Annotations Target="microsoft.graph.syncLicenses(microsoft.graph.vppToken)">
         <Annotation Term="Org.OData.Core.V1.Description" String="Syncs licenses associated with a specific appleVolumePurchaseProgramToken"/>
