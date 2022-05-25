@@ -1317,15 +1317,8 @@ public final class Generator {
 			// write get methods from properties
 			Util.filter(t.getEntitySetOrActionImportOrFunctionImport(), TEntitySet.class) //
 					.forEach(x -> {
-						EntitySet es = new EntitySet(schema, t, x, names);
-						Schema sch = names.getSchema(x.getEntityType());
-						p.format("\n%spublic %s %s() {\n", indent, imports.add(es.getFullClassNameEntitySet()),
-								Names.getIdentifier(x.getName()));
-						p.format("%sreturn new %s(\n", indent.right(), imports.add(es.getFullClassNameEntitySet()));
-						p.format("%scontextPath.addSegment(\"%s\"));\n", indent.right().right().right().right(),
-								x.getName());
-						p.format("%s}\n", indent.left().left().left().left().left());
-
+					    Schema sch = names.getSchema(x.getEntityType());
+					    boolean addedWithEmptyKeys = false;
 						if (names.isEntityWithNamespace(x.getEntityType())) {
 							String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
 									x.getEntityType());
@@ -1338,7 +1331,18 @@ public final class Generator {
 							p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s, %s.empty());\n", indent.right(),
 									imports.add(entityRequestType), x.getName(), k.addKeys, imports.add(Optional.class));
 							p.format("%s}\n", indent.left());
+							addedWithEmptyKeys = k.addKeys.trim().isEmpty();
 						}
+                        if (!addedWithEmptyKeys) {
+                            // don't add a collection method if there were no keys for the entity
+                            EntitySet es = new EntitySet(schema, t, x, names);
+                            p.format("\n%spublic %s %s() {\n", indent, imports.add(es.getFullClassNameEntitySet()),
+                                    Names.getIdentifier(x.getName()));
+                            p.format("%sreturn new %s(\n", indent.right(), imports.add(es.getFullClassNameEntitySet()));
+                            p.format("%scontextPath.addSegment(\"%s\"));\n", indent.right().right().right().right(),
+                                    x.getName());
+                            p.format("%s}\n", indent.left().left().left().left().left());
+                        }
 					});
 
 			Util //
