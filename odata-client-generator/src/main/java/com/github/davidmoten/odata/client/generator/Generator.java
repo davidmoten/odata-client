@@ -1138,8 +1138,7 @@ public final class Generator {
 						} else {
 							returnClass = imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch, y));
 						}
-						boolean addedCollectionWithEmptyKeys = false;
-	                      // if collection then add with id method
+	                      // if collection then add with id method (if has ids)
                         if (Names.isCollection(y)) {
                             // TODO use actual key name from metadata
                             String inner = names.getInnerType(y);
@@ -1149,32 +1148,30 @@ public final class Generator {
                                         inner);
                                 EntityType et = names.getEntityType(inner);
                                 KeyInfo k = getKeyInfo(et, imports);
-
-                                p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
-                                        Names.getIdentifier(x.getName()), k.typedParams);
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s, %s.empty());\n", indent.right(),
-                                        imports.add(entityRequestType), x.getName(), k.addKeys, imports.add(Optional.class));
-                                p.format("%s}\n", indent.left());
-                                addedCollectionWithEmptyKeys = k.addKeys.trim().isEmpty();
+                                if (!k.isEmpty()) {
+                                    p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
+                                            Names.getIdentifier(x.getName()), k.typedParams);
+                                    p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s, %s.empty());\n",
+                                            indent.right(), imports.add(entityRequestType), x.getName(), k.addKeys,
+                                            imports.add(Optional.class));
+                                    p.format("%s}\n", indent.left());
+                                }
                             }
                         }
-                        if (!addedCollectionWithEmptyKeys) {
-                            p.format("\n%spublic %s %s() {\n", //
-                                    indent, //
-                                    returnClass, //
-                                    Names.getGetterMethodWithoutGet(x.getName()));
-                            if (isCollection(x)) {
-                                p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
-                                p.format("%scontextPath.addSegment(\"%s\"), %s.empty());\n",
-                                        indent.right().right().right().right(), x.getName(),
-                                        imports.add(Optional.class));
-                                indent.left().left().left().left();
-                            } else {
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.empty());\n",
-                                        indent.right(), returnClass, x.getName(), imports.add(Optional.class));
-                            }
-                            p.format("%s}\n", indent.left());
+                        p.format("\n%spublic %s %s() {\n", //
+                                indent, //
+                                returnClass, //
+                                Names.getGetterMethodWithoutGet(x.getName()));
+                        if (isCollection(x)) {
+                            p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
+                            p.format("%scontextPath.addSegment(\"%s\"), %s.empty());\n",
+                                    indent.right().right().right().right(), x.getName(), imports.add(Optional.class));
+                            indent.left().left().left().left();
+                        } else {
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.empty());\n", indent.right(),
+                                    returnClass, x.getName(), imports.add(Optional.class));
                         }
+                        p.format("%s}\n", indent.left());
 						indent.left();
 					});
 			indent.right();
@@ -1196,6 +1193,10 @@ public final class Generator {
 		KeyInfo(String typedParams, String addKeys) {
 			this.typedParams = typedParams;
 			this.addKeys = addKeys;
+		}
+		
+		boolean isEmpty() {
+		    return addKeys.trim().isEmpty();
 		}
 	}
 
@@ -1335,7 +1336,7 @@ public final class Generator {
 							p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s, %s.empty());\n", indent.right(),
 									imports.add(entityRequestType), x.getName(), k.addKeys, imports.add(Optional.class));
 							p.format("%s}\n", indent.left());
-							addedWithEmptyKeys = k.addKeys.trim().isEmpty();
+							addedWithEmptyKeys = k.isEmpty();
 						}
                         if (!addedWithEmptyKeys) {
                             // don't add a collection method if there were no keys for the entity
@@ -1435,7 +1436,7 @@ public final class Generator {
                                         imports.add(entityRequestType), x.getName(), k.addKeys, imports.add(Optional.class));
                                 p.format("%s}\n", indent.left());
                                 
-                                addedWithEmptyKeys = k.addKeys.trim().isEmpty();
+                                addedWithEmptyKeys = k.isEmpty();
                             }
                             if (!addedWithEmptyKeys) {
                                 p.format("\n%spublic %s %s() {\n", //
