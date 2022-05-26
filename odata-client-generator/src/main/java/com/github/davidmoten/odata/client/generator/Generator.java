@@ -1424,35 +1424,32 @@ public final class Generator {
 						Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
 						if (x.getType().get(0).startsWith(COLLECTION_PREFIX)) {
 							String y = names.getInnerType(names.getType(x));
-							boolean addedWithEmptyKeys = false;
 							if (names.isEntityWithNamespace(y)) {
                                 String entityRequestType = names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
                                         y);
                                 EntityType et = names.getEntityType(y);
                                 KeyInfo k = getKeyInfo(et, imports);
-                                p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
-                                        Names.getIdentifier(x.getName()), k.typedParams);
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s, %s.empty());\n", indent.right(),
-                                        imports.add(entityRequestType), x.getName(), k.addKeys, imports.add(Optional.class));
-                                p.format("%s}\n", indent.left());
-                                
-                                addedWithEmptyKeys = k.isEmpty();
+                                if (!k.isEmpty()) {
+                                    p.format("\n%spublic %s %s(%s) {\n", indent, imports.add(entityRequestType),
+                                            Names.getIdentifier(x.getName()), k.typedParams);
+                                    p.format("%sreturn new %s(contextPath.addSegment(\"%s\")%s, %s.empty());\n", indent.right(),
+                                            imports.add(entityRequestType), x.getName(), k.addKeys, imports.add(Optional.class));
+                                    p.format("%s}\n", indent.left());
+                                }
                             }
-                            if (!addedWithEmptyKeys) {
-                                p.format("\n%spublic %s %s() {\n", //
-                                        indent, //
-                                        imports.add(
-                                                names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
-                                        Names.getIdentifier(x.getName()));
+                            p.format("\n%spublic %s %s() {\n", //
+                                    indent, //
+                                    imports.add(
+                                            names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
+                                    Names.getIdentifier(x.getName()));
 
-                                p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.empty());\n", //
-                                        indent.right(), //
-                                        imports.add(
-                                                names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
-                                        x.getName(), //
-                                        imports.add(Optional.class));
-                                p.format("%s}\n", indent.left());
-                            }
+                            p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.empty());\n", //
+                                    indent.right(), //
+                                    imports.add(
+                                            names.getFullClassNameCollectionRequestFromTypeWithNamespace(sch, y)), //
+                                    x.getName(), //
+                                    imports.add(Optional.class));
+                            p.format("%s}\n", indent.left());
 						}
 					});
 
