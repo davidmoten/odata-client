@@ -25,6 +25,7 @@ Status : *released to Maven Central*
 * Graph Explorer client (test endpoint)
 * Microsoft Analytics for DevOps 1.0, 2.0, 3.0, 4.0 and custom [clients](odata-client-microsoft-analytics/README.md).
 * Microsoft Dynamics CRM client
+* Microsoft Dynamics Finance and Operations client (see https://github.com/davidmoten/microsoft-dynamics-finance-client)
 * More generated clients can be added, just raise an issue
 * Runs on Java 8+ (including Java 11+, 17). When running <11 the jaxb dependencies can be excluded from odata-client-runtime. 
 
