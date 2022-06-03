@@ -5,11 +5,15 @@
         <Schema Namespace="Test9.A"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">
             <EntityContainer Name="Test9Service">
-                <Singleton Name="Things"
+                <Singleton Name="Thing"
                     Type="Test9.A.Thing">
                 </Singleton>
+                <EntitySet Name="Things"
+                    EntityType="Test9.A.Thing">
+                </EntitySet>
             </EntityContainer>
             <EntityType Name="Thing">
+                <!--  has no key -->
                 <Property Name="Name" Type="Edm.String" />
             </EntityType>
         </Schema>
