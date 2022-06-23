@@ -23,7 +23,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <jetty.version>9.4.47.v20220610</jetty.version>
+        <jetty.version>9.4.48.v20220622</jetty.version>
     </properties>
 
     <dependencies>
