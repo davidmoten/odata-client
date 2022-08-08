@@ -80,6 +80,10 @@
                                     <namespace>microsoft.graph.externalConnectors</namespace>
                                     <packageName>odata.msgraph.client.externalconnectors</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.security</namespace>
+                                    <packageName>odata.msgraph.client.security</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

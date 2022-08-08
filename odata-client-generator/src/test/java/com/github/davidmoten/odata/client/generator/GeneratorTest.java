@@ -41,7 +41,9 @@ public class GeneratorTest {
                 "microsoft.graph.ediscovery.generated");
         SchemaOptions o5 = new SchemaOptions("microsoft.graph.termStore", 
                 "microsoft.graph.termstore.generated");
-        Options options = new Options(GENERATED, Lists.newArrayList(o1, o2, o3, o4, o5));
+        SchemaOptions o6 = new SchemaOptions("microsoft.graph.security", 
+                "microsoft.graph.security");
+        Options options = new Options(GENERATED, Lists.newArrayList(o1, o2, o3, o4, o5, o6));
         Generator g = new Generator(options,
                 t.getDataServices().getSchema());
         g.generate();
