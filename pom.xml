@@ -29,7 +29,7 @@
         <javadoc.version>3.4.1</javadoc.version>
         <pmd.version>3.17.0</pmd.version>
         <project.info.version>3.1.0</project.info.version>
-        <jxr.version>3.2.0</jxr.version>
+        <jxr.version>3.3.0</jxr.version>
         <taglist.version>3.0.0</taglist.version>
         <changelog.version>2.2</changelog.version>
         <nexus.staging.version>1.6.13</nexus.staging.version>
