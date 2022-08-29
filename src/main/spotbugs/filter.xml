@@ -10,4 +10,8 @@
         <Class name="com.github.davidmoten.odata.client.CollectionPage"/>
         <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" /> 
     </Match>
+    <Match>
+        <Class name="com.github.davidmoten.odata.client.HttpMethod"/>
+        <Bug pattern="MS_EXPOSE_REP"/>
+    </Match>
 </FindBugsFilter>
