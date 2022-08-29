@@ -32,4 +32,8 @@
         <Class name="com.github.davidmoten.odata.client.generator.Imports"/>
         <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
     </Match>
+    <Match>
+        <Class name="com.github.davidmoten.odata.client.generator.model.Action$Parameter"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
 </FindBugsFilter>

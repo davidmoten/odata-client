@@ -132,7 +132,7 @@ public final class Names {
     }
 
     public static String getIdentifier(String s) {
-        if (javaReservedWords.contains(s.toLowerCase())) {
+        if (javaReservedWords.contains(s.toLowerCase(Locale.ENGLISH))) {
             return s.toLowerCase(Locale.ENGLISH) + "_";
         } else if (s.toUpperCase(Locale.ENGLISH).equals(s)) {
             return s;
@@ -653,11 +653,11 @@ public final class Names {
     }
 
     public static String getPutMethod(String name, HttpMethod method) {
-        return method.toString().toLowerCase() + upperFirst(name);
+        return method.toString().toLowerCase(Locale.ENGLISH) + upperFirst(name);
     }
     
     public static String getPutChunkedMethod(String name, HttpMethod method) {
-        return method.toString().toLowerCase() + "Chunked" +  upperFirst(name);
+        return method.toString().toLowerCase(Locale.ENGLISH) + "Chunked" +  upperFirst(name);
     }
 
 }
