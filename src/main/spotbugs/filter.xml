@@ -21,4 +21,8 @@
         <Class name="com.github.davidmoten.odata.client.internal.InjectableValuesFromFactories"/>
         <Bug pattern="SE_BAD_FIELD"/>
     </Match>
+    <Match>
+        <Class name="com.github.davidmoten.odata.client.internal.RequestHelper"/>
+        <Bug pattern="UCF_USELESS_CONTROL_FLOW"/>
+    </Match>
 </FindBugsFilter>
