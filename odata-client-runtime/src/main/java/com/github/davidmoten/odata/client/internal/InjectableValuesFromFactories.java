@@ -15,7 +15,7 @@ public final class InjectableValuesFromFactories extends InjectableValues implem
 
     private static final long serialVersionUID = 6050577234392343535L;
 
-    protected final Map<String, Callable<?>> _values;
+    private final Map<String, Callable<?>> _values;
 
     public InjectableValuesFromFactories() {
         this(new HashMap<String, Callable<?>>());
