@@ -123,7 +123,11 @@ public final class Retries {
         }
 
         public Builder retryIntervals(Iterable<Long> retryIntervals, TimeUnit unit) {
-            return retryIntervalsMs(new Iterable<Long>() {
+            return retryIntervalsMs(createRetryIntervalMsIterable(retryIntervals, unit));
+        }
+
+        private static Iterable<Long> createRetryIntervalMsIterable(Iterable<Long> retryIntervals, TimeUnit unit) {
+            return new Iterable<Long>() {
 
                 @Override
                 public Iterator<Long> iterator() {
@@ -141,7 +145,7 @@ public final class Retries {
                         }
                     };
                 }
-            });
+            };
         }
 
         public Builder cappedExponentialRetry(long initial, double factor, long cap, TimeUnit unit) {
@@ -149,7 +153,11 @@ public final class Retries {
             Preconditions.checkArgument(factor >= 0);
             Preconditions.checkArgument(cap >= 0);
             Preconditions.checkNotNull(unit);
-            return retryIntervalsMs(new Iterable<Long>() {
+            return retryIntervalsMs(createCappedExponentialRetryIterable(initial, factor, cap, unit));
+        }
+
+        private static Iterable<Long> createCappedExponentialRetryIterable(long initial, double factor, long cap, TimeUnit unit) {
+            return new Iterable<Long>() {
                 @Override
                 public Iterator<Long> iterator() {
                     return new Iterator<Long>() {
@@ -169,7 +177,7 @@ public final class Retries {
                         }
                     };
                 }
-            });
+            };
         }
 
         public Retries build() {
