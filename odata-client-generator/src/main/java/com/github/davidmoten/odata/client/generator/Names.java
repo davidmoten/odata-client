@@ -3,6 +3,7 @@ package com.github.davidmoten.odata.client.generator;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -117,23 +118,23 @@ public final class Names {
     }
 
     private static String upperFirst(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
     }
 
     private static String lowerFirst(String name) {
-        return name.substring(0, 1).toLowerCase() + name.substring(1);
+        return name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
     }
 
     public static String toConstant(String name) {
         String regex = "([a-z])([A-Z]+)";
         String replacement = "$1_$2";
-        return name.replaceAll(regex, replacement).toUpperCase();
+        return name.replaceAll(regex, replacement).toUpperCase(Locale.ENGLISH);
     }
 
     public static String getIdentifier(String s) {
         if (javaReservedWords.contains(s.toLowerCase())) {
-            return s.toLowerCase() + "_";
-        } else if (s.toUpperCase().equals(s)) {
+            return s.toLowerCase(Locale.ENGLISH) + "_";
+        } else if (s.toUpperCase(Locale.ENGLISH).equals(s)) {
             return s;
         } else {
             return lowerFirst(s);

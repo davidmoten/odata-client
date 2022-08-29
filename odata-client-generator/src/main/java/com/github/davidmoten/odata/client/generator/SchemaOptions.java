@@ -19,7 +19,7 @@ public class SchemaOptions {
     public final boolean failOnMissingEntitySet;
     
     // TODO make configurable
-    private final String packageSuffixComplexTypeCollectionRequest = ".complex.collection.request";
+    private static final String PACKAGE_SUFFIX_COMPLEX_TYPE_COLLECTION_REQUEST = ".complex.collection.request";
 
     public SchemaOptions(String namespace, String pkg, String packageSuffixEnum,
             String packageSuffixEntity, String packageSuffixComplexType,
@@ -99,7 +99,7 @@ public class SchemaOptions {
     }
 
     public String packageSuffixComplexTypeCollectionRequest() {
-        return packageSuffixComplexTypeCollectionRequest;
+        return PACKAGE_SUFFIX_COMPLEX_TYPE_COLLECTION_REQUEST;
     }
 
     public String packageSuffixEntitySet() {
