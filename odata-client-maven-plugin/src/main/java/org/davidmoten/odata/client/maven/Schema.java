@@ -14,7 +14,6 @@ public class Schema {
     public String simpleClassNameSchema = "SchemaInfo";
     public String collectionRequestClassSuffix = "CollectionRequest";
     public String entityRequestClassSuffix = "Request";
-    public String actionRequestClassSuffix = "ActionRequest";
     public boolean pageComplexTypes = true;
     public boolean failOnMissingEntitySet = true;
 

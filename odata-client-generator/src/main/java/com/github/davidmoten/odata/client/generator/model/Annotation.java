@@ -43,7 +43,7 @@ public final class Annotation {
                 .filter(x -> x instanceof TRecordExpression) //
                 .map(x -> (TRecordExpression) x) //
                 .flatMap(x -> Util.filter(x.getPropertyValueOrAnnotation(), TPropertyValue.class)) //
-                .filter(x -> x.getEnumMember() != null && !x.getEnumMember().isEmpty()) //
+                .filter(x -> !x.getEnumMember().isEmpty()) //
                 .map(x -> x.getProperty() + " = " + toString(x.getEnumMember())) //
                 .collect(Collectors.toList());
         bools.addAll(enums);

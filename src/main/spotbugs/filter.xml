@@ -36,4 +36,8 @@
         <Class name="com.github.davidmoten.odata.client.generator.model.Action$Parameter"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
+    <Match>
+        <Class name="com.github.davidmoten.odata.client.generator.model.Function$Parameter"/>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
 </FindBugsFilter>

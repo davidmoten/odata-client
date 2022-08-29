@@ -68,7 +68,7 @@ public class GeneratorMojo extends AbstractMojo {
                         s.packageSuffixContainer,
                         s.packageSuffixSchema, s.simpleClassNameSchema,
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix,
-                        s.actionRequestClassSuffix, s.pageComplexTypes, //
+                        s.pageComplexTypes, //
                         s.failOnMissingEntitySet))
                 .collect(Collectors.toList());
 

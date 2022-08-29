@@ -77,6 +77,7 @@ public final class Function implements Method {
         private final String nameJava;
         public final String importedFullClassName;
 
+        //TODO use isCollection
         public final boolean isCollection;
         public final String typeWithNamespace;
         private final boolean isNullable;
