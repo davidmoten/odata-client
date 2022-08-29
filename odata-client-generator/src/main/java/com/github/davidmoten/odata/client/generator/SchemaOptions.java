@@ -13,13 +13,11 @@ public class SchemaOptions {
     public final String simpleClassNameSchema;
     public final String collectionRequestClassSuffix;
     public final String entityRequestClassSuffix;
-
-    public final String actionRequestClassSuffix;
     public final boolean pageComplexTypes;
     public final boolean failOnMissingEntitySet;
     
     // TODO make configurable
-    private final String packageSuffixComplexTypeCollectionRequest = ".complex.collection.request";
+    private static final String PACKAGE_SUFFIX_COMPLEX_TYPE_COLLECTION_REQUEST = ".complex.collection.request";
 
     public SchemaOptions(String namespace, String pkg, String packageSuffixEnum,
             String packageSuffixEntity, String packageSuffixComplexType,
@@ -27,7 +25,7 @@ public class SchemaOptions {
             String packageSuffixContainer,
             String packageSuffixSchema, String simpleClassNameSchema,
             String collectionRequestClassSuffix, String entityRequestClassSuffix,
-            String actionRequestClassSuffix, boolean pageComplexTypes, boolean failOnMissingEntitySet) {
+            boolean pageComplexTypes, boolean failOnMissingEntitySet) {
         this.namespace = namespace;
         this.pkg = pkg;
         this.packageSuffixEnum = packageSuffixEnum;
@@ -40,14 +38,13 @@ public class SchemaOptions {
         this.simpleClassNameSchema = simpleClassNameSchema;
         this.collectionRequestClassSuffix = collectionRequestClassSuffix;
         this.entityRequestClassSuffix = entityRequestClassSuffix;
-        this.actionRequestClassSuffix = actionRequestClassSuffix;
         this.pageComplexTypes = pageComplexTypes;
         this.failOnMissingEntitySet = failOnMissingEntitySet;
     }
 
     public SchemaOptions(String namespace, String pkg) {
         this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request",
-                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", "ActionRequest", true, true);
+                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", true, true);
     }
 
     public String pkg() {
@@ -99,7 +96,7 @@ public class SchemaOptions {
     }
 
     public String packageSuffixComplexTypeCollectionRequest() {
-        return packageSuffixComplexTypeCollectionRequest;
+        return PACKAGE_SUFFIX_COMPLEX_TYPE_COLLECTION_REQUEST;
     }
 
     public String packageSuffixEntitySet() {

@@ -6,35 +6,35 @@ public final class ClientException extends RuntimeException {
 
     private static final long serialVersionUID = -2373424382425163041L;
     
-    private final Optional<Integer> statusCode;
+    private final Integer statusCode;
 
     public ClientException(int statusCode, String message) {
         super(message);
-        this.statusCode = Optional.of(statusCode);
+        this.statusCode = statusCode;
     }
     
     public ClientException(String message) {
         super(message);
-        this.statusCode = Optional.empty();
+        this.statusCode = null;
     }
 
     public ClientException(Throwable e) {
         super(e);
-        this.statusCode = Optional.empty();
+        this.statusCode = null;
     }
 
     public ClientException(int statusCode, Throwable e) {
         super(e);
-        this.statusCode = Optional.of(statusCode);
+        this.statusCode = statusCode;
     }
     
     public ClientException(String message, Throwable e) {
         super(message, e);
-        this.statusCode = Optional.empty();
+        this.statusCode = null;
     }
 
     public Optional<Integer> getStatusCode() {
-        return statusCode;
+        return Optional.ofNullable(statusCode);
     }
     
     /**

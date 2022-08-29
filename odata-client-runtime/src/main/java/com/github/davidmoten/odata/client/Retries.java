@@ -74,27 +74,31 @@ public final class Retries {
     public Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf() {
         return keepGoingIf;
     }
+    
+    private static final class ForeverZero implements Iterable<Long> {
+        @Override
+        public Iterator<Long> iterator() {
+            return new ForeverZeroIterator(); 
+        }
+    }
 
+    private static final class ForeverZeroIterator implements Iterator<Long> {
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public Long next() {
+            return 0L;
+        }
+    }
+    
     public static final class Builder {
 
-        private static final Iterable<Long> NO_INTERVAL = new Iterable<Long>() {
-
-            @Override
-            public Iterator<Long> iterator() {
-                return new Iterator<Long>() {
-
-                    @Override
-                    public boolean hasNext() {
-                        return true;
-                    }
-
-                    @Override
-                    public Long next() {
-                        return 0L;
-                    }
-                };
-            }
-        };
+        private static final Iterable<Long> NO_INTERVAL = new ForeverZero();
+        
         private long maxRetries = 0;
         private Iterable<Long> retryIntervalsMs = NO_INTERVAL;
         private Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf = () -> (t -> !(t instanceof Error));
@@ -123,7 +127,11 @@ public final class Retries {
         }
 
         public Builder retryIntervals(Iterable<Long> retryIntervals, TimeUnit unit) {
-            return retryIntervalsMs(new Iterable<Long>() {
+            return retryIntervalsMs(createRetryIntervalMsIterable(retryIntervals, unit));
+        }
+
+        private static Iterable<Long> createRetryIntervalMsIterable(Iterable<Long> retryIntervals, TimeUnit unit) {
+            return new Iterable<Long>() {
 
                 @Override
                 public Iterator<Long> iterator() {
@@ -141,7 +149,7 @@ public final class Retries {
                         }
                     };
                 }
-            });
+            };
         }
 
         public Builder cappedExponentialRetry(long initial, double factor, long cap, TimeUnit unit) {
@@ -149,7 +157,11 @@ public final class Retries {
             Preconditions.checkArgument(factor >= 0);
             Preconditions.checkArgument(cap >= 0);
             Preconditions.checkNotNull(unit);
-            return retryIntervalsMs(new Iterable<Long>() {
+            return retryIntervalsMs(createCappedExponentialRetryIterable(initial, factor, cap, unit));
+        }
+        
+        private static Iterable<Long> createCappedExponentialRetryIterable(long initial, double factor, long cap, TimeUnit unit) {
+            return new Iterable<Long>() {
                 @Override
                 public Iterator<Long> iterator() {
                     return new Iterator<Long>() {
@@ -169,7 +181,7 @@ public final class Retries {
                         }
                     };
                 }
-            });
+            };
         }
 
         public Retries build() {

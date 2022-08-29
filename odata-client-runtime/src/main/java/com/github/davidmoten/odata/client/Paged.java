@@ -59,14 +59,12 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
             }
 
             private void loadNext() {
-                if (page != null) {
-                    while (true) {
-                        if (page != null && i == page.currentPage().size()) {
-                            page = page.nextPage().orElse(null);
-                            i = 0;
-                        } else {
-                            break;
-                        }
+                while (true) {
+                    if (page != null && i == page.currentPage().size()) {
+                        page = page.nextPage().orElse(null);
+                        i = 0;
+                    } else {
+                        break;
                     }
                 }
             }

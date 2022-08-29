@@ -191,17 +191,15 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
             }
 
             private void loadNext() {
-                if (page != null) {
-                    while (true) {
-                        if (page != null && i == page.currentPage().size()) {
-                            page = page.nextPage().orElse(null);
-                            if (page != null) {
-                                deltaLink = page.deltaLink();
-                            }
-                            i = 0;
-                        } else {
-                            break;
+                while (true) {
+                    if (page != null && i == page.currentPage().size()) {
+                        page = page.nextPage().orElse(null);
+                        if (page != null) {
+                            deltaLink = page.deltaLink();
                         }
+                        i = 0;
+                    } else {
+                        break;
                     }
                 }
             }

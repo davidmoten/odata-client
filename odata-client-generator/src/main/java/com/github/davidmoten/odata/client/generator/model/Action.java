@@ -85,6 +85,7 @@ public final class Action implements Method {
         private final String nameJava;
         public final String importedFullClassName;
 
+        //TODO support Collection parameters?
         public final boolean isCollection;
         public final String typeWithNamespace;
 

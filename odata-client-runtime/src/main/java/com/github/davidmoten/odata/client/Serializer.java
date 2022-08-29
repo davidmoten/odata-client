@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -227,9 +228,9 @@ public final class Serializer {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = m.convertValue(o, HashMap.class);
             UnmappedFieldsImpl u = new UnmappedFieldsImpl();
-            for (String fieldName: map.keySet()) {
-                if (!COLLECTION_PAGE_FIELDS.contains(fieldName)) {
-                    u.put(fieldName, map.get(fieldName));
+            for (Entry<String, Object> entry: map.entrySet()) {
+                if (!COLLECTION_PAGE_FIELDS.contains(entry.getKey())) {
+                    u.put(entry.getKey(), entry.getValue());
                 }
             }
             return new CollectionInfo<T>(list, nextLink, deltaLink, u);
