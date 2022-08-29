@@ -6,4 +6,8 @@
             <Bug pattern="EI_EXPOSE_REP2" />
         </Or>
     </Match>
+    <Match>
+        <Class name="com.github.davidmoten.odata.client.CollectionPage"/>
+        <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" /> 
+    </Match>
 </FindBugsFilter>
