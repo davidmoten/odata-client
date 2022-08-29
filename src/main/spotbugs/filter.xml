@@ -40,4 +40,8 @@
         <Class name="com.github.davidmoten.odata.client.generator.model.Function$Parameter"/>
         <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
     </Match>
+    <Match>
+        <Class name="org.davidmoten.odata.client.maven.GeneratorMojo"/>
+        <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
 </FindBugsFilter>
