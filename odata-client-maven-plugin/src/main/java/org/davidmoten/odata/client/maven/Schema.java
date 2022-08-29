@@ -2,7 +2,7 @@ package org.davidmoten.odata.client.maven;
 
 public class Schema {
 
-    public String namespace;
+    public String namespace = "unspecified";
     public String packageName = "generated";
     public String packageSuffixEnum = ".enums";
     public String packageSuffixEntity = ".entity";
