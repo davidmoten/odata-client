@@ -14,4 +14,7 @@
         <Class name="com.github.davidmoten.odata.client.HttpMethod"/>
         <Bug pattern="MS_EXPOSE_REP"/>
     </Match>
+    <Match>
+        <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+    </Match>
 </FindBugsFilter>

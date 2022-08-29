@@ -74,27 +74,31 @@ public final class Retries {
     public Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf() {
         return keepGoingIf;
     }
+    
+    private static final class ForeverZero implements Iterable<Long> {
+        @Override
+        public Iterator<Long> iterator() {
+            return new ForeverZeroIterator(); 
+        }
+    }
 
+    private static final class ForeverZeroIterator implements Iterator<Long> {
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public Long next() {
+            return 0L;
+        }
+    }
+    
     public static final class Builder {
 
-        private static final Iterable<Long> NO_INTERVAL = new Iterable<Long>() {
-
-            @Override
-            public Iterator<Long> iterator() {
-                return new Iterator<Long>() {
-
-                    @Override
-                    public boolean hasNext() {
-                        return true;
-                    }
-
-                    @Override
-                    public Long next() {
-                        return 0L;
-                    }
-                };
-            }
-        };
+        private static final Iterable<Long> NO_INTERVAL = new ForeverZero();
+        
         private long maxRetries = 0;
         private Iterable<Long> retryIntervalsMs = NO_INTERVAL;
         private Supplier<? extends Function<? super Throwable, Boolean>> keepGoingIf = () -> (t -> !(t instanceof Error));
@@ -155,7 +159,7 @@ public final class Retries {
             Preconditions.checkNotNull(unit);
             return retryIntervalsMs(createCappedExponentialRetryIterable(initial, factor, cap, unit));
         }
-
+        
         private static Iterable<Long> createCappedExponentialRetryIterable(long initial, double factor, long cap, TimeUnit unit) {
             return new Iterable<Long>() {
                 @Override
