@@ -51,8 +51,8 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter(name = "pageComplexTypes", required = false, defaultValue = "true")
     boolean pageComplexTypes;
     
-    @Parameter(name="enumDefaultValues", required = false) 
-    List<String> enumDefaultValues;
+    @Parameter(name="enumDefaultValue", required = false) 
+    List<String> enumDefaultValue;
 
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
@@ -65,8 +65,8 @@ public class GeneratorMojo extends AbstractMojo {
         if (schemas == null) {
             schemas = Collections.emptyList();
         }
-        if (enumDefaultValues == null) {
-            enumDefaultValues = Collections.emptyList();
+        if (enumDefaultValue == null) {
+            enumDefaultValue = Collections.emptyList();
         }
         List<SchemaOptions> schemaOptionsList = schemas.stream()
                 .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum,
@@ -77,7 +77,7 @@ public class GeneratorMojo extends AbstractMojo {
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix,
                         s.pageComplexTypes, //
                         s.failOnMissingEntitySet, 
-                        new HashSet<>(enumDefaultValues)))
+                        new HashSet<>(enumDefaultValue)))
                 .collect(Collectors.toList());
 
         InputStream is = null;
