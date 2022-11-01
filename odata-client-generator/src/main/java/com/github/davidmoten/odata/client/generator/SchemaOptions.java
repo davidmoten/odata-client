@@ -109,5 +109,9 @@ public class SchemaOptions {
         // TODO make configurable
         return packageSuffixEntity() + ".set";
     }
+    
+    public Set<String> enumDefaultValues() {
+        return enumDefaultValues;
+    }
 
 }

@@ -39,6 +39,7 @@ import org.oasisopen.odata.csdl.v4.TSingleton;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -492,10 +493,16 @@ public final class Generator {
 				// add members
 				indent.right();
 				String s = Util.filter(t.getMemberOrAnnotation(), TEnumTypeMember.class) //
-						.map(x -> String.format("%s@%s(\"%s\")\n%s%s(\"%s\", \"%s\")", //
+						.map(x -> String.format("%s@%s(\"%s\")%s\n%s%s(\"%s\", \"%s\")", //
 								indent, //
 								imports.add(JsonProperty.class), //
 								x.getName(), //
+								names //
+	                                    .getOptions(schema) //
+	                                    .enumDefaultValues() //
+	                                    .contains(x.getName()) ?  //
+	                                        String.format("\n%s@%s", indent, imports.add(JsonEnumDefaultValue.class)) //
+	                                        : "", 
 								indent, //
 								names.getEnumInstanceName(t, x.getName()), //
 								x.getName(), //
