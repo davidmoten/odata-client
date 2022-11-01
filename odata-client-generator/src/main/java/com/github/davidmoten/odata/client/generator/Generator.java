@@ -493,20 +493,15 @@ public final class Generator {
 				// add members
 				indent.right();
 				String s = Util.filter(t.getMemberOrAnnotation(), TEnumTypeMember.class) //
-						.map(x -> String.format("%s@%s(\"%s\")%s\n%s%s(\"%s\", \"%s\")", //
-								indent, //
-								imports.add(JsonProperty.class), //
-								x.getName(), //
-								names //
-	                                    .getOptions(schema) //
-	                                    .enumDefaultValues() //
-	                                    .contains(x.getName()) ?  //
-	                                        String.format("\n%s@%s", indent, imports.add(JsonEnumDefaultValue.class)) //
-	                                        : "", 
-								indent, //
-								names.getEnumInstanceName(t, x.getName()), //
-								x.getName(), //
-								x.getValue()))
+                        .map(x -> String.format("%s@%s(\"%s\")%s\n%s%s(\"%s\", \"%s\")", //
+                                indent, //
+                                imports.add(JsonProperty.class), //
+                                x.getName(), //
+                                jsonEnumDefaultValueAnnotation(schema, imports, indent, x),
+                                indent, //
+                                names.getEnumInstanceName(t, x.getName()), //
+                                x.getName(), //
+                                x.getValue()))
 						.collect(Collectors.joining(",\n\n"));
 				indent.left();
 				p.format("\n%s;\n\n", s);
@@ -542,6 +537,16 @@ public final class Generator {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private String jsonEnumDefaultValueAnnotation(Schema schema, Imports imports, Indent indent, TEnumTypeMember x) {
+        return names //
+                .getOptions(schema) //
+                .enumDefaultValues() //
+                .contains(x.getName()) ? //
+                        String.format("\n%s@%s", indent,
+                                imports.add(JsonEnumDefaultValue.class)) //
+                        : "";
+    }
 
 	private void writeEntity(TEntityType entityType, Map<String, List<Action>> typeActions,
 			Map<String, List<Function>> typeFunctions) {
