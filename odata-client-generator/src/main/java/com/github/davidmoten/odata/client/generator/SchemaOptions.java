@@ -1,5 +1,8 @@
 package com.github.davidmoten.odata.client.generator;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class SchemaOptions {
     public final String namespace;
     public final String pkg;
@@ -15,6 +18,7 @@ public class SchemaOptions {
     public final String entityRequestClassSuffix;
     public final boolean pageComplexTypes;
     public final boolean failOnMissingEntitySet;
+    public final Set<String> enumDefaultValues;
     
     // TODO make configurable
     private static final String PACKAGE_SUFFIX_COMPLEX_TYPE_COLLECTION_REQUEST = ".complex.collection.request";
@@ -25,7 +29,8 @@ public class SchemaOptions {
             String packageSuffixContainer,
             String packageSuffixSchema, String simpleClassNameSchema,
             String collectionRequestClassSuffix, String entityRequestClassSuffix,
-            boolean pageComplexTypes, boolean failOnMissingEntitySet) {
+            boolean pageComplexTypes, boolean failOnMissingEntitySet, //
+            Set<String> enumDefaultValues) {
         this.namespace = namespace;
         this.pkg = pkg;
         this.packageSuffixEnum = packageSuffixEnum;
@@ -40,11 +45,12 @@ public class SchemaOptions {
         this.entityRequestClassSuffix = entityRequestClassSuffix;
         this.pageComplexTypes = pageComplexTypes;
         this.failOnMissingEntitySet = failOnMissingEntitySet;
+        this.enumDefaultValues = enumDefaultValues;
     }
 
     public SchemaOptions(String namespace, String pkg) {
         this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request",
-                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", true, true);
+                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", true, true, Collections.emptySet());
     }
 
     public String pkg() {
@@ -102,6 +108,10 @@ public class SchemaOptions {
     public String packageSuffixEntitySet() {
         // TODO make configurable
         return packageSuffixEntity() + ".set";
+    }
+    
+    public Set<String> enumDefaultValues() {
+        return enumDefaultValues;
     }
 
 }

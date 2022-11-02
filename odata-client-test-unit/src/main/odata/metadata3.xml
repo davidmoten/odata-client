@@ -12,6 +12,7 @@
                 <Member Name="thursday" Value="4" />
                 <Member Name="friday" Value="5" />
                 <Member Name="saturday" Value="6" />
+                <Member Name="futureValue" Value="7" />
             </EnumType>
         </Schema>
         <Schema Namespace="Test3.B"

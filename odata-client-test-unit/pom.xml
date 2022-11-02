@@ -87,6 +87,9 @@
                         </goals>
                         <configuration>
                             <metadata>src/main/odata/metadata3.xml</metadata>
+                            <enumDefaultValues>
+                               <enumDefaultValue>futureValue</enumDefaultValue>
+                            </enumDefaultValues>
                             <schemas>
                                 <schema>
                                     <namespace>Test3.A</namespace>

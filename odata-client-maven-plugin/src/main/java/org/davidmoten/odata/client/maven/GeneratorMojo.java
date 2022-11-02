@@ -6,19 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.lang.model.SourceVersion;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -31,6 +29,9 @@ import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.generator.Generator;
 import com.github.davidmoten.odata.client.generator.Options;
 import com.github.davidmoten.odata.client.generator.SchemaOptions;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GeneratorMojo extends AbstractMojo {
@@ -49,17 +50,23 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Parameter(name = "pageComplexTypes", required = false, defaultValue = "true")
     boolean pageComplexTypes;
+    
+    @Parameter(name="enumDefaultValues", required = false) 
+    List<String> enumDefaultValues;
 
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
 
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     MavenProject project;
 
     @Override
     public void execute() throws MojoExecutionException {
         if (schemas == null) {
             schemas = Collections.emptyList();
+        }
+        if (enumDefaultValues == null) {
+            enumDefaultValues = Collections.emptyList();
         }
         List<SchemaOptions> schemaOptionsList = schemas.stream()
                 .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum,
@@ -69,7 +76,8 @@ public class GeneratorMojo extends AbstractMojo {
                         s.packageSuffixSchema, s.simpleClassNameSchema,
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix,
                         s.pageComplexTypes, //
-                        s.failOnMissingEntitySet))
+                        s.failOnMissingEntitySet, 
+                        new HashSet<>(enumDefaultValues)))
                 .collect(Collectors.toList());
 
         InputStream is = null;
@@ -78,6 +86,7 @@ public class GeneratorMojo extends AbstractMojo {
             if (cis == null) {
                 File metadataFile = new File(metadata);
                 System.out.println("metadataFile = " + metadataFile.getAbsolutePath());
+                System.out.println("enumDefaultValues = " + enumDefaultValues);
                 if (metadataFile.exists()) {
                     is = new FileInputStream(metadataFile);
                 } else {

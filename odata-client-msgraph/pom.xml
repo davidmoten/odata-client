@@ -67,6 +67,9 @@
                         </goals>
                         <configuration>
                             <metadata>../odata-client-generator/src/main/odata/msgraph-metadata.xml</metadata>
+                            <enumDefaultValues>
+                                <enumDefaultValue>unknownFutureValue</enumDefaultValue>
+                            </enumDefaultValues>
                             <schemas>
                                 <schema>
                                     <namespace>microsoft.graph</namespace>
