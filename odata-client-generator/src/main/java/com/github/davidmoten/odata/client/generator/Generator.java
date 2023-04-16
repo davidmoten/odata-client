@@ -1269,10 +1269,10 @@ public final class Generator {
 				.map(z -> {
 					if (key.getPropertyRefs().size() > 1) {
 						return String.format("new %s(\"%s\", %s, %s.class)", imports.add(NameValue.class), z.getName(),
-								z.getFieldName(), imports.add(z.getType()));
+								z.getFieldName(), z.getImportedType(imports));
 					} else {
                         return String.format("new %s(%s, %s.class)", imports.add(NameValue.class), z.getFieldName(),
-                                imports.add(z.getType()));
+                                z.getImportedType(imports));
 					}
 				}) //
 				.collect(Collectors.joining(", "));

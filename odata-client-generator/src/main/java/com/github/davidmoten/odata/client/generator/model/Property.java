@@ -32,8 +32,4 @@ public final class Property {
         return p.getName();
     }
 
-    public Class<?> getType() {
-        return EdmSchemaInfo.INSTANCE.getClassFromTypeWithNamespace(p.getType().get(0));
-    }
-    
 }
