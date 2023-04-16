@@ -44,6 +44,11 @@ public class PathTest {
 
     @Test
     public void testPathDelimiterAppliedWhenStyleIsRoundBrackets() {
-        assertEquals("http://base(age%3D23%2Cheight%3D186)", a.addKeys(new NameValue("age", "23"), new NameValue("height", "186")).toString());
+        assertEquals("http://base(age%3D23%2Cheight%3D186)", a.addKeys(new NameValue("age", "23", Integer.class), new NameValue("height", "186", Long.class)).toString());
+    }
+    
+    @Test
+    public void testPathDelimiterAppliedWhenStyleIsRoundBracketsAndValueHasQuote() {
+        assertEquals("http://base(age%3D23%2Csurname%3D'O''Reilly''s')", a.addKeys(new NameValue("age", "23", Short.class), new NameValue("surname", "O'Reilly's", String.class)).toString());
     }
 }

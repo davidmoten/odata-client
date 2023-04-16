@@ -98,6 +98,7 @@ import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.generator.model.Structure.FieldName;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
 import com.github.davidmoten.odata.client.internal.Checks;
+import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 import com.github.davidmoten.odata.client.internal.ParameterMap;
 import com.github.davidmoten.odata.client.internal.RequestHelper;
 import com.github.davidmoten.odata.client.internal.TypedObject;
@@ -1267,10 +1268,11 @@ public final class Generator {
 				.map(PropertyRef::getReferredProperty) //
 				.map(z -> {
 					if (key.getPropertyRefs().size() > 1) {
-						return String.format("new %s(\"%s\", %s)", imports.add(NameValue.class), z.getName(),
-								z.getFieldName());
+						return String.format("new %s(\"%s\", %s, %s.class)", imports.add(NameValue.class), z.getName(),
+								z.getFieldName(), z.getImportedType(imports));
 					} else {
-						return String.format("new %s(%s.toString())", imports.add(NameValue.class), z.getFieldName());
+                        return String.format("new %s(%s, %s.class)", imports.add(NameValue.class), z.getFieldName(),
+                                z.getImportedType(imports));
 					}
 				}) //
 				.collect(Collectors.joining(", "));

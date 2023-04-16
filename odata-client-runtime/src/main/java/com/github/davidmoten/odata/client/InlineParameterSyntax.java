@@ -24,7 +24,7 @@ final class InlineParameterSyntax {
     // Edm.SByte -> byte
     // Edm.Single -> Float
     // Edm.Double -> Double
-    // Edm.Guid -> String
+    // Edm.Guid -> UUID
     // Edm.Int64 -> Long
     // Edm.Binary -> byte[]
     // null then contains Base64 content otherwise another field has the url

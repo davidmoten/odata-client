@@ -4,6 +4,7 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
+import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Property {
 
@@ -22,7 +23,7 @@ public final class Property {
     public String getImportedType(Imports imports) {
         return names.toImportedFullClassName(p, imports);
     }
-
+    
     public String getFieldName() {
         return Names.getIdentifier(p.getName());
     }
