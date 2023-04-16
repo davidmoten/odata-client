@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import com.github.davidmoten.odata.client.SchemaInfo;
 import com.github.davidmoten.odata.client.edm.GeographyPoint;
@@ -34,7 +35,7 @@ public enum EdmSchemaInfo implements SchemaInfo {
         map.put("Edm.SByte", byte.class);
         map.put("Edm.Single", Float.class);
         map.put("Edm.Double", Double.class);
-        map.put("Edm.Guid", String.class);
+        map.put("Edm.Guid", UUID.class);
         map.put("Edm.Int64", Long.class);
         map.put("Edm.Binary", byte[].class);
 

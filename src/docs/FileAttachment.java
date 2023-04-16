@@ -164,7 +164,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
     @Override
     public void postInject(boolean addKeysToContextPath) {
         if (addKeysToContextPath && id != null) {
-            contextPath = contextPath.clearQueries().addKeys(new NameValue(id.toString()));
+            contextPath = contextPath.clearQueries().addKeys(new NameValue(id, String.class));
         }
     }
 

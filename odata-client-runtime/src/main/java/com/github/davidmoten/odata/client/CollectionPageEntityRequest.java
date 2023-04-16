@@ -60,8 +60,8 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         return RequestHelper.post(entity, contextPath, cls, options);
     }
 
-    public R id(String id) {
-        return entityRequestFactory.create(contextPath.addKeys(new NameValue(id)));
+    public R id(Object id) {
+        return entityRequestFactory.create(contextPath.addKeys(new NameValue(id, Object.class)));
     }
 
     public CollectionPage<T> get() {

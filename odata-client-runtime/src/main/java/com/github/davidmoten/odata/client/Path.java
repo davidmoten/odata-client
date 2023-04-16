@@ -33,21 +33,21 @@ public class Path {
         return style;
     }
 
-    private String append(String url, String s) {
-        return url + encode(s);
+    private static String append(String url, String s) {
+        return url + encode(s.toString());
     }
-    
+
     public Path addSegment(String segment) {
         String u = url;
         u = addSegmentDelimiter(u);
         u = append(u, segment);
         return new Path(u, queries, style);
     }
-    
+
     public Path appendToSegment(String s) {
         return new Path(url + encode(s), queries, style);
     }
-    
+
     private static String addSegmentDelimiter(String url) {
         if (url.charAt(url.length() - 1) != '/') {
             return url + '/';
@@ -67,10 +67,11 @@ public class Path {
                     if (!first) {
                         u = append(u, ",");
                     }
+                    String primitiveLiteral = primitiveLiteral(key.value(), key.cls());
                     if (keys.length == 1) {
-                        u = append(u, key.value());
+                        u = append(u, primitiveLiteral);
                     } else {
-                        u = append(u, key.name().map(x -> x + "=").orElse("") + key.value());
+                        u = append(u, key.name().map(x -> x + "=").orElse("") + primitiveLiteral);
                     }
                     first = false;
                 }
@@ -81,11 +82,27 @@ public class Path {
                 for (NameValue key : keys) {
                     Preconditions.checkNotNull(key);
                     u = addSegmentDelimiter(u);
-                    u = append(u, key.value());
+                    u = append(u, key.value(), key.cls());
                 }
             }
         }
         return new Path(u, queries, style);
+    }
+
+    private String append(String u, Object value, Class<?> cls) {
+        Preconditions.checkNotNull(value);
+        return value.toString();
+    }
+
+    private static String primitiveLiteral(Object value, Class<?> cls) {
+        if (value == null) {
+            return "null";
+        } else if (cls.equals(String.class)) {
+            return "'" + value.toString().replace("'", "''") + "'";
+        } else {
+            // TODO format ?
+            return value.toString();
+        }
     }
 
     public Path addQuery(String key, String value) {
