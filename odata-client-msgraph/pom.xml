@@ -87,6 +87,10 @@
                                     <namespace>microsoft.graph.security</namespace>
                                     <packageName>odata.msgraph.client.security</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.industryData</namespace>
+                                    <packageName>odata.msgraph.client.industrydata</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

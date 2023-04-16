@@ -22,3 +22,4 @@ sed -i 's/<NavigationPropertyBinding Path="sites\/contentTypes\/columns\/term\/t
 
 ## remove bad targets 
 sed -i 's/^.*NavigationPropertyBinding.*sites\/contentTypes\/.*$/<!-- remove dodgy NavigationPropertyBinding with non-existent target -->/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
+sed -i 's/^.*NavigationPropertyBinding.*Target="policies\/appManagementPolicies".*$/<!-- remove dodgy NavigationPropertyBinding with non-existent target -->/g' ../odata-client-generator/src/main/odata/msgraph-metadata.xml
