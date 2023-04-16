@@ -67,6 +67,7 @@ public class Path {
                     if (!first) {
                         u = append(u, ",");
                     }
+                    // as per odata 4.01 ABNF https://docs.oasis-open.org/odata/odata/v4.01/os/abnf/odata-abnf-construction-rules.txt
                     String primitiveLiteral = primitiveLiteral(key.value(), key.cls());
                     if (keys.length == 1) {
                         u = append(u, primitiveLiteral);
@@ -91,7 +92,7 @@ public class Path {
 
     private String append(String u, Object value, Class<?> cls) {
         Preconditions.checkNotNull(value);
-        //TODO toString for different types?
+        // TODO don't expect null values here, explanation would be nice
         return u + encode(value.toString());
     }
 
@@ -101,7 +102,8 @@ public class Path {
         } else if (cls.equals(String.class)) {
             return "'" + value.toString().replace("'", "''") + "'";
         } else {
-            // TODO format ?
+            // By great luck all the OffsetDateTime, LocalDate, LocalTime, Duration, UUID toString methods give us
+            // the format that we want (see EdmSchemaInfo.java for list of Edm schema java types)
             return value.toString();
         }
     }
