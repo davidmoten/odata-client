@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -1176,6 +1177,7 @@ public class GraphServiceTest {
     
     @Test
     public void testNPEInRemovePasswordIssue123() {
+        System.out.println(UUID.randomUUID());
         GraphService client = clientBuilder() //
                 .expectRequest("/applications/abc/removePassword") //
                 .withMethod(HttpMethod.POST) //
@@ -1185,7 +1187,7 @@ public class GraphServiceTest {
                         RequestHeader.ACCEPT_JSON) //
                 .withResponse("/empty.txt") //
                 .build();
-        client.applications("abc").removePassword("123").call();
+        client.applications("abc").removePassword(UUID.fromString("7cd52bf2-8157-47bf-96fc-1913ca99db4c")).call();
     }
     
     @Test
@@ -1304,4 +1306,5 @@ public class GraphServiceTest {
                 .addProperties(MicrosoftClientBuilder.createProperties());
     }
 
+    
 }

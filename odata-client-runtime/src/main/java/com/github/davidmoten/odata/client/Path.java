@@ -91,7 +91,8 @@ public class Path {
 
     private String append(String u, Object value, Class<?> cls) {
         Preconditions.checkNotNull(value);
-        return value.toString();
+        //TODO toString for different types?
+        return u + encode(value.toString());
     }
 
     private static String primitiveLiteral(Object value, Class<?> cls) {
