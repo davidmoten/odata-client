@@ -205,7 +205,7 @@ public final class Names {
         if (name.equalsIgnoreCase("class")) {
             name = "cls";
         }
-        if (javaReservedWords.contains(name)) {
+        if (javaReservedWords.contains(name.toLowerCase(Locale.ENGLISH))) {
             name += "_";
         }
         return lowerFirst(name);
