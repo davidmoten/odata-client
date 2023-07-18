@@ -45,7 +45,9 @@ public class GeneratorTest {
                 "microsoft.graph.security");
         SchemaOptions o7 = new SchemaOptions("microsoft.graph.industryData", 
                         "microsoft.graph.industrydata");
-        Options options = new Options(GENERATED, Lists.newArrayList(o1, o2, o3, o4, o5, o6, o7));
+        SchemaOptions o8 = new SchemaOptions("microsoft.graph.identityGovernance", 
+                "microsoft.graph.identitygovernance");
+        Options options = new Options(GENERATED, Lists.newArrayList(o1, o2, o3, o4, o5, o6, o7, o8));
         Generator g = new Generator(options,
                 t.getDataServices().getSchema());
         g.generate();

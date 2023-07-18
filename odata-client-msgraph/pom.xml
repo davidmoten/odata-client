@@ -91,6 +91,10 @@
                                     <namespace>microsoft.graph.industryData</namespace>
                                     <packageName>odata.msgraph.client.industrydata</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.identityGovernance</namespace>
+                                    <packageName>odata.msgraph.client.identitygovernance</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>
