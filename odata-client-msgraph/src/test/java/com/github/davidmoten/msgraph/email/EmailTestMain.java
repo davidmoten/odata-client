@@ -1,16 +1,18 @@
 package com.github.davidmoten.msgraph.email;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import com.github.davidmoten.msgraph.Email;
+import com.github.davidmoten.msgraph.Email.DraftMessage;
 import com.github.davidmoten.msgraph.MsGraph;
 
 import odata.msgraph.client.container.GraphService;
-import odata.msgraph.client.entity.Attachment;
-import odata.msgraph.client.entity.FileAttachment;
+import odata.msgraph.client.enums.BodyType;
 
 public class EmailTestMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         String tenantName = System.getProperty("tenant");
         String mailbox = System.getProperty("mailbox");
         String clientId = System.getProperty("clientId");
@@ -24,13 +26,15 @@ public class EmailTestMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
 
-        client.users(mailbox) //
-                .mailFolders("inbox") //
-                .messages() //
-                .stream() //
-                .limit(10) //
-                .forEach(x -> System.out
-                        .println(x.getSubject().orElse("unknown subject") + "\n" + x.getId().orElse("")));
+        DraftMessage message = Email
+            .mailbox(mailbox) 
+            .subject("hi there " + new Date())
+            .bodyType(BodyType.TEXT)
+            .body("hello there how are you")
+            .to("me@gmail.com")
+            .create(client);
+        
+        message.send();
+        message.send();
     }
-
 }
