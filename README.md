@@ -581,7 +581,7 @@ Email
   .subject("hi there " + new Date())
   .bodyType(BodyType.TEXT)
   .body("hello there how are you")
-  .to("davidmoten@gmail.com")
+  .to("someone@gmail.com")
   .header("x-security-classification", "OFFICIAL")
   .attachment(file)
   .name("list.txt")
