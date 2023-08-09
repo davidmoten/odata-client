@@ -203,9 +203,39 @@ public final class Email {
             Preconditions.checkNotNull(file);
             return new BuilderAttachment(this).file(file);
         }
+        
+        /**
+         * Creates a message in the drafts folder, ready to be sent. Provides the delivery guarantee usefulness of two-phase send. 
+         * Use the returned DraftMessage.send() method to send.
+         * @param client
+         * @return the created draft message
+         */
+        public DraftMessage create(GraphService client) {
+            Message message = createMessage(client);
+            return new DraftMessage(client, message, b); 
+        }
 
+        /**
+         * Creates a message in the drafts folder and sends it. If you need two-phase
+         * create and send use {@link BuilderFinal#create(GraphService)}.
+         * 
+         * @param client the client object
+         */
         public void send(GraphService client) {
             Preconditions.checkNotNull(client);
+            Message m = createMessage(client);
+            send(client, m, b);
+        }
+        
+        static void send(GraphService client, Message m, Builder b) {
+            client //
+                    .users(b.mailbox) //
+                    .messages(m.getId().get()) //
+                    .send() //
+                    .call();
+        }
+
+        private Message createMessage(GraphService client) {
             MailFolderRequest drafts = client //
                     .users(b.mailbox) //
                     .mailFolders(b.draftFolder);
@@ -300,11 +330,31 @@ public final class Email {
                     }
                 }
             }
-            client //
-                    .users(b.mailbox) //
-                    .messages(m.getId().get()) //
-                    .send() //
-                    .call();
+            return m;
+        }
+    }
+    
+    public static final class DraftMessage {
+        private final GraphService client;
+        private final Message message;
+        private final Builder b;
+
+        DraftMessage(GraphService client, Message message, Builder b) {
+            this.client = client;
+            this.message = message;
+            this.b = b;
+        }
+        
+        public String id() {
+            return message.getId().get();
+        }
+        
+        public Message message() {
+            return message;
+        }
+        
+        public void send() {
+            BuilderFinal.send(client, message, b);
         }
     }
 
