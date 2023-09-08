@@ -59,8 +59,6 @@ public final class Serializer {
 
     public static final Serializer INSTANCE = new Serializer();
 
-    private static final int JACKSON_MAX_STRING_LENGTH = 100_000_000;
-
     private Serializer() {
         // prevent instantiation
     }
@@ -83,7 +81,7 @@ public final class Serializer {
             .getFactory()
             .setStreamReadConstraints(StreamReadConstraints //
                     .builder() //
-                    .maxStringLength(JACKSON_MAX_STRING_LENGTH) //
+                    .maxStringLength(Integer.MAX_VALUE) //
                     .build());
         return m;
     }
