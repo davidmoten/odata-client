@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;
@@ -58,13 +59,15 @@ public final class Serializer {
 
     public static final Serializer INSTANCE = new Serializer();
 
+    private static final int JACKSON_MAX_STRING_LENGTH = 100_000_000;
+
     private Serializer() {
         // prevent instantiation
     }
     
     @VisibleForTesting
     static ObjectMapper createObjectMapper(boolean includeNulls) {
-        return new ObjectMapper() //
+        ObjectMapper m = new ObjectMapper() //
                 .setAnnotationIntrospector(IGNORE_JSON_INCLUDE_ANNOTATION) //
                 .registerModule(new Jdk8Module()) //
                 .registerModule(new JavaTimeModule())
@@ -74,6 +77,15 @@ public final class Serializer {
                 .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE) //
                 // StdDateFormat is ISO8601 since jackson 2.9
                 .setDateFormat(new StdDateFormat().withColonInTimeZone(true));
+        
+        // this required because in Jackson 2.15 a default stream limit of 5MB was introduced
+        m
+            .getFactory()
+            .setStreamReadConstraints(StreamReadConstraints //
+                    .builder() //
+                    .maxStringLength(JACKSON_MAX_STRING_LENGTH) //
+                    .build());
+        return m;
     }
 
     public <T> T deserialize(String text, Class<? extends T> cls, ContextPath contextPath,
