@@ -29,7 +29,7 @@ public final class Dynamics {
 
         private final Class<T> serviceCls;
         private Optional<String> baseUrl = Optional.empty();
-        private PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
+        private PathStyle pathStyle = PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS;
 
         Builder(Class<T> serviceClass) {
             Preconditions.checkNotNull(serviceClass);
