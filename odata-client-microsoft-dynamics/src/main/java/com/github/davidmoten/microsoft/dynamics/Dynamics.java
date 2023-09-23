@@ -12,6 +12,7 @@ import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HasContext;
 
+import com.github.davidmoten.odata.client.PathStyle;
 import microsoft.dynamics.crm.schema.SchemaInfo;
 
 public final class Dynamics {
@@ -28,10 +29,16 @@ public final class Dynamics {
 
         private final Class<T> serviceCls;
         private Optional<String> baseUrl = Optional.empty();
+        private PathStyle pathStyle = PathStyle.IDENTIFIERS_IN_ROUND_BRACKETS;
 
         Builder(Class<T> serviceClass) {
             Preconditions.checkNotNull(serviceClass);
             this.serviceCls = serviceClass;
+        }
+
+        public Builder<T> pathStyle(PathStyle pathStyle) {
+            this.pathStyle = pathStyle;
+            return this;
         }
 
         /**
@@ -82,6 +89,7 @@ public final class Dynamics {
                     .baseUrl(b.baseUrl.get()) //
                     .creator(creator) //
                     .addSchema(SchemaInfo.INSTANCE) //
+                    .pathStyle(b.pathStyle) //
                     .build();
         }
     }
