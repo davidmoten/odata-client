@@ -12,9 +12,12 @@ import odata.msgraph.client.enums.BodyType;
 
 public class EmailTestMain {
 
+    private static final boolean SEND = false;
+
     public static void main(String[] args) throws InterruptedException {
         String tenantName = System.getProperty("tenant");
-        String mailbox = System.getProperty("mailbox");
+        String sendMailbox = System.getProperty("sendMailbox");
+        String receiveMailbox = System.getProperty("receiveMailbox");
         String clientId = System.getProperty("clientId");
         String clientSecret = System.getProperty("clientSecret");
         GraphService client = MsGraph //
@@ -26,15 +29,29 @@ public class EmailTestMain {
                 .refreshBeforeExpiry(5, TimeUnit.MINUTES) //
                 .build();
 
-        DraftMessage message = Email
-            .mailbox(mailbox) 
-            .subject("hi there " + new Date())
-            .bodyType(BodyType.TEXT)
-            .body("hello there how are you")
-            .to("me@gmail.com")
-            .create(client);
+        DraftMessage message = Email //
+                .mailbox(sendMailbox) //
+                .subject("hi there " + new Date()) //
+                .bodyType(BodyType.TEXT) //
+                .body("hello there how are you") //
+                .to("me@gmail.com") //
+                .create(client);
         
-        message.send();
-        message.send();
+        if (SEND) {
+            message.send();
+        }
+
+        long count = client //
+                .users(receiveMailbox) //
+                .mailFolders("inbox") //
+                .messages() //
+                .filter("isRead eq false") //
+                .orderBy("createdDateTime") //
+                .stream() //
+                .limit(1000) //
+                .map(x -> x.getSubject().orElse("?")) //
+                .peek(System.out::println) //
+                .count();
+        System.out.println(count);
     }
 }
