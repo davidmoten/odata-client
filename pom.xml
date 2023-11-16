@@ -35,7 +35,7 @@
         <nexus.staging.version>1.6.13</nexus.staging.version>
 
         <jackson.version>2.15.3</jackson.version>
-        <jackson.databind.version>2.15.3</jackson.databind.version>
+        <jackson.databind.version>2.16.0</jackson.databind.version>
         <junit.version>4.13.2</junit.version>
         <olingo.version>4.10.0</olingo.version>
         <httpclient.version>4.5.14</httpclient.version>
