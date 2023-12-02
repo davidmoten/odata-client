@@ -669,22 +669,25 @@
         <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the Neutral Windows architecture type is supported."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsDeviceType">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties for Windows device type."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties for Windows device type. Multiple values can be selected. Default value is `none`."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsDeviceType/none">
-        <Annotation Term="Org.OData.Core.V1.Description" String="No flags set."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="No device types supported. Default value."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsDeviceType/desktop">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the Desktop Windows device type is supported."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Indicates support for Desktop Windows device type."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsDeviceType/mobile">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the Mobile Windows device type is supported."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Indicates support for Mobile Windows device type."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsDeviceType/holographic">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the Holographic Windows device type is supported."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Indicates support for Holographic Windows device type."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsDeviceType/team">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the Team Windows device type is supported."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Indicates support for Team Windows device type."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.windowsDeviceType/unknownFutureValue">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Evolvable enumeration sentinel value. Do not use."/>
       </Annotations>
       <Annotations Target="microsoft.graph.installState">
         <Annotation Term="Org.OData.Core.V1.Description" String="Possible values for install state."/>
@@ -3868,6 +3871,11 @@
             <PropertyValue Property="Supported" Bool="false"/>
           </Record>
         </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.DeleteRestrictions">
           <Record>
             <PropertyValue Property="Deletable" Bool="false"/>
@@ -4754,7 +4762,7 @@
         <Annotation Term="Org.OData.Core.V1.LongDescription" String="The value of this property is only available when reading an individual booking appointment by id."/>
       </Annotations>
       <Annotations Target="microsoft.graph.bookingBusiness">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Represents a Microsot Bookings Business."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Represents a Microsoft Bookings Business."/>
         <Annotation Term="Org.OData.Core.V1.LongDescription" String="The bookingBusiness is the top level object which contains business information and related business objects such as appointments, customers, services and staff members."/>
       </Annotations>
       <Annotations Target="microsoft.graph.bookingBusiness/displayName">
@@ -4846,6 +4854,175 @@
       <Annotations Target="microsoft.graph.solutionsRoot">
         <Annotation Term="Org.OData.Capabilities.V1.BatchContinueOnErrorSupported" Bool="true"/>
         <Annotation Term="Org.OData.Capabilities.V1.BatchSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.privacy/subjectRightsRequests">
+        <Annotation Term="Org.OData.Core.V1.Revisions">
+          <Collection>
+            <Record>
+              <PropertyValue Property="Date" Date="2022-03-22"/>
+              <PropertyValue Property="Description" String="The subject rights request API under Privacy is deprecated and will stop working on  March 22, 2025. Please use the new API under Security."/>
+              <PropertyValue Property="Kind">
+                <EnumMember>Org.OData.Core.V1.RevisionKind/Deprecated</EnumMember>
+              </PropertyValue>
+              <PropertyValue Property="RemovalDate" Date="2025-03-20"/>
+              <PropertyValue Property="Version" String="2022-02/PrivacyDeprecate"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.security">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SearchRestrictions">
+          <Record>
+            <PropertyValue Property="Searchable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.security.alert">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.security.incident">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.alert">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.secureScoreControlProfile">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.secureScore">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
       </Annotations>
       <Annotations Target="microsoft.graph.group">
         <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
@@ -5070,6 +5247,11 @@
             <PropertyValue Property="Supported" Bool="false"/>
           </Record>
         </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="false"/>
+          </Record>
+        </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.DeleteRestrictions">
           <Record>
             <PropertyValue Property="Deletable" Bool="false"/>
@@ -5095,160 +5277,6 @@
             <PropertyValue Property="Updatable" Bool="false"/>
           </Record>
         </Annotation>
-      </Annotations>
-      <Annotations Target="microsoft.graph.security">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
-          <Record>
-            <PropertyValue Property="Expandable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SearchRestrictions">
-          <Record>
-            <PropertyValue Property="Searchable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.security.alert">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.security.incident">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.alert">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.secureScoreControlProfile">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.secureScore">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
       </Annotations>
       <Annotations Target="microsoft.graph.identityProvider">
         <Annotation Term="Org.OData.Core.V1.Revisions">
@@ -5280,11 +5308,18 @@
           </Collection>
         </Annotation>
       </Annotations>
-      <Annotations Target="microsoft.graph.certification/certificationDetailsUrl">
-        <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.certification/isCertifiedByMicrosoft">
-        <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
+      <Annotations Target="microsoft.graph.directory/deviceLocalCredentials">
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.NavigationRestrictions">
+          <Record>
+            <PropertyValue Property="Referenceable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
       </Annotations>
       <Annotations Target="microsoft.graph.administrativeUnit">
         <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
@@ -5292,6 +5327,19 @@
             <PropertyValue Property="Supported" Bool="true"/>
           </Record>
         </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.directory/administrativeUnits">
+        <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
+          <Record>
+            <PropertyValue Property="Supported" Bool="true"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="microsoft.graph.certification/certificationDetailsUrl">
+        <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.certification/isCertifiedByMicrosoft">
+        <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
       </Annotations>
       <Annotations Target="microsoft.graph.crossTenantAccessPolicyConfigurationDefault">
         <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
@@ -5383,13 +5431,6 @@
         </Annotation>
       </Annotations>
       <Annotations Target="microsoft.graph.device">
-        <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
-          <Record>
-            <PropertyValue Property="Supported" Bool="true"/>
-          </Record>
-        </Annotation>
-      </Annotations>
-      <Annotations Target="microsoft.graph.directory/administrativeUnits">
         <Annotation Term="Org.OData.Capabilities.V1.ChangeTracking">
           <Record>
             <PropertyValue Property="Supported" Bool="true"/>
@@ -5496,6 +5537,18 @@
       </Annotations>
       <Annotations Target="microsoft.graph.browserSiteHistory/targetEnvironment">
         <Annotation Term="Org.OData.Core.V1.Description" String="The render mode in Edge client that the site is supposed to open in"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.admin/people">
+        <Annotation Term="Org.OData.Capabilities.V1.DeleteRestrictions">
+          <Record>
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.InsertRestrictions">
+          <Record>
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="microsoft.graph.browserSharedCookie/comment">
         <Annotation Term="Org.OData.Core.V1.Description" String="The comment of the cookie"/>
@@ -6734,6 +6787,15 @@
       <Annotations Target="microsoft.graph.iosVppAppAssignmentSettings/vpnConfigurationId">
         <Annotation Term="Org.OData.Core.V1.Description" String="The VPN Configuration Id to apply for this app."/>
       </Annotations>
+      <Annotations Target="microsoft.graph.macOSIncludedApp">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties of an included .app in a MacOS app."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSIncludedApp/bundleId">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The bundleId of the app. This maps to the CFBundleIdentifier in the app's bundle configuration."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSIncludedApp/bundleVersion">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The version of the app. This maps to the CFBundleShortVersion in the app's bundle configuration."/>
+      </Annotations>
       <Annotations Target="microsoft.graph.macOsLobAppAssignmentSettings">
         <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties used to assign a macOS LOB app to a group."/>
       </Annotations>
@@ -7262,6 +7324,24 @@
       <Annotations Target="microsoft.graph.iosVppApp/vppTokenOrganizationName">
         <Annotation Term="Org.OData.Core.V1.Description" String="The organization associated with the Apple Volume Purchase Program Token"/>
       </Annotations>
+      <Annotations Target="microsoft.graph.macOSDmgApp">
+        <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties and inherited properties for the MacOS DMG (Apple Disk Image) App."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSDmgApp/ignoreVersionDetection">
+        <Annotation Term="Org.OData.Core.V1.Description" String="When TRUE, indicates that the app's version will NOT be used to detect if the app is installed on a device. When FALSE, indicates that the app's version will be used to detect if the app is installed on a device. Set this to true for apps that use a self update feature. The default value is FALSE."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSDmgApp/includedApps">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The list of .apps expected to be installed by the DMG (Apple Disk Image)"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSDmgApp/minimumSupportedOperatingSystem">
+        <Annotation Term="Org.OData.Core.V1.Description" String="ComplexType macOSMinimumOperatingSystem that indicates the minimum operating system applicable for the application."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSDmgApp/primaryBundleId">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The bundleId of the primary .app in the DMG (Apple Disk Image). This maps to the CFBundleIdentifier in the app's bundle configuration."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.macOSDmgApp/primaryBundleVersion">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The version of the primary .app in the DMG (Apple Disk Image). This maps to the CFBundleShortVersion in the app's bundle configuration."/>
+      </Annotations>
       <Annotations Target="microsoft.graph.macOSLobApp">
         <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties and inherited properties for the macOS LOB App."/>
       </Annotations>
@@ -7275,10 +7355,10 @@
         <Annotation Term="Org.OData.Core.V1.Description" String="List of ComplexType macOSLobChildApp objects. Represents the apps expected to be installed by the package."/>
       </Annotations>
       <Annotations Target="microsoft.graph.macOSLobApp/ignoreVersionDetection">
-        <Annotation Term="Org.OData.Core.V1.Description" String="When TRUE, indicates that the app's version will NOT be used to detect if the app is installed on a device. When FALSE, indicates that the app's version will be used to detect if the app is installed on a device. Set this to true for apps that use a self update feature."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="When TRUE, indicates that the app's version will NOT be used to detect if the app is installed on a device. When FALSE, indicates that the app's version will be used to detect if the app is installed on a device. Set this to true for apps that use a self update feature. The default value is FALSE."/>
       </Annotations>
       <Annotations Target="microsoft.graph.macOSLobApp/installAsManaged">
-        <Annotation Term="Org.OData.Core.V1.Description" String="When TRUE, indicates that the app will be installed as managed (requires macOS 11.0 and other managed package restrictions). When FALSE, indicates that the app will be installed as unmanaged."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="When TRUE, indicates that the app will be installed as managed (requires macOS 11.0 and other managed package restrictions). When FALSE, indicates that the app will be installed as unmanaged. The default value is FALSE."/>
       </Annotations>
       <Annotations Target="microsoft.graph.macOSLobApp/md5Hash">
         <Annotation Term="Org.OData.Core.V1.Description" String="The MD5 hash codes. This is empty if the package was uploaded directly. If the Intune App Wrapping Tool is used to create a .intunemac, this value can be found inside the Detection.xml file."/>
@@ -7755,31 +7835,31 @@
         <Annotation Term="Org.OData.Core.V1.Description" String="The product version of Windows Mobile MSI Line of Business (LoB) app."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties and inherited properties for Windows Universal AppX Line Of Business apps."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Contains properties and inherited properties for Windows Universal AppX Line Of Business apps. Inherits from `mobileLobApp`."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/applicableArchitectures">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The Windows architecture(s) for which this app can run on."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The Windows architecture(s) for which this app can run on. Possible values are: `none`, `x86`, `x64`, `arm`, `neutral`; default value is `none`."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/applicableDeviceTypes">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The Windows device type(s) for which this app can run on."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The Windows device type(s) for which this app can run on. Possible values are: `none`, `desktop`, `mobile`, `holographic`, `team`; default value is `none`."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/identityName">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Name."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Name of the app, parsed from the appx file when it is uploaded through the Intune MEM console. For example: &quot;Contoso.DemoApp&quot;."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/identityPublisherHash">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Publisher Hash."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Publisher Hash of the app, parsed from the appx file when it is uploaded through the Intune MEM console. For example: &quot;AB82CD0XYZ&quot;."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/identityResourceIdentifier">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Resource Identifier."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Resource Identifier of the app, parsed from the appx file when it is uploaded through the Intune MEM console. For example: &quot;TestResourceId&quot;."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/identityVersion">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The identity version."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The Identity Version of the app, parsed from the appx file when it is uploaded through the Intune MEM console.  For example: &quot;1.0.0.0&quot;."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/isBundle">
-        <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the app is a bundle."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Whether or not the app is a bundle. If TRUE, app is a bundle; if FALSE, app is not a bundle."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/minimumSupportedOperatingSystem">
-        <Annotation Term="Org.OData.Core.V1.Description" String="The value for the minimum applicable operating system."/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="The value for the minimum applicable Windows operating system."/>
       </Annotations>
       <Annotations Target="microsoft.graph.windowsUniversalAppX/committedContainedApps">
         <Annotation Term="Org.OData.Core.V1.Description" String="The collection of contained apps in the committed mobileAppContent of a windowsUniversalAppX app."/>
@@ -8113,6 +8193,12 @@
       </Annotations>
       <Annotations Target="microsoft.graph.deviceManagement/userExperienceAnalyticsDeviceStartupProcesses">
         <Annotation Term="Org.OData.Core.V1.Description" String="User experience analytics device Startup Processes"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The user experience analytics device startup process performance."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.deviceManagement/userExperienceAnalyticsDeviceStartupProcessPerformance">
+        <Annotation Term="Org.OData.Core.V1.Description" String="User experience analytics device Startup Process Performance"/>
       </Annotations>
       <Annotations Target="microsoft.graph.userExperienceAnalyticsMetricHistory">
         <Annotation Term="Org.OData.Core.V1.Description" String="The user experience analytics metric history."/>
@@ -12670,7 +12756,7 @@
         <Annotation Term="Org.OData.Core.V1.Description" String="The security version number of the Boot Application"/>
       </Annotations>
       <Annotations Target="microsoft.graph.deviceHealthAttestationState/virtualSecureMode">
-        <Annotation Term="Org.OData.Core.V1.Description" String="VSM is a container that protects high value assets from a compromised kernel"/>
+        <Annotation Term="Org.OData.Core.V1.Description" String="Indicates whether the device has Virtual Secure Mode (VSM) enabled. Virtual Secure Mode (VSM) is a container that protects high value assets from a compromised kernel. This property will be deprecated in beta from August 2023. Support for this property will end in August 2025 for v1.0 API. A new property virtualizationBasedSecurity is added and used instead. The value used for virtualSecureMode will be passed by virtualizationBasedSecurity during the deprecation process. Possible values are &quot;enabled&quot;, &quot;disabled&quot; and &quot;notApplicable&quot;. &quot;enabled&quot; indicates Virtual Secure Mode (VSM) is enabled. &quot;disabled&quot; indicates Virtual Secure Mode (VSM) is disabled. &quot;notApplicable&quot; indicates the device is not a Windows 11 device. Default value is &quot;notApplicable&quot;."/>
       </Annotations>
       <Annotations Target="microsoft.graph.deviceHealthAttestationState/windowsPE">
         <Annotation Term="Org.OData.Core.V1.Description" String="Operating system running with limited services that is used to prepare a computer for Windows"/>
@@ -12791,6 +12877,12 @@
       </Annotations>
       <Annotations Target="microsoft.graph.resetPasscodeActionResult/passcode">
         <Annotation Term="Org.OData.Core.V1.Description" String="Newly generated passcode for the device "/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.rotateBitLockerKeysDeviceActionResult">
+        <Annotation Term="Org.OData.Core.V1.Description" String="RotateBitLockerKeys device action result"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.rotateBitLockerKeysDeviceActionResult/errorCode">
+        <Annotation Term="Org.OData.Core.V1.Description" String="RotateBitLockerKeys action error code"/>
       </Annotations>
       <Annotations Target="microsoft.graph.userExperienceAnalyticsAutopilotDevicesSummary">
         <Annotation Term="Org.OData.Core.V1.Description" String="The user experience analytics summary of Devices not windows autopilot ready."/>
@@ -13503,6 +13595,24 @@
       </Annotations>
       <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcess/startupImpactInMs">
         <Annotation Term="Org.OData.Core.V1.Description" String="The impact of startup process on device boot time in milliseconds. Supports: $select, $OrderBy. Read-only."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance/deviceCount">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The count of devices which initiated this process on startup. Supports: $filter, $select, $OrderBy. Read-only."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance/medianImpactInMs">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The median impact of startup process on device boot time in milliseconds. Supports: $filter, $select, $OrderBy. Read-only."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance/processName">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The name of the startup process. Examples: outlook, excel. Supports: $select, $OrderBy. Read-only."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance/productName">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The product name of the startup process. Examples: Microsoft Outlook, Microsoft Excel. Supports: $select, $OrderBy. Read-only."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance/publisher">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The publisher of the startup process. Examples: Microsoft Corporation, Contoso Corp. Supports: $select, $OrderBy. Read-only."/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.userExperienceAnalyticsDeviceStartupProcessPerformance/totalImpactInMs">
+        <Annotation Term="Org.OData.Core.V1.Description" String="The total impact of startup process on device boot time in milliseconds. Supports: $filter, $select, $OrderBy. Read-only."/>
       </Annotations>
       <Annotations Target="microsoft.graph.userExperienceAnalyticsMetric/unit">
         <Annotation Term="Org.OData.Core.V1.Description" String="The unit of the user experience analytics metric. Examples: none, percentage, count, seconds, score."/>
@@ -14897,41 +15007,7 @@
       <Annotations Target="microsoft.graph.schedulingGroup/isActive">
         <Annotation Term="Org.OData.Core.V1.Computed" Bool="true"/>
       </Annotations>
-      <Annotations Target="microsoft.graph.security.article">
-        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
-          <Record>
-            <PropertyValue Property="Countable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
-          <Record>
-            <PropertyValue Property="Expandable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
-          <Record>
-            <PropertyValue Property="Filterable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SearchRestrictions">
-          <Record>
-            <PropertyValue Property="Searchable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
-          <Record>
-            <PropertyValue Property="Selectable" Bool="true"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
-        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
-          <Record>
-            <PropertyValue Property="Sortable" Bool="false"/>
-          </Record>
-        </Annotation>
-        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
-      </Annotations>
-      <Annotations Target="microsoft.graph.security.articleIndicator">
+      <Annotations Target="microsoft.graph.security.hostComponent">
         <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
           <Record>
             <PropertyValue Property="Countable" Bool="true"/>
@@ -14994,7 +15070,41 @@
         </Annotation>
         <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="false"/>
       </Annotations>
-      <Annotations Target="microsoft.graph.security.hostComponent">
+      <Annotations Target="microsoft.graph.security.article">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SearchRestrictions">
+          <Record>
+            <PropertyValue Property="Searchable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="true"/>
+        <Annotation Term="Org.OData.Capabilities.V1.SortRestrictions">
+          <Record>
+            <PropertyValue Property="Sortable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.security.articleIndicator">
         <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
           <Record>
             <PropertyValue Property="Countable" Bool="true"/>
@@ -15101,6 +15211,35 @@
             <PropertyValue Property="Sortable" Bool="true"/>
           </Record>
         </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
+      </Annotations>
+      <Annotations Target="microsoft.graph.security.subdomain">
+        <Annotation Term="Org.OData.Capabilities.V1.CountRestrictions">
+          <Record>
+            <PropertyValue Property="Countable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.ExpandRestrictions">
+          <Record>
+            <PropertyValue Property="Expandable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="Filterable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SearchRestrictions">
+          <Record>
+            <PropertyValue Property="Searchable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SelectRestrictions">
+          <Record>
+            <PropertyValue Property="Selectable" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Org.OData.Capabilities.V1.SkipSupported" Bool="false"/>
         <Annotation Term="Org.OData.Capabilities.V1.TopSupported" Bool="true"/>
       </Annotations>
       <Annotations Target="microsoft.graph.security.hostTracker">
@@ -15912,6 +16051,7 @@
         <Member Name="caseResolved" Value="4"/>
         <Member Name="contentEstimate" Value="5"/>
         <Member Name="unknownFutureValue" Value="6"/>
+        <Member Name="approval" Value="7"/>
       </EnumType>
       <EnumType Name="subjectRightsRequestStageStatus">
         <Member Name="notStarted" Value="0"/>
@@ -17122,6 +17262,7 @@
         <Member Name="mobile" Value="2"/>
         <Member Name="holographic" Value="4"/>
         <Member Name="team" Value="8"/>
+        <Member Name="unknownFutureValue" Value="16"/>
       </EnumType>
       <EnumType Name="installState">
         <Member Name="notApplicable" Value="0"/>
@@ -18324,6 +18465,7 @@
         <Member Name="approve" Value="1"/>
         <Member Name="terminate" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
+        <Member Name="reject" Value="4"/>
       </EnumType>
       <EnumType Name="delegatedAdminRelationshipRequestStatus">
         <Member Name="created" Value="0"/>
@@ -18344,6 +18486,49 @@
         <Member Name="terminating" Value="8"/>
         <Member Name="terminationRequested" Value="9"/>
         <Member Name="unknownFutureValue" Value="10"/>
+      </EnumType>
+      <EnumType Name="assignmentScheduleFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="assignmentScheduleInstanceFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="assignmentScheduleRequestFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="createdBy" Value="2"/>
+        <Member Name="approver" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="eligibilityScheduleFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="eligibilityScheduleInstanceFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="eligibilityScheduleRequestFilterByCurrentUserOptions">
+        <Member Name="principal" Value="1"/>
+        <Member Name="createdBy" Value="2"/>
+        <Member Name="approver" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="privilegedAccessGroupAssignmentType">
+        <Member Name="assigned" Value="1"/>
+        <Member Name="activated" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="privilegedAccessGroupMemberType">
+        <Member Name="direct" Value="1"/>
+        <Member Name="group" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="privilegedAccessGroupRelationships">
+        <Member Name="owner" Value="1"/>
+        <Member Name="member" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
       </EnumType>
       <EnumType Name="roleAssignmentScheduleFilterByCurrentUserOptions">
         <Member Name="principal" Value="1"/>
@@ -18372,6 +18557,18 @@
         <Member Name="createdBy" Value="2"/>
         <Member Name="approver" Value="3"/>
         <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="scheduleRequestActions">
+        <Member Name="adminAssign" Value="1"/>
+        <Member Name="adminUpdate" Value="2"/>
+        <Member Name="adminRemove" Value="3"/>
+        <Member Name="selfActivate" Value="4"/>
+        <Member Name="selfDeactivate" Value="5"/>
+        <Member Name="adminExtend" Value="6"/>
+        <Member Name="adminRenew" Value="7"/>
+        <Member Name="selfExtend" Value="8"/>
+        <Member Name="selfRenew" Value="9"/>
+        <Member Name="unknownFutureValue" Value="10"/>
       </EnumType>
       <EnumType Name="unifiedRoleManagementPolicyRuleTargetOperations">
         <Member Name="all" Value="0"/>
@@ -19356,12 +19553,164 @@
         <Member Name="failed" Value="3"/>
         <Member Name="unknownFutureValue" Value="4"/>
       </EnumType>
+      <EnumType Name="accountTargetContentType">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="includeAll" Value="1"/>
+        <Member Name="addressBook" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="attackSimulationOperationType">
+        <Member Name="createSimualation" Value="0"/>
+        <Member Name="updateSimulation" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="coachmarkLocationType">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="fromEmail" Value="1"/>
+        <Member Name="subject" Value="2"/>
+        <Member Name="externalTag" Value="3"/>
+        <Member Name="displayName" Value="4"/>
+        <Member Name="messageBody" Value="5"/>
+        <Member Name="unknownFutureValue" Value="6"/>
+      </EnumType>
+      <EnumType Name="endUserNotificationPreference">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="microsoft" Value="1"/>
+        <Member Name="custom" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="endUserNotificationSettingType">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="noTraining" Value="1"/>
+        <Member Name="trainingSelected" Value="2"/>
+        <Member Name="noNotification" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="endUserNotificationType">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="positiveReinforcement" Value="1"/>
+        <Member Name="noTraining" Value="2"/>
+        <Member Name="trainingAssignment" Value="3"/>
+        <Member Name="trainingReminder" Value="4"/>
+        <Member Name="unknownFutureValue" Value="5"/>
+      </EnumType>
+      <EnumType Name="notificationDeliveryFrequency">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="weekly" Value="1"/>
+        <Member Name="biWeekly" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="notificationDeliveryPreference">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="deliverImmedietly" Value="1"/>
+        <Member Name="deliverAfterCampaignEnd" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="oAuthAppScope">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="readCalendar" Value="1"/>
+        <Member Name="readContact" Value="2"/>
+        <Member Name="readMail" Value="3"/>
+        <Member Name="readAllChat" Value="4"/>
+        <Member Name="readAllFile" Value="5"/>
+        <Member Name="readAndWriteMail" Value="6"/>
+        <Member Name="sendMail" Value="7"/>
+        <Member Name="unknownFutureValue" Value="8"/>
+      </EnumType>
+      <EnumType Name="payloadBrand">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="other" Value="1"/>
+        <Member Name="americanExpress" Value="2"/>
+        <Member Name="capitalOne" Value="3"/>
+        <Member Name="dhl" Value="4"/>
+        <Member Name="docuSign" Value="5"/>
+        <Member Name="dropbox" Value="6"/>
+        <Member Name="facebook" Value="7"/>
+        <Member Name="firstAmerican" Value="8"/>
+        <Member Name="microsoft" Value="9"/>
+        <Member Name="netflix" Value="10"/>
+        <Member Name="scotiabank" Value="11"/>
+        <Member Name="sendGrid" Value="12"/>
+        <Member Name="stewartTitle" Value="13"/>
+        <Member Name="tesco" Value="14"/>
+        <Member Name="wellsFargo" Value="15"/>
+        <Member Name="syrinxCloud" Value="16"/>
+        <Member Name="adobe" Value="17"/>
+        <Member Name="teams" Value="18"/>
+        <Member Name="zoom" Value="19"/>
+        <Member Name="unknownFutureValue" Value="20"/>
+      </EnumType>
+      <EnumType Name="payloadComplexity">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="low" Value="1"/>
+        <Member Name="medium" Value="2"/>
+        <Member Name="high" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
       <EnumType Name="payloadDeliveryPlatform">
         <Member Name="unknown" Value="0"/>
         <Member Name="sms" Value="1"/>
         <Member Name="email" Value="2"/>
         <Member Name="teams" Value="3"/>
         <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="payloadIndustry">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="other" Value="1"/>
+        <Member Name="banking" Value="2"/>
+        <Member Name="businessServices" Value="3"/>
+        <Member Name="consumerServices" Value="4"/>
+        <Member Name="education" Value="5"/>
+        <Member Name="energy" Value="6"/>
+        <Member Name="construction" Value="7"/>
+        <Member Name="consulting" Value="8"/>
+        <Member Name="financialServices" Value="9"/>
+        <Member Name="government" Value="10"/>
+        <Member Name="hospitality" Value="11"/>
+        <Member Name="insurance" Value="12"/>
+        <Member Name="legal" Value="13"/>
+        <Member Name="courierServices" Value="14"/>
+        <Member Name="IT" Value="15"/>
+        <Member Name="healthcare" Value="16"/>
+        <Member Name="manufacturing" Value="17"/>
+        <Member Name="retail" Value="18"/>
+        <Member Name="telecom" Value="19"/>
+        <Member Name="realEstate" Value="20"/>
+        <Member Name="unknownFutureValue" Value="21"/>
+      </EnumType>
+      <EnumType Name="payloadTheme">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="other" Value="1"/>
+        <Member Name="accountActivation" Value="2"/>
+        <Member Name="accountVerification" Value="3"/>
+        <Member Name="billing" Value="4"/>
+        <Member Name="cleanUpMail" Value="5"/>
+        <Member Name="controversial" Value="6"/>
+        <Member Name="documentReceived" Value="7"/>
+        <Member Name="expense" Value="8"/>
+        <Member Name="fax" Value="9"/>
+        <Member Name="financeReport" Value="10"/>
+        <Member Name="incomingMessages" Value="11"/>
+        <Member Name="invoice" Value="12"/>
+        <Member Name="itemReceived" Value="13"/>
+        <Member Name="loginAlert" Value="14"/>
+        <Member Name="mailReceived" Value="15"/>
+        <Member Name="password" Value="16"/>
+        <Member Name="payment" Value="17"/>
+        <Member Name="payroll" Value="18"/>
+        <Member Name="personalizedOffer" Value="19"/>
+        <Member Name="quarantine" Value="20"/>
+        <Member Name="remoteWork" Value="21"/>
+        <Member Name="reviewMessage" Value="22"/>
+        <Member Name="securityUpdate" Value="23"/>
+        <Member Name="serviceSuspended" Value="24"/>
+        <Member Name="signatureRequired" Value="25"/>
+        <Member Name="upgradeMailboxStorage" Value="26"/>
+        <Member Name="verifyMailbox" Value="27"/>
+        <Member Name="voicemail" Value="28"/>
+        <Member Name="advertisement" Value="29"/>
+        <Member Name="employeeEngagement" Value="30"/>
+        <Member Name="unknownFutureValue" Value="31"/>
       </EnumType>
       <EnumType Name="simulationAttackTechnique">
         <Member Name="unknown" Value="0"/>
@@ -19395,6 +19744,20 @@
         <Member Name="completed" Value="4"/>
         <Member Name="unknownFutureValue" Value="5"/>
       </EnumType>
+      <EnumType Name="simulationContentSource">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="global" Value="1"/>
+        <Member Name="tenant" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
+      <EnumType Name="simulationContentStatus">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="draft" Value="1"/>
+        <Member Name="ready" Value="2"/>
+        <Member Name="archive" Value="3"/>
+        <Member Name="delete" Value="4"/>
+        <Member Name="unknownFutureValue" Value="5"/>
+      </EnumType>
       <EnumType Name="simulationStatus">
         <Member Name="unknown" Value="0"/>
         <Member Name="draft" Value="1"/>
@@ -19406,6 +19769,44 @@
         <Member Name="excluded" Value="7"/>
         <Member Name="unknownFutureValue" Value="8"/>
       </EnumType>
+      <EnumType Name="targettedUserType">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="clicked" Value="1"/>
+        <Member Name="compromised" Value="2"/>
+        <Member Name="allUsers" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
+      <EnumType Name="trainingAssignedTo">
+        <Member Name="none" Value="0"/>
+        <Member Name="allUsers" Value="1"/>
+        <Member Name="clickedPayload" Value="2"/>
+        <Member Name="compromised" Value="3"/>
+        <Member Name="reportedPhish" Value="4"/>
+        <Member Name="readButNotClicked" Value="5"/>
+        <Member Name="didNothing" Value="6"/>
+        <Member Name="unknownFutureValue" Value="7"/>
+      </EnumType>
+      <EnumType Name="trainingAvailabilityStatus">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="notAvailable" Value="1"/>
+        <Member Name="available" Value="2"/>
+        <Member Name="archive" Value="3"/>
+        <Member Name="delete" Value="4"/>
+        <Member Name="unknownFutureValue" Value="5"/>
+      </EnumType>
+      <EnumType Name="trainingCompletionDuration">
+        <Member Name="week" Value="7"/>
+        <Member Name="fortnite" Value="14"/>
+        <Member Name="month" Value="30"/>
+        <Member Name="unknownFutureValue" Value="100"/>
+      </EnumType>
+      <EnumType Name="trainingSettingType">
+        <Member Name="microsoftCustom" Value="0"/>
+        <Member Name="microsoftManaged" Value="1"/>
+        <Member Name="noTraining" Value="2"/>
+        <Member Name="custom" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
       <EnumType Name="trainingStatus">
         <Member Name="unknown" Value="0"/>
         <Member Name="assigned" Value="1"/>
@@ -19413,6 +19814,11 @@
         <Member Name="completed" Value="3"/>
         <Member Name="overdue" Value="4"/>
         <Member Name="unknownFutureValue" Value="5"/>
+      </EnumType>
+      <EnumType Name="trainingType">
+        <Member Name="unknown" Value="0"/>
+        <Member Name="phishing" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
       </EnumType>
       <EnumType Name="alertFeedback">
         <Member Name="unknown" Value="0"/>
@@ -19608,6 +20014,11 @@
         <Member Name="inactive" Value="1"/>
         <Member Name="unknownFutureValue" Value="2"/>
       </EnumType>
+      <EnumType Name="meetingAudience">
+        <Member Name="everyone" Value="0"/>
+        <Member Name="organization" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
       <EnumType Name="meetingChatHistoryDefaultMode">
         <Member Name="none" Value="0"/>
         <Member Name="all" Value="1"/>
@@ -19681,6 +20092,20 @@
         <Member Name="c" Value="14"/>
         <Member Name="d" Value="15"/>
         <Member Name="flash" Value="16"/>
+      </EnumType>
+      <EnumType Name="virtualEventAttendeeRegistrationStatus">
+        <Member Name="registered" Value="0"/>
+        <Member Name="canceled" Value="1"/>
+        <Member Name="waitlisted" Value="2"/>
+        <Member Name="pendingApproval" Value="3"/>
+        <Member Name="rejectedByOrganizer" Value="4"/>
+        <Member Name="unknownFutureValue" Value="11"/>
+      </EnumType>
+      <EnumType Name="virtualEventStatus">
+        <Member Name="draft" Value="0"/>
+        <Member Name="published" Value="1"/>
+        <Member Name="canceled" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
       </EnumType>
       <EnumType Name="attestationLevel">
         <Member Name="attested" Value="0"/>
@@ -20089,6 +20514,7 @@
         <Property Name="requiredResourceAccess" Type="Collection(graph.requiredResourceAccess)" Nullable="false"/>
         <Property Name="samlMetadataUrl" Type="Edm.String"/>
         <Property Name="serviceManagementReference" Type="Edm.String"/>
+        <Property Name="servicePrincipalLockConfiguration" Type="graph.servicePrincipalLockConfiguration"/>
         <Property Name="signInAudience" Type="Edm.String"/>
         <Property Name="spa" Type="graph.spaApplication"/>
         <Property Name="tags" Type="Collection(Edm.String)" Nullable="false"/>
@@ -20193,6 +20619,13 @@
         <Property Name="resourceAccess" Type="Collection(graph.resourceAccess)" Nullable="false"/>
         <Property Name="resourceAppId" Type="Edm.String" Nullable="false"/>
       </ComplexType>
+      <ComplexType Name="servicePrincipalLockConfiguration">
+        <Property Name="allProperties" Type="Edm.Boolean"/>
+        <Property Name="credentialsWithUsageSign" Type="Edm.Boolean"/>
+        <Property Name="credentialsWithUsageVerify" Type="Edm.Boolean"/>
+        <Property Name="isEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="tokenEncryptionKeyId" Type="Edm.Boolean"/>
+      </ComplexType>
       <ComplexType Name="spaApplication">
         <Property Name="redirectUris" Type="Collection(Edm.String)" Nullable="false"/>
       </ComplexType>
@@ -20220,6 +20653,7 @@
       <EntityType Name="extensionProperty" BaseType="graph.directoryObject" OpenType="true">
         <Property Name="appDisplayName" Type="Edm.String"/>
         <Property Name="dataType" Type="Edm.String" Nullable="false"/>
+        <Property Name="isMultiValued" Type="Edm.Boolean" Nullable="false"/>
         <Property Name="isSyncedFromOnPremises" Type="Edm.Boolean"/>
         <Property Name="name" Type="Edm.String" Nullable="false"/>
         <Property Name="targetObjects" Type="Collection(Edm.String)" Nullable="false"/>
@@ -20260,6 +20694,7 @@
         <NavigationProperty Name="appConsent" Type="graph.appConsentApprovalRoute" ContainsTarget="true"/>
         <NavigationProperty Name="termsOfUse" Type="graph.termsOfUseContainer" ContainsTarget="true"/>
         <NavigationProperty Name="entitlementManagement" Type="graph.entitlementManagement" ContainsTarget="true"/>
+        <NavigationProperty Name="privilegedAccess" Type="graph.privilegedAccessRoot" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="accessReviewSet" BaseType="graph.entity">
         <NavigationProperty Name="definitions" Type="Collection(graph.accessReviewScheduleDefinition)" ContainsTarget="true"/>
@@ -20285,6 +20720,9 @@
         <NavigationProperty Name="resourceRoleScopes" Type="Collection(graph.accessPackageResourceRoleScope)" ContainsTarget="true"/>
         <NavigationProperty Name="resources" Type="Collection(graph.accessPackageResource)" ContainsTarget="true"/>
         <NavigationProperty Name="settings" Type="graph.entitlementManagementSettings" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessRoot" BaseType="graph.entity">
+        <NavigationProperty Name="group" Type="graph.privilegedAccessGroup" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="user" BaseType="graph.directoryObject" OpenType="true">
         <Property Name="signInActivity" Type="graph.signInActivity"/>
@@ -20342,6 +20780,7 @@
         <Property Name="provisionedPlans" Type="Collection(graph.provisionedPlan)" Nullable="false"/>
         <Property Name="proxyAddresses" Type="Collection(Edm.String)" Nullable="false"/>
         <Property Name="securityIdentifier" Type="Edm.String"/>
+        <Property Name="serviceProvisioningErrors" Type="Collection(graph.serviceProvisioningError)"/>
         <Property Name="showInAddressList" Type="Edm.Boolean"/>
         <Property Name="signInSessionsValidFromDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="state" Type="Edm.String"/>
@@ -20480,6 +20919,11 @@
         <Property Name="capabilityStatus" Type="Edm.String"/>
         <Property Name="provisioningStatus" Type="Edm.String"/>
         <Property Name="service" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="serviceProvisioningError" Abstract="true">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="isResolved" Type="Edm.Boolean"/>
+        <Property Name="serviceInstance" Type="Edm.String"/>
       </ComplexType>
       <EntityType Name="appRoleAssignment" BaseType="graph.directoryObject">
         <Property Name="appRoleId" Type="Edm.Guid" Nullable="false"/>
@@ -20742,6 +21186,7 @@
       <EntityType Name="site" BaseType="graph.baseItem">
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="error" Type="graph.publicError"/>
+        <Property Name="isPersonalSite" Type="Edm.Boolean"/>
         <Property Name="root" Type="graph.root"/>
         <Property Name="sharepointIds" Type="graph.sharepointIds"/>
         <Property Name="siteCollection" Type="graph.siteCollection"/>
@@ -20903,38 +21348,43 @@
         <Property Name="visualElements" Type="graph.visualInfo" Nullable="false"/>
         <NavigationProperty Name="historyItems" Type="Collection(graph.activityHistoryItem)" ContainsTarget="true"/>
       </EntityType>
-      <EntityType Name="onlineMeeting" BaseType="graph.entity" OpenType="true">
+      <EntityType Name="onlineMeetingBase" BaseType="graph.entity" Abstract="true" OpenType="true">
         <Property Name="allowAttendeeToEnableCamera" Type="Edm.Boolean"/>
         <Property Name="allowAttendeeToEnableMic" Type="Edm.Boolean"/>
         <Property Name="allowedPresenters" Type="graph.onlineMeetingPresenters"/>
         <Property Name="allowMeetingChat" Type="graph.meetingChatMode"/>
         <Property Name="allowParticipantsToChangeName" Type="Edm.Boolean"/>
         <Property Name="allowTeamworkReactions" Type="Edm.Boolean"/>
-        <Property Name="attendeeReport" Type="Edm.Stream"/>
         <Property Name="audioConferencing" Type="graph.audioConferencing"/>
-        <Property Name="broadcastSettings" Type="graph.broadcastMeetingSettings"/>
         <Property Name="chatInfo" Type="graph.chatInfo"/>
-        <Property Name="creationDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="externalId" Type="Edm.String"/>
-        <Property Name="isBroadcast" Type="Edm.Boolean"/>
         <Property Name="isEntryExitAnnounced" Type="Edm.Boolean"/>
         <Property Name="joinInformation" Type="graph.itemBody"/>
         <Property Name="joinMeetingIdSettings" Type="graph.joinMeetingIdSettings"/>
         <Property Name="joinWebUrl" Type="Edm.String"/>
         <Property Name="lobbyBypassSettings" Type="graph.lobbyBypassSettings"/>
-        <Property Name="participants" Type="graph.meetingParticipants"/>
         <Property Name="recordAutomatically" Type="Edm.Boolean"/>
         <Property Name="shareMeetingChatHistoryDefault" Type="graph.meetingChatHistoryDefaultMode"/>
-        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="subject" Type="Edm.String"/>
         <Property Name="videoTeleconferenceId" Type="Edm.String"/>
         <Property Name="watermarkProtection" Type="graph.watermarkProtectionValues"/>
         <NavigationProperty Name="attendanceReports" Type="Collection(graph.meetingAttendanceReport)" ContainsTarget="true"/>
       </EntityType>
+      <EntityType Name="onlineMeeting" BaseType="graph.onlineMeetingBase" OpenType="true">
+        <Property Name="attendeeReport" Type="Edm.Stream"/>
+        <Property Name="broadcastSettings" Type="graph.broadcastMeetingSettings"/>
+        <Property Name="creationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="externalId" Type="Edm.String"/>
+        <Property Name="isBroadcast" Type="Edm.Boolean"/>
+        <Property Name="participants" Type="graph.meetingParticipants"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="recordings" Type="Collection(graph.callRecording)" ContainsTarget="true"/>
+        <NavigationProperty Name="transcripts" Type="Collection(graph.callTranscript)" ContainsTarget="true"/>
+      </EntityType>
       <EntityType Name="presence" BaseType="graph.entity">
         <Property Name="activity" Type="Edm.String"/>
         <Property Name="availability" Type="Edm.String"/>
+        <Property Name="statusMessage" Type="graph.presenceStatusMessage"/>
       </EntityType>
       <EntityType Name="authentication" BaseType="graph.entity">
         <NavigationProperty Name="emailMethods" Type="Collection(graph.emailAuthenticationMethod)" ContainsTarget="true"/>
@@ -21316,6 +21766,7 @@
         <NavigationProperty Name="oauth2PermissionGrants" Type="Collection(graph.oAuth2PermissionGrant)"/>
         <NavigationProperty Name="ownedObjects" Type="Collection(graph.directoryObject)"/>
         <NavigationProperty Name="owners" Type="Collection(graph.directoryObject)"/>
+        <NavigationProperty Name="remoteDesktopSecurityConfiguration" Type="graph.remoteDesktopSecurityConfiguration" ContainsTarget="true"/>
         <NavigationProperty Name="tokenIssuancePolicies" Type="Collection(graph.tokenIssuancePolicy)"/>
         <NavigationProperty Name="tokenLifetimePolicies" Type="Collection(graph.tokenLifetimePolicy)"/>
         <NavigationProperty Name="transitiveMemberOf" Type="Collection(graph.directoryObject)"/>
@@ -21378,6 +21829,10 @@
         <Property Name="providerName" Type="Edm.String"/>
         <Property Name="providerResourceId" Type="Edm.String"/>
         <Property Name="uri" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="remoteDesktopSecurityConfiguration" BaseType="graph.entity">
+        <Property Name="isRemoteDesktopProtocolEnabled" Type="Edm.Boolean" Nullable="false"/>
+        <NavigationProperty Name="targetDeviceGroups" Type="Collection(graph.targetDeviceGroup)" ContainsTarget="true"/>
       </EntityType>
       <ComplexType Name="authenticationMethodFeatureConfiguration">
         <Property Name="excludeTarget" Type="graph.featureTarget"/>
@@ -21501,6 +21956,7 @@
         <Property Name="modifiedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="sessionControls" Type="graph.conditionalAccessSessionControls"/>
         <Property Name="state" Type="graph.conditionalAccessPolicyState" Nullable="false"/>
+        <Property Name="templateId" Type="Edm.String"/>
       </EntityType>
       <EntityType Name="conditionalAccessTemplate" BaseType="graph.entity">
         <Property Name="description" Type="Edm.String" Nullable="false"/>
@@ -21856,6 +22312,11 @@
       <EntityType Name="solutionsRoot">
         <NavigationProperty Name="bookingBusinesses" Type="Collection(graph.bookingBusiness)" ContainsTarget="true"/>
         <NavigationProperty Name="bookingCurrencies" Type="Collection(graph.bookingCurrency)" ContainsTarget="true"/>
+        <NavigationProperty Name="virtualEvents" Type="graph.virtualEventsRoot" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="virtualEventsRoot" BaseType="graph.entity">
+        <NavigationProperty Name="events" Type="Collection(graph.virtualEvent)" ContainsTarget="true"/>
+        <NavigationProperty Name="webinars" Type="Collection(graph.virtualEventWebinar)" ContainsTarget="true"/>
       </EntityType>
       <ComplexType Name="dataSubject" OpenType="true">
         <Property Name="email" Type="Edm.String"/>
@@ -21890,6 +22351,10 @@
         <Property Name="message" Type="Edm.String"/>
         <Property Name="target" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="subjectRightsRequestMailboxLocation" Abstract="true"/>
+      <ComplexType Name="subjectRightsRequestAllMailboxLocation" BaseType="graph.subjectRightsRequestMailboxLocation"/>
+      <ComplexType Name="subjectRightsRequestSiteLocation" Abstract="true"/>
+      <ComplexType Name="subjectRightsRequestAllSiteLocation" BaseType="graph.subjectRightsRequestSiteLocation"/>
       <ComplexType Name="subjectRightsRequestDetail">
         <Property Name="excludedItemCount" Type="Edm.Int64"/>
         <Property Name="insightCounts" Type="Collection(graph.keyValuePair)"/>
@@ -21898,6 +22363,12 @@
         <Property Name="productItemCounts" Type="Collection(graph.keyValuePair)"/>
         <Property Name="signedOffItemCount" Type="Edm.Int64"/>
         <Property Name="totalItemSize" Type="Edm.Int64"/>
+      </ComplexType>
+      <ComplexType Name="subjectRightsRequestEnumeratedMailboxLocation" BaseType="graph.subjectRightsRequestMailboxLocation">
+        <Property Name="userPrincipalNames" Type="Collection(Edm.String)"/>
+      </ComplexType>
+      <ComplexType Name="subjectRightsRequestEnumeratedSiteLocation" BaseType="graph.subjectRightsRequestSiteLocation">
+        <Property Name="urls" Type="Collection(Edm.String)"/>
       </ComplexType>
       <ComplexType Name="subjectRightsRequestHistory">
         <Property Name="changedBy" Type="graph.identitySet"/>
@@ -21922,23 +22393,129 @@
       <EntityType Name="subjectRightsRequest" BaseType="graph.entity">
         <Property Name="assignedTo" Type="graph.identity"/>
         <Property Name="closedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="contentQuery" Type="Edm.String"/>
         <Property Name="createdBy" Type="graph.identitySet"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="dataSubject" Type="graph.dataSubject"/>
         <Property Name="dataSubjectType" Type="graph.dataSubjectType"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="externalId" Type="Edm.String"/>
         <Property Name="history" Type="Collection(graph.subjectRightsRequestHistory)"/>
+        <Property Name="includeAllVersions" Type="Edm.Boolean"/>
+        <Property Name="includeAuthoredContent" Type="Edm.Boolean"/>
         <Property Name="insight" Type="graph.subjectRightsRequestDetail"/>
         <Property Name="internalDueDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="lastModifiedBy" Type="graph.identitySet"/>
         <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="mailboxLocations" Type="graph.subjectRightsRequestMailboxLocation"/>
+        <Property Name="pauseAfterEstimate" Type="Edm.Boolean"/>
         <Property Name="regulations" Type="Collection(Edm.String)"/>
+        <Property Name="siteLocations" Type="graph.subjectRightsRequestSiteLocation"/>
         <Property Name="stages" Type="Collection(graph.subjectRightsRequestStageDetail)"/>
         <Property Name="status" Type="graph.subjectRightsRequestStatus"/>
         <Property Name="type" Type="graph.subjectRightsRequestType"/>
+        <NavigationProperty Name="approvers" Type="Collection(graph.user)"/>
+        <NavigationProperty Name="collaborators" Type="Collection(graph.user)"/>
         <NavigationProperty Name="notes" Type="Collection(graph.authoredNote)" ContainsTarget="true"/>
         <NavigationProperty Name="team" Type="graph.team"/>
+      </EntityType>
+      <EntityType Name="security" BaseType="graph.entity">
+        <NavigationProperty Name="subjectRightsRequests" Type="Collection(graph.subjectRightsRequest)" ContainsTarget="true"/>
+        <NavigationProperty Name="cases" Type="microsoft.graph.security.casesRoot" ContainsTarget="true"/>
+        <NavigationProperty Name="alerts_v2" Type="Collection(microsoft.graph.security.alert)" ContainsTarget="true"/>
+        <NavigationProperty Name="incidents" Type="Collection(microsoft.graph.security.incident)" ContainsTarget="true"/>
+        <NavigationProperty Name="attackSimulation" Type="graph.attackSimulationRoot" ContainsTarget="true"/>
+        <NavigationProperty Name="triggers" Type="microsoft.graph.security.triggersRoot" ContainsTarget="true"/>
+        <NavigationProperty Name="triggerTypes" Type="microsoft.graph.security.triggerTypesRoot" ContainsTarget="true"/>
+        <NavigationProperty Name="alerts" Type="Collection(graph.alert)" ContainsTarget="true"/>
+        <NavigationProperty Name="secureScoreControlProfiles" Type="Collection(graph.secureScoreControlProfile)" ContainsTarget="true"/>
+        <NavigationProperty Name="secureScores" Type="Collection(graph.secureScore)" ContainsTarget="true"/>
+        <NavigationProperty Name="threatIntelligence" Type="microsoft.graph.security.threatIntelligence" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="attackSimulationRoot" BaseType="graph.entity" Abstract="true">
+        <NavigationProperty Name="endUserNotifications" Type="Collection(graph.endUserNotification)" ContainsTarget="true"/>
+        <NavigationProperty Name="landingPages" Type="Collection(graph.landingPage)" ContainsTarget="true"/>
+        <NavigationProperty Name="loginPages" Type="Collection(graph.loginPage)" ContainsTarget="true"/>
+        <NavigationProperty Name="operations" Type="Collection(graph.attackSimulationOperation)" ContainsTarget="true"/>
+        <NavigationProperty Name="payloads" Type="Collection(graph.payload)" ContainsTarget="true"/>
+        <NavigationProperty Name="simulationAutomations" Type="Collection(graph.simulationAutomation)" ContainsTarget="true"/>
+        <NavigationProperty Name="simulations" Type="Collection(graph.simulation)" ContainsTarget="true"/>
+        <NavigationProperty Name="trainings" Type="Collection(graph.training)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="alert" BaseType="graph.entity" OpenType="true">
+        <Property Name="activityGroupName" Type="Edm.String"/>
+        <Property Name="alertDetections" Type="Collection(graph.alertDetection)"/>
+        <Property Name="assignedTo" Type="Edm.String"/>
+        <Property Name="azureSubscriptionId" Type="Edm.String"/>
+        <Property Name="azureTenantId" Type="Edm.String" Nullable="false"/>
+        <Property Name="category" Type="Edm.String"/>
+        <Property Name="closedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="cloudAppStates" Type="Collection(graph.cloudAppSecurityState)"/>
+        <Property Name="comments" Type="Collection(Edm.String)"/>
+        <Property Name="confidence" Type="Edm.Int32"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="detectionIds" Type="Collection(Edm.String)"/>
+        <Property Name="eventDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="feedback" Type="graph.alertFeedback"/>
+        <Property Name="fileStates" Type="Collection(graph.fileSecurityState)"/>
+        <Property Name="historyStates" Type="Collection(graph.alertHistoryState)"/>
+        <Property Name="hostStates" Type="Collection(graph.hostSecurityState)"/>
+        <Property Name="incidentIds" Type="Collection(Edm.String)"/>
+        <Property Name="investigationSecurityStates" Type="Collection(graph.investigationSecurityState)"/>
+        <Property Name="lastEventDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="malwareStates" Type="Collection(graph.malwareState)"/>
+        <Property Name="messageSecurityStates" Type="Collection(graph.messageSecurityState)"/>
+        <Property Name="networkConnections" Type="Collection(graph.networkConnection)"/>
+        <Property Name="processes" Type="Collection(graph.process)"/>
+        <Property Name="recommendedActions" Type="Collection(Edm.String)"/>
+        <Property Name="registryKeyStates" Type="Collection(graph.registryKeyState)"/>
+        <Property Name="securityResources" Type="Collection(graph.securityResource)"/>
+        <Property Name="severity" Type="graph.alertSeverity" Nullable="false"/>
+        <Property Name="sourceMaterials" Type="Collection(Edm.String)"/>
+        <Property Name="status" Type="graph.alertStatus" Nullable="false"/>
+        <Property Name="tags" Type="Collection(Edm.String)"/>
+        <Property Name="title" Type="Edm.String"/>
+        <Property Name="triggers" Type="Collection(graph.alertTrigger)"/>
+        <Property Name="uriClickSecurityStates" Type="Collection(graph.uriClickSecurityState)"/>
+        <Property Name="userStates" Type="Collection(graph.userSecurityState)"/>
+        <Property Name="vendorInformation" Type="graph.securityVendorInformation"/>
+        <Property Name="vulnerabilityStates" Type="Collection(graph.vulnerabilityState)"/>
+      </EntityType>
+      <EntityType Name="secureScoreControlProfile" BaseType="graph.entity" OpenType="true">
+        <Property Name="actionType" Type="Edm.String"/>
+        <Property Name="actionUrl" Type="Edm.String"/>
+        <Property Name="azureTenantId" Type="Edm.String" Nullable="false"/>
+        <Property Name="complianceInformation" Type="Collection(graph.complianceInformation)"/>
+        <Property Name="controlCategory" Type="Edm.String"/>
+        <Property Name="controlStateUpdates" Type="Collection(graph.secureScoreControlStateUpdate)"/>
+        <Property Name="deprecated" Type="Edm.Boolean"/>
+        <Property Name="implementationCost" Type="Edm.String"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="maxScore" Type="Edm.Double"/>
+        <Property Name="rank" Type="Edm.Int32"/>
+        <Property Name="remediation" Type="Edm.String"/>
+        <Property Name="remediationImpact" Type="Edm.String"/>
+        <Property Name="service" Type="Edm.String"/>
+        <Property Name="threats" Type="Collection(Edm.String)"/>
+        <Property Name="tier" Type="Edm.String"/>
+        <Property Name="title" Type="Edm.String"/>
+        <Property Name="userImpact" Type="Edm.String"/>
+        <Property Name="vendorInformation" Type="graph.securityVendorInformation"/>
+      </EntityType>
+      <EntityType Name="secureScore" BaseType="graph.entity" OpenType="true">
+        <Property Name="activeUserCount" Type="Edm.Int32"/>
+        <Property Name="averageComparativeScores" Type="Collection(graph.averageComparativeScore)"/>
+        <Property Name="azureTenantId" Type="Edm.String" Nullable="false"/>
+        <Property Name="controlScores" Type="Collection(graph.controlScore)"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="currentScore" Type="Edm.Double"/>
+        <Property Name="enabledServices" Type="Collection(Edm.String)"/>
+        <Property Name="licensedUserCount" Type="Edm.Int32"/>
+        <Property Name="maxScore" Type="Edm.Double"/>
+        <Property Name="vendorInformation" Type="graph.securityVendorInformation"/>
       </EntityType>
       <ComplexType Name="teamFunSettings">
         <Property Name="allowCustomMemes" Type="Edm.Boolean"/>
@@ -21977,6 +22554,7 @@
         <Property Name="email" Type="Edm.String"/>
         <Property Name="isFavoriteByDefault" Type="Edm.Boolean"/>
         <Property Name="membershipType" Type="graph.channelMembershipType"/>
+        <Property Name="summary" Type="graph.channelSummary"/>
         <Property Name="tenantId" Type="Edm.String"/>
         <Property Name="webUrl" Type="Edm.String"/>
         <NavigationProperty Name="filesFolder" Type="graph.driveItem" ContainsTarget="true"/>
@@ -22015,6 +22593,7 @@
         <Property Name="renewedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="securityEnabled" Type="Edm.Boolean"/>
         <Property Name="securityIdentifier" Type="Edm.String"/>
+        <Property Name="serviceProvisioningErrors" Type="Collection(graph.serviceProvisioningError)"/>
         <Property Name="theme" Type="Edm.String"/>
         <Property Name="visibility" Type="Edm.String"/>
         <Property Name="allowExternalSenders" Type="Edm.Boolean"/>
@@ -22153,96 +22732,6 @@
       </EntityType>
       <EntityType Name="plannerGroup" BaseType="graph.entity">
         <NavigationProperty Name="plans" Type="Collection(graph.plannerPlan)"/>
-      </EntityType>
-      <EntityType Name="security" BaseType="graph.entity">
-        <NavigationProperty Name="cases" Type="microsoft.graph.security.casesRoot" ContainsTarget="true"/>
-        <NavigationProperty Name="alerts_v2" Type="Collection(microsoft.graph.security.alert)" ContainsTarget="true"/>
-        <NavigationProperty Name="incidents" Type="Collection(microsoft.graph.security.incident)" ContainsTarget="true"/>
-        <NavigationProperty Name="attackSimulation" Type="graph.attackSimulationRoot" ContainsTarget="true"/>
-        <NavigationProperty Name="triggers" Type="microsoft.graph.security.triggersRoot" ContainsTarget="true"/>
-        <NavigationProperty Name="triggerTypes" Type="microsoft.graph.security.triggerTypesRoot" ContainsTarget="true"/>
-        <NavigationProperty Name="alerts" Type="Collection(graph.alert)" ContainsTarget="true"/>
-        <NavigationProperty Name="secureScoreControlProfiles" Type="Collection(graph.secureScoreControlProfile)" ContainsTarget="true"/>
-        <NavigationProperty Name="secureScores" Type="Collection(graph.secureScore)" ContainsTarget="true"/>
-        <NavigationProperty Name="threatIntelligence" Type="microsoft.graph.security.threatIntelligence" ContainsTarget="true"/>
-      </EntityType>
-      <EntityType Name="attackSimulationRoot" BaseType="graph.entity" Abstract="true">
-        <NavigationProperty Name="simulationAutomations" Type="Collection(graph.simulationAutomation)" ContainsTarget="true"/>
-        <NavigationProperty Name="simulations" Type="Collection(graph.simulation)" ContainsTarget="true"/>
-      </EntityType>
-      <EntityType Name="alert" BaseType="graph.entity" OpenType="true">
-        <Property Name="activityGroupName" Type="Edm.String"/>
-        <Property Name="alertDetections" Type="Collection(graph.alertDetection)"/>
-        <Property Name="assignedTo" Type="Edm.String"/>
-        <Property Name="azureSubscriptionId" Type="Edm.String"/>
-        <Property Name="azureTenantId" Type="Edm.String" Nullable="false"/>
-        <Property Name="category" Type="Edm.String"/>
-        <Property Name="closedDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="cloudAppStates" Type="Collection(graph.cloudAppSecurityState)"/>
-        <Property Name="comments" Type="Collection(Edm.String)"/>
-        <Property Name="confidence" Type="Edm.Int32"/>
-        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="description" Type="Edm.String"/>
-        <Property Name="detectionIds" Type="Collection(Edm.String)"/>
-        <Property Name="eventDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="feedback" Type="graph.alertFeedback"/>
-        <Property Name="fileStates" Type="Collection(graph.fileSecurityState)"/>
-        <Property Name="historyStates" Type="Collection(graph.alertHistoryState)"/>
-        <Property Name="hostStates" Type="Collection(graph.hostSecurityState)"/>
-        <Property Name="incidentIds" Type="Collection(Edm.String)"/>
-        <Property Name="investigationSecurityStates" Type="Collection(graph.investigationSecurityState)"/>
-        <Property Name="lastEventDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="malwareStates" Type="Collection(graph.malwareState)"/>
-        <Property Name="messageSecurityStates" Type="Collection(graph.messageSecurityState)"/>
-        <Property Name="networkConnections" Type="Collection(graph.networkConnection)"/>
-        <Property Name="processes" Type="Collection(graph.process)"/>
-        <Property Name="recommendedActions" Type="Collection(Edm.String)"/>
-        <Property Name="registryKeyStates" Type="Collection(graph.registryKeyState)"/>
-        <Property Name="securityResources" Type="Collection(graph.securityResource)"/>
-        <Property Name="severity" Type="graph.alertSeverity" Nullable="false"/>
-        <Property Name="sourceMaterials" Type="Collection(Edm.String)"/>
-        <Property Name="status" Type="graph.alertStatus" Nullable="false"/>
-        <Property Name="tags" Type="Collection(Edm.String)"/>
-        <Property Name="title" Type="Edm.String"/>
-        <Property Name="triggers" Type="Collection(graph.alertTrigger)"/>
-        <Property Name="uriClickSecurityStates" Type="Collection(graph.uriClickSecurityState)"/>
-        <Property Name="userStates" Type="Collection(graph.userSecurityState)"/>
-        <Property Name="vendorInformation" Type="graph.securityVendorInformation"/>
-        <Property Name="vulnerabilityStates" Type="Collection(graph.vulnerabilityState)"/>
-      </EntityType>
-      <EntityType Name="secureScoreControlProfile" BaseType="graph.entity" OpenType="true">
-        <Property Name="actionType" Type="Edm.String"/>
-        <Property Name="actionUrl" Type="Edm.String"/>
-        <Property Name="azureTenantId" Type="Edm.String" Nullable="false"/>
-        <Property Name="complianceInformation" Type="Collection(graph.complianceInformation)"/>
-        <Property Name="controlCategory" Type="Edm.String"/>
-        <Property Name="controlStateUpdates" Type="Collection(graph.secureScoreControlStateUpdate)"/>
-        <Property Name="deprecated" Type="Edm.Boolean"/>
-        <Property Name="implementationCost" Type="Edm.String"/>
-        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="maxScore" Type="Edm.Double"/>
-        <Property Name="rank" Type="Edm.Int32"/>
-        <Property Name="remediation" Type="Edm.String"/>
-        <Property Name="remediationImpact" Type="Edm.String"/>
-        <Property Name="service" Type="Edm.String"/>
-        <Property Name="threats" Type="Collection(Edm.String)"/>
-        <Property Name="tier" Type="Edm.String"/>
-        <Property Name="title" Type="Edm.String"/>
-        <Property Name="userImpact" Type="Edm.String"/>
-        <Property Name="vendorInformation" Type="graph.securityVendorInformation"/>
-      </EntityType>
-      <EntityType Name="secureScore" BaseType="graph.entity" OpenType="true">
-        <Property Name="activeUserCount" Type="Edm.Int32"/>
-        <Property Name="averageComparativeScores" Type="Collection(graph.averageComparativeScore)"/>
-        <Property Name="azureTenantId" Type="Edm.String" Nullable="false"/>
-        <Property Name="controlScores" Type="Collection(graph.controlScore)"/>
-        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="currentScore" Type="Edm.Double"/>
-        <Property Name="enabledServices" Type="Collection(Edm.String)"/>
-        <Property Name="licensedUserCount" Type="Edm.Int32"/>
-        <Property Name="maxScore" Type="Edm.Double"/>
-        <Property Name="vendorInformation" Type="graph.securityVendorInformation"/>
       </EntityType>
       <ComplexType Name="root"/>
       <ComplexType Name="sharepointIds">
@@ -22467,6 +22956,54 @@
         <Property Name="isEnabledForContentSharing" Type="Edm.Boolean"/>
         <Property Name="isEnabledForVideo" Type="Edm.Boolean"/>
       </ComplexType>
+      <ComplexType Name="deviceLocalCredential">
+        <Property Name="accountName" Type="Edm.String" Nullable="false"/>
+        <Property Name="accountSid" Type="Edm.String" Nullable="false"/>
+        <Property Name="backupDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="passwordBase64" Type="Edm.String" Nullable="false"/>
+      </ComplexType>
+      <EntityType Name="deviceLocalCredentialInfo" BaseType="graph.entity">
+        <Property Name="credentials" Type="Collection(graph.deviceLocalCredential)" Nullable="false"/>
+        <Property Name="deviceName" Type="Edm.String" Nullable="false"/>
+        <Property Name="lastBackupDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="refreshDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="directory" BaseType="graph.entity">
+        <NavigationProperty Name="deviceLocalCredentials" Type="Collection(graph.deviceLocalCredentialInfo)" ContainsTarget="true"/>
+        <NavigationProperty Name="administrativeUnits" Type="Collection(graph.administrativeUnit)" ContainsTarget="true"/>
+        <NavigationProperty Name="attributeSets" Type="Collection(graph.attributeSet)" ContainsTarget="true"/>
+        <NavigationProperty Name="customSecurityAttributeDefinitions" Type="Collection(graph.customSecurityAttributeDefinition)" ContainsTarget="true"/>
+        <NavigationProperty Name="deletedItems" Type="Collection(graph.directoryObject)" ContainsTarget="true"/>
+        <NavigationProperty Name="federationConfigurations" Type="Collection(graph.identityProviderBase)" ContainsTarget="true"/>
+        <NavigationProperty Name="onPremisesSynchronization" Type="Collection(graph.onPremisesDirectorySynchronization)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="administrativeUnit" BaseType="graph.directoryObject" OpenType="true">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="visibility" Type="Edm.String"/>
+        <NavigationProperty Name="members" Type="Collection(graph.directoryObject)"/>
+        <NavigationProperty Name="scopedRoleMembers" Type="Collection(graph.scopedRoleMembership)" ContainsTarget="true"/>
+        <NavigationProperty Name="extensions" Type="Collection(graph.extension)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="attributeSet" BaseType="graph.entity">
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="maxAttributesPerSet" Type="Edm.Int32"/>
+      </EntityType>
+      <EntityType Name="customSecurityAttributeDefinition" BaseType="graph.entity">
+        <Property Name="attributeSet" Type="Edm.String" Nullable="false"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="isCollection" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="isSearchable" Type="Edm.Boolean"/>
+        <Property Name="name" Type="Edm.String" Nullable="false"/>
+        <Property Name="status" Type="Edm.String" Nullable="false"/>
+        <Property Name="type" Type="Edm.String" Nullable="false"/>
+        <Property Name="usePreDefinedValuesOnly" Type="Edm.Boolean"/>
+        <NavigationProperty Name="allowedValues" Type="Collection(graph.allowedValue)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="onPremisesDirectorySynchronization" BaseType="graph.entity">
+        <Property Name="configuration" Type="graph.onPremisesDirectorySynchronizationConfiguration"/>
+        <Property Name="features" Type="graph.onPremisesDirectorySynchronizationFeature" Nullable="false"/>
+      </EntityType>
       <ComplexType Name="alternativeSecurityId">
         <Property Name="identityProvider" Type="Edm.String"/>
         <Property Name="key" Type="Edm.Binary"/>
@@ -22638,6 +23175,9 @@
         <Property Name="servicePlanId" Type="Edm.Guid"/>
         <Property Name="servicePlanName" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="serviceProvisioningXmlError" BaseType="graph.serviceProvisioningError">
+        <Property Name="errorDetail" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="settingTemplateValue">
         <Property Name="defaultValue" Type="Edm.String"/>
         <Property Name="description" Type="Edm.String"/>
@@ -22670,24 +23210,12 @@
         <Property Name="name" Type="Edm.String"/>
         <Property Name="type" Type="Edm.String"/>
       </ComplexType>
-      <EntityType Name="administrativeUnit" BaseType="graph.directoryObject" OpenType="true">
-        <Property Name="description" Type="Edm.String"/>
-        <Property Name="displayName" Type="Edm.String"/>
-        <Property Name="visibility" Type="Edm.String"/>
-        <NavigationProperty Name="members" Type="Collection(graph.directoryObject)"/>
-        <NavigationProperty Name="scopedRoleMembers" Type="Collection(graph.scopedRoleMembership)" ContainsTarget="true"/>
-        <NavigationProperty Name="extensions" Type="Collection(graph.extension)" ContainsTarget="true"/>
-      </EntityType>
       <EntityType Name="allowedValue" BaseType="graph.entity">
         <Property Name="isActive" Type="Edm.Boolean"/>
       </EntityType>
       <EntityType Name="appScope" BaseType="graph.entity">
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="type" Type="Edm.String"/>
-      </EntityType>
-      <EntityType Name="attributeSet" BaseType="graph.entity">
-        <Property Name="description" Type="Edm.String"/>
-        <Property Name="maxAttributesPerSet" Type="Edm.Int32"/>
       </EntityType>
       <EntityType Name="certificateBasedAuthConfiguration" BaseType="graph.entity">
         <Property Name="certificateAuthorities" Type="Collection(graph.certificateAuthority)" Nullable="false"/>
@@ -22728,17 +23256,6 @@
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="tenantId" Type="Edm.String" Nullable="false"/>
         <Property Name="userSyncInbound" Type="graph.crossTenantUserSyncInbound"/>
-      </EntityType>
-      <EntityType Name="customSecurityAttributeDefinition" BaseType="graph.entity">
-        <Property Name="attributeSet" Type="Edm.String" Nullable="false"/>
-        <Property Name="description" Type="Edm.String"/>
-        <Property Name="isCollection" Type="Edm.Boolean" Nullable="false"/>
-        <Property Name="isSearchable" Type="Edm.Boolean"/>
-        <Property Name="name" Type="Edm.String" Nullable="false"/>
-        <Property Name="status" Type="Edm.String" Nullable="false"/>
-        <Property Name="type" Type="Edm.String" Nullable="false"/>
-        <Property Name="usePreDefinedValuesOnly" Type="Edm.Boolean"/>
-        <NavigationProperty Name="allowedValues" Type="Collection(graph.allowedValue)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="device" BaseType="graph.directoryObject" OpenType="true">
         <Property Name="accountEnabled" Type="Edm.Boolean"/>
@@ -22783,18 +23300,6 @@
             </Record>
           </Collection>
         </Annotation>
-      </EntityType>
-      <EntityType Name="directory" BaseType="graph.entity">
-        <NavigationProperty Name="administrativeUnits" Type="Collection(graph.administrativeUnit)" ContainsTarget="true"/>
-        <NavigationProperty Name="attributeSets" Type="Collection(graph.attributeSet)" ContainsTarget="true"/>
-        <NavigationProperty Name="customSecurityAttributeDefinitions" Type="Collection(graph.customSecurityAttributeDefinition)" ContainsTarget="true"/>
-        <NavigationProperty Name="deletedItems" Type="Collection(graph.directoryObject)" ContainsTarget="true"/>
-        <NavigationProperty Name="federationConfigurations" Type="Collection(graph.identityProviderBase)" ContainsTarget="true"/>
-        <NavigationProperty Name="onPremisesSynchronization" Type="Collection(graph.onPremisesDirectorySynchronization)" ContainsTarget="true"/>
-      </EntityType>
-      <EntityType Name="onPremisesDirectorySynchronization" BaseType="graph.entity">
-        <Property Name="configuration" Type="graph.onPremisesDirectorySynchronizationConfiguration"/>
-        <Property Name="features" Type="graph.onPremisesDirectorySynchronizationFeature" Nullable="false"/>
       </EntityType>
       <EntityType Name="directoryObjectPartnerReference" BaseType="graph.directoryObject">
         <Property Name="description" Type="Edm.String"/>
@@ -22975,6 +23480,7 @@
         <Property Name="onPremisesSyncEnabled" Type="Edm.Boolean"/>
         <Property Name="phones" Type="Collection(graph.phone)"/>
         <Property Name="proxyAddresses" Type="Collection(Edm.String)" Nullable="false"/>
+        <Property Name="serviceProvisioningErrors" Type="Collection(graph.serviceProvisioningError)"/>
         <Property Name="surname" Type="Edm.String"/>
         <NavigationProperty Name="directReports" Type="Collection(graph.directoryObject)"/>
         <NavigationProperty Name="manager" Type="graph.directoryObject"/>
@@ -23120,6 +23626,9 @@
         <Property Name="memberType" Type="Edm.String"/>
         <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
       </EntityType>
+      <EntityType Name="targetDeviceGroup" BaseType="graph.entity">
+        <Property Name="displayName" Type="Edm.String"/>
+      </EntityType>
       <EntityType Name="roleManagement">
         <NavigationProperty Name="directory" Type="graph.rbacApplication" ContainsTarget="true"/>
         <NavigationProperty Name="entitlementManagement" Type="graph.rbacApplication" ContainsTarget="true"/>
@@ -23151,6 +23660,7 @@
       <EntityType Name="delegatedAdminRelationship" BaseType="graph.entity">
         <Property Name="accessDetails" Type="graph.delegatedAdminAccessDetails" Nullable="false"/>
         <Property Name="activatedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="autoExtendDuration" Type="Edm.Duration"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="customer" Type="graph.delegatedAdminRelationshipCustomerParticipant"/>
         <Property Name="displayName" Type="Edm.String" Nullable="false"/>
@@ -23193,6 +23703,7 @@
         <NavigationProperty Name="edge" Type="graph.edge" ContainsTarget="true"/>
         <NavigationProperty Name="sharepoint" Type="graph.sharepoint" ContainsTarget="true"/>
         <NavigationProperty Name="serviceAnnouncement" Type="graph.serviceAnnouncement" ContainsTarget="true"/>
+        <NavigationProperty Name="people" Type="graph.peopleAdminSettings" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="edge" BaseType="graph.entity">
         <NavigationProperty Name="internetExplorerMode" Type="graph.internetExplorerMode" ContainsTarget="true"/>
@@ -23204,6 +23715,9 @@
         <NavigationProperty Name="healthOverviews" Type="Collection(graph.serviceHealth)" ContainsTarget="true"/>
         <NavigationProperty Name="issues" Type="Collection(graph.serviceHealthIssue)" ContainsTarget="true"/>
         <NavigationProperty Name="messages" Type="Collection(graph.serviceUpdateMessage)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="peopleAdminSettings" BaseType="graph.entity">
+        <NavigationProperty Name="profileCardProperties" Type="Collection(graph.profileCardProperty)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="browserSharedCookie" BaseType="graph.entity">
         <Property Name="comment" Type="Edm.String" Nullable="false"/>
@@ -23649,6 +24163,7 @@
         <NavigationProperty Name="children" Type="Collection(graph.driveItem)" ContainsTarget="true"/>
         <NavigationProperty Name="listItem" Type="graph.listItem" ContainsTarget="true"/>
         <NavigationProperty Name="permissions" Type="Collection(graph.permission)" ContainsTarget="true"/>
+        <NavigationProperty Name="retentionLabel" Type="graph.itemRetentionLabel" ContainsTarget="true"/>
         <NavigationProperty Name="subscriptions" Type="Collection(graph.subscription)" ContainsTarget="true"/>
         <NavigationProperty Name="thumbnails" Type="Collection(graph.thumbnailSet)" ContainsTarget="true"/>
         <NavigationProperty Name="versions" Type="Collection(graph.driveItemVersion)" ContainsTarget="true"/>
@@ -23726,6 +24241,7 @@
         <Property Name="takenDateTime" Type="Edm.DateTimeOffset"/>
       </ComplexType>
       <ComplexType Name="publicationFacet">
+        <Property Name="checkedOutBy" Type="graph.identitySet"/>
         <Property Name="level" Type="Edm.String"/>
         <Property Name="versionId" Type="Edm.String"/>
       </ComplexType>
@@ -23782,6 +24298,13 @@
         <NavigationProperty Name="driveItem" Type="graph.driveItem" ContainsTarget="true"/>
         <NavigationProperty Name="fields" Type="graph.fieldValueSet" ContainsTarget="true"/>
         <NavigationProperty Name="versions" Type="Collection(graph.listItemVersion)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="itemRetentionLabel" BaseType="graph.entity">
+        <Property Name="isLabelAppliedExplicitly" Type="Edm.Boolean"/>
+        <Property Name="labelAppliedBy" Type="graph.identitySet"/>
+        <Property Name="labelAppliedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="retentionSettings" Type="graph.retentionLabelSettings"/>
       </EntityType>
       <EntityType Name="subscription" BaseType="graph.entity">
         <Property Name="applicationId" Type="Edm.String"/>
@@ -24534,6 +25057,11 @@
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="languageTag" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="commentAction">
+        <Property Name="isReply" Type="Edm.Boolean"/>
+        <Property Name="parentAuthor" Type="graph.identitySet"/>
+        <Property Name="participants" Type="Collection(graph.identitySet)"/>
+      </ComplexType>
       <ComplexType Name="contentApprovalStatusColumn"/>
       <ComplexType Name="contentTypeInfo">
         <Property Name="id" Type="Edm.String"/>
@@ -24543,6 +25071,7 @@
         <Property Name="default" Type="Edm.Boolean"/>
         <Property Name="position" Type="Edm.Int32"/>
       </ComplexType>
+      <ComplexType Name="createAction"/>
       <ComplexType Name="currencyColumn">
         <Property Name="locale" Type="Edm.String"/>
       </ComplexType>
@@ -24553,6 +25082,10 @@
       <ComplexType Name="defaultColumnValue">
         <Property Name="formula" Type="Edm.String"/>
         <Property Name="value" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="deleteAction">
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="objectType" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="documentSet">
         <Property Name="allowedContentTypes" Type="Collection(graph.contentTypeInfo)"/>
@@ -24584,6 +25117,7 @@
         <Property Name="email" Type="Edm.String"/>
         <Property Name="objectId" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="editAction"/>
       <ComplexType Name="extractSensitivityLabelsResult">
         <Property Name="labels" Type="Collection(graph.sensitivityLabelAssignment)"/>
       </ComplexType>
@@ -24637,6 +25171,13 @@
         <Property Name="listId" Type="Edm.String"/>
         <Property Name="primaryLookupColumnId" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="mentionAction">
+        <Property Name="mentionees" Type="Collection(graph.identitySet)"/>
+      </ComplexType>
+      <ComplexType Name="moveAction">
+        <Property Name="from" Type="Edm.String"/>
+        <Property Name="to" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="numberColumn">
         <Property Name="decimalPlaces" Type="Edm.String"/>
         <Property Name="displayAs" Type="Edm.String"/>
@@ -24653,6 +25194,22 @@
       </ComplexType>
       <ComplexType Name="storagePlanInformation">
         <Property Name="upgradeAvailable" Type="Edm.Boolean"/>
+      </ComplexType>
+      <ComplexType Name="renameAction">
+        <Property Name="newName" Type="Edm.String"/>
+        <Property Name="oldName" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="restoreAction"/>
+      <ComplexType Name="retentionLabelSettings">
+        <Property Name="behaviorDuringRetentionPeriod" Type="microsoft.graph.security.behaviorDuringRetentionPeriod"/>
+        <Property Name="isContentUpdateAllowed" Type="Edm.Boolean"/>
+        <Property Name="isDeleteAllowed" Type="Edm.Boolean"/>
+        <Property Name="isLabelUpdateAllowed" Type="Edm.Boolean"/>
+        <Property Name="isMetadataUpdateAllowed" Type="Edm.Boolean"/>
+        <Property Name="isRecordLocked" Type="Edm.Boolean"/>
+      </ComplexType>
+      <ComplexType Name="shareAction">
+        <Property Name="recipients" Type="Collection(graph.identitySet)"/>
       </ComplexType>
       <ComplexType Name="sharePointIdentity" BaseType="graph.identity" OpenType="true">
         <Property Name="loginName" Type="Edm.String"/>
@@ -24697,6 +25254,9 @@
         <Property Name="width" Type="Edm.Int32"/>
       </ComplexType>
       <ComplexType Name="thumbnailColumn"/>
+      <ComplexType Name="versionAction">
+        <Property Name="newVersion" Type="Edm.String"/>
+      </ComplexType>
       <EntityType Name="columnLink" BaseType="graph.entity">
         <Property Name="name" Type="Edm.String"/>
       </EntityType>
@@ -24739,14 +25299,6 @@
         <NavigationProperty Name="root" Type="graph.driveItem" ContainsTarget="true"/>
         <NavigationProperty Name="site" Type="graph.site" ContainsTarget="true"/>
       </EntityType>
-      <ComplexType Name="audioConferencing">
-        <Property Name="conferenceId" Type="Edm.String"/>
-        <Property Name="dialinUrl" Type="Edm.String"/>
-        <Property Name="tollFreeNumber" Type="Edm.String"/>
-        <Property Name="tollFreeNumbers" Type="Collection(Edm.String)"/>
-        <Property Name="tollNumber" Type="Edm.String"/>
-        <Property Name="tollNumbers" Type="Collection(Edm.String)"/>
-      </ComplexType>
       <ComplexType Name="broadcastMeetingSettings">
         <Property Name="allowedAudience" Type="graph.broadcastMeetingAudience"/>
         <Property Name="captions" Type="graph.broadcastMeetingCaptionSettings"/>
@@ -24755,25 +25307,24 @@
         <Property Name="isRecordingEnabled" Type="Edm.Boolean"/>
         <Property Name="isVideoOnDemandEnabled" Type="Edm.Boolean"/>
       </ComplexType>
-      <ComplexType Name="chatInfo">
-        <Property Name="messageId" Type="Edm.String"/>
-        <Property Name="replyChainMessageId" Type="Edm.String"/>
-        <Property Name="threadId" Type="Edm.String"/>
-      </ComplexType>
-      <ComplexType Name="joinMeetingIdSettings">
-        <Property Name="isPasscodeRequired" Type="Edm.Boolean"/>
-        <Property Name="joinMeetingId" Type="Edm.String"/>
-        <Property Name="passcode" Type="Edm.String"/>
-      </ComplexType>
       <ComplexType Name="meetingParticipants">
         <Property Name="attendees" Type="Collection(graph.meetingParticipantInfo)"/>
         <Property Name="organizer" Type="graph.meetingParticipantInfo"/>
       </ComplexType>
-      <EntityType Name="meetingAttendanceReport" BaseType="graph.entity">
-        <Property Name="meetingEndDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="meetingStartDateTime" Type="Edm.DateTimeOffset"/>
-        <Property Name="totalParticipantCount" Type="Edm.Int32"/>
-        <NavigationProperty Name="attendanceRecords" Type="Collection(graph.attendanceRecord)" ContainsTarget="true"/>
+      <EntityType Name="callRecording" BaseType="graph.entity">
+        <Property Name="content" Type="Edm.Stream"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="meetingId" Type="Edm.String"/>
+        <Property Name="meetingOrganizer" Type="graph.identitySet"/>
+        <Property Name="recordingContentUrl" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="callTranscript" BaseType="graph.entity">
+        <Property Name="content" Type="Edm.Stream"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="meetingId" Type="Edm.String"/>
+        <Property Name="meetingOrganizer" Type="graph.identitySet"/>
+        <Property Name="metadataContent" Type="Edm.Stream"/>
+        <Property Name="transcriptContentUrl" Type="Edm.String"/>
       </EntityType>
       <ComplexType Name="extensionSchemaProperty">
         <Property Name="name" Type="Edm.String"/>
@@ -25366,6 +25917,90 @@
         <Property Name="durationUntilExternalUserDeletedAfterBlocked" Type="Edm.Duration"/>
         <Property Name="externalUserLifecycleAction" Type="graph.accessPackageExternalUserLifecycleAction"/>
       </EntityType>
+      <EntityType Name="privilegedAccessGroup" BaseType="graph.entity">
+        <NavigationProperty Name="assignmentApprovals" Type="Collection(graph.approval)" ContainsTarget="true"/>
+        <NavigationProperty Name="assignmentScheduleInstances" Type="Collection(graph.privilegedAccessGroupAssignmentScheduleInstance)" ContainsTarget="true"/>
+        <NavigationProperty Name="assignmentScheduleRequests" Type="Collection(graph.privilegedAccessGroupAssignmentScheduleRequest)" ContainsTarget="true"/>
+        <NavigationProperty Name="assignmentSchedules" Type="Collection(graph.privilegedAccessGroupAssignmentSchedule)" ContainsTarget="true"/>
+        <NavigationProperty Name="eligibilityScheduleInstances" Type="Collection(graph.privilegedAccessGroupEligibilityScheduleInstance)" ContainsTarget="true"/>
+        <NavigationProperty Name="eligibilityScheduleRequests" Type="Collection(graph.privilegedAccessGroupEligibilityScheduleRequest)" ContainsTarget="true"/>
+        <NavigationProperty Name="eligibilitySchedules" Type="Collection(graph.privilegedAccessGroupEligibilitySchedule)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessScheduleInstance" BaseType="graph.entity" Abstract="true">
+        <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessGroupAssignmentScheduleInstance" BaseType="graph.privilegedAccessScheduleInstance">
+        <Property Name="accessId" Type="graph.privilegedAccessGroupRelationships"/>
+        <Property Name="assignmentScheduleId" Type="Edm.String"/>
+        <Property Name="assignmentType" Type="graph.privilegedAccessGroupAssignmentType"/>
+        <Property Name="groupId" Type="Edm.String"/>
+        <Property Name="memberType" Type="graph.privilegedAccessGroupMemberType"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <NavigationProperty Name="activatedUsing" Type="graph.privilegedAccessGroupEligibilityScheduleInstance"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessScheduleRequest" BaseType="graph.request" Abstract="true">
+        <Property Name="action" Type="graph.scheduleRequestActions"/>
+        <Property Name="isValidationOnly" Type="Edm.Boolean"/>
+        <Property Name="justification" Type="Edm.String"/>
+        <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
+        <Property Name="ticketInfo" Type="graph.ticketInfo"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessGroupAssignmentScheduleRequest" BaseType="graph.privilegedAccessScheduleRequest">
+        <Property Name="accessId" Type="graph.privilegedAccessGroupRelationships"/>
+        <Property Name="groupId" Type="Edm.String"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="targetScheduleId" Type="Edm.String"/>
+        <NavigationProperty Name="activatedUsing" Type="graph.privilegedAccessGroupEligibilitySchedule"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="targetSchedule" Type="graph.privilegedAccessGroupEligibilitySchedule"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessSchedule" BaseType="graph.entity" Abstract="true">
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="createdUsing" Type="Edm.String"/>
+        <Property Name="modifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="scheduleInfo" Type="graph.requestSchedule"/>
+        <Property Name="status" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessGroupAssignmentSchedule" BaseType="graph.privilegedAccessSchedule">
+        <Property Name="accessId" Type="graph.privilegedAccessGroupRelationships"/>
+        <Property Name="assignmentType" Type="graph.privilegedAccessGroupAssignmentType"/>
+        <Property Name="groupId" Type="Edm.String"/>
+        <Property Name="memberType" Type="graph.privilegedAccessGroupMemberType"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <NavigationProperty Name="activatedUsing" Type="graph.privilegedAccessGroupEligibilitySchedule"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessGroupEligibilityScheduleInstance" BaseType="graph.privilegedAccessScheduleInstance">
+        <Property Name="accessId" Type="graph.privilegedAccessGroupRelationships"/>
+        <Property Name="eligibilityScheduleId" Type="Edm.String"/>
+        <Property Name="groupId" Type="Edm.String"/>
+        <Property Name="memberType" Type="graph.privilegedAccessGroupMemberType"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessGroupEligibilityScheduleRequest" BaseType="graph.privilegedAccessScheduleRequest">
+        <Property Name="accessId" Type="graph.privilegedAccessGroupRelationships"/>
+        <Property Name="groupId" Type="Edm.String"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <Property Name="targetScheduleId" Type="Edm.String"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+        <NavigationProperty Name="targetSchedule" Type="graph.privilegedAccessGroupEligibilitySchedule"/>
+      </EntityType>
+      <EntityType Name="privilegedAccessGroupEligibilitySchedule" BaseType="graph.privilegedAccessSchedule">
+        <Property Name="accessId" Type="graph.privilegedAccessGroupRelationships"/>
+        <Property Name="groupId" Type="Edm.String"/>
+        <Property Name="memberType" Type="graph.privilegedAccessGroupMemberType"/>
+        <Property Name="principalId" Type="Edm.String"/>
+        <NavigationProperty Name="group" Type="graph.group"/>
+        <NavigationProperty Name="principal" Type="graph.directoryObject"/>
+      </EntityType>
       <EntityType Name="userSignInInsight" BaseType="graph.governanceInsight">
         <Property Name="lastSignInDateTime" Type="Edm.DateTimeOffset"/>
       </EntityType>
@@ -25874,6 +26509,10 @@
         <Property Name="useDeviceLicensing" Type="Edm.Boolean" Nullable="false"/>
         <Property Name="vpnConfigurationId" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="macOSIncludedApp">
+        <Property Name="bundleId" Type="Edm.String" Nullable="false"/>
+        <Property Name="bundleVersion" Type="Edm.String" Nullable="false"/>
+      </ComplexType>
       <ComplexType Name="macOsLobAppAssignmentSettings" BaseType="graph.mobileAppAssignmentSettings">
         <Property Name="uninstallOnDeviceRemoval" Type="Edm.Boolean"/>
       </ComplexType>
@@ -26262,6 +26901,13 @@
         <Property Name="vppTokenAppleId" Type="Edm.String"/>
         <Property Name="vppTokenOrganizationName" Type="Edm.String"/>
       </EntityType>
+      <EntityType Name="macOSDmgApp" BaseType="graph.mobileLobApp">
+        <Property Name="ignoreVersionDetection" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="includedApps" Type="Collection(graph.macOSIncludedApp)" Nullable="false"/>
+        <Property Name="minimumSupportedOperatingSystem" Type="graph.macOSMinimumOperatingSystem"/>
+        <Property Name="primaryBundleId" Type="Edm.String" Nullable="false"/>
+        <Property Name="primaryBundleVersion" Type="Edm.String" Nullable="false"/>
+      </EntityType>
       <EntityType Name="macOSLobApp" BaseType="graph.mobileLobApp">
         <Property Name="buildNumber" Type="Edm.String"/>
         <Property Name="bundleId" Type="Edm.String"/>
@@ -26511,6 +27157,7 @@
         <NavigationProperty Name="userExperienceAnalyticsDeviceScores" Type="Collection(graph.userExperienceAnalyticsDeviceScores)" ContainsTarget="true"/>
         <NavigationProperty Name="userExperienceAnalyticsDeviceStartupHistory" Type="Collection(graph.userExperienceAnalyticsDeviceStartupHistory)" ContainsTarget="true"/>
         <NavigationProperty Name="userExperienceAnalyticsDeviceStartupProcesses" Type="Collection(graph.userExperienceAnalyticsDeviceStartupProcess)" ContainsTarget="true"/>
+        <NavigationProperty Name="userExperienceAnalyticsDeviceStartupProcessPerformance" Type="Collection(graph.userExperienceAnalyticsDeviceStartupProcessPerformance)" ContainsTarget="true"/>
         <NavigationProperty Name="userExperienceAnalyticsMetricHistory" Type="Collection(graph.userExperienceAnalyticsMetricHistory)" ContainsTarget="true"/>
         <NavigationProperty Name="userExperienceAnalyticsModelScores" Type="Collection(graph.userExperienceAnalyticsModelScores)" ContainsTarget="true"/>
         <NavigationProperty Name="userExperienceAnalyticsOverview" Type="graph.userExperienceAnalyticsOverview" ContainsTarget="true"/>
@@ -26932,6 +27579,14 @@
         <Property Name="productName" Type="Edm.String"/>
         <Property Name="publisher" Type="Edm.String"/>
         <Property Name="startupImpactInMs" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="userExperienceAnalyticsDeviceStartupProcessPerformance" BaseType="graph.entity">
+        <Property Name="deviceCount" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="medianImpactInMs" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="processName" Type="Edm.String"/>
+        <Property Name="productName" Type="Edm.String"/>
+        <Property Name="publisher" Type="Edm.String"/>
+        <Property Name="totalImpactInMs" Type="Edm.Int64" Nullable="false"/>
       </EntityType>
       <EntityType Name="userExperienceAnalyticsMetricHistory" BaseType="graph.entity">
         <Property Name="deviceId" Type="Edm.String"/>
@@ -28442,6 +29097,9 @@
       <ComplexType Name="resetPasscodeActionResult" BaseType="graph.deviceActionResult">
         <Property Name="passcode" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="rotateBitLockerKeysDeviceActionResult" BaseType="graph.deviceActionResult">
+        <Property Name="errorCode" Type="Edm.Int32" Nullable="false"/>
+      </ComplexType>
       <ComplexType Name="updateWindowsDeviceAccountActionParameter">
         <Property Name="calendarSyncEnabled" Type="Edm.Boolean"/>
         <Property Name="deviceAccount" Type="graph.windowsDeviceAccount"/>
@@ -29248,6 +29906,18 @@
         <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="status" Type="graph.delegatedAdminRelationshipRequestStatus"/>
       </EntityType>
+      <EntityType Name="resellerDelegatedAdminRelationship" BaseType="graph.delegatedAdminRelationship">
+        <Property Name="indirectProviderTenantId" Type="Edm.String" Nullable="false"/>
+        <Property Name="isPartnerConsentPending" Type="Edm.Boolean" Nullable="false"/>
+      </EntityType>
+      <ComplexType Name="profileCardAnnotation">
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="localizations" Type="Collection(graph.displayNameLocalization)"/>
+      </ComplexType>
+      <EntityType Name="profileCardProperty" BaseType="graph.entity">
+        <Property Name="annotations" Type="Collection(graph.profileCardAnnotation)"/>
+        <Property Name="directoryPropertyName" Type="Edm.String"/>
+      </EntityType>
       <ComplexType Name="approvalSettings">
         <Property Name="approvalMode" Type="Edm.String"/>
         <Property Name="approvalStages" Type="Collection(graph.unifiedApprovalStage)"/>
@@ -29569,6 +30239,12 @@
         <Property Name="submittedDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
         <Property Name="userId" Type="Edm.String" Nullable="false"/>
       </EntityType>
+      <ComplexType Name="accountTargetContent" Abstract="true">
+        <Property Name="type" Type="graph.accountTargetContentType"/>
+      </ComplexType>
+      <ComplexType Name="addressBookAccountTargetContent" BaseType="graph.accountTargetContent">
+        <Property Name="accountTargetEmails" Type="Collection(Edm.String)"/>
+      </ComplexType>
       <ComplexType Name="assignedTrainingInfo">
         <Property Name="assignedUserCount" Type="Edm.Int32"/>
         <Property Name="completedUserCount" Type="Edm.Int32"/>
@@ -29600,8 +30276,109 @@
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="trainingStatus" Type="graph.trainingStatus"/>
       </ComplexType>
+      <ComplexType Name="baseEndUserNotification">
+        <Property Name="defaultLanguage" Type="Edm.String"/>
+        <NavigationProperty Name="endUserNotification" Type="graph.endUserNotification"/>
+      </ComplexType>
+      <EntityType Name="endUserNotification" BaseType="graph.entity">
+        <Property Name="createdBy" Type="graph.emailIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="notificationType" Type="graph.endUserNotificationType"/>
+        <Property Name="source" Type="graph.simulationContentSource"/>
+        <Property Name="status" Type="graph.simulationContentStatus"/>
+        <Property Name="supportedLocales" Type="Collection(Edm.String)"/>
+        <NavigationProperty Name="details" Type="Collection(graph.endUserNotificationDetail)" ContainsTarget="true"/>
+      </EntityType>
+      <ComplexType Name="coachmarkLocation">
+        <Property Name="length" Type="Edm.Int32"/>
+        <Property Name="offset" Type="Edm.Int32"/>
+        <Property Name="type" Type="graph.coachmarkLocationType"/>
+      </ComplexType>
+      <ComplexType Name="trainingSetting" Abstract="true">
+        <Property Name="settingType" Type="graph.trainingSettingType"/>
+      </ComplexType>
+      <ComplexType Name="customTrainingSetting" BaseType="graph.trainingSetting">
+        <Property Name="assignedTo" Type="Collection(graph.trainingAssignedTo)"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="durationInMinutes" Type="Edm.Int32"/>
+        <Property Name="url" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="emailIdentity" BaseType="graph.identity" OpenType="true">
         <Property Name="email" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="payloadDetail" Abstract="true">
+        <Property Name="coachmarks" Type="Collection(graph.payloadCoachmark)"/>
+        <Property Name="content" Type="Edm.String"/>
+        <Property Name="phishingUrl" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="emailPayloadDetail" BaseType="graph.payloadDetail">
+        <Property Name="fromEmail" Type="Edm.String"/>
+        <Property Name="fromName" Type="Edm.String"/>
+        <Property Name="isExternalSender" Type="Edm.Boolean"/>
+        <Property Name="subject" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="endUserNotificationSetting" Abstract="true">
+        <Property Name="notificationPreference" Type="graph.endUserNotificationPreference"/>
+        <Property Name="positiveReinforcement" Type="graph.positiveReinforcementNotification"/>
+        <Property Name="settingType" Type="graph.endUserNotificationSettingType"/>
+      </ComplexType>
+      <ComplexType Name="positiveReinforcementNotification" BaseType="graph.baseEndUserNotification">
+        <Property Name="deliveryPreference" Type="graph.notificationDeliveryPreference"/>
+      </ComplexType>
+      <ComplexType Name="includeAllAccountTargetContent" BaseType="graph.accountTargetContent"/>
+      <ComplexType Name="microsoftCustomTrainingSetting" BaseType="graph.trainingSetting">
+        <Property Name="completionDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="trainingAssignmentMappings" Type="Collection(graph.microsoftTrainingAssignmentMapping)"/>
+        <Property Name="trainingCompletionDuration" Type="graph.trainingCompletionDuration"/>
+      </ComplexType>
+      <ComplexType Name="microsoftTrainingAssignmentMapping" BaseType="graph.trainingSetting">
+        <Property Name="assignedTo" Type="Collection(graph.trainingAssignedTo)"/>
+        <NavigationProperty Name="training" Type="graph.training"/>
+      </ComplexType>
+      <ComplexType Name="microsoftManagedTrainingSetting" BaseType="graph.trainingSetting">
+        <Property Name="completionDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="trainingCompletionDuration" Type="graph.trainingCompletionDuration"/>
+      </ComplexType>
+      <EntityType Name="training" BaseType="graph.entity">
+        <Property Name="availabilityStatus" Type="graph.trainingAvailabilityStatus"/>
+        <Property Name="createdBy" Type="graph.emailIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="durationInMinutes" Type="Edm.Int32"/>
+        <Property Name="hasEvaluation" Type="Edm.Boolean"/>
+        <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="source" Type="graph.simulationContentSource"/>
+        <Property Name="supportedLocales" Type="Collection(Edm.String)"/>
+        <Property Name="tags" Type="Collection(Edm.String)"/>
+        <Property Name="type" Type="graph.trainingType"/>
+        <NavigationProperty Name="languageDetails" Type="Collection(graph.trainingLanguageDetail)" ContainsTarget="true"/>
+      </EntityType>
+      <ComplexType Name="noTrainingNotificationSetting" BaseType="graph.endUserNotificationSetting">
+        <Property Name="simulationNotification" Type="graph.simulationNotification"/>
+      </ComplexType>
+      <ComplexType Name="simulationNotification" BaseType="graph.baseEndUserNotification">
+        <Property Name="targettedUserType" Type="graph.targettedUserType"/>
+      </ComplexType>
+      <ComplexType Name="noTrainingSetting" BaseType="graph.trainingSetting"/>
+      <ComplexType Name="oAuthConsentAppDetail">
+        <Property Name="appScope" Type="graph.oAuthAppScope"/>
+        <Property Name="displayLogo" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="payloadCoachmark">
+        <Property Name="coachmarkLocation" Type="graph.coachmarkLocation"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="indicator" Type="Edm.String"/>
+        <Property Name="isValid" Type="Edm.Boolean"/>
+        <Property Name="language" Type="Edm.String"/>
+        <Property Name="order" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="recommendedAction">
         <Property Name="actionWebUrl" Type="Edm.String"/>
@@ -29641,6 +30418,13 @@
         <Property Name="assignedTrainingsInfos" Type="Collection(graph.assignedTrainingInfo)"/>
         <Property Name="trainingsAssignedUserCount" Type="Edm.Int32"/>
       </ComplexType>
+      <ComplexType Name="trainingNotificationSetting" BaseType="graph.endUserNotificationSetting">
+        <Property Name="trainingAssignment" Type="graph.baseEndUserNotification"/>
+        <Property Name="trainingReminder" Type="graph.trainingReminderNotification"/>
+      </ComplexType>
+      <ComplexType Name="trainingReminderNotification" BaseType="graph.baseEndUserNotification">
+        <Property Name="deliveryFrequency" Type="graph.notificationDeliveryFrequency"/>
+      </ComplexType>
       <ComplexType Name="userSimulationEventInfo">
         <Property Name="browser" Type="Edm.String"/>
         <Property Name="eventDateTime" Type="Edm.DateTimeOffset"/>
@@ -29662,6 +30446,60 @@
         <Property Name="osPlatformDeviceDetails" Type="Edm.String"/>
         <Property Name="potentialScoreImpact" Type="Edm.Double"/>
       </ComplexType>
+      <EntityType Name="attackSimulationOperation" BaseType="graph.longRunningOperation">
+        <Property Name="percentageCompleted" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="tenantId" Type="Edm.String"/>
+        <Property Name="type" Type="graph.attackSimulationOperationType"/>
+      </EntityType>
+      <EntityType Name="landingPage" BaseType="graph.entity">
+        <Property Name="createdBy" Type="graph.emailIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="locale" Type="Edm.String"/>
+        <Property Name="source" Type="graph.simulationContentSource"/>
+        <Property Name="status" Type="graph.simulationContentStatus"/>
+        <Property Name="supportedLocales" Type="Collection(Edm.String)"/>
+        <NavigationProperty Name="details" Type="Collection(graph.landingPageDetail)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="loginPage" BaseType="graph.entity">
+        <Property Name="content" Type="Edm.String"/>
+        <Property Name="createdBy" Type="graph.emailIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="language" Type="Edm.String"/>
+        <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="source" Type="graph.simulationContentSource"/>
+        <Property Name="status" Type="graph.simulationContentStatus"/>
+      </EntityType>
+      <EntityType Name="payload" BaseType="graph.entity">
+        <Property Name="brand" Type="graph.payloadBrand"/>
+        <Property Name="complexity" Type="graph.payloadComplexity"/>
+        <Property Name="createdBy" Type="graph.emailIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="detail" Type="graph.payloadDetail"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="industry" Type="graph.payloadIndustry"/>
+        <Property Name="isAutomated" Type="Edm.Boolean"/>
+        <Property Name="isControversial" Type="Edm.Boolean"/>
+        <Property Name="isCurrentEvent" Type="Edm.Boolean"/>
+        <Property Name="language" Type="Edm.String"/>
+        <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="payloadTags" Type="Collection(Edm.String)"/>
+        <Property Name="platform" Type="graph.payloadDeliveryPlatform"/>
+        <Property Name="predictedCompromiseRate" Type="Edm.Double"/>
+        <Property Name="simulationAttackType" Type="graph.simulationAttackType"/>
+        <Property Name="source" Type="graph.simulationContentSource" Nullable="false"/>
+        <Property Name="status" Type="graph.simulationContentStatus"/>
+        <Property Name="technique" Type="graph.simulationAttackTechnique"/>
+        <Property Name="theme" Type="graph.payloadTheme"/>
+      </EntityType>
       <EntityType Name="simulationAutomation" BaseType="graph.entity">
         <Property Name="createdBy" Type="graph.emailIdentity"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
@@ -29683,19 +30521,52 @@
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="durationInDays" Type="Edm.Int32"/>
+        <Property Name="endUserNotificationSetting" Type="graph.endUserNotificationSetting"/>
+        <Property Name="excludedAccountTarget" Type="graph.accountTargetContent"/>
+        <Property Name="includedAccountTarget" Type="graph.accountTargetContent"/>
         <Property Name="isAutomated" Type="Edm.Boolean"/>
         <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
         <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="launchDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="oAuthConsentAppDetail" Type="graph.oAuthConsentAppDetail"/>
         <Property Name="payloadDeliveryPlatform" Type="graph.payloadDeliveryPlatform"/>
         <Property Name="report" Type="graph.simulationReport"/>
         <Property Name="status" Type="graph.simulationStatus"/>
+        <Property Name="trainingSetting" Type="graph.trainingSetting"/>
+        <NavigationProperty Name="landingPage" Type="graph.landingPage"/>
+        <NavigationProperty Name="loginPage" Type="graph.loginPage"/>
+        <NavigationProperty Name="payload" Type="graph.payload"/>
+      </EntityType>
+      <EntityType Name="endUserNotificationDetail" BaseType="graph.entity">
+        <Property Name="emailContent" Type="Edm.String" Nullable="false"/>
+        <Property Name="isDefaultLangauge" Type="Edm.Boolean"/>
+        <Property Name="language" Type="Edm.String" Nullable="false"/>
+        <Property Name="locale" Type="Edm.String" Nullable="false"/>
+        <Property Name="sentFrom" Type="graph.emailIdentity" Nullable="false"/>
+        <Property Name="subject" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="landingPageDetail" BaseType="graph.entity">
+        <Property Name="content" Type="Edm.String" Nullable="false"/>
+        <Property Name="isDefaultLangauge" Type="Edm.Boolean"/>
+        <Property Name="language" Type="Edm.String" Nullable="false"/>
       </EntityType>
       <EntityType Name="simulationAutomationRun" BaseType="graph.entity">
         <Property Name="endDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="simulationId" Type="Edm.String"/>
         <Property Name="startDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="status" Type="graph.simulationAutomationRunStatus"/>
+      </EntityType>
+      <EntityType Name="trainingLanguageDetail" BaseType="graph.entity">
+        <Property Name="content" Type="Edm.String" Nullable="false"/>
+        <Property Name="createdBy" Type="graph.emailIdentity"/>
+        <Property Name="createdDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="isDefaultLangauge" Type="Edm.Boolean"/>
+        <Property Name="lastModifiedBy" Type="graph.emailIdentity"/>
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="locale" Type="Edm.String" Nullable="false"/>
       </EntityType>
       <ComplexType Name="alertDetection">
         <Property Name="detectionType" Type="Edm.String"/>
@@ -29887,6 +30758,17 @@
         <Property Name="joinDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="leaveDateTime" Type="Edm.DateTimeOffset"/>
       </ComplexType>
+      <ComplexType Name="audioConferencing">
+        <Property Name="conferenceId" Type="Edm.String"/>
+        <Property Name="dialinUrl" Type="Edm.String"/>
+        <Property Name="tollFreeNumber" Type="Edm.String"/>
+        <Property Name="tollFreeNumbers" Type="Collection(Edm.String)"/>
+        <Property Name="tollNumber" Type="Edm.String"/>
+        <Property Name="tollNumbers" Type="Collection(Edm.String)"/>
+      </ComplexType>
+      <ComplexType Name="azureCommunicationServicesUserIdentity" BaseType="graph.identity" OpenType="true">
+        <Property Name="azureCommunicationServicesResourceId" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="broadcastMeetingCaptionSettings">
         <Property Name="isCaptionEnabled" Type="Edm.Boolean"/>
         <Property Name="spokenLanguage" Type="Edm.String"/>
@@ -29908,12 +30790,41 @@
         <Property Name="lastModifiedDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="state" Type="graph.callTranscriptionState" Nullable="false"/>
       </ComplexType>
+      <ComplexType Name="chatInfo">
+        <Property Name="messageId" Type="Edm.String"/>
+        <Property Name="replyChainMessageId" Type="Edm.String"/>
+        <Property Name="threadId" Type="Edm.String"/>
+      </ComplexType>
       <ComplexType Name="commsNotification" OpenType="true">
         <Property Name="changeType" Type="graph.changeType" Nullable="false"/>
         <Property Name="resourceUrl" Type="Edm.String" Nullable="false"/>
       </ComplexType>
       <ComplexType Name="commsNotifications">
         <Property Name="value" Type="Collection(graph.commsNotification)"/>
+      </ComplexType>
+      <ComplexType Name="communicationsApplicationIdentity" BaseType="graph.identity" OpenType="true">
+        <Property Name="applicationType" Type="Edm.String"/>
+        <Property Name="hidden" Type="Edm.Boolean"/>
+      </ComplexType>
+      <ComplexType Name="communicationsApplicationInstanceIdentity" BaseType="graph.identity" OpenType="true">
+        <Property Name="hidden" Type="Edm.Boolean"/>
+        <Property Name="tenantId" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="communicationsEncryptedIdentity" BaseType="graph.identity" OpenType="true"/>
+      <ComplexType Name="communicationsGuestIdentity" BaseType="graph.identity" OpenType="true"/>
+      <ComplexType Name="communicationsIdentitySet" BaseType="graph.identitySet" OpenType="true">
+        <Property Name="applicationInstance" Type="graph.identity"/>
+        <Property Name="assertedIdentity" Type="graph.identity"/>
+        <Property Name="azureCommunicationServicesUser" Type="graph.identity"/>
+        <Property Name="encrypted" Type="graph.identity"/>
+        <Property Name="endpointType" Type="graph.endpointType"/>
+        <Property Name="guest" Type="graph.identity"/>
+        <Property Name="onPremises" Type="graph.identity"/>
+        <Property Name="phone" Type="graph.identity"/>
+      </ComplexType>
+      <ComplexType Name="communicationsPhoneIdentity" BaseType="graph.identity" OpenType="true"/>
+      <ComplexType Name="communicationsUserIdentity" BaseType="graph.identity" OpenType="true">
+        <Property Name="tenantId" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="incomingCallOptions" BaseType="graph.callOptions"/>
       <ComplexType Name="incomingContext">
@@ -29935,6 +30846,11 @@
       <ComplexType Name="meetingInfo" Abstract="true"/>
       <ComplexType Name="joinMeetingIdMeetingInfo" BaseType="graph.meetingInfo" OpenType="true">
         <Property Name="joinMeetingId" Type="Edm.String" Nullable="false"/>
+        <Property Name="passcode" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="joinMeetingIdSettings">
+        <Property Name="isPasscodeRequired" Type="Edm.Boolean"/>
+        <Property Name="joinMeetingId" Type="Edm.String"/>
         <Property Name="passcode" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="mediaInfo">
@@ -29973,12 +30889,20 @@
         <Property Name="participantId" Type="Edm.String"/>
         <Property Name="region" Type="Edm.String"/>
       </ComplexType>
+      <ComplexType Name="presenceStatusMessage">
+        <Property Name="expiryDateTime" Type="graph.dateTimeTimeZone"/>
+        <Property Name="message" Type="graph.itemBody"/>
+        <Property Name="publishedDateTime" Type="Edm.DateTimeOffset"/>
+      </ComplexType>
       <ComplexType Name="recordingInfo">
         <Property Name="initiator" Type="graph.identitySet"/>
         <Property Name="recordingStatus" Type="graph.recordingStatus" Nullable="false"/>
       </ComplexType>
       <ComplexType Name="rejectJoinResponse" BaseType="graph.participantJoiningResponse">
         <Property Name="reason" Type="graph.rejectReason" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="removedState">
+        <Property Name="reason" Type="Edm.String"/>
       </ComplexType>
       <ComplexType Name="serviceHostedMediaConfig" BaseType="graph.mediaConfig">
         <Property Name="preFetchMedia" Type="Collection(graph.mediaInfo)"/>
@@ -30033,6 +30957,13 @@
         <Property Name="sequenceId" Type="Edm.Int64" Nullable="false"/>
         <Property Name="tone" Type="graph.tone" Nullable="false"/>
       </ComplexType>
+      <ComplexType Name="virtualEventRegistrationQuestionAnswer">
+        <Property Name="booleanValue" Type="Edm.Boolean"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="multiChoiceValues" Type="Collection(Edm.String)"/>
+        <Property Name="questionId" Type="Edm.String"/>
+        <Property Name="value" Type="Edm.String"/>
+      </ComplexType>
       <EntityType Name="commsOperation" BaseType="graph.entity" OpenType="true">
         <Property Name="clientContext" Type="Edm.String"/>
         <Property Name="resultInfo" Type="graph.resultInfo"/>
@@ -30059,11 +30990,23 @@
         <Property Name="mediaStreams" Type="Collection(graph.mediaStream)"/>
         <Property Name="metadata" Type="Edm.String"/>
         <Property Name="recordingInfo" Type="graph.recordingInfo"/>
+        <Property Name="removedState" Type="graph.removedState"/>
         <Property Name="restrictedExperience" Type="graph.onlineMeetingRestricted"/>
+        <Property Name="rosterSequenceNumber" Type="Edm.Int64"/>
       </EntityType>
       <EntityType Name="cancelMediaProcessingOperation" BaseType="graph.commsOperation" OpenType="true"/>
+      <EntityType Name="deltaParticipants" BaseType="graph.entity">
+        <Property Name="sequenceNumber" Type="Edm.Int64"/>
+        <NavigationProperty Name="participants" Type="Collection(graph.participant)" ContainsTarget="true"/>
+      </EntityType>
       <EntityType Name="inviteParticipantsOperation" BaseType="graph.commsOperation" OpenType="true">
         <Property Name="participants" Type="Collection(graph.invitationParticipantInfo)" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="meetingAttendanceReport" BaseType="graph.entity">
+        <Property Name="meetingEndDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="meetingStartDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="totalParticipantCount" Type="Edm.Int32"/>
+        <NavigationProperty Name="attendanceRecords" Type="Collection(graph.attendanceRecord)" ContainsTarget="true"/>
       </EntityType>
       <EntityType Name="muteParticipantOperation" BaseType="graph.commsOperation" OpenType="true"/>
       <EntityType Name="participantJoiningNotification" BaseType="graph.entity">
@@ -30083,6 +31026,34 @@
       <EntityType Name="subscribeToToneOperation" BaseType="graph.commsOperation" OpenType="true"/>
       <EntityType Name="unmuteParticipantOperation" BaseType="graph.commsOperation" OpenType="true"/>
       <EntityType Name="updateRecordingStatusOperation" BaseType="graph.commsOperation" OpenType="true"/>
+      <EntityType Name="virtualEvent" BaseType="graph.entity">
+        <Property Name="createdBy" Type="graph.communicationsIdentitySet"/>
+        <Property Name="description" Type="graph.itemBody"/>
+        <Property Name="displayName" Type="Edm.String"/>
+        <Property Name="endDateTime" Type="graph.dateTimeTimeZone"/>
+        <Property Name="startDateTime" Type="graph.dateTimeTimeZone"/>
+        <Property Name="status" Type="graph.virtualEventStatus"/>
+        <NavigationProperty Name="sessions" Type="Collection(graph.virtualEventSession)" ContainsTarget="true"/>
+      </EntityType>
+      <EntityType Name="virtualEventSession" BaseType="graph.onlineMeetingBase">
+        <Property Name="endDateTime" Type="graph.dateTimeTimeZone"/>
+        <Property Name="startDateTime" Type="graph.dateTimeTimeZone"/>
+      </EntityType>
+      <EntityType Name="virtualEventRegistration" BaseType="graph.entity">
+        <Property Name="cancelationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="email" Type="Edm.String"/>
+        <Property Name="firstName" Type="Edm.String"/>
+        <Property Name="lastName" Type="Edm.String"/>
+        <Property Name="registrationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="registrationQuestionAnswers" Type="Collection(graph.virtualEventRegistrationQuestionAnswer)"/>
+        <Property Name="status" Type="graph.virtualEventAttendeeRegistrationStatus"/>
+        <Property Name="userId" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="virtualEventWebinar" BaseType="graph.virtualEvent">
+        <Property Name="audience" Type="graph.meetingAudience"/>
+        <Property Name="coOrganizers" Type="Collection(graph.communicationsUserIdentity)"/>
+        <NavigationProperty Name="registrations" Type="Collection(graph.virtualEventRegistration)" ContainsTarget="true"/>
+      </EntityType>
       <ComplexType Name="passwordResetResponse">
         <Property Name="newPassword" Type="Edm.String"/>
       </ComplexType>
@@ -30227,6 +31198,12 @@
       <ComplexType Name="channelSetAsFavoriteByDefaultEventMessageDetail" BaseType="graph.eventMessageDetail">
         <Property Name="channelId" Type="Edm.String"/>
         <Property Name="initiator" Type="graph.identitySet"/>
+      </ComplexType>
+      <ComplexType Name="channelSummary">
+        <Property Name="guestsCount" Type="Edm.Int32"/>
+        <Property Name="hasMembersFromOtherTenants" Type="Edm.Boolean"/>
+        <Property Name="membersCount" Type="Edm.Int32"/>
+        <Property Name="ownersCount" Type="Edm.Int32"/>
       </ComplexType>
       <ComplexType Name="channelUnsetAsFavoriteByDefaultEventMessageDetail" BaseType="graph.eventMessageDetail">
         <Property Name="channelId" Type="Edm.String"/>
@@ -30909,6 +31886,12 @@
         <Parameter Name="bindingParameter" Type="graph.accessPackageAssignmentRequest"/>
       </Action>
       <Action Name="cancel" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.privilegedAccessGroupAssignmentScheduleRequest"/>
+      </Action>
+      <Action Name="cancel" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.privilegedAccessGroupEligibilityScheduleRequest"/>
+      </Action>
+      <Action Name="cancel" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.unifiedRoleAssignmentScheduleRequest"/>
       </Action>
       <Action Name="cancel" IsBound="true">
@@ -31001,6 +31984,15 @@
       <Action Name="reprocessLicenseAssignment" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.user" Nullable="false"/>
         <ReturnType Type="graph.user"/>
+      </Action>
+      <Action Name="retryServiceProvisioning" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.user" Nullable="false"/>
+      </Action>
+      <Action Name="retryServiceProvisioning" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.group" Nullable="false"/>
+      </Action>
+      <Action Name="retryServiceProvisioning" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.orgContact" Nullable="false"/>
       </Action>
       <Action Name="revokeSignInSessions" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.user" Nullable="false"/>
@@ -31257,6 +32249,15 @@
       <Function Name="delta" IsBound="true">
         <Parameter Name="bindingparameter" Type="Collection(graph.message)" Nullable="false"/>
         <ReturnType Type="Collection(graph.message)" Nullable="false"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.site)"/>
+        <ReturnType Type="Collection(graph.site)"/>
+      </Function>
+      <Function Name="delta" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.site)"/>
+        <Parameter Name="token" Type="Edm.String" Unicode="false"/>
+        <ReturnType Type="Collection(graph.site)"/>
       </Function>
       <Function Name="delta" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.driveItem"/>
@@ -34583,6 +35584,36 @@
         <ReturnType Type="Collection(graph.accessPackageAssignmentRequest)"/>
       </Function>
       <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.privilegedAccessGroupAssignmentSchedule)"/>
+        <Parameter Name="on" Type="graph.assignmentScheduleFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.privilegedAccessGroupAssignmentSchedule)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.privilegedAccessGroupAssignmentScheduleInstance)"/>
+        <Parameter Name="on" Type="graph.assignmentScheduleInstanceFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.privilegedAccessGroupAssignmentScheduleInstance)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.privilegedAccessGroupAssignmentScheduleRequest)"/>
+        <Parameter Name="on" Type="graph.assignmentScheduleRequestFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.privilegedAccessGroupAssignmentScheduleRequest)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.privilegedAccessGroupEligibilitySchedule)"/>
+        <Parameter Name="on" Type="graph.eligibilityScheduleFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.privilegedAccessGroupEligibilitySchedule)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.privilegedAccessGroupEligibilityScheduleInstance)"/>
+        <Parameter Name="on" Type="graph.eligibilityScheduleInstanceFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.privilegedAccessGroupEligibilityScheduleInstance)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.privilegedAccessGroupEligibilityScheduleRequest)"/>
+        <Parameter Name="on" Type="graph.eligibilityScheduleRequestFilterByCurrentUserOptions" Nullable="false"/>
+        <ReturnType Type="Collection(graph.privilegedAccessGroupEligibilityScheduleRequest)"/>
+      </Function>
+      <Function Name="filterByCurrentUser" IsBound="true">
         <Parameter Name="bindingParameter" Type="Collection(graph.unifiedRoleAssignmentSchedule)"/>
         <Parameter Name="on" Type="graph.roleAssignmentScheduleFilterByCurrentUserOptions" Nullable="false"/>
         <ReturnType Type="Collection(graph.unifiedRoleAssignmentSchedule)"/>
@@ -35855,6 +36886,10 @@
         <Parameter Name="activity" Type="Edm.String" Nullable="false" Unicode="false"/>
         <Parameter Name="expirationDuration" Type="Edm.Duration"/>
       </Action>
+      <Action Name="setStatusMessage" IsBound="true">
+        <Parameter Name="bindingParameter" Type="graph.presence"/>
+        <Parameter Name="statusMessage" Type="graph.presenceStatusMessage"/>
+      </Action>
       <Action Name="setUserPreferredPresence" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.presence"/>
         <Parameter Name="availability" Type="Edm.String" Nullable="false" Unicode="false"/>
@@ -35891,6 +36926,17 @@
         <Parameter Name="clientContext" Type="Edm.String" Unicode="false"/>
         <ReturnType Type="graph.stopHoldMusicOperation"/>
       </Action>
+      <Function Name="getByUserIdAndRole" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.virtualEventWebinar)"/>
+        <Parameter Name="userId" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <Parameter Name="role" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <ReturnType Type="Collection(graph.virtualEventWebinar)"/>
+      </Function>
+      <Function Name="getByUserRole" IsBound="true">
+        <Parameter Name="bindingParameter" Type="Collection(graph.virtualEventWebinar)"/>
+        <Parameter Name="role" Type="Edm.String" Nullable="false" Unicode="false"/>
+        <ReturnType Type="Collection(graph.virtualEventWebinar)"/>
+      </Function>
       <Action Name="disableSmsSignIn" IsBound="true">
         <Parameter Name="bindingParameter" Type="graph.phoneAuthenticationMethod"/>
       </Action>
@@ -36133,8 +37179,22 @@
         <Singleton Name="authenticationMethodsPolicy" Type="microsoft.graph.authenticationMethodsPolicy"/>
         <Singleton Name="solutions" Type="microsoft.graph.solutionsRoot"/>
         <Singleton Name="privacy" Type="microsoft.graph.privacy"/>
+        <Singleton Name="security" Type="microsoft.graph.security">
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/childHostPairs" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostPairs"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/components" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostComponents"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/cookies" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostCookies"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/hostPairs" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostPairs"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/parentHostPairs" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostPairs"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/passiveDns" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/passiveDnsRecords"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/passiveDnsReverse" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/passiveDnsRecords"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/sslCertificates" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostSslCertificates"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/subdomains" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/subdomains"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/trackers" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hostTrackers"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hosts/whois" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/whoisRecords"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hostSslCertificates/host" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/hosts"/>
+          <NavigationPropertyBinding Path="threatIntelligence/hostSslCertificates/sslCertificate" Target="security/microsoft.graph.security.threatIntelligence/threatIntelligence/sslCertificates"/>
+        </Singleton>
         <Singleton Name="compliance" Type="microsoft.graph.compliance"/>
-        <Singleton Name="security" Type="microsoft.graph.security"/>
         <Singleton Name="identity" Type="microsoft.graph.identityContainer"/>
         <Singleton Name="directory" Type="microsoft.graph.directory">
           <NavigationPropertyBinding Path="administrativeUnits/members" Target="directoryObjects"/>
@@ -36278,6 +37338,13 @@
         <Member Name="site" Value="2"/>
         <Member Name="unknownFutureValue" Value="4"/>
       </EnumType>
+      <EnumType Name="behaviorDuringRetentionPeriod">
+        <Member Name="doNotRetain" Value="0"/>
+        <Member Name="retain" Value="1"/>
+        <Member Name="retainAsRecord" Value="2"/>
+        <Member Name="retainAsRegulatoryRecord" Value="3"/>
+        <Member Name="unknownFutureValue" Value="4"/>
+      </EnumType>
       <EnumType Name="alertClassification" UnderlyingType="Edm.Byte">
         <Member Name="unknown" Value="0"/>
         <Member Name="falsePositive" Value="10"/>
@@ -36353,6 +37420,22 @@
         <Member Name="appGovernanceDetection" Value="2097152"/>
         <Member Name="unknownFutureValue" Value="4194303"/>
         <Member Name="microsoftDefenderForCloud" Value="4194304"/>
+        <Member Name="microsoftDefenderForIoT" Value="1073741833"/>
+        <Member Name="microsoftDefenderForServers" Value="1073741834"/>
+        <Member Name="microsoftDefenderForStorage" Value="1073741835"/>
+        <Member Name="microsoftDefenderForDNS" Value="1073741836"/>
+        <Member Name="microsoftDefenderForDatabases" Value="1073741837"/>
+        <Member Name="microsoftDefenderForContainers" Value="1073741838"/>
+        <Member Name="microsoftDefenderForNetwork" Value="1073741839"/>
+        <Member Name="microsoftDefenderForAppService" Value="1073741840"/>
+        <Member Name="microsoftDefenderForKeyVault" Value="1073741841"/>
+        <Member Name="microsoftDefenderForResourceManager" Value="1073741842"/>
+        <Member Name="microsoftDefenderForApiManagement" Value="1073741843"/>
+        <Member Name="nrtAlerts" Value="1073741844"/>
+        <Member Name="scheduledAlerts" Value="1073741845"/>
+        <Member Name="microsoftDefenderThreatIntelligenceAnalytics" Value="1073741846"/>
+        <Member Name="builtInMl" Value="1073741847"/>
+        <Member Name="microsoftSentinel" Value="268435456"/>
       </EnumType>
       <EnumType Name="detectionStatus">
         <Member Name="detected" Value="0"/>
@@ -36468,6 +37551,7 @@
         <Member Name="dataLossPrevention" Value="128"/>
         <Member Name="unknownFutureValue" Value="255"/>
         <Member Name="microsoftDefenderForCloud" Value="256"/>
+        <Member Name="microsoftSentinel" Value="512"/>
       </EnumType>
       <EnumType Name="vmCloudProvider">
         <Member Name="unknown" Value="0"/>
@@ -36506,6 +37590,17 @@
         <Member Name="markdown" Value="2"/>
         <Member Name="unknownFutureValue" Value="3"/>
       </EnumType>
+      <EnumType Name="hostPortProtocol">
+        <Member Name="tcp" Value="0"/>
+        <Member Name="udp" Value="1"/>
+        <Member Name="unknownFutureValue" Value="2"/>
+      </EnumType>
+      <EnumType Name="hostPortStatus">
+        <Member Name="open" Value="0"/>
+        <Member Name="filtered" Value="1"/>
+        <Member Name="closed" Value="2"/>
+        <Member Name="unknownFutureValue" Value="3"/>
+      </EnumType>
       <EnumType Name="hostReputationClassification">
         <Member Name="unknown" Value="0"/>
         <Member Name="neutral" Value="1"/>
@@ -36539,6 +37634,14 @@
         <Member Name="critical" Value="4"/>
         <Member Name="unknownFutureValue" Value="5"/>
       </EnumType>
+      <EnumType Name="whoisDomainStatus">
+        <Member Name="clientDeleteProhibited" Value="0"/>
+        <Member Name="clientHold" Value="1"/>
+        <Member Name="clientRenewProhibited" Value="2"/>
+        <Member Name="clientTransferProhibited" Value="3"/>
+        <Member Name="clientUpdateProhibited" Value="4"/>
+        <Member Name="unknownFutureValue" Value="5"/>
+      </EnumType>
       <EntityType Name="casesRoot" BaseType="graph.entity">
         <NavigationProperty Name="ediscoveryCases" Type="Collection(microsoft.graph.security.ediscoveryCase)" ContainsTarget="true"/>
       </EntityType>
@@ -36563,6 +37666,7 @@
         <Property Name="lastActivityDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="lastUpdateDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="mitreTechniques" Type="Collection(Edm.String)"/>
+        <Property Name="productName" Type="Edm.String"/>
         <Property Name="providerAlertId" Type="Edm.String"/>
         <Property Name="recommendedActions" Type="Edm.String"/>
         <Property Name="resolvedDateTime" Type="Edm.DateTimeOffset"/>
@@ -36580,6 +37684,7 @@
         <Property Name="comments" Type="Collection(microsoft.graph.security.alertComment)"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
         <Property Name="customTags" Type="Collection(Edm.String)"/>
+        <Property Name="description" Type="Edm.String"/>
         <Property Name="determination" Type="microsoft.graph.security.alertDetermination"/>
         <Property Name="displayName" Type="Edm.String"/>
         <Property Name="incidentWebUrl" Type="Edm.String"/>
@@ -36588,6 +37693,7 @@
         <Property Name="redirectIncidentId" Type="Edm.String"/>
         <Property Name="severity" Type="microsoft.graph.security.alertSeverity" Nullable="false"/>
         <Property Name="status" Type="microsoft.graph.security.incidentStatus" Nullable="false"/>
+        <Property Name="systemTags" Type="Collection(Edm.String)"/>
         <Property Name="tenantId" Type="Edm.String"/>
         <NavigationProperty Name="alerts" Type="Collection(microsoft.graph.security.alert)"/>
       </EntityType>
@@ -36602,12 +37708,19 @@
         <NavigationProperty Name="articles" Type="Collection(microsoft.graph.security.article)" ContainsTarget="true"/>
         <NavigationProperty Name="hostComponents" Type="Collection(microsoft.graph.security.hostComponent)" ContainsTarget="true"/>
         <NavigationProperty Name="hostCookies" Type="Collection(microsoft.graph.security.hostCookie)" ContainsTarget="true"/>
+        <NavigationProperty Name="hostPairs" Type="Collection(microsoft.graph.security.hostPair)" ContainsTarget="true"/>
+        <NavigationProperty Name="hostPorts" Type="Collection(microsoft.graph.security.hostPort)" ContainsTarget="true"/>
         <NavigationProperty Name="hosts" Type="Collection(microsoft.graph.security.host)" ContainsTarget="true"/>
+        <NavigationProperty Name="hostSslCertificates" Type="Collection(microsoft.graph.security.hostSslCertificate)" ContainsTarget="true"/>
         <NavigationProperty Name="hostTrackers" Type="Collection(microsoft.graph.security.hostTracker)" ContainsTarget="true"/>
         <NavigationProperty Name="intelligenceProfileIndicators" Type="Collection(microsoft.graph.security.intelligenceProfileIndicator)" ContainsTarget="true"/>
         <NavigationProperty Name="intelProfiles" Type="Collection(microsoft.graph.security.intelligenceProfile)" ContainsTarget="true"/>
         <NavigationProperty Name="passiveDnsRecords" Type="Collection(microsoft.graph.security.passiveDnsRecord)" ContainsTarget="true"/>
+        <NavigationProperty Name="sslCertificates" Type="Collection(microsoft.graph.security.sslCertificate)" ContainsTarget="true"/>
+        <NavigationProperty Name="subdomains" Type="Collection(microsoft.graph.security.subdomain)" ContainsTarget="true"/>
         <NavigationProperty Name="vulnerabilities" Type="Collection(microsoft.graph.security.vulnerability)" ContainsTarget="true"/>
+        <NavigationProperty Name="whoisHistoryRecords" Type="Collection(microsoft.graph.security.whoisHistoryRecord)" ContainsTarget="true"/>
+        <NavigationProperty Name="whoisRecords" Type="Collection(microsoft.graph.security.whoisRecord)" ContainsTarget="true"/>
       </EntityType>
       <ComplexType Name="exportFileMetadata">
         <Property Name="downloadUrl" Type="Edm.String"/>
@@ -37091,11 +38204,38 @@
         <Property Name="content" Type="Edm.String"/>
         <Property Name="format" Type="microsoft.graph.security.contentFormat"/>
       </ComplexType>
+      <ComplexType Name="hostPortBanner">
+        <Property Name="banner" Type="Edm.String" Nullable="false"/>
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="scanProtocol" Type="Edm.String"/>
+        <Property Name="timesObserved" Type="Edm.Int32"/>
+      </ComplexType>
+      <ComplexType Name="hostPortComponent">
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="isRecent" Type="Edm.Boolean"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="component" Type="microsoft.graph.security.hostComponent"/>
+      </ComplexType>
+      <EntityType Name="artifact" BaseType="graph.entity" Abstract="true"/>
+      <EntityType Name="hostComponent" BaseType="microsoft.graph.security.artifact">
+        <Property Name="category" Type="Edm.String"/>
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" Nullable="false"/>
+        <Property Name="version" Type="Edm.String"/>
+        <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
+      </EntityType>
       <ComplexType Name="hostReputationRule">
         <Property Name="description" Type="Edm.String" Nullable="false"/>
         <Property Name="name" Type="Edm.String" Nullable="false"/>
         <Property Name="relatedDetailsUrl" Type="Edm.String"/>
         <Property Name="severity" Type="microsoft.graph.security.hostReputationRuleSeverity" Nullable="false"/>
+      </ComplexType>
+      <ComplexType Name="hostSslCertificatePort">
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="port" Type="Edm.Int32"/>
       </ComplexType>
       <ComplexType Name="hyperlink">
         <Property Name="name" Type="Edm.String" Nullable="false"/>
@@ -37105,6 +38245,47 @@
         <Property Name="code" Type="Edm.String" Nullable="false"/>
         <Property Name="label" Type="Edm.String" Nullable="false"/>
       </ComplexType>
+      <ComplexType Name="sslCertificateEntity">
+        <Property Name="address" Type="graph.physicalAddress"/>
+        <Property Name="alternateNames" Type="Collection(Edm.String)"/>
+        <Property Name="commonName" Type="Edm.String"/>
+        <Property Name="email" Type="Edm.String"/>
+        <Property Name="givenName" Type="Edm.String"/>
+        <Property Name="organizationName" Type="Edm.String"/>
+        <Property Name="organizationUnitName" Type="Edm.String"/>
+        <Property Name="serialNumber" Type="Edm.String"/>
+        <Property Name="surname" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="whoisContact">
+        <Property Name="address" Type="graph.physicalAddress"/>
+        <Property Name="email" Type="Edm.String"/>
+        <Property Name="fax" Type="Edm.String"/>
+        <Property Name="name" Type="Edm.String"/>
+        <Property Name="organization" Type="Edm.String"/>
+        <Property Name="telephone" Type="Edm.String"/>
+      </ComplexType>
+      <ComplexType Name="whoisNameserver">
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
+      </ComplexType>
+      <EntityType Name="host" BaseType="microsoft.graph.security.artifact" Abstract="true">
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="childHostPairs" Type="Collection(microsoft.graph.security.hostPair)"/>
+        <NavigationProperty Name="components" Type="Collection(microsoft.graph.security.hostComponent)"/>
+        <NavigationProperty Name="cookies" Type="Collection(microsoft.graph.security.hostCookie)"/>
+        <NavigationProperty Name="hostPairs" Type="Collection(microsoft.graph.security.hostPair)"/>
+        <NavigationProperty Name="parentHostPairs" Type="Collection(microsoft.graph.security.hostPair)"/>
+        <NavigationProperty Name="passiveDns" Type="Collection(microsoft.graph.security.passiveDnsRecord)"/>
+        <NavigationProperty Name="passiveDnsReverse" Type="Collection(microsoft.graph.security.passiveDnsRecord)"/>
+        <NavigationProperty Name="ports" Type="Collection(microsoft.graph.security.hostPort)"/>
+        <NavigationProperty Name="reputation" Type="microsoft.graph.security.hostReputation" ContainsTarget="true"/>
+        <NavigationProperty Name="sslCertificates" Type="Collection(microsoft.graph.security.hostSslCertificate)"/>
+        <NavigationProperty Name="subdomains" Type="Collection(microsoft.graph.security.subdomain)"/>
+        <NavigationProperty Name="trackers" Type="Collection(microsoft.graph.security.hostTracker)"/>
+        <NavigationProperty Name="whois" Type="microsoft.graph.security.whoisRecord"/>
+      </EntityType>
       <EntityType Name="article" BaseType="graph.entity">
         <Property Name="body" Type="microsoft.graph.security.formattedContent" Nullable="false"/>
         <Property Name="createdDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
@@ -37121,24 +38302,12 @@
         <NavigationProperty Name="artifact" Type="microsoft.graph.security.artifact" Nullable="false"/>
       </EntityType>
       <EntityType Name="articleIndicator" BaseType="microsoft.graph.security.indicator"/>
-      <EntityType Name="artifact" BaseType="graph.entity" Abstract="true"/>
-      <EntityType Name="host" BaseType="microsoft.graph.security.artifact" Abstract="true">
+      <EntityType Name="hostPair" BaseType="graph.entity">
         <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
         <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
-        <NavigationProperty Name="components" Type="Collection(microsoft.graph.security.hostComponent)"/>
-        <NavigationProperty Name="cookies" Type="Collection(microsoft.graph.security.hostCookie)"/>
-        <NavigationProperty Name="passiveDns" Type="Collection(microsoft.graph.security.passiveDnsRecord)"/>
-        <NavigationProperty Name="passiveDnsReverse" Type="Collection(microsoft.graph.security.passiveDnsRecord)"/>
-        <NavigationProperty Name="reputation" Type="microsoft.graph.security.hostReputation" ContainsTarget="true"/>
-        <NavigationProperty Name="trackers" Type="Collection(microsoft.graph.security.hostTracker)"/>
-      </EntityType>
-      <EntityType Name="hostComponent" BaseType="microsoft.graph.security.artifact">
-        <Property Name="category" Type="Edm.String"/>
-        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
-        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
-        <Property Name="name" Type="Edm.String" Nullable="false"/>
-        <Property Name="version" Type="Edm.String"/>
-        <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
+        <Property Name="linkKind" Type="Edm.String"/>
+        <NavigationProperty Name="childHost" Type="microsoft.graph.security.host" Nullable="false"/>
+        <NavigationProperty Name="parentHost" Type="microsoft.graph.security.host" Nullable="false"/>
       </EntityType>
       <EntityType Name="hostCookie" BaseType="microsoft.graph.security.artifact">
         <Property Name="domain" Type="Edm.String" Nullable="false"/>
@@ -37155,10 +38324,34 @@
         <NavigationProperty Name="artifact" Type="microsoft.graph.security.artifact" Nullable="false"/>
         <NavigationProperty Name="parentHost" Type="microsoft.graph.security.host" Nullable="false"/>
       </EntityType>
+      <EntityType Name="hostPort" BaseType="graph.entity">
+        <Property Name="banners" Type="Collection(microsoft.graph.security.hostPortBanner)"/>
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastScanDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="port" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="protocol" Type="microsoft.graph.security.hostPortProtocol"/>
+        <Property Name="services" Type="Collection(microsoft.graph.security.hostPortComponent)"/>
+        <Property Name="status" Type="microsoft.graph.security.hostPortStatus"/>
+        <Property Name="timesObserved" Type="Edm.Int32"/>
+        <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
+        <NavigationProperty Name="mostRecentSslCertificate" Type="microsoft.graph.security.sslCertificate"/>
+      </EntityType>
       <EntityType Name="hostReputation" BaseType="graph.entity">
         <Property Name="classification" Type="microsoft.graph.security.hostReputationClassification" Nullable="false"/>
         <Property Name="rules" Type="Collection(microsoft.graph.security.hostReputationRule)"/>
         <Property Name="score" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="hostSslCertificate" BaseType="microsoft.graph.security.artifact">
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="ports" Type="Collection(microsoft.graph.security.hostSslCertificatePort)"/>
+        <NavigationProperty Name="host" Type="microsoft.graph.security.host"/>
+        <NavigationProperty Name="sslCertificate" Type="microsoft.graph.security.sslCertificate"/>
+      </EntityType>
+      <EntityType Name="subdomain" BaseType="graph.entity">
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
       </EntityType>
       <EntityType Name="hostTracker" BaseType="microsoft.graph.security.artifact">
         <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset" Nullable="false"/>
@@ -37167,9 +38360,44 @@
         <Property Name="value" Type="Edm.String" Nullable="false"/>
         <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
       </EntityType>
+      <EntityType Name="whoisBaseRecord" BaseType="graph.entity" Abstract="true">
+        <Property Name="abuse" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="admin" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="billing" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="domainStatus" Type="Edm.String"/>
+        <Property Name="expirationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="lastUpdateDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="nameservers" Type="Collection(microsoft.graph.security.whoisNameserver)"/>
+        <Property Name="noc" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="rawWhoisText" Type="Edm.String"/>
+        <Property Name="registrant" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="registrar" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="registrationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="technical" Type="microsoft.graph.security.whoisContact"/>
+        <Property Name="whoisServer" Type="Edm.String"/>
+        <Property Name="zone" Type="microsoft.graph.security.whoisContact"/>
+        <NavigationProperty Name="host" Type="microsoft.graph.security.host" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="whoisRecord" BaseType="microsoft.graph.security.whoisBaseRecord">
+        <NavigationProperty Name="history" Type="Collection(microsoft.graph.security.whoisHistoryRecord)"/>
+      </EntityType>
       <EntityType Name="hostname" BaseType="microsoft.graph.security.host">
         <Property Name="registrant" Type="Edm.String"/>
         <Property Name="registrar" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="sslCertificate" BaseType="microsoft.graph.security.artifact">
+        <Property Name="expirationDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="fingerprint" Type="Edm.String"/>
+        <Property Name="firstSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="issueDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="issuer" Type="microsoft.graph.security.sslCertificateEntity"/>
+        <Property Name="lastSeenDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="serialNumber" Type="Edm.String"/>
+        <Property Name="sha1" Type="Edm.String"/>
+        <Property Name="subject" Type="microsoft.graph.security.sslCertificateEntity"/>
+        <NavigationProperty Name="relatedHosts" Type="Collection(microsoft.graph.security.host)"/>
       </EntityType>
       <EntityType Name="intelligenceProfile" BaseType="graph.entity">
         <Property Name="aliases" Type="Collection(Edm.String)"/>
@@ -37212,6 +38440,7 @@
         <NavigationProperty Name="articles" Type="Collection(microsoft.graph.security.article)"/>
         <NavigationProperty Name="components" Type="Collection(microsoft.graph.security.vulnerabilityComponent)" ContainsTarget="true"/>
       </EntityType>
+      <EntityType Name="whoisHistoryRecord" BaseType="microsoft.graph.security.whoisBaseRecord"/>
       <EntityType Name="unclassifiedArtifact" BaseType="microsoft.graph.security.artifact">
         <Property Name="kind" Type="Edm.String" Nullable="false"/>
         <Property Name="value" Type="Edm.String" Nullable="false"/>
@@ -37814,7 +39043,8 @@
         <Member Name="lastModifiedDateTime" Value="6"/>
         <Member Name="fileName" Value="7"/>
         <Member Name="fileExtension" Value="8"/>
-        <Member Name="unknownFutureValue" Value="9"/>
+        <Member Name="unknownFutureValue" Value="12"/>
+        <Member Name="iconUrl" Value="15"/>
       </EnumType>
       <EnumType Name="propertyType">
         <Member Name="string" Value="0"/>
@@ -37901,6 +39131,7 @@
       <EntityType Name="externalConnection" BaseType="graph.entity">
         <Property Name="activitySettings" Type="microsoft.graph.externalConnectors.activitySettings"/>
         <Property Name="configuration" Type="microsoft.graph.externalConnectors.configuration"/>
+        <Property Name="connectorId" Type="Edm.String"/>
         <Property Name="description" Type="Edm.String"/>
         <Property Name="name" Type="Edm.String"/>
         <Property Name="searchSettings" Type="microsoft.graph.externalConnectors.searchSettings"/>
