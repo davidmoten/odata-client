@@ -59,6 +59,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
     T post(CollectionRequestOptions options, T entity) {
         return RequestHelper.post(entity, contextPath, cls, options);
     }
+    
+    T patch(CollectionRequestOptions options, T entity) {
+        return RequestHelper.patch(entity, contextPath, cls, options);
+    }
 
     public R id(Object id) {
         return entityRequestFactory.create(contextPath.addKeys(new NameValue(id, Object.class)));
@@ -91,6 +95,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     public T post(T entity) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).post(entity);
+    }
+    
+    public T patch(T entity) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).patch(entity);
     }
     
     /**

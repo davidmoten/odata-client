@@ -3,11 +3,15 @@ package com.github.davidmoten.msgraph;
 import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.microsoft.authentication.AuthenticationEndpoint;
+import com.github.davidmoten.odata.client.CustomRequest;
+import com.github.davidmoten.odata.client.HttpRequestOptions;
 import com.github.davidmoten.odata.client.RequestHeader;
 import com.github.davidmoten.odata.client.RequestOptions;
 
 import odata.msgraph.client.container.GraphService;
 import odata.msgraph.client.entity.ItemAttachment;
+import odata.msgraph.client.entity.Message;
+import odata.msgraph.client.entity.SingleValueLegacyExtendedProperty;
 
 public final class AdHocMain {
 
@@ -27,6 +31,19 @@ public final class AdHocMain {
                 .build();
         
         client.users(mailbox).messages().get().currentPage().forEach(System.out::println);
+        
+        
+        SingleValueLegacyExtendedProperty p = SingleValueLegacyExtendedProperty //
+                .builderSingleValueLegacyExtendedProperty() //
+                .id("String {66f5a359-4659-4830-9070-00047ec6ac6e} Name Color") //
+                .value("Green")
+                .build();
+        Message m = client.me().messages("theId").get();
+        m.getSingleValueExtendedProperties().post(p);
+        
+        CustomRequest c = client._custom().withRelativeUrls();
+        String messageId = "AAMkAGE1M2_bs88AACHsLqWAAA=";
+        c.patch("me/messages/" + messageId,p, Message.class, HttpRequestOptions.EMPTY);
 
         // if (false) {
         // String url =

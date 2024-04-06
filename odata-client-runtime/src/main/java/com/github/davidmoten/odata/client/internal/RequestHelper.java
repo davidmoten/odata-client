@@ -130,6 +130,12 @@ public final class RequestHelper {
             Class<T> cls, RequestOptions options) {
         return postAny(entity, contextPath, cls, options);
     }
+    
+    // designed for saving a new entity and returning that entity
+    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
+            Class<T> cls, RequestOptions options) {
+        return patchAny(entity, contextPath, cls, options);
+    }
 
     public static void post(Map<String, Object> parameters, ContextPath contextPath,
             RequestOptions options) {
@@ -151,6 +157,11 @@ public final class RequestHelper {
     public static <T> T postAny(Object object, ContextPath contextPath, Class<T> responseClass,
             RequestOptions options) {
         return submitAny(HttpMethod.POST, object, contextPath, responseClass, options);
+    }
+    
+    public static <T> T patchAny(Object object, ContextPath contextPath, Class<T> responseClass,
+            RequestOptions options) {
+        return submitAny(HttpMethod.PATCH, object, contextPath, responseClass, options);
     }
     
     public static <T> T submitAny(HttpMethod method, Object object, ContextPath contextPath, Class<T> responseClass,

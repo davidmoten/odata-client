@@ -77,9 +77,13 @@ public abstract class Structure<T> {
     public final List<Field> getFields(Imports imports) {
         return getHeirarchy() //
                 .stream() //
-                .flatMap(z -> z.getProperties() //
+                .flatMap(z -> Stream.concat(z.getProperties() //
                         .stream() //
-                        .flatMap(x -> toFields(x, imports)))
+                        .flatMap(x -> toFields(x, imports)),
+                        z.getNavigationProperties() //
+                        .stream() //
+                        .filter(x -> Boolean.TRUE.equals(x.isContainsTarget())) //
+                        .flatMap(x -> toFields(x, imports)))) //
                 .collect(Collectors.toList());
     }
     
@@ -104,13 +108,21 @@ public abstract class Structure<T> {
     public final List<FieldName> getFieldNames() {
         return getHeirarchy() //
                 .stream() //
-                .flatMap(z -> z.getProperties() //
+                .flatMap(z -> Stream.concat(z.getProperties() //
                         .stream() //
-                        .map(x -> new FieldName(x.getName(), toFieldName(x))))
+                        .map(x -> new FieldName(x.getName(), toFieldName(x))), //
+                        z.getNavigationProperties() //
+                                .stream() //
+                                .filter(x -> Boolean.TRUE.equals(x.isContainsTarget())) //
+                                .map(x -> new FieldName(x.getName(), toFieldName(x))))) //
                 .collect(Collectors.toList());
     }
 
     private String toFieldName(TProperty x) {
+        return Names.getIdentifier(x.getName());
+    }
+    
+    private String toFieldName(TNavigationProperty x) {
         return Names.getIdentifier(x.getName());
     }
 
@@ -133,6 +145,26 @@ public abstract class Structure<T> {
 			return Stream.of(a);
 		}
 	}
+	
+	private Stream<Field> toFields(TNavigationProperty x, Imports imports) {
+        boolean isCollection = names.isCollection(x);
+        final String innerFullClassName;
+        if (isCollection) {
+            String t = names.getInnerType(names.getType(x));
+            innerFullClassName = names.toImportedFullClassName(t, imports, List.class);
+        } else {
+            innerFullClassName = null;
+        }
+        Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
+                names.toImportedFullClassName(x, imports), isCollection, innerFullClassName);
+        if (isCollection && !names.isEntityWithNamespace(names.getType(x))) {
+            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
+                    imports.add(String.class), false, null);
+            return Stream.of(a, b);
+        } else {
+            return Stream.of(a);
+        }
+    }
 
     public String getExtendsClause(Imports imports) {
         if (getBaseType() != null) {

@@ -11,7 +11,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.OffsetDateTime;
@@ -73,6 +75,7 @@ import odata.msgraph.client.entity.Group;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.ListItem;
 import odata.msgraph.client.entity.Message;
+import odata.msgraph.client.entity.SingleValueLegacyExtendedProperty;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.AttachmentType;
@@ -1248,6 +1251,33 @@ public class GraphServiceTest {
                             HttpRequestOptions.EMPTY, RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
             assertTrue(json.contains("0123456789abc"));
         }
+    }
+    
+    @Test
+    public void testPatchNavigationProperty() throws UnsupportedEncodingException {
+        String messageId = "AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAAiIsqMbYjsT5e-T7KzowPTAAEMOXaXAAA=";
+        String encodedMessageId = URLEncoder.encode(messageId, "UTF-8");
+        GraphService client = clientBuilder()
+                .expectRequest("/me/messages/" + encodedMessageId) //
+                .withMethod(HttpMethod.GET) //
+                .withResponse("/response-message.json")
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, 
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL)
+                .expectRequest("/me/messages/" + encodedMessageId + "/singleValueExtendedProperties") //
+                .withMethod(HttpMethod.PATCH) //
+                .withPayload("/request-patch-navigation-property.json") //
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .withResponseStatusCode(200) //
+                .withResponse("/response-patch-navigation-property.json") //
+                .build();
+
+        SingleValueLegacyExtendedProperty p = SingleValueLegacyExtendedProperty //
+                .builderSingleValueLegacyExtendedProperty() //
+                .id("abc123") //
+                .value("thing") //
+                .build();
+        client.me().messages(messageId).get().getSingleValueExtendedProperties().patch(p);
     }
     
     @Test

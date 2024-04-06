@@ -582,6 +582,8 @@ public final class Generator {
 			// add other fields
 			printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
 
+			printContainedNavigationPropertyFields(imports, indent, p, t.getNavigationProperties());
+			
 			// write constructor
 			writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
 
@@ -655,7 +657,7 @@ public final class Generator {
 		}
 	}
 
-	private static void printJsonIncludesNonNull(Indent indent, Imports imports, PrintWriter p) {
+    private static void printJsonIncludesNonNull(Indent indent, Imports imports, PrintWriter p) {
 		p.format("%s@%s(%s.NON_NULL)\n", indent, imports.add(JsonInclude.class), imports.add(Include.class));
 	}
 
@@ -1043,6 +1045,8 @@ public final class Generator {
 
 			// write fields from properties
 			printPropertyFields(imports, indent, p, t.getProperties(), t.hasBaseType());
+			
+			printContainedNavigationPropertyFields(imports, indent, p, t.getNavigationProperties());
 
 			// write constructor
 			writeNoArgsConstructor(simpleClassName, indent, p, t.hasBaseType());
@@ -1812,7 +1816,7 @@ public final class Generator {
 				});
 		
         // add unmapped fields mutator withUnmappedField
-        String method= Names.getWithMethod("unmappedField");
+        String method = Names.getWithMethod("unmappedField");
         p.format("\n%spublic %s %s(%s name, %s value) {\n", indent, simpleClassName, method, //
                 imports.add(String.class), imports.add(Object.class));
         p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
@@ -1877,6 +1881,18 @@ public final class Generator {
 			}
 		});
 	}
+	
+    private void printContainedNavigationPropertyFields(Imports imports, Indent indent, PrintWriter p,
+            List<TNavigationProperty> list) {
+        list //
+           .stream() //
+           .filter(x -> Boolean.TRUE.equals(x.isContainsTarget())) //
+           .forEach(x -> {
+               p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
+               p.format("%sprotected %s %s;\n", indent, names.toImportedFullClassName(x, imports),
+                       Names.getIdentifier(x.getName()));
+           });    
+    }
 
 	private void printNavigationPropertyGetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
 			List<TNavigationProperty> properties, Set<String> methodNames) {

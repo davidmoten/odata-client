@@ -1,0 +1,8 @@
+{
+  "singleValueExtendedProperties": [
+      {
+         "id":"abc123",
+         "value":"thing"
+      }
+    ]
+}
