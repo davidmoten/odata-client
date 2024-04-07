@@ -1269,6 +1269,17 @@ public class GraphServiceTest {
         Message b = list.get(0).withAttachments(Collections.singletonList(first));
         assertEquals(1, b.getAttachments().toList().size());
         assertEquals(first.getName(), b.getAttachments().toList().get(0).getName());
+        // check that builder methods are there
+        {
+            Message.builderMessage() //
+                    .attachments(first) //
+                    .build();
+        }
+        {
+            Message.builderMessage() //
+                    .attachments(a) //
+                    .build();
+        }
     }
     
     @Test
