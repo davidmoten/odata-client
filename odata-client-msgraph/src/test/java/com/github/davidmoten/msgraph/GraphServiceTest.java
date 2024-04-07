@@ -11,23 +11,22 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -695,8 +694,6 @@ public class GraphServiceTest {
                 .withRequestHeadersStandard() //
                 .build();
         Message m = client.users("fred").messages("12345").expand("attachments").get();
-        Object attachments = m.getUnmappedFields().get("attachments");
-        assertTrue(attachments instanceof ArrayList);
         List<Attachment> list = m.getAttachments().toList();
         assertEquals(1, list.size());
         assertEquals(2016, (int) list.get(0).getSize().orElse(0));
@@ -710,8 +707,6 @@ public class GraphServiceTest {
                 .withRequestHeadersStandard() //
                 .build();
         User user = client.users("fred").expand("drive").get();
-        Object object = user.getUnmappedFields().get("drive");
-        assertTrue(object instanceof HashMap);
         Drive drive = user.getDrive().get();
         assertEquals("OneDrive", drive.getName().get());
     }
@@ -860,9 +855,9 @@ public class GraphServiceTest {
 
         // Verify UnmappedFields from separate ListItems:
         assertEquals("Contoso Home", //
-                ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields")).get("Title"));
+                firstListItem.getFields().get().getUnmappedFields().get("Title"));
         assertEquals("Microsoft Demos", //
-                ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields().get("fields")).get("Title"));
+                listItems.currentPage().get(1).getFields().get().getUnmappedFields().get("Title"));
 
         // Verify that different UnmappedFields instances from the same ListItem Jackson
         // deserialization call have distinct contents:
@@ -1247,6 +1242,43 @@ public class GraphServiceTest {
                     .submitBytesReturnsString(HttpMethod.PUT, url, content.getBytes(StandardCharsets.UTF_8),
                             HttpRequestOptions.EMPTY, RequestHeader.CONTENT_TYPE_TEXT_PLAIN);
             assertTrue(json.contains("0123456789abc"));
+        }
+    }
+    
+    @Test
+    public void testGetMessagesWithAttachments() throws UnsupportedEncodingException {
+        // asserts contained navigation property is loaded into field and 
+        // field is used by getAttachments. No extra network calls happen which tells us that
+        // it was used.
+        GraphService client = clientBuilder()
+                .expectRequest("/me/messages?$expand=attachments") //
+                .withMethod(HttpMethod.GET) //
+                .withResponse("/response-messages-with-attachments.json")
+                .withRequestHeaders(RequestHeader.ODATA_VERSION, 
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL)
+                .withResponseStatusCode(200) //
+                .build();
+        List<Message> list = client.me().messages().expand("attachments").get().currentPage();
+        List<Attachment> a = list.get(0).getAttachments().toList();
+        assertEquals(18, a.size());
+        FileAttachment first = (FileAttachment) a.get(0);
+        assertTrue(first.getId().get().startsWith("AAMkAGVmMDE"));
+        assertEquals("finger_print_icon_2x.png", first.getName().orElse("?"));
+        assertEquals(2703, first.getContentBytes().get().length);
+        assertTrue(first.getIsInline().orElse(false));
+        Message b = list.get(0).withAttachments(Collections.singletonList(first));
+        assertEquals(1, b.getAttachments().toList().size());
+        assertEquals(first.getName(), b.getAttachments().toList().get(0).getName());
+        // check that builder methods are there
+        {
+            Message.builderMessage() //
+                    .attachments(first) //
+                    .build();
+        }
+        {
+            Message.builderMessage() //
+                    .attachments(a) //
+                    .build();
         }
     }
     

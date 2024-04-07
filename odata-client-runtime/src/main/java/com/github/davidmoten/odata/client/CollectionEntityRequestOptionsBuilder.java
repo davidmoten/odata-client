@@ -198,6 +198,10 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     public T post(T entity) {
         return request.post(build(), entity);
     }
+    
+    public T patch(T entity) {
+        return request.patch(build(), entity);
+    }
 
     public List<T> toList() {
         return get().toList();

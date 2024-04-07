@@ -102,7 +102,7 @@ public final class Serializer {
                 return MAPPER_EXCLUDE_NULLS.readValue(text, cls);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage() + "\n" + text, e);
         }
     }
 

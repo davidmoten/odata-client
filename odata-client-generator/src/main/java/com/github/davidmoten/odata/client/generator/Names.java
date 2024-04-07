@@ -253,6 +253,10 @@ public final class Names {
     public String toImportedFullClassName(TProperty x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);
     }
+    
+    public String toImportedFullClassName(TNavigationProperty x, Imports imports) {
+        return toImportedFullClassName(getType(x), imports, List.class);
+    }
 
     public String toImportedFullClassName(TActionFunctionParameter x, Imports imports) {
         return toImportedFullClassName(getType(x), imports, List.class);

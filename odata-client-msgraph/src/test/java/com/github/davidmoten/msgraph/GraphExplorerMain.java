@@ -20,7 +20,22 @@ public class GraphExplorerMain {
 
     public static void main(String[] args) {
 
-        GraphService client = MsGraph.explorer().build();
+        GraphService client = MsGraph.explorer() //
+                .build();
+        
+        {  
+            client.me().messages().stream().flatMap(m -> m.getSingleValueExtendedProperties().stream()).forEach(System.out::println);
+        }
+        {
+            client.me(). //
+                    messages() //
+                    .stream() //
+                    .skip(10) //
+                    .limit(1) //
+                    .flatMap(m -> m.getAttachments().stream()) //
+                    .forEach(a -> System.out.println(a.getName().orElse("?")));
+            System.exit(0);
+        }
         {
             client.me().messages().get().stream().findFirst().ifPresent(a -> System.out.println(a.getSubject().orElse("?")));
             System.exit(0);
