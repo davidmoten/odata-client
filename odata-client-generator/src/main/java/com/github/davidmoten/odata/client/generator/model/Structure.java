@@ -126,7 +126,7 @@ public abstract class Structure<T> {
         return Names.getIdentifier(x.getName());
     }
 
-	private Stream<Field> toFields(TProperty x, Imports imports) {
+    private Stream<Field> toFields(TProperty x, Imports imports) {
 		boolean isCollection = names.isCollection(x);
 		final String innerFullClassName;
 		if (isCollection) {
