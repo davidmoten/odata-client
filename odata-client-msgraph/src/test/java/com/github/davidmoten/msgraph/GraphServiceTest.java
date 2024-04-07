@@ -859,9 +859,9 @@ public class GraphServiceTest {
 
         // Verify UnmappedFields from separate ListItems:
         assertEquals("Contoso Home", //
-                ((Map<String, Object>) firstListItem.getUnmappedFields().get("fields")).get("Title"));
+                firstListItem.getFields().get().getUnmappedFields().get("Title"));
         assertEquals("Microsoft Demos", //
-                ((Map<String, Object>) listItems.currentPage().get(1).getUnmappedFields().get("fields")).get("Title"));
+                listItems.currentPage().get(1).getFields().get().getUnmappedFields().get("Title"));
 
         // Verify that different UnmappedFields instances from the same ListItem Jackson
         // deserialization call have distinct contents:
