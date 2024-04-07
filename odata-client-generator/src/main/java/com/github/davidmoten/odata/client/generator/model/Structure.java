@@ -127,26 +127,26 @@ public abstract class Structure<T> {
     }
 
     private Stream<Field> toFields(TProperty x, Imports imports) {
-		boolean isCollection = names.isCollection(x);
-		final String innerFullClassName;
-		if (isCollection) {
-			String t = names.getInnerType(names.getType(x));
-			innerFullClassName = names.toImportedFullClassName(t, imports, List.class);
-		} else {
-			innerFullClassName = null;
-		}
-		Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
-				names.toImportedFullClassName(x, imports), isCollection, innerFullClassName);
-		if (isCollection && !names.isEntityWithNamespace(names.getType(x))) {
-			Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
-					imports.add(String.class), false, null);
-			return Stream.of(a, b);
-		} else {
-			return Stream.of(a);
-		}
-	}
-	
-	private Stream<Field> toFields(TNavigationProperty x, Imports imports) {
+        boolean isCollection = names.isCollection(x);
+        final String innerFullClassName;
+        if (isCollection) {
+            String t = names.getInnerType(names.getType(x));
+            innerFullClassName = names.toImportedFullClassName(t, imports, List.class);
+        } else {
+            innerFullClassName = null;
+        }
+        Field a = new Field(x.getName(), Names.getIdentifier(x.getName()), x.getName(),
+                names.toImportedFullClassName(x, imports), isCollection, innerFullClassName);
+        if (isCollection && !names.isEntityWithNamespace(names.getType(x))) {
+            Field b = new Field(x.getName(), Names.getIdentifier(x.getName()) + "NextLink", x.getName() + "@nextLink",
+                    imports.add(String.class), false, null);
+            return Stream.of(a, b);
+        } else {
+            return Stream.of(a);
+        }
+    }
+    
+    private Stream<Field> toFields(TNavigationProperty x, Imports imports) {
         boolean isCollection = names.isCollection(x);
         final String innerFullClassName;
         if (isCollection) {
