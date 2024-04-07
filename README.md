@@ -736,6 +736,14 @@ When the above code is called, the line `OutlookItem item = a.getItem().get()` w
 
 This support is present for both Entity requests and Enitty Collection requests.
 
+## Contained Navigation Properties
+
+If in the OData metadata a Navigation Property has `ContainsTarget=true` then efficiences are enabled for reading and writing such properties (as of 0.1.93). 
+
+For example, `attachments` and/or `singleValueExtendedProperties` can be defined on a `message` at creation time of the message so only one network call is required.
+
+Likewise, if `.expand("attachments")` is set on retrieval of a `Message` then attachments will be included in the JSON response and the paged collection method `Message.getAttachments()` will actually use already loaded attachments rather than making an extra network call. 
+
 ## Logging
 The default http client Apache *httpclient* uses *Apache Commons Logging* and the odata-client libraries use *slf4j*. To get full access to all logs you'll need to ensure that the right adapters are present that pipe logs to your preferred logging library. Tests in *odata-client-msgraph* demonstrate the use of *log4j* as the preferred logger. You'll note that these dependencies are present:
 
