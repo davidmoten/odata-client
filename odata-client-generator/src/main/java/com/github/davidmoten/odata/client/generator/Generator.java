@@ -662,9 +662,7 @@ public final class Generator {
             String simpleClassName, String fullType, List<TNavigationProperty> navigationProperties, boolean ofEntity,
             Set<String> methodNames) {
 
-        navigationProperties //
-                .stream() //
-                .filter(Generator::containsTarget)
+        contained(navigationProperties) //
                 .forEach(x -> {
                     String propertyName = x.getName();
                     String t = names.getType(x);
@@ -1858,16 +1856,13 @@ public final class Generator {
             String simpleClassName, String fullType, boolean ofEntity, Set<String> methodNames, String propertyName,
             String t, boolean isCollection) {
         String fieldName = Names.getIdentifier(propertyName);
-        structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
-                Collections.emptyMap());
         String methodName = Names.getGetterMethod(propertyName);
         methodNames.add(methodName);
         if (isCollection) {
             String inner = names.getInnerType(t);
             String importedInnerType = names.toImportedTypeNonCollection(inner, imports);
-            boolean isEntity = names.isEntityWithNamespace(inner);
-            // add a mutator for a collection if is collection of complex type and owner is an entity
-            if (!isEntity && ofEntity) {
+            // add a mutator for a collection if owner is an entity
+            if (ofEntity) {
                 Map<String, String> map = new LinkedHashMap<>();
                 map.put(fieldName,
                         "new value of {@code " + propertyName + "} field (as defined in service metadata)");
