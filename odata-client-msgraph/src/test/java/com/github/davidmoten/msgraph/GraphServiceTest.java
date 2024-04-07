@@ -13,23 +13,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -75,7 +72,6 @@ import odata.msgraph.client.entity.Group;
 import odata.msgraph.client.entity.ItemAttachment;
 import odata.msgraph.client.entity.ListItem;
 import odata.msgraph.client.entity.Message;
-import odata.msgraph.client.entity.SingleValueLegacyExtendedProperty;
 import odata.msgraph.client.entity.User;
 import odata.msgraph.client.entity.request.MailFolderRequest;
 import odata.msgraph.client.enums.AttachmentType;
@@ -1250,31 +1246,26 @@ public class GraphServiceTest {
     }
     
     @Test
-    @Ignore
-    public void testPatchNavigationProperty() throws UnsupportedEncodingException {
-        String messageId = "AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAAiIsqMbYjsT5e-T7KzowPTAAEMOXaXAAA=";
-        String encodedMessageId = URLEncoder.encode(messageId, "UTF-8");
+    public void testGetMessagesWithAttachments() throws UnsupportedEncodingException {
+        // asserts contained navigation property is loaded into field and 
+        // field is used by getAttachments. No extra network calls happen which tells us that
+        // it was used.
         GraphService client = clientBuilder()
-                .expectRequest("/me/messages/" + encodedMessageId) //
+                .expectRequest("/me/messages?$expand=attachments") //
                 .withMethod(HttpMethod.GET) //
-                .withResponse("/response-message.json")
+                .withResponse("/response-messages-with-attachments.json")
                 .withRequestHeaders(RequestHeader.ODATA_VERSION, 
                         RequestHeader.ACCEPT_JSON_METADATA_MINIMAL)
-                .expectRequest("/me/messages/" + encodedMessageId + "/singleValueExtendedProperties") //
-                .withMethod(HttpMethod.PATCH) //
-                .withPayload("/request-patch-navigation-property.json") //
-                .withRequestHeaders(RequestHeader.ODATA_VERSION, RequestHeader.CONTENT_TYPE_JSON,
-                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
                 .withResponseStatusCode(200) //
-                .withResponse("/response-patch-navigation-property.json") //
                 .build();
-
-        SingleValueLegacyExtendedProperty p = SingleValueLegacyExtendedProperty //
-                .builderSingleValueLegacyExtendedProperty() //
-                .id("abc123") //
-                .value("thing") //
-                .build();
-        client.me().messages(messageId).get().getSingleValueExtendedProperties().patch(p);
+        List<Message> list = client.me().messages().expand("attachments").get().currentPage();
+        List<Attachment> a = list.get(0).getAttachments().toList();
+        assertEquals(18, a.size());
+        FileAttachment first = (FileAttachment) a.get(0);
+        assertTrue(first.getId().get().startsWith("AAMkAGVmMDE"));
+        assertEquals("finger_print_icon_2x.png", first.getName().orElse("?"));
+        assertEquals(2703, first.getContentBytes().get().length);
+        assertTrue(first.getIsInline().orElse(false));
     }
     
     @Test
