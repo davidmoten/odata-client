@@ -614,7 +614,8 @@ public final class Generator {
 					true, methodNames);
 			addInheritedPropertyNames(t, methodNames);
 			printNavigationPropertyGetters(t, imports, indent, p, t.getNavigationProperties(), methodNames);
-
+			printNavigationPropertySetters(t, imports, indent, p, simpleClassName, t.getFullType(),
+                    t.getNavigationProperties(), true, methodNames);
 			addUnmappedFieldsSetterAndGetter(imports, indent, p, methodNames);
 
 			if (t.hasStream()) {
@@ -656,6 +657,24 @@ public final class Generator {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private void printNavigationPropertySetters(EntityType structure, Imports imports, Indent indent, PrintWriter p,
+            String simpleClassName, String fullType, List<TNavigationProperty> navigationProperties, boolean ofEntity,
+            Set<String> methodNames) {
+
+        navigationProperties //
+                .stream() //
+                .filter(Generator::containsTarget)
+                .forEach(x -> {
+                    String propertyName = x.getName();
+                    String t = names.getType(x);
+                    boolean isCollection = isCollection(x);
+
+                    printNavigationPropertySetters(structure, imports, indent, p, simpleClassName, fullType, ofEntity,
+                            methodNames, propertyName, t, isCollection);
+
+                });
+    }
 
     private static void printJsonIncludesNonNull(Indent indent, Imports imports, PrintWriter p) {
 		p.format("%s@%s(%s.NON_NULL)\n", indent, imports.add(JsonInclude.class), imports.add(Include.class));
@@ -1617,204 +1636,8 @@ public final class Generator {
 				    boolean isStream = isStream(x);
 				    boolean isUnicode = Boolean.TRUE.equals(x.isUnicode());
 
-				    String fieldName = Names.getIdentifier(propertyName);
-					structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
-							Collections.emptyMap());
-					addPropertyAnnotation(imports, indent, p, propertyName);
-					p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
-					String methodName = Names.getGetterMethod(propertyName);
-					methodNames.add(methodName);
-					if (isCollection) {
-						String inner = names.getInnerType(t);
-						String importedInnerType = names.toImportedTypeNonCollection(inner, imports);
-						boolean isEntity = names.isEntityWithNamespace(inner);
-						{
-							String options = String.format("%s.EMPTY", imports.add(HttpRequestOptions.class));
-							p.format("%spublic %s<%s> %s() {\n", indent, imports.add(CollectionPage.class),
-									importedInnerType, methodName);
-							writePropertyGetterCollectionBody(imports, indent, p, fieldName, inner, importedInnerType,
-									isEntity, options);
-							p.format("%s}\n", indent.left());
-						}
-						// add a mutator for a collection if is collection of complex type and owner is an entity
-						if (!isEntity && ofEntity) {
-							Map<String, String> map = new LinkedHashMap<>();
-							map.put(fieldName,
-									"new value of {@code " + propertyName + "} field (as defined in service metadata)");
-							structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
-							String classSuffix = "";
-							String withMethodName = Names.getWithMethod(propertyName);
-							methodNames.add(withMethodName);
-							p.format("\n%spublic %s%s %s(%s<%s> %s) {\n", indent, simpleClassName, classSuffix, //
-									withMethodName, imports.add(List.class), importedInnerType, fieldName);
-							// use _x as identifier so doesn't conflict with any field name
-							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
-							if (ofEntity) {
-								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
-							}
-							p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
-									indent, //
-									imports.add(com.github.davidmoten.odata.client.Util.class), //
-									fullType);
-							p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
-							p.format("%sreturn _x;\n", indent);
-							p.format("%s}\n", indent.left());
-						}
-						{
-							String options = "options";
-							Map<String,String> parameterDoc = new HashMap<>();
-							parameterDoc.put("options", "specify connect and read timeouts");
-							structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
-									parameterDoc);
-							addPropertyAnnotation(imports, indent, p, propertyName);
-							p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
-							
-							p.format("%spublic %s<%s> %s(%s options) {\n", indent, imports.add(CollectionPage.class),
-									importedInnerType, methodName, imports.add(HttpRequestOptions.class));
-							writePropertyGetterCollectionBody(imports, indent, p, fieldName, inner, importedInnerType,
-									isEntity, options);
-							p.format("%s}\n", indent.left());
-						}
-					} else {
-						if (isStream) {
-							p.format("%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class),
-									imports.add(StreamProvider.class), methodName);
-							p.format("%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
-									indent.right(), imports.add(RequestHelper.class), propertyName, fieldName);
-							p.format("%s}\n", indent.left());
-							
-                            for (HttpMethod method : HttpMethod.createOrUpdateMethods()) {
-                                String putMethodName = Names.getPutMethod(propertyName, method);
-                                methodNames.add(putMethodName);
-                                p.format("\n%s/**", indent);
-                                p.format(
-                                        "\n%s * If metadata indicate that the stream is editable then returns",
-                                        indent);
-                                p.format(
-                                        "\n%s * a {@link StreamUploader} which can be used to upload the stream",
-                                        indent);
-                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, propertyName, method);
-                                p.format("\n%s *", indent);
-                                p.format("\n%s * @return a StreamUploader if upload permitted",
-                                        indent);
-                                p.format("\n%s */", indent);
-                                addPropertyAnnotation(imports, indent, p, propertyName);
-                                p.format("\n%spublic %s<%s> %s() {\n", indent,
-                                        imports.add(Optional.class), //
-                                        imports.add(StreamUploaderSingleCall.class), //
-                                        putMethodName);
-                                p.format("%sreturn %s(%s.singleCall());\n", //
-                                        indent.right(), //
-                                        putMethodName, imports.add(UploadStrategy.class) //
-                                );
-                                p.format("%s}\n", indent.left());
-
-                                String putChunkedMethodName = Names
-                                        .getPutChunkedMethod(propertyName, method);
-                                methodNames.add(putChunkedMethodName);
-                                p.format("\n%s/**", indent);
-                                p.format(
-                                        "\n%s * If metadata indicate that the stream is editable then returns",
-                                        indent);
-                                p.format(
-                                        "\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream",
-                                        indent);
-                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, propertyName, method);
-                                p.format("\n%s *", indent);
-                                p.format(
-                                        "\n%s * @return a StreamUploaderChunked if upload permitted",
-                                        indent);
-                                p.format("\n%s */", indent);
-                                addPropertyAnnotation(imports, indent, p, propertyName);
-                                p.format("\n%spublic %s<%s> %s() {\n", indent,
-                                        imports.add(Optional.class), //
-                                        imports.add(StreamUploaderChunked.class), //
-                                        putChunkedMethodName);
-                                p.format("%sreturn %s(%s.chunked());\n", //
-                                        indent.right(), //
-                                        putMethodName, imports.add(UploadStrategy.class) //
-                                );
-                                p.format("%s}\n", indent.left());
-
-                                addPropertyAnnotation(imports, indent, p, propertyName);
-                                p.format(
-                                        "\n%spublic <T extends %s<T>> Optional<T> %s(%s<T> strategy) {\n", //
-                                        indent, //
-                                        imports.add(StreamUploader.class), //
-                                        putMethodName, //
-                                        imports.add(UploadStrategy.class));
-                                p.format(
-                                        "%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\", %s.%s);\n", //
-                                        indent.right(), //
-                                        propertyName, //
-                                        propertyName, //
-                                        imports.add(HttpMethod.class), //
-                                        method.name());
-                                p.format("%s}\n", indent.left());
-                            }
-						} else {
-							final String importedType = names.toImportedTypeNonCollection(t, imports);
-							String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
-							p.format("%spublic %s %s() {\n", indent, importedTypeWithOptional, methodName);
-							p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
-									fieldName);
-							p.format("%s}\n", indent.left());
-
-							Map<String, String> map = new LinkedHashMap<>();
-							map.put(fieldName,
-									"new value of {@code " + propertyName + "} field (as defined in service metadata)");
-							structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
-							String classSuffix = "";
-							String withMethodName = Names.getWithMethod(propertyName);
-							methodNames.add(withMethodName);
-							p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
-									withMethodName, importedType, fieldName);
-							if (isUnicode) {
-								p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(Checks.class),
-										fieldName);
-								indent.left();
-							}
-							// use _x as identifier so doesn't conflict with any field name
-							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
-							if (ofEntity) {
-								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
-							}
-							p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
-									indent, //
-									imports.add(com.github.davidmoten.odata.client.Util.class), //
-									fullType);
-							p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
-							p.format("%sreturn _x;\n", indent);
-							p.format("%s}\n", indent.left());
-						}
-						
-						// add special convenience method to write stream to upload url. Supports Ms Graph createUploadSession.
-						if (structure.getSimpleClassName().equals("UploadSession") && propertyName.equals("uploadUrl")) {
-						    addPropertyAnnotation(imports, indent, p, propertyName);
-                            p.format("\n%spublic <T extends %s<T>> T put(%s<T> strategy) {\n", //
-                                    indent, //
-                                    imports.add(StreamUploader.class), //
-                                    imports.add(UploadStrategy.class));
-                            p.format("%sthis.unmappedFields.put(\"uploadUrl@odata.mediaEditLink\", uploadUrl);\n", indent.right());
-                            p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"uploadUrl\", %s.%s).get();\n", //
-                                    indent, //
-                                    imports.add(ContextPath.class), //
-                                    imports.add(Path.class), //
-                                    imports.add(HttpMethod.class), //
-                                    HttpMethod.PUT.name());
-                            p.format("%s}\n", indent.left());
-                            
-                            addPropertyAnnotation(imports, indent, p, propertyName);
-                            p.format("\n%spublic %s putChunked() {\n", indent, imports.add(StreamUploaderChunked.class));
-                            p.format("%sreturn put(%s.chunked());\n", indent.right(), imports.add(UploadStrategy.class));
-                            p.format("%s}\n", indent.left());
-                            
-                            addPropertyAnnotation(imports, indent, p, propertyName);
-                            p.format("\n%spublic %s put() {\n", indent, imports.add(StreamUploaderSingleCall.class));
-                            p.format("%sreturn put(%s.singleCall());\n", indent.right(), imports.add(UploadStrategy.class));
-                            p.format("%s}\n", indent.left());
-						}
-					}
+                    printPropertyGetterAndSetters(structure, imports, indent, p, simpleClassName, fullType, ofEntity,
+                            methodNames, propertyName, t, isCollection, isStream, isUnicode);
 
 				});
 		
@@ -1827,6 +1650,270 @@ public final class Generator {
         p.format("%sreturn _x;\n", indent);
         p.format("%s}\n", indent.left());
 	}
+
+    private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
+            String simpleClassName, String fullType, boolean ofEntity, Set<String> methodNames, String propertyName,
+            String t, boolean isCollection, boolean isStream, boolean isUnicode) {
+        String fieldName = Names.getIdentifier(propertyName);
+        structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
+        		Collections.emptyMap());
+        addPropertyAnnotation(imports, indent, p, propertyName);
+        p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+        String methodName = Names.getGetterMethod(propertyName);
+        methodNames.add(methodName);
+        if (isCollection) {
+        	String inner = names.getInnerType(t);
+        	String importedInnerType = names.toImportedTypeNonCollection(inner, imports);
+        	boolean isEntity = names.isEntityWithNamespace(inner);
+        	{
+        		String options = String.format("%s.EMPTY", imports.add(HttpRequestOptions.class));
+        		p.format("%spublic %s<%s> %s() {\n", indent, imports.add(CollectionPage.class),
+        				importedInnerType, methodName);
+        		writePropertyGetterCollectionBody(imports, indent, p, fieldName, inner, importedInnerType,
+        				isEntity, options);
+        		p.format("%s}\n", indent.left());
+        	}
+        	// add a mutator for a collection if is collection of complex type and owner is an entity
+        	if (!isEntity && ofEntity) {
+        		Map<String, String> map = new LinkedHashMap<>();
+        		map.put(fieldName,
+        				"new value of {@code " + propertyName + "} field (as defined in service metadata)");
+        		structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
+        		String classSuffix = "";
+        		String withMethodName = Names.getWithMethod(propertyName);
+        		methodNames.add(withMethodName);
+        		p.format("\n%spublic %s%s %s(%s<%s> %s) {\n", indent, simpleClassName, classSuffix, //
+        				withMethodName, imports.add(List.class), importedInnerType, fieldName);
+        		// use _x as identifier so doesn't conflict with any field name
+        		p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
+        		if (ofEntity) {
+        			p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
+        		}
+        		p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
+        				indent, //
+        				imports.add(com.github.davidmoten.odata.client.Util.class), //
+        				fullType);
+        		p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
+        		p.format("%sreturn _x;\n", indent);
+        		p.format("%s}\n", indent.left());
+        	}
+        	{
+        		String options = "options";
+        		Map<String,String> parameterDoc = new HashMap<>();
+        		parameterDoc.put("options", "specify connect and read timeouts");
+        		structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
+        				parameterDoc);
+        		addPropertyAnnotation(imports, indent, p, propertyName);
+        		p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
+        		
+        		p.format("%spublic %s<%s> %s(%s options) {\n", indent, imports.add(CollectionPage.class),
+        				importedInnerType, methodName, imports.add(HttpRequestOptions.class));
+        		writePropertyGetterCollectionBody(imports, indent, p, fieldName, inner, importedInnerType,
+        				isEntity, options);
+        		p.format("%s}\n", indent.left());
+        	}
+        } else {
+        	if (isStream) {
+        		p.format("%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class),
+        				imports.add(StreamProvider.class), methodName);
+        		p.format("%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
+        				indent.right(), imports.add(RequestHelper.class), propertyName, fieldName);
+        		p.format("%s}\n", indent.left());
+        		
+                for (HttpMethod method : HttpMethod.createOrUpdateMethods()) {
+                    String putMethodName = Names.getPutMethod(propertyName, method);
+                    methodNames.add(putMethodName);
+                    p.format("\n%s/**", indent);
+                    p.format(
+                            "\n%s * If metadata indicate that the stream is editable then returns",
+                            indent);
+                    p.format(
+                            "\n%s * a {@link StreamUploader} which can be used to upload the stream",
+                            indent);
+                    p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, propertyName, method);
+                    p.format("\n%s *", indent);
+                    p.format("\n%s * @return a StreamUploader if upload permitted",
+                            indent);
+                    p.format("\n%s */", indent);
+                    addPropertyAnnotation(imports, indent, p, propertyName);
+                    p.format("\n%spublic %s<%s> %s() {\n", indent,
+                            imports.add(Optional.class), //
+                            imports.add(StreamUploaderSingleCall.class), //
+                            putMethodName);
+                    p.format("%sreturn %s(%s.singleCall());\n", //
+                            indent.right(), //
+                            putMethodName, imports.add(UploadStrategy.class) //
+                    );
+                    p.format("%s}\n", indent.left());
+
+                    String putChunkedMethodName = Names
+                            .getPutChunkedMethod(propertyName, method);
+                    methodNames.add(putChunkedMethodName);
+                    p.format("\n%s/**", indent);
+                    p.format(
+                            "\n%s * If metadata indicate that the stream is editable then returns",
+                            indent);
+                    p.format(
+                            "\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream",
+                            indent);
+                    p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, propertyName, method);
+                    p.format("\n%s *", indent);
+                    p.format(
+                            "\n%s * @return a StreamUploaderChunked if upload permitted",
+                            indent);
+                    p.format("\n%s */", indent);
+                    addPropertyAnnotation(imports, indent, p, propertyName);
+                    p.format("\n%spublic %s<%s> %s() {\n", indent,
+                            imports.add(Optional.class), //
+                            imports.add(StreamUploaderChunked.class), //
+                            putChunkedMethodName);
+                    p.format("%sreturn %s(%s.chunked());\n", //
+                            indent.right(), //
+                            putMethodName, imports.add(UploadStrategy.class) //
+                    );
+                    p.format("%s}\n", indent.left());
+
+                    addPropertyAnnotation(imports, indent, p, propertyName);
+                    p.format(
+                            "\n%spublic <T extends %s<T>> Optional<T> %s(%s<T> strategy) {\n", //
+                            indent, //
+                            imports.add(StreamUploader.class), //
+                            putMethodName, //
+                            imports.add(UploadStrategy.class));
+                    p.format(
+                            "%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\", %s.%s);\n", //
+                            indent.right(), //
+                            propertyName, //
+                            propertyName, //
+                            imports.add(HttpMethod.class), //
+                            method.name());
+                    p.format("%s}\n", indent.left());
+                }
+        	} else {
+        		final String importedType = names.toImportedTypeNonCollection(t, imports);
+        		String importedTypeWithOptional = imports.add(Optional.class) + "<" + importedType + ">";
+        		p.format("%spublic %s %s() {\n", indent, importedTypeWithOptional, methodName);
+        		p.format("%sreturn %s.ofNullable(%s);\n", indent.right(), imports.add(Optional.class),
+        				fieldName);
+        		p.format("%s}\n", indent.left());
+
+        		Map<String, String> map = new LinkedHashMap<>();
+        		map.put(fieldName,
+        				"new value of {@code " + propertyName + "} field (as defined in service metadata)");
+        		structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
+        		String classSuffix = "";
+        		String withMethodName = Names.getWithMethod(propertyName);
+        		methodNames.add(withMethodName);
+        		p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
+        				withMethodName, importedType, fieldName);
+        		if (isUnicode) {
+        			p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(Checks.class),
+        					fieldName);
+        			indent.left();
+        		}
+        		// use _x as identifier so doesn't conflict with any field name
+        		p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
+        		if (ofEntity) {
+        			p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
+        		}
+        		p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
+        				indent, //
+        				imports.add(com.github.davidmoten.odata.client.Util.class), //
+        				fullType);
+        		p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
+        		p.format("%sreturn _x;\n", indent);
+        		p.format("%s}\n", indent.left());
+        	}
+        	
+        	// add special convenience method to write stream to upload url. Supports Ms Graph createUploadSession.
+        	if (structure.getSimpleClassName().equals("UploadSession") && propertyName.equals("uploadUrl")) {
+        	    addPropertyAnnotation(imports, indent, p, propertyName);
+                p.format("\n%spublic <T extends %s<T>> T put(%s<T> strategy) {\n", //
+                        indent, //
+                        imports.add(StreamUploader.class), //
+                        imports.add(UploadStrategy.class));
+                p.format("%sthis.unmappedFields.put(\"uploadUrl@odata.mediaEditLink\", uploadUrl);\n", indent.right());
+                p.format("%sreturn strategy.builder(new %s(contextPath.context(), new %s(uploadUrl, contextPath.context().service().getBasePath().style())), this, \"uploadUrl\", %s.%s).get();\n", //
+                        indent, //
+                        imports.add(ContextPath.class), //
+                        imports.add(Path.class), //
+                        imports.add(HttpMethod.class), //
+                        HttpMethod.PUT.name());
+                p.format("%s}\n", indent.left());
+                
+                addPropertyAnnotation(imports, indent, p, propertyName);
+                p.format("\n%spublic %s putChunked() {\n", indent, imports.add(StreamUploaderChunked.class));
+                p.format("%sreturn put(%s.chunked());\n", indent.right(), imports.add(UploadStrategy.class));
+                p.format("%s}\n", indent.left());
+                
+                addPropertyAnnotation(imports, indent, p, propertyName);
+                p.format("\n%spublic %s put() {\n", indent, imports.add(StreamUploaderSingleCall.class));
+                p.format("%sreturn put(%s.singleCall());\n", indent.right(), imports.add(UploadStrategy.class));
+                p.format("%s}\n", indent.left());
+        	}
+        }
+    }
+    
+    private void printNavigationPropertySetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
+            String simpleClassName, String fullType, boolean ofEntity, Set<String> methodNames, String propertyName,
+            String t, boolean isCollection) {
+        String fieldName = Names.getIdentifier(propertyName);
+        structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
+                Collections.emptyMap());
+        String methodName = Names.getGetterMethod(propertyName);
+        methodNames.add(methodName);
+        if (isCollection) {
+            String inner = names.getInnerType(t);
+            String importedInnerType = names.toImportedTypeNonCollection(inner, imports);
+            boolean isEntity = names.isEntityWithNamespace(inner);
+            // add a mutator for a collection if is collection of complex type and owner is an entity
+            if (!isEntity && ofEntity) {
+                Map<String, String> map = new LinkedHashMap<>();
+                map.put(fieldName,
+                        "new value of {@code " + propertyName + "} field (as defined in service metadata)");
+                structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
+                String classSuffix = "";
+                String withMethodName = Names.getWithMethod(propertyName);
+                methodNames.add(withMethodName);
+                p.format("\n%spublic %s%s %s(%s<%s> %s) {\n", indent, simpleClassName, classSuffix, //
+                        withMethodName, imports.add(List.class), importedInnerType, fieldName);
+                // use _x as identifier so doesn't conflict with any field name
+                p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
+                if (ofEntity) {
+                    p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
+                }
+                p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
+                        indent, //
+                        imports.add(com.github.davidmoten.odata.client.Util.class), //
+                        fullType);
+                p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
+                p.format("%sreturn _x;\n", indent);
+                p.format("%s}\n", indent.left());
+            }
+        } else {
+            final String importedType = names.toImportedTypeNonCollection(t, imports);
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put(fieldName, "new value of {@code " + propertyName + "} field (as defined in service metadata)");
+            structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
+            String classSuffix = "";
+            String withMethodName = Names.getWithMethod(propertyName);
+            methodNames.add(withMethodName);
+            p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix, withMethodName,
+                    importedType, fieldName);
+            // use _x as identifier so doesn't conflict with any field name
+            p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
+            if (ofEntity) {
+                p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
+            }
+            p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
+                    indent, //
+                    imports.add(com.github.davidmoten.odata.client.Util.class), //
+                    fullType);
+            p.format("%s_x.%s = %s;\n", indent, fieldName, fieldName);
+            p.format("%sreturn _x;\n", indent);
+            p.format("%s}\n", indent.left());
+        }
+    }
 
 	private void writePropertyGetterCollectionBody(Imports imports, Indent indent, PrintWriter p, String fieldName,
 			String inner, String importedInnerType, boolean isEntity, String options) {
