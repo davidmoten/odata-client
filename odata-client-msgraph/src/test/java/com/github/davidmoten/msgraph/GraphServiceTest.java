@@ -1266,6 +1266,9 @@ public class GraphServiceTest {
         assertEquals("finger_print_icon_2x.png", first.getName().orElse("?"));
         assertEquals(2703, first.getContentBytes().get().length);
         assertTrue(first.getIsInline().orElse(false));
+        Message b = list.get(0).withAttachments(Collections.singletonList(first));
+        assertEquals(1, b.getAttachments().toList().size());
+        assertEquals(first.getName(), b.getAttachments().toList().get(0).getName());
     }
     
     @Test
