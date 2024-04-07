@@ -562,7 +562,7 @@ public final class Generator {
 			p.format(IMPORTSHERE);
 
 			t.printJavadoc(p, indent);
-			printPropertyOrder(imports, p, t.getProperties());
+			printPropertyOrder(imports, p, t.getProperties(), t.getNavigationProperties());
 			printJsonIncludesNonNull(indent, imports, p);
 			p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
 					imports.add(ODataEntityType.class));
@@ -1030,7 +1030,7 @@ public final class Generator {
 			p.format(IMPORTSHERE);
 
 			t.printJavadoc(p, indent);
-			printPropertyOrder(imports, p, t.getProperties());
+			printPropertyOrder(imports, p, t.getProperties(), t.getNavigationProperties());
 			printJsonIncludesNonNull(indent, imports, p);
 			p.format("public class %s%s implements %s {\n", simpleClassName, t.getExtendsClause(imports),
 					imports.add(ODataType.class));
@@ -1852,13 +1852,24 @@ public final class Generator {
 		p.format("\n%s@%s(name=\"%s\")\n", indent, imports.add(NavigationProperty.class), name);
 	}
 
-	private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties) {
-		String props = Stream.concat( //
-				Stream.of("@odata.type"), properties.stream().map(TProperty::getName)) //
-				.map(x -> "\n    \"" + x + "\"") //
-				.collect(Collectors.joining(", "));
+	private void printPropertyOrder(Imports imports, PrintWriter p, List<TProperty> properties, List<TNavigationProperty> navigationProperties) {
+        String props = Stream.concat(Stream.concat( //
+                Stream.of("@odata.type"), //
+                properties //
+                        .stream() //
+                        .map(TProperty::getName)), //
+                contained(navigationProperties) //
+                        .map(TNavigationProperty::getName))
+                .map(x -> "\n    \"" + x + "\"") //
+                .collect(Collectors.joining(", "));
 		p.format("@%s({%s})\n", imports.add(JsonPropertyOrder.class), props);
 	}
+
+    private static Stream<TNavigationProperty> contained(List<TNavigationProperty> navigationProperties) {
+        return navigationProperties //
+                .stream() //
+                .filter(x -> Boolean.TRUE.equals(x.isContainsTarget()));
+    }
 
 	private void printPropertyFields(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties,
 			boolean hasBaseType) {
@@ -1884,9 +1895,7 @@ public final class Generator {
 	
     private void printContainedNavigationPropertyFields(Imports imports, Indent indent, PrintWriter p,
             List<TNavigationProperty> list) {
-        list //
-           .stream() //
-           .filter(x -> Boolean.TRUE.equals(x.isContainsTarget())) //
+        contained(list)
            .forEach(x -> {
                p.format("\n%s@%s(\"%s\")\n", indent, imports.add(JsonProperty.class), x.getName());
                p.format("%sprotected %s %s;\n", indent, names.toImportedFullClassName(x, imports),
