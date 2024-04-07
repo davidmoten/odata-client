@@ -1614,6 +1614,8 @@ public final class Generator {
 				    String propertyName = x.getName();
 				    String t = names.getType(x);
 				    boolean isCollection = isCollection(x);
+				    boolean isStream = isStream(x);
+				    boolean isUnicode = Boolean.TRUE.equals(x.isUnicode());
 
 				    String fieldName = Names.getIdentifier(propertyName);
 					structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
@@ -1674,7 +1676,6 @@ public final class Generator {
 							p.format("%s}\n", indent.left());
 						}
 					} else {
-						boolean isStream = isStream(x);
 						if (isStream) {
 							p.format("%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class),
 									imports.add(StreamProvider.class), methodName);
@@ -1768,7 +1769,7 @@ public final class Generator {
 							methodNames.add(withMethodName);
 							p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
 									withMethodName, importedType, fieldName);
-							if (x.isUnicode() != null && !x.isUnicode()) {
+							if (isUnicode) {
 								p.format("%s%s.checkIsAscii(%s);\n", indent.right(), imports.add(Checks.class),
 										fieldName);
 								indent.left();
