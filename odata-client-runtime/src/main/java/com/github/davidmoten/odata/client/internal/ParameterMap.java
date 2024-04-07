@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.client.internal;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,16 +31,12 @@ public final class ParameterMap {
         public Map<String, TypedObject> build() {
             return map;
         }
-
     }
 
     public static Map<String, Object> toMap(Map<String, TypedObject> map) {
-        return map //
-                .entrySet() //
-                .stream() //
-                .collect(Collectors.toMap( //
-                        Map.Entry::getKey, //
-                        entry -> entry.getValue().object()));
+        Map<String, Object> result = new HashMap<>();
+        map.forEach((k, v) -> result.put(k, v.object()));
+        return result;
     }
 
 }
