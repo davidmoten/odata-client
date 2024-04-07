@@ -1922,8 +1922,15 @@ public final class Generator {
 					if (isCollection(x)) {
 						if (names.isEntityWithNamespace(names.getType(x))) {
 							p.format("%sreturn new %s(\n", indent.right(), typeName);
-							p.format("%scontextPath.addSegment(\"%s\"), %s.getValue(unmappedFields, \"%s\"));\n", //
-									indent.right().right().right().right(), x.getName(), imports.add(RequestHelper.class), x.getName());
+                            if (containsTarget(x)) {
+                                p.format("%scontextPath.addSegment(\"%s\"), %s.ofNullable(%s));\n", //
+                                        indent.right().right().right().right(), x.getName(),
+                                        imports.add(Optional.class), fieldName);
+                            } else {
+                                p.format("%scontextPath.addSegment(\"%s\"), %s.getValue(unmappedFields, \"%s\"));\n", //
+                                        indent.right().right().right().right(), x.getName(),
+                                        imports.add(RequestHelper.class), x.getName());
+                            }
 							indent.left().left().left().left();
 						} else {
 							throw new RuntimeException("unexpected");
