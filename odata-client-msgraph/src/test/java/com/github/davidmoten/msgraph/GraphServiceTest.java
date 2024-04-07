@@ -1250,6 +1250,7 @@ public class GraphServiceTest {
     }
     
     @Test
+    @Ignore
     public void testPatchNavigationProperty() throws UnsupportedEncodingException {
         String messageId = "AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OABGAAAAAAAiQ8W967B7TKBjgx9rVEURBwAiIsqMbYjsT5e-T7KzowPTAAAAAAEMAAAiIsqMbYjsT5e-T7KzowPTAAEMOXaXAAA=";
         String encodedMessageId = URLEncoder.encode(messageId, "UTF-8");

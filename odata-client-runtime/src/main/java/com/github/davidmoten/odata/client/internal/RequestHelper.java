@@ -179,7 +179,7 @@ public final class RequestHelper {
         List<RequestHeader> h = cleanAndSupplementRequestHeaders(options, "minimal", true);
 
         // get the response
-        HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
+        HttpResponse response = cp.context().service().submit(method, cp.toUrl(), h, json, options);
 
         // TODO could be tightened to 201 for POST create but POST Action calls need to
         // accept any successful code
