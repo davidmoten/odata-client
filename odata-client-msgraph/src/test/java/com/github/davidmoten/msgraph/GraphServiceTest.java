@@ -713,8 +713,6 @@ public class GraphServiceTest {
                 .withRequestHeadersStandard() //
                 .build();
         User user = client.users("fred").expand("drive").get();
-        Object object = user.getUnmappedFields().get("drive");
-        assertTrue(object instanceof HashMap);
         Drive drive = user.getDrive().get();
         assertEquals("OneDrive", drive.getName().get());
     }

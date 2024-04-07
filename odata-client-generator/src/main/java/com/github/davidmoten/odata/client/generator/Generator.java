@@ -1611,14 +1611,16 @@ public final class Generator {
 		// write getters and setters
 		properties //
 				.forEach(x -> {
-					String fieldName = Names.getIdentifier(x.getName());
-					String t = names.getType(x);
-					boolean isCollection = isCollection(x);
-					structure.printPropertyJavadoc(p, indent, x.getName(), "property " + x.getName(),
+				    String propertyName = x.getName();
+				    String t = names.getType(x);
+				    boolean isCollection = isCollection(x);
+
+				    String fieldName = Names.getIdentifier(propertyName);
+					structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
 							Collections.emptyMap());
-					addPropertyAnnotation(imports, indent, p, x.getName());
+					addPropertyAnnotation(imports, indent, p, propertyName);
 					p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
-					String methodName = Names.getGetterMethod(x.getName());
+					String methodName = Names.getGetterMethod(propertyName);
 					methodNames.add(methodName);
 					if (isCollection) {
 						String inner = names.getInnerType(t);
@@ -1636,17 +1638,17 @@ public final class Generator {
 						if (!isEntity && ofEntity) {
 							Map<String, String> map = new LinkedHashMap<>();
 							map.put(fieldName,
-									"new value of {@code " + x.getName() + "} field (as defined in service metadata)");
-							structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
+									"new value of {@code " + propertyName + "} field (as defined in service metadata)");
+							structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
 							String classSuffix = "";
-							String withMethodName = Names.getWithMethod(x.getName());
+							String withMethodName = Names.getWithMethod(propertyName);
 							methodNames.add(withMethodName);
 							p.format("\n%spublic %s%s %s(%s<%s> %s) {\n", indent, simpleClassName, classSuffix, //
 									withMethodName, imports.add(List.class), importedInnerType, fieldName);
 							// use _x as identifier so doesn't conflict with any field name
 							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
 							if (ofEntity) {
-								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
+								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
 							}
 							p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
 									indent, //
@@ -1660,9 +1662,9 @@ public final class Generator {
 							String options = "options";
 							Map<String,String> parameterDoc = new HashMap<>();
 							parameterDoc.put("options", "specify connect and read timeouts");
-							structure.printPropertyJavadoc(p, indent, x.getName(), "property " + x.getName(),
+							structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
 									parameterDoc);
-							addPropertyAnnotation(imports, indent, p, x.getName());
+							addPropertyAnnotation(imports, indent, p, propertyName);
 							p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
 							
 							p.format("%spublic %s<%s> %s(%s options) {\n", indent, imports.add(CollectionPage.class),
@@ -1677,11 +1679,11 @@ public final class Generator {
 							p.format("%spublic %s<%s> %s() {\n", indent, imports.add(Optional.class),
 									imports.add(StreamProvider.class), methodName);
 							p.format("%sreturn %s.createStreamForEdmStream(contextPath, this, \"%s\", %s);\n",
-									indent.right(), imports.add(RequestHelper.class), x.getName(), fieldName);
+									indent.right(), imports.add(RequestHelper.class), propertyName, fieldName);
 							p.format("%s}\n", indent.left());
 							
                             for (HttpMethod method : HttpMethod.createOrUpdateMethods()) {
-                                String putMethodName = Names.getPutMethod(x.getName(), method);
+                                String putMethodName = Names.getPutMethod(propertyName, method);
                                 methodNames.add(putMethodName);
                                 p.format("\n%s/**", indent);
                                 p.format(
@@ -1690,12 +1692,12 @@ public final class Generator {
                                 p.format(
                                         "\n%s * a {@link StreamUploader} which can be used to upload the stream",
                                         indent);
-                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, x.getName(), method);
+                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, propertyName, method);
                                 p.format("\n%s *", indent);
                                 p.format("\n%s * @return a StreamUploader if upload permitted",
                                         indent);
                                 p.format("\n%s */", indent);
-                                addPropertyAnnotation(imports, indent, p, x.getName());
+                                addPropertyAnnotation(imports, indent, p, propertyName);
                                 p.format("\n%spublic %s<%s> %s() {\n", indent,
                                         imports.add(Optional.class), //
                                         imports.add(StreamUploaderSingleCall.class), //
@@ -1707,7 +1709,7 @@ public final class Generator {
                                 p.format("%s}\n", indent.left());
 
                                 String putChunkedMethodName = Names
-                                        .getPutChunkedMethod(x.getName(), method);
+                                        .getPutChunkedMethod(propertyName, method);
                                 methodNames.add(putChunkedMethodName);
                                 p.format("\n%s/**", indent);
                                 p.format(
@@ -1716,13 +1718,13 @@ public final class Generator {
                                 p.format(
                                         "\n%s * a {@link StreamUploaderChunked} which can be used to upload the stream",
                                         indent);
-                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, x.getName(), method);
+                                p.format("\n%s * to the {@code %s} property, using HTTP %s.", indent, propertyName, method);
                                 p.format("\n%s *", indent);
                                 p.format(
                                         "\n%s * @return a StreamUploaderChunked if upload permitted",
                                         indent);
                                 p.format("\n%s */", indent);
-                                addPropertyAnnotation(imports, indent, p, x.getName());
+                                addPropertyAnnotation(imports, indent, p, propertyName);
                                 p.format("\n%spublic %s<%s> %s() {\n", indent,
                                         imports.add(Optional.class), //
                                         imports.add(StreamUploaderChunked.class), //
@@ -1733,7 +1735,7 @@ public final class Generator {
                                 );
                                 p.format("%s}\n", indent.left());
 
-                                addPropertyAnnotation(imports, indent, p, x.getName());
+                                addPropertyAnnotation(imports, indent, p, propertyName);
                                 p.format(
                                         "\n%spublic <T extends %s<T>> Optional<T> %s(%s<T> strategy) {\n", //
                                         indent, //
@@ -1743,8 +1745,8 @@ public final class Generator {
                                 p.format(
                                         "%sreturn strategy.builder(contextPath.addSegment(\"%s\"), this, \"%s\", %s.%s);\n", //
                                         indent.right(), //
-                                        x.getName(), //
-                                        x.getName(), //
+                                        propertyName, //
+                                        propertyName, //
                                         imports.add(HttpMethod.class), //
                                         method.name());
                                 p.format("%s}\n", indent.left());
@@ -1759,10 +1761,10 @@ public final class Generator {
 
 							Map<String, String> map = new LinkedHashMap<>();
 							map.put(fieldName,
-									"new value of {@code " + x.getName() + "} field (as defined in service metadata)");
-							structure.printMutatePropertyJavadoc(p, indent, x.getName(), map);
+									"new value of {@code " + propertyName + "} field (as defined in service metadata)");
+							structure.printMutatePropertyJavadoc(p, indent, propertyName, map);
 							String classSuffix = "";
-							String withMethodName = Names.getWithMethod(x.getName());
+							String withMethodName = Names.getWithMethod(propertyName);
 							methodNames.add(withMethodName);
 							p.format("\n%spublic %s%s %s(%s %s) {\n", indent, simpleClassName, classSuffix,
 									withMethodName, importedType, fieldName);
@@ -1774,7 +1776,7 @@ public final class Generator {
 							// use _x as identifier so doesn't conflict with any field name
 							p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
 							if (ofEntity) {
-								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, x.getName());
+								p.format("%s_x.changedFields = changedFields.add(\"%s\");\n", indent, propertyName);
 							}
 							p.format("%s_x.odataType = %s.nvl(odataType, \"%s\");\n", //
 									indent, //
@@ -1786,8 +1788,8 @@ public final class Generator {
 						}
 						
 						// add special convenience method to write stream to upload url. Supports Ms Graph createUploadSession.
-						if (structure.getSimpleClassName().equals("UploadSession") && x.getName().equals("uploadUrl")) {
-						    addPropertyAnnotation(imports, indent, p, x.getName());
+						if (structure.getSimpleClassName().equals("UploadSession") && propertyName.equals("uploadUrl")) {
+						    addPropertyAnnotation(imports, indent, p, propertyName);
                             p.format("\n%spublic <T extends %s<T>> T put(%s<T> strategy) {\n", //
                                     indent, //
                                     imports.add(StreamUploader.class), //
@@ -1801,12 +1803,12 @@ public final class Generator {
                                     HttpMethod.PUT.name());
                             p.format("%s}\n", indent.left());
                             
-                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            addPropertyAnnotation(imports, indent, p, propertyName);
                             p.format("\n%spublic %s putChunked() {\n", indent, imports.add(StreamUploaderChunked.class));
                             p.format("%sreturn put(%s.chunked());\n", indent.right(), imports.add(UploadStrategy.class));
                             p.format("%s}\n", indent.left());
                             
-                            addPropertyAnnotation(imports, indent, p, x.getName());
+                            addPropertyAnnotation(imports, indent, p, propertyName);
                             p.format("\n%spublic %s put() {\n", indent, imports.add(StreamUploaderSingleCall.class));
                             p.format("%sreturn put(%s.singleCall());\n", indent.right(), imports.add(UploadStrategy.class));
                             p.format("%s}\n", indent.left());
@@ -1868,7 +1870,7 @@ public final class Generator {
     private static Stream<TNavigationProperty> contained(List<TNavigationProperty> navigationProperties) {
         return navigationProperties //
                 .stream() //
-                .filter(x -> Boolean.TRUE.equals(x.isContainsTarget()));
+                .filter(Generator::containsTarget);
     }
 
 	private void printPropertyFields(Imports imports, Indent indent, PrintWriter p, List<TProperty> properties,
@@ -1908,6 +1910,7 @@ public final class Generator {
 		// write getters
 		properties //
 				.forEach(x -> {
+				    String fieldName = Names.getIdentifier(x.getName());
 					String typeName = toClassName(x, imports);
 					String methodName = Names.getGetterMethod(x.getName());
 					methodNames.add(methodName);
@@ -1918,7 +1921,7 @@ public final class Generator {
 					p.format("%spublic %s %s() {\n", indent, typeName, methodName);
 					if (isCollection(x)) {
 						if (names.isEntityWithNamespace(names.getType(x))) {
-							p.format("%sreturn new %s(\n", indent.right(), toClassName(x, imports));
+							p.format("%sreturn new %s(\n", indent.right(), typeName);
 							p.format("%scontextPath.addSegment(\"%s\"), %s.getValue(unmappedFields, \"%s\"));\n", //
 									indent.right().right().right().right(), x.getName(), imports.add(RequestHelper.class), x.getName());
 							indent.left().left().left().left();
@@ -1926,24 +1929,40 @@ public final class Generator {
 							throw new RuntimeException("unexpected");
 						}
 					} else {
-						if (names.isEntityWithNamespace(names.getType(x))) {
-							Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
-							p.format("%sreturn new %s(contextPath.addSegment(\"%s\"), %s.getValue(unmappedFields, \"%s\"));\n", //
-									indent.right(), //
-									imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
-											names.getInnerType(names.getType(x)))),
-									x.getName(), //
-									imports.add(RequestHelper.class), //
-									x.getName());
-						} else {
-							throw new RuntimeException("unexpected");
-						}
+                        if (names.isEntityWithNamespace(names.getType(x))) {
+                            Schema sch = names.getSchema(names.getInnerType(names.getType(x)));
+                            if (containsTarget(x)) {
+                                p.format(
+                                        "%sreturn new %s(contextPath.addSegment(\"%s\"), %s.ofNullable(%s));\n", //
+                                        indent.right(), //
+                                        imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                                names.getInnerType(names.getType(x)))),
+                                        x.getName(), //
+                                        imports.add(Optional.class), //
+                                        fieldName);
+                            } else {
+                                p.format(
+                                        "%sreturn new %s(contextPath.addSegment(\"%s\"), %s.getValue(unmappedFields, \"%s\"));\n", //
+                                        indent.right(), //
+                                        imports.add(names.getFullClassNameEntityRequestFromTypeWithNamespace(sch,
+                                                names.getInnerType(names.getType(x)))),
+                                        x.getName(), //
+                                        imports.add(RequestHelper.class), //
+                                        x.getName());
+                            }
+                        } else {
+                            throw new RuntimeException("unexpected");
+                        }
 					}
 					p.format("%s}\n", indent.left());
 				});
 	}
 
-	private String toClassName(TNavigationProperty x, Imports imports) {
+	private static boolean containsTarget(TNavigationProperty x) {
+	    return Boolean.TRUE.equals(x.isContainsTarget());
+	}
+
+    private String toClassName(TNavigationProperty x, Imports imports) {
 		Preconditions.checkArgument(x.getType().size() == 1);
 		String t = x.getType().get(0);
 		if (!isCollection(x)) {
