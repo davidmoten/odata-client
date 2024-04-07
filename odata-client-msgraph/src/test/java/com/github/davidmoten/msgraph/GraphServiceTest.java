@@ -698,8 +698,6 @@ public class GraphServiceTest {
                 .withRequestHeadersStandard() //
                 .build();
         Message m = client.users("fred").messages("12345").expand("attachments").get();
-        Object attachments = m.getUnmappedFields().get("attachments");
-        assertTrue(attachments instanceof ArrayList);
         List<Attachment> list = m.getAttachments().toList();
         assertEquals(1, list.size());
         assertEquals(2016, (int) list.get(0).getSize().orElse(0));
