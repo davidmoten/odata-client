@@ -1814,7 +1814,7 @@ public final class Generator {
         // add unmapped fields mutator withUnmappedField
         String method= Names.getWithMethod("unmappedField");
         p.format("\n%spublic %s %s(%s name, %s value) {\n", indent, simpleClassName, method, //
-                imports.add(String.class), imports.add(String.class));
+                imports.add(String.class), imports.add(Object.class));
         p.format("%s%s _x = _copy();\n", indent.right(), simpleClassName);
         p.format("%s_x.setUnmappedField(name, value);\n", indent);
         p.format("%sreturn _x;\n", indent);

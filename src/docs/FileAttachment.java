@@ -210,7 +210,7 @@ public class FileAttachment extends Attachment implements ODataEntityType {
         return _x;
     }
 
-    public FileAttachment withUnmappedField(String name, String value) {
+    public FileAttachment withUnmappedField(String name, Object value) {
         FileAttachment _x = _copy();
         _x.setUnmappedField(name, value);
         return _x;
