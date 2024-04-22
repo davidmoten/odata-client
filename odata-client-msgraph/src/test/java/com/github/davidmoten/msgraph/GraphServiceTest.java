@@ -270,7 +270,7 @@ public class GraphServiceTest {
     @Test
     public void testUsersDeltaTokenLatest() {
         GraphService client = clientBuilder() //
-                .expectRequest("/users/delta?$deltaToken=latest") //
+                .expectRequest("/users/delta?$deltatoken=latest") //
                 .withRequestHeadersStandard() //
                 .withResponse("/response-users-delta-latest.json") //
                 .expectRequest("/users/delta?$deltatoken=1234") //
@@ -296,7 +296,7 @@ public class GraphServiceTest {
     @Test
     public void testUsersDeltaNextDeltaWorsWithoutReadingStreamFully() {
         GraphService client = clientBuilder() //
-                .expectRequest("/users/delta?$deltaToken=latest") //
+                .expectRequest("/users/delta?$deltatoken=latest") //
                 .withResponse("/response-users-delta-latest.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$deltatoken=1234") //
@@ -602,7 +602,7 @@ public class GraphServiceTest {
     public void testGetNestedCollectionWhichTestsContextPathSetWithIdInFirstCollection() {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime") //
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderby=createdDateTime") //
                 .withResponse("/response-messages.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest(
@@ -626,7 +626,7 @@ public class GraphServiceTest {
     @Test
     public void testSupplementWithDeltaLinkWhenCollectionEmpty() {
         GraphService client = clientBuilder() //
-                .expectRequest("/users/delta?$deltaToken=latest") //
+                .expectRequest("/users/delta?$deltatoken=latest") //
                 .withResponse("/response-users-delta-empty.json") //
                 .withRequestHeadersStandard() //
                 .build();
@@ -657,7 +657,7 @@ public class GraphServiceTest {
     public void testGetStreamOnItemAttachment() throws IOException {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime") //
+                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderby=createdDateTime") //
                 .withResponse("/response-messages-with-item-attachment.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments") //
@@ -715,7 +715,7 @@ public class GraphServiceTest {
     public void testTimeoutsOnNonEntityCollection() {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime") //
+                        "/users/fred/mailFolders/Inbox/messages?$filter=isRead%20eq%20false&$orderby=createdDateTime") //
                 .withResponse("/response-messages-with-item-attachment.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest("/users/fred/mailFolders/Inbox/messages/86/attachments") //
@@ -871,7 +871,7 @@ public class GraphServiceTest {
     public void testFunctionBoundToCollection() {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderBy=receivedDateTime%2Bdesc") //
+                        "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderby=receivedDateTime%2Bdesc") //
                 .withPayload("/request-messages-delta.json") //
                 .withResponse("/response-messages-delta.json") //
                 .withRequestHeadersStandard() //
@@ -893,7 +893,7 @@ public class GraphServiceTest {
     public void testMailMove() {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments") //
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderby=createdDateTime&$expand=attachments") //
                 .withResponse("/response-messages-expand-attachments-minimal-metadata.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest(
@@ -945,7 +945,7 @@ public class GraphServiceTest {
     public void testMailRead() {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderBy=createdDateTime&$expand=attachments") //
+                        "/users/fred/mailFolders/inbox/messages?$filter=isRead%20eq%20false&$orderby=createdDateTime&$expand=attachments") //
                 .withResponse("/response-messages-expand-attachments-minimal-metadata.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest(

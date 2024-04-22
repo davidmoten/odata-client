@@ -56,12 +56,12 @@ final class CollectionRequestOptions implements RequestOptions {
         Map<String, String> map = new HashMap<>();
         search.ifPresent(x -> map.put("$search", x));
         filter.ifPresent(x -> map.put("$filter", x));
-        orderBy.ifPresent(x -> map.put("$orderBy", x));
+        orderBy.ifPresent(x -> map.put("$orderby", x));
         skip.ifPresent(x -> map.put("$skip", String.valueOf(x)));
         top.ifPresent(x -> map.put("$top", String.valueOf(x)));
         select.ifPresent(x -> map.put("$select", x));
         expand.ifPresent(x -> map.put("$expand", x));
-        deltaToken.ifPresent(x -> map.put("$deltaToken", x));
+        deltaToken.ifPresent(x -> map.put("$deltatoken", x));
         map.putAll(queries);
         return map;
     }
