@@ -55,7 +55,7 @@ abstract class ActionFunctionRequestBase<T extends ActionFunctionRequestBase<T>>
 	}
 
 	public T orderBy(String clause) {
-		return query("$orderBy", clause);
+		return query("$orderby", clause);
 	}
 
 	public T skip(long skip) {
