@@ -697,6 +697,7 @@ public class GraphServiceTest {
         List<Attachment> list = m.getAttachments().toList();
         assertEquals(1, list.size());
         assertEquals(2016, (int) list.get(0).getSize().orElse(0));
+        assertTrue(list.get(0) instanceof FileAttachment);
     }
     
     @Test
