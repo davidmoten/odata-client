@@ -1,0 +1,15 @@
+{
+    "@odata.context": "https://testing.com/Things",
+    "value": [
+    {
+        "@odata.id": "someid",
+        "Id": 2,
+        "Content": 
+            {
+                "@odata.type": "#Test10.SpecialContent",
+                "Comment": "here",
+                "Special": "hi there"
+            }
+        }
+    ]
+}
