@@ -95,6 +95,10 @@
                                     <namespace>microsoft.graph.identityGovernance</namespace>
                                     <packageName>odata.msgraph.client.identitygovernance</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.termStore</namespace>
+                                    <packageName>odata.msgraph.client.termstore</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

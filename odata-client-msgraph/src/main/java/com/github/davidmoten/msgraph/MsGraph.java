@@ -24,6 +24,10 @@ public final class MsGraph {
                 .creator(GraphService::new) //
                 .addSchema(odata.msgraph.client.schema.SchemaInfo.INSTANCE) //
                 .addSchema(odata.msgraph.client.callrecords.schema.SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.externalconnectors.schema.SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.identitygovernance.schema.SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.termstore.schema.SchemaInfo.INSTANCE) //
+                .addSchema(odata.msgraph.client.security.schema.SchemaInfo.INSTANCE) //
                 .pathStyle(PathStyle.IDENTIFIERS_AS_SEGMENTS) //
                 .build() //
                 .tenantName(tenantName) //
