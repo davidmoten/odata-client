@@ -312,7 +312,7 @@ public final class RequestHelper {
     public static <T> Class<? extends T> getSubClass(ContextPath cp, List<SchemaInfo> schemas,
             Class<T> cls, String json) {
         Optional<String> namespacedType = cp.context().serializer().getODataType(json)
-                .map(x -> x.substring(1));
+                .map(x -> x.startsWith("#") ? x.substring(1): x);
         if (namespacedType.isPresent()) {
             for (SchemaInfo schema : schemas) {
                 Class<? extends T> c = (Class<? extends T>) schema

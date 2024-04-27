@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Test10"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <ComplexType Name="Content" abstract="true">
+                <Property Name="Comment" Type="Edm.String" />
+            </ComplexType>
+            <ComplexType Name="SpecialContent" BaseType="Test10.Content">
+                <Property Name="Special" Type="Edm.String" />
+            </ComplexType>
+            <EntityType Name="Thing">
+                <Key>
+                    <PropertyRef Name="ID" />
+                </Key>
+                <Property Name="ID" Type="Edm.Int32"
+                    Nullable="false" />
+                <Property Name="Content" Type="Test10.Content" />
+            </EntityType>
+            <EntityContainer Name="Test10Service">
+                <EntitySet Name="Things"
+                    EntityType="Test10.Thing">
+                </EntitySet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

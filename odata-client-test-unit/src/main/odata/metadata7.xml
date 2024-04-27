@@ -2,18 +2,23 @@
 <edmx:Edmx Version="4.0"
     xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
-        <Schema Namespace="Test7.A"
+        <Schema Namespace="Test7"
             xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <!--  Abstract type without keys is ok -->
+            <!-- Abstract type without keys is ok -->
             <EntityType Name="Thing" Abstract="true"/>
-            <EntityType Name="Product" BaseType="Test7.A.Thing">
+            <EntityType Name="Product" BaseType="Test7.Thing">
                 <Key>
-                    <PropertyRef Name="ID" />
+                    <PropertyRef Name="ID"/>
                 </Key>
                 <Property Name="ID" Type="Edm.Int32"
-                    Nullable="false" />
-                <Property Name="Name" Type="Edm.String" />
+                    Nullable="false"/>
+                <Property Name="Name" Type="Edm.String"/>
             </EntityType>
+            <EntityContainer Name="Test7Service">
+                <EntitySet Name="Things"
+                    EntityType="Test7.Thing">
+                </EntitySet>
+            </EntityContainer>
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
