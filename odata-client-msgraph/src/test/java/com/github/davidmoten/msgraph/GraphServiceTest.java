@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

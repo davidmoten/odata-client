@@ -79,6 +79,17 @@
                     Nullable="false" />
                 <ReturnType Type="Edm.Int32" Nullable="false" />
             </Function>
+            <Function Name="relatedProducts2" IsBound="true"
+                EntitySetPath="bindingParameter">
+                <Parameter Name="bindingParameter"
+                    Type="Test6.A.Product" Nullable="false" />
+                <Parameter Name="strength" Type="Edm.Int32"
+                    Nullable="false" />
+                <Parameter Name="thresholds"
+                    Type="Collection(Edm.Int32)" Nullable="false" />
+                <ReturnType Type="Collection(Edm.String)"
+                    Nullable="false" />
+            </Function>
             <EntityContainer Name="Test6ServiceA">
                 <EntitySet Name="Products"
                     EntityType="Test6.A.Product">
