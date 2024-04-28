@@ -33,6 +33,22 @@ public class Test6ServiceTest {
                 .metadataFull() //
                 .get();
     }
+    
+    @Test
+    public void testFunctionReturningCollection() {
+        Test6Service client = Test6Service.test() //
+                .expectRequest(
+                        "/Products/1/Test6.A.relatedProducts2(strength%3D123%2Cthresholds%3D%5B10%2C20%2C30%5D)?$select=Name") //
+                .withResponse("/response-function-returns-empty-collection.json") //
+                .withRequestHeaders( //
+                        RequestHeader.ODATA_VERSION, //
+                        RequestHeader.ACCEPT_JSON_METADATA_MINIMAL) //
+                .build();
+        CollectionPage<String> page = client.products(1) //
+                .relatedProducts2(123, Lists.newArrayList(10, 20, 30)) //
+                .select("Name") //
+                .get();
+    }
 
     // @Test
     // @Ignore

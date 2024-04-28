@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -270,7 +269,7 @@ public class GraphServiceTest {
     @Test
     public void testUsersDeltaTokenLatest() {
         GraphService client = clientBuilder() //
-                .expectRequest("/users/delta?$deltatoken=latest") //
+                .expectRequest("/users/delta()?$deltatoken=latest") //
                 .withRequestHeadersStandard() //
                 .withResponse("/response-users-delta-latest.json") //
                 .expectRequest("/users/delta?$deltatoken=1234") //
@@ -294,9 +293,9 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void testUsersDeltaNextDeltaWorsWithoutReadingStreamFully() {
+    public void testUsersDeltaNextDeltaWorksWithoutReadingStreamFully() {
         GraphService client = clientBuilder() //
-                .expectRequest("/users/delta?$deltatoken=latest") //
+                .expectRequest("/users/delta()?$deltatoken=latest") //
                 .withResponse("/response-users-delta-latest.json") //
                 .withRequestHeadersStandard() //
                 .expectRequest("/users/delta?$deltatoken=1234") //
@@ -626,7 +625,7 @@ public class GraphServiceTest {
     @Test
     public void testSupplementWithDeltaLinkWhenCollectionEmpty() {
         GraphService client = clientBuilder() //
-                .expectRequest("/users/delta?$deltatoken=latest") //
+                .expectRequest("/users/delta()?$deltatoken=latest") //
                 .withResponse("/response-users-delta-empty.json") //
                 .withRequestHeadersStandard() //
                 .build();
@@ -872,7 +871,7 @@ public class GraphServiceTest {
     public void testFunctionBoundToCollection() {
         GraphService client = clientBuilder() //
                 .expectRequest(
-                        "/users/fred/mailFolders/inbox/messages/delta?$filter=receivedDateTime%2Bge%2B12345&$orderby=receivedDateTime%2Bdesc") //
+                        "/users/fred/mailFolders/inbox/messages/delta()?$filter=receivedDateTime%2Bge%2B12345&$orderby=receivedDateTime%2Bdesc") //
                 .withPayload("/request-messages-delta.json") //
                 .withResponse("/response-messages-delta.json") //
                 .withRequestHeadersStandard() //
