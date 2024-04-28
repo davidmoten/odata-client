@@ -3,10 +3,10 @@ package com.github.davidmoten.odata.client;
 import static com.github.davidmoten.odata.client.internal.Util.odataTypeNameFromAny;
 
 import java.net.HttpURLConnection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -24,62 +24,64 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
 
     // initial call made with this method, further pages use HttpMethod.GET
     private final HttpMethod method;
-    private final Optional<String> content;
+    private final Map<String, TypedObject> parameters;
     private final int expectedResponseCode;
 
     // should not be public api
     public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls,
-            HttpMethod method, Optional<String> content,
+            HttpMethod method, Map<String, TypedObject> parameters,
             int expectedResponseCode) {
-        Preconditions.checkArgument(method != HttpMethod.POST || content.isPresent());
+        Preconditions.checkArgument(method != HttpMethod.POST || !parameters.isEmpty());
         this.contextPath = contextPath;
         this.cls = cls;
         this.method = method;
-        this.content = content;
+        this.parameters = parameters;
         this.expectedResponseCode = expectedResponseCode;
     }
 
     public CollectionPageNonEntityRequest(ContextPath contextPath, Class<T> cls) {
-        this(contextPath, cls, HttpMethod.GET, Optional.empty(),
+        this(contextPath, cls, HttpMethod.GET, Collections.emptyMap(),
                 HttpURLConnection.HTTP_CREATED);
     }
     
     public static <T> CollectionPageNonEntityRequest<T> forAction(ContextPath contextPath,
             Class<T> returnClass, Map<String, TypedObject> parameters) {
-        String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
                 returnClass, //
                 HttpMethod.POST, //
-                Optional.of(json), //
+                parameters, //
                 HttpURLConnection.HTTP_OK);
     }
 
     public static <T> CollectionPageNonEntityRequest<T> forFunction(ContextPath contextPath,
             Class<T> returnClass, Map<String, TypedObject> parameters) {
-        String json = contextPath.context().serializer().serialize(parameters);
         return new CollectionPageNonEntityRequest<T>( //
                 contextPath, //
                 returnClass, //
                 HttpMethod.GET, //
-                Optional.of(json), //
+                parameters, //
                 HttpURLConnection.HTTP_OK);
     }
     
     CollectionPage<T> get(RequestOptions options) {
-        ContextPath cp = contextPath.addQueries(options.getQueries());
         final HttpResponse r;
         List<RequestHeader> h = RequestHelper.cleanAndSupplementRequestHeaders(options, "minimal",
                 method != HttpMethod.GET);
+        Serializer serializer = contextPath.context().serializer();
+        final ContextPath cpBase = contextPath.addQueries(options.getQueries());
+        final ContextPath cp;
         if (method == HttpMethod.GET) {
+            cp = cpBase.appendToSegment( //
+                    InlineParameterSyntax.encode(serializer, parameters)); //
             r = cp.context().service().get(cp.toUrl(), h, options);
         } else {
-            r = cp.context().service().post(cp.toUrl(), h, content.get(), options);
+            String json = serializer.serialize(parameters);
+            cp = cpBase;
+            r = cp.context().service().post(cp.toUrl(), h, json, options);
         }
         RequestHelper.checkResponseCode(cp, r, expectedResponseCode);
-        return cp //
-                .context() //
-                .serializer() //
+        return serializer //
                 .deserializeCollectionPage( //
                         r.getText(), //
                         cls, //
