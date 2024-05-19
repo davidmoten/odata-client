@@ -79,29 +79,29 @@ public final class CustomRequest {
         RequestHelper.post(content, info.contextPath, contentClass, info);
     }
     
-    public <T> T submit(String url, Object content, Class<T> responseClass,
+    public <T> Optional<T> submit(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         return RequestHelper.postAny(content, info.contextPath, responseClass, info);
     }
     
-    public <T> T submit(HttpMethod method, String url, Object content, Class<T> responseClass,
+    public <T> Optional<T> submit(HttpMethod method, String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         UrlInfo info = getInfo(context, toAbsoluteUrl(url), headers, options);
         return RequestHelper.submitAny(method, content, info.contextPath, responseClass, info);
     }
 
-    public <T> T post(String url, Object content, Class<T> responseClass,
+    public <T> Optional<T> post(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         return submit(HttpMethod.POST, url, content, responseClass, options, headers);
     }
     
-    public <T> T put(String url, Object content, Class<T> responseClass,
+    public <T> Optional<T> put(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         return submit(HttpMethod.PUT, url, content, responseClass, options, headers);
     }
     
-    public <T> T patch(String url, Object content, Class<T> responseClass,
+    public <T> Optional<T> patch(String url, Object content, Class<T> responseClass,
             HttpRequestOptions options, RequestHeader... headers) {
         return submit(HttpMethod.PATCH, url, content, responseClass, options, headers);
     }

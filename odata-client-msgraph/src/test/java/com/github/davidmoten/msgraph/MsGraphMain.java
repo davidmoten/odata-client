@@ -107,7 +107,7 @@ public class MsGraphMain {
                                     .build())
                             .build())
                     .build();
-            m = drafts.messages().post(m);
+            m = drafts.messages().post(m).get();
 
             System.out.println("file size=" + file.length());
             // upload a big attachment using an upload session
@@ -210,7 +210,7 @@ public class MsGraphMain {
                     .build();
 
             // Create the draft message
-            Message saved = drafts.messages().post(m);
+            Message saved = drafts.messages().post(m).get();
             System.out.println("saved=" + saved);
 
             // change subject

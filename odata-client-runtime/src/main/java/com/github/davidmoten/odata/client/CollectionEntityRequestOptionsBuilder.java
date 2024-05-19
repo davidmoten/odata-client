@@ -195,11 +195,11 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     	return function.apply(get());
     }
 
-    public T post(T entity) {
+    public Optional<T> post(T entity) {
         return request.post(build(), entity);
     }
     
-    public T patch(T entity) {
+    public Optional<T> patch(T entity) {
         return request.patch(build(), entity);
     }
 

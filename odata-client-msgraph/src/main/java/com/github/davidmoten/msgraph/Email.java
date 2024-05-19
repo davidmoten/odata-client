@@ -272,7 +272,7 @@ public final class Email {
                     .collect(Collectors.toList());
                 builder = builder.internetMessageHeaders(headers);
             }
-            Message m = drafts.messages().post(builder.build());
+            Message m = drafts.messages().post(builder.build()).get();
 
             // upload attachments
             for (Attachment a : b.attachments) {

@@ -22,7 +22,8 @@ public final class ActionRequestReturningNonCollectionUnwrapped<T>
                 ParameterMap.toMap(parameters), //
                 contextPath, //
                 returnClass, //
-                options()); //
+                options()) //
+                .get(); //
     }
 
 }

@@ -126,13 +126,13 @@ public final class RequestHelper {
     }
 
     // designed for saving a new entity and returning that entity
-    public static <T extends ODataEntityType> T post(T entity, ContextPath contextPath,
+    public static <T extends ODataEntityType> Optional<T> post(T entity, ContextPath contextPath,
             Class<T> cls, RequestOptions options) {
         return postAny(entity, contextPath, cls, options);
     }
     
     // designed for saving a new entity and returning that entity
-    public static <T extends ODataEntityType> T patch(T entity, ContextPath contextPath,
+    public static <T extends ODataEntityType> Optional<T> patch(T entity, ContextPath contextPath,
             Class<T> cls, RequestOptions options) {
         return patchAny(entity, contextPath, cls, options);
     }
@@ -154,17 +154,17 @@ public final class RequestHelper {
         checkResponseCodeOk(cp, response);
     }
     
-    public static <T> T postAny(Object object, ContextPath contextPath, Class<T> responseClass,
+    public static <T> Optional<T> postAny(Object object, ContextPath contextPath, Class<T> responseClass,
             RequestOptions options) {
         return submitAny(HttpMethod.POST, object, contextPath, responseClass, options);
     }
     
-    public static <T> T patchAny(Object object, ContextPath contextPath, Class<T> responseClass,
+    public static <T> Optional<T> patchAny(Object object, ContextPath contextPath, Class<T> responseClass,
             RequestOptions options) {
         return submitAny(HttpMethod.PATCH, object, contextPath, responseClass, options);
     }
     
-    public static <T> T submitAny(HttpMethod method, Object object, ContextPath contextPath, Class<T> responseClass,
+    public static <T> Optional<T> submitAny(HttpMethod method, Object object, ContextPath contextPath, Class<T> responseClass,
             RequestOptions options) {
         // build the url
         ContextPath cp = contextPath.addQueries(options.getQueries());
@@ -186,12 +186,16 @@ public final class RequestHelper {
         checkResponseCodeOk(cp, response);
 
         String text = response.getText();
-        // deserialize
-        Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), responseClass,
-                text);
-        // check if we need to deserialize into a subclass of T (e.g. return a
-        // FileAttachment which is a subclass of Attachment)
-        return cp.context().serializer().deserialize(text, c, contextPath, false);
+        if (text == null) {
+            return Optional.empty();
+        } else {
+            // deserialize
+            Class<? extends T> c = getSubClass(cp, contextPath.context().schemas(), responseClass,
+                    text);
+         // check if we need to deserialize into a subclass of T (e.g. return a
+            // FileAttachment which is a subclass of Attachment)
+            return Optional.of(cp.context().serializer().deserialize(text, c, contextPath, false));
+        }
     }
 
     public static <T, S> T postAnyWithParametricType(Object object, ContextPath contextPath,
