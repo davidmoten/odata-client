@@ -451,7 +451,7 @@ public class GraphServiceTest {
                                 .build()) //
                         .build()) //
                 .build();
-        m = drafts.messages().post(m);
+        m = drafts.messages().post(m).get();
 
         AttachmentItem a = AttachmentItem //
                 .builder() //
@@ -1209,7 +1209,7 @@ public class GraphServiceTest {
                         UploadSession.class, //
                         HttpRequestOptions.EMPTY, //
                         RequestHeader.ODATA_VERSION, //
-                        RequestHeader.CONTENT_TYPE_JSON);
+                        RequestHeader.CONTENT_TYPE_JSON).get();
         assertEquals("https://blah", u.getUploadUrl().get());
     }
 

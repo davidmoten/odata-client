@@ -1,6 +1,7 @@
 package com.github.davidmoten.odata.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.net.HttpURLConnection;
 
@@ -57,10 +58,26 @@ public class Test1ServiceTest {
                         RequestHeader.ODATA_VERSION) //
                 .build();
         Product p = Product.builder().name("bingo").build();
-        Product p2 = client.products().post(p);
+        Product p2 = client.products().post(p).get();
         Product p3 = p2.withName(null);
         assertEquals("{\"@odata.type\":\"Test1.A.Product\",\"Name\":null}",
                 Serializer.INSTANCE.serializeChangesOnly(p3));
+    }
+    
+    @Test
+    public void testPostNoContentInResponse() {
+        Test1Service client = Test1Service //
+                .test() //
+                .expectRequest("/Products") //
+                .withPayload("/request-post.json") //
+                .withMethod(HttpMethod.POST) //
+                .withResponseStatusCode(HttpURLConnection.HTTP_NO_CONTENT) //
+                .withRequestHeaders(RequestHeader.ACCEPT_JSON_METADATA_MINIMAL, //
+                        RequestHeader.CONTENT_TYPE_JSON, //
+                        RequestHeader.ODATA_VERSION) //
+                .build();
+        Product p = Product.builder().name("bingo").build();
+        assertFalse(client.products().post(p).isPresent());
     }
     
     @Test
