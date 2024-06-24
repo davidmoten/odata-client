@@ -44,9 +44,12 @@ import com.github.davidmoten.odata.client.internal.ApacheHttpClientHttpService;
 
 public final class MicrosoftClientBuilder<T> {
 
+    private static final String OAUTH2_TOKEN_URL_SUFFIX = "/oauth2/token";
+
     private final Creator<T> creator;
     private final String baseUrl;
-    private String tenantName;
+    private Optional<String> tokenUrl = Optional.empty();
+    private Optional<TenantNameAndEndpoint> tenantNameAndEndpoint = Optional.empty();
     private String resource;
     private List<String> scopes = new ArrayList<>();
     private String clientId;
@@ -59,9 +62,7 @@ public final class MicrosoftClientBuilder<T> {
     private Optional<String> proxyUsername = Optional.empty();
     private Optional<String> proxyPassword = Optional.empty();
     private Optional<Supplier<CloseableHttpClient>> httpClientSupplier = Optional.empty();
-    private Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional
-            .empty();
-    private String authenticationEndpoint = AuthenticationEndpoint.GLOBAL.url();
+    private Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras = Optional.empty();
     private Function<? super HttpService, ? extends HttpService> httpServiceTransformer = x -> x;
     private Optional<AccessTokenProvider> accessTokenProvider = Optional.empty();
     private Optional<Authenticator> authenticator = Optional.empty();
@@ -77,99 +78,100 @@ public final class MicrosoftClientBuilder<T> {
         this.schemas = schemas;
         this.pathStyle = pathStyle;
     }
-    
-    public static BuilderBuilder baseUrl(String baseUrl) {
+
+    public static BuilderWithBaseUrl baseUrl(String baseUrl) {
         Preconditions.checkNotNull(baseUrl);
-        return new BuilderBuilder(baseUrl);
+        return new BuilderWithBaseUrl(baseUrl);
     }
-    
-    public static final class BuilderBuilder {
+
+    public static final class BuilderWithBaseUrl {
 
         private final String baseUrl;
 
-        BuilderBuilder(String baseUrl) {
+        BuilderWithBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
         }
-        
-        public <T> BuilderBuilder2<T> creator(Creator<T> creator) {
-            return new BuilderBuilder2<T>(this, creator); 
-        }
-        
-    }
-    
-    public static final class BuilderBuilder2<T> {
 
-        private final BuilderBuilder b;
+        public <T> BuilderWithCreator<T> creator(Creator<T> creator) {
+            return new BuilderWithCreator<T>(this, creator);
+        }
+
+    }
+
+    public static final class BuilderWithCreator<T> {
+
+        private final BuilderWithBaseUrl b;
         private Creator<T> creator;
         private final List<SchemaInfo> schemas = new ArrayList<>();
         private PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
 
-        BuilderBuilder2(BuilderBuilder b, Creator<T> creator) {
+        BuilderWithCreator(BuilderWithBaseUrl b, Creator<T> creator) {
             this.b = b;
             this.creator = creator;
         }
-        
-        public BuilderBuilder2<T> addSchema(SchemaInfo schema) {
+
+        public BuilderWithCreator<T> addSchema(SchemaInfo schema) {
             schemas.add(schema);
             return this;
         }
-        
+
         /**
          * Sets the path style. Default is {@link PathStyle#IDENTIFIERS_AS_SEGMENTS}.
+         * 
          * @param pathStyle path style to use
          * @return this
          */
-        public BuilderBuilder2<T> pathStyle(PathStyle pathStyle) {
+        public BuilderWithCreator<T> pathStyle(PathStyle pathStyle) {
             this.pathStyle = pathStyle;
             return this;
         }
-        
+
         public MicrosoftClientBuilder<T> build() {
-            return new MicrosoftClientBuilder<T>(b.baseUrl,creator, schemas, pathStyle);
+            return new MicrosoftClientBuilder<T>(b.baseUrl, creator, schemas, pathStyle);
         }
-        
-    }
-    
-    public BuilderCustomAuthenticator<T> authenticator(Authenticator authenticator) {
-        return new BuilderCustomAuthenticator<T>(this, authenticator);
+
     }
 
-    public static final class BuilderCustomAuthenticator<T> {
+    public BuilderWithCustomAuthenticator<T> authenticator(Authenticator authenticator) {
+        return new BuilderWithCustomAuthenticator<T>(this, authenticator);
+    }
+
+    public static final class BuilderWithCustomAuthenticator<T> {
 
         private final Authenticator authenticator;
         private final MicrosoftClientBuilder<T> b;
 
-        BuilderCustomAuthenticator(MicrosoftClientBuilder<T> b, Authenticator authenticator) {
+        BuilderWithCustomAuthenticator(MicrosoftClientBuilder<T> b, Authenticator authenticator) {
             this.authenticator = authenticator;
             this.b = b;
         }
 
-        public BuilderCustomAuthenticator<T> connectTimeout(long duration, TimeUnit unit) {
+        public BuilderWithCustomAuthenticator<T> connectTimeout(long duration, TimeUnit unit) {
             b.connectTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public BuilderCustomAuthenticator<T> readTimeout(long duration, TimeUnit unit) {
+        public BuilderWithCustomAuthenticator<T> readTimeout(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public BuilderCustomAuthenticator<T> proxyHost(String proxyHost) {
+        public BuilderWithCustomAuthenticator<T> proxyHost(String proxyHost) {
             b.proxyHost = Optional.of(proxyHost);
             return this;
         }
 
-        public BuilderCustomAuthenticator<T> proxyPort(int proxyPort) {
+        public BuilderWithCustomAuthenticator<T> proxyPort(int proxyPort) {
             b.proxyPort = Optional.of(proxyPort);
             return this;
         }
 
-        public BuilderCustomAuthenticator<T> proxyUsername(String username) {
+        public BuilderWithCustomAuthenticator<T> proxyUsername(String username) {
             b.proxyUsername = Optional.of(username);
             return this;
         }
 
-        public BuilderCustomAuthenticator<T> proxyPassword(String password) {
+        public BuilderWithCustomAuthenticator<T> proxyPassword(String password) {
             b.proxyPassword = Optional.of(password);
             return this;
         }
@@ -183,8 +185,7 @@ public final class MicrosoftClientBuilder<T> {
          * @param supplier provider of HttpClient
          * @return this
          */
-        public BuilderCustomAuthenticator<T> httpClientProvider(
-                Supplier<CloseableHttpClient> supplier) {
+        public BuilderWithCustomAuthenticator<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
             Preconditions.checkArgument(!b.httpClientBuilderExtras.isPresent());
             b.httpClientSupplier = Optional.of(supplier);
             return this;
@@ -200,7 +201,7 @@ public final class MicrosoftClientBuilder<T> {
          * @param extras modifier of builder
          * @return this
          */
-        public BuilderCustomAuthenticator<T> httpClientBuilderExtras(
+        public BuilderWithCustomAuthenticator<T> httpClientBuilderExtras(
                 Function<HttpClientBuilder, HttpClientBuilder> extras) {
             Preconditions.checkArgument(!b.httpClientSupplier.isPresent());
             b.httpClientBuilderExtras = Optional.of(extras);
@@ -208,21 +209,29 @@ public final class MicrosoftClientBuilder<T> {
         }
 
         public T build() {
-            return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
-                    b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint, b.httpServiceTransformer,b.schemas, b.pathStyle);
+            return createService(b.baseUrl, authenticator, b.connectTimeoutMs, b.readTimeoutMs, b.proxyHost,
+                    b.proxyPort, b.proxyUsername, b.proxyPassword, b.httpClientSupplier, b.httpClientBuilderExtras,
+                    b.creator, b.httpServiceTransformer, b.schemas, b.pathStyle);
         }
 
     }
 
-    public Builder5<T> basicAuthentication(Supplier<UsernamePassword> usernamePassword) {
+    public BuilderWithBasicAuthentication<T> basicAuthentication(Supplier<UsernamePassword> usernamePassword) {
         this.basicCredentials = Optional.of(usernamePassword);
-        return new Builder5<T>(this);
+        return new BuilderWithBasicAuthentication<T>(this);
+    }
+    
+    public Builder<T> tokenUrl(String tokenUrl) {
+        this.tokenUrl = Optional.of(tokenUrl);
+        return new Builder<T>(this);
     }
 
     public Builder<T> tenantName(String tenantName) {
-        this.tenantName = tenantName;
+        if (!tenantNameAndEndpoint.isPresent()) {
+            this.tenantNameAndEndpoint = Optional.of(new TenantNameAndEndpoint(tenantName, AuthenticationEndpoint.GLOBAL.url()));
+        } else {
+            this.tenantNameAndEndpoint = Optional.of(new TenantNameAndEndpoint(tenantName, tenantNameAndEndpoint.get().authenticationEndpoint()));
+        }
         return new Builder<T>(this);
     }
 
@@ -233,119 +242,118 @@ public final class MicrosoftClientBuilder<T> {
             this.b = b;
         }
 
-        public Builder2<T> resource(String resource) {
+        public BuilderWithResource<T> resource(String resource) {
             Preconditions.checkNotNull(resource);
             b.resource = resource;
-            return new Builder2<T>(b);
+            return new BuilderWithResource<T>(b);
         }
 
     }
 
-    public static final class Builder2<T> {
+    public static final class BuilderWithResource<T> {
         private final MicrosoftClientBuilder<T> b;
 
-        Builder2(MicrosoftClientBuilder<T> b) {
+        BuilderWithResource(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder3<T> scope(String... scopes) {
+        public BuilderWithScopes<T> scope(String... scopes) {
             Preconditions.checkNotNull(scopes);
             return scope(Arrays.asList(scopes));
         }
-        
-        public Builder3<T> scope(List<String> scopes) {
+
+        public BuilderWithScopes<T> scope(List<String> scopes) {
             Preconditions.checkNotNull(scopes);
             b.scopes.addAll(scopes);
-            return new Builder3<T>(b);
+            return new BuilderWithScopes<T>(b);
         }
-        
-        public Builder4<T> clientId(String clientId) {
-            return new Builder3<T>(b).clientId(clientId);
+
+        public BuilderWithClientId<T> clientId(String clientId) {
+            return new BuilderWithScopes<T>(b).clientId(clientId);
         }
 
     }
 
-    public static final class Builder3<T> {
+    public static final class BuilderWithScopes<T> {
         private final MicrosoftClientBuilder<T> b;
 
-        Builder3(MicrosoftClientBuilder<T> b) {
+        BuilderWithScopes(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder4<T> clientId(String clientId) {
+        public BuilderWithClientId<T> clientId(String clientId) {
             b.clientId = clientId;
-            return new Builder4<T>(b);
+            return new BuilderWithClientId<T>(b);
         }
 
     }
 
-    public static final class Builder4<T> {
+    public static final class BuilderWithClientId<T> {
         private final MicrosoftClientBuilder<T> b;
 
-        Builder4(MicrosoftClientBuilder<T> b) {
+        BuilderWithClientId(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder5<T> clientSecret(String clientSecret) {
+        public BuilderWithBasicAuthentication<T> clientSecret(String clientSecret) {
             b.clientSecret = clientSecret;
-            return new Builder5<T>(b);
+            return new BuilderWithBasicAuthentication<T>(b);
         }
 
     }
 
-    public static final class Builder5<T> {
+    public static final class BuilderWithBasicAuthentication<T> {
         private final MicrosoftClientBuilder<T> b;
 
-        Builder5(MicrosoftClientBuilder<T> b) {
+        BuilderWithBasicAuthentication(MicrosoftClientBuilder<T> b) {
             this.b = b;
         }
 
-        public Builder5<T> refreshBeforeExpiry(long duration, TimeUnit unit) {
+        public BuilderWithBasicAuthentication<T> refreshBeforeExpiry(long duration, TimeUnit unit) {
             b.refreshBeforeExpiryDurationMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder5<T> connectTimeout(long duration, TimeUnit unit) {
+        public BuilderWithBasicAuthentication<T> connectTimeout(long duration, TimeUnit unit) {
             b.connectTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder5<T> readTimeout(long duration, TimeUnit unit) {
+        public BuilderWithBasicAuthentication<T> readTimeout(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder5<T> proxyHost(String proxyHost) {
+        public BuilderWithBasicAuthentication<T> proxyHost(String proxyHost) {
             b.proxyHost = Optional.of(proxyHost);
             return this;
         }
 
-        public Builder5<T> proxyPort(int proxyPort) {
+        public BuilderWithBasicAuthentication<T> proxyPort(int proxyPort) {
             b.proxyPort = Optional.of(proxyPort);
             return this;
         }
 
-        public Builder5<T> httpServiceTransformer(
-                Function<? super HttpService, ? extends HttpService> transformer) {
+        public BuilderWithBasicAuthentication<T> httpServiceTransformer(Function<? super HttpService, ? extends HttpService> transformer) {
             b.httpServiceTransformer = transformer;
             return this;
         }
 
-        public Builder5<T> accessTokenProvider(AccessTokenProvider atp) {
+        public BuilderWithBasicAuthentication<T> accessTokenProvider(AccessTokenProvider atp) {
             b.accessTokenProvider = Optional.of(atp);
             return this;
         }
 
-        public Builder5<T> proxyUsername(String username) {
+        public BuilderWithBasicAuthentication<T> proxyUsername(String username) {
             b.proxyUsername = Optional.of(username);
             return this;
         }
 
-        public Builder5<T> proxyPassword(String password) {
+        public BuilderWithBasicAuthentication<T> proxyPassword(String password) {
             b.proxyPassword = Optional.of(password);
             return this;
         }
-        
+
         /**
          * Do your own thing to create an Apache {@link HttpClient}. This method might
          * disappear if the underlying http service gets swapped out for another one.
@@ -355,7 +363,7 @@ public final class MicrosoftClientBuilder<T> {
          * @param supplier provider of HttpClient
          * @return this
          */
-        public Builder5<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
+        public BuilderWithBasicAuthentication<T> httpClientProvider(Supplier<CloseableHttpClient> supplier) {
             Preconditions.checkArgument(!b.httpClientBuilderExtras.isPresent());
             b.httpClientSupplier = Optional.of(supplier);
             return this;
@@ -371,8 +379,7 @@ public final class MicrosoftClientBuilder<T> {
          * @param extras modifier of builder
          * @return this
          */
-        public Builder5<T> httpClientBuilderExtras(
-                Function<HttpClientBuilder, HttpClientBuilder> extras) {
+        public BuilderWithBasicAuthentication<T> httpClientBuilderExtras(Function<HttpClientBuilder, HttpClientBuilder> extras) {
             Preconditions.checkArgument(!b.httpClientSupplier.isPresent());
             b.httpClientBuilderExtras = Optional.of(extras);
             return this;
@@ -385,7 +392,7 @@ public final class MicrosoftClientBuilder<T> {
          * @param authenticationEndpoint endpoint to use for authentication
          * @return this
          */
-        public Builder5<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
+        public BuilderWithBasicAuthentication<T> authenticationEndpoint(AuthenticationEndpoint authenticationEndpoint) {
             return authenticationEndpoint(authenticationEndpoint.url());
         }
 
@@ -396,12 +403,17 @@ public final class MicrosoftClientBuilder<T> {
          * @param authenticationEndpoint endpoint to use for authentication
          * @return this
          */
-        public Builder5<T> authenticationEndpoint(String authenticationEndpoint) {
-            b.authenticationEndpoint = authenticationEndpoint;
+        public BuilderWithBasicAuthentication<T> authenticationEndpoint(String authenticationEndpoint) {
+            if (b.tenantNameAndEndpoint.isPresent()) {
+                b.tenantNameAndEndpoint = Optional.of(
+                        new TenantNameAndEndpoint(b.tenantNameAndEndpoint.get().tenantName(), authenticationEndpoint));
+            } else {
+                throw new IllegalArgumentException("must set tenantName to set authenticationEndpoint (cannot set tokenUrl)");
+            }
             return this;
         }
-
-        public Builder5<T> authenticator(Authenticator authenticator) {
+        
+        public BuilderWithBasicAuthentication<T> authenticator(Authenticator authenticator) {
             b.authenticator = Optional.of(authenticator);
             return this;
         }
@@ -427,12 +439,11 @@ public final class MicrosoftClientBuilder<T> {
                     }
                 });
             }
-            return createService(b.baseUrl, b.tenantName, b.resource, b.scopes, b.clientId,
-                    b.clientSecret, b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs,
-                    b.readTimeoutMs, b.proxyHost, b.proxyPort, b.proxyUsername, b.proxyPassword,
-                    b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
-                    b.authenticationEndpoint, b.httpServiceTransformer, b.accessTokenProvider,
-                    b.authenticator, b.schemas, b.pathStyle);
+            return createService(b.baseUrl, b.tokenUrl, b.tenantNameAndEndpoint, b.resource, b.scopes, b.clientId, b.clientSecret,
+                    b.refreshBeforeExpiryDurationMs, b.connectTimeoutMs, b.readTimeoutMs, b.proxyHost, b.proxyPort,
+                    b.proxyUsername, b.proxyPassword, b.httpClientSupplier, b.httpClientBuilderExtras, b.creator,
+                    b.httpServiceTransformer, b.accessTokenProvider, b.authenticator,
+                    b.schemas, b.pathStyle);
         }
 
     }
@@ -466,15 +477,14 @@ public final class MicrosoftClientBuilder<T> {
         }
     }
 
-    private static <T> T createService(String baseUrl, String tenantName, String resource,
-            List<String> scopes, String clientId, String clientSecret, long refreshBeforeExpiryDurationMs,
-            long connectTimeoutMs, long readTimeoutMs, //
+    private static <T> T createService(String baseUrl, Optional<String> tokenUrl,
+            Optional<TenantNameAndEndpoint> tenantNameAndEndpoints, String resource, List<String> scopes,
+            String clientId, String clientSecret, long refreshBeforeExpiryDurationMs, long connectTimeoutMs,
+            long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
-            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
-            Creator<T> creator, //
-            String authenticationEndpoint, //
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras, Creator<T> creator, //
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer,
             Optional<AccessTokenProvider> accessTokenProviderOverride, //
             Optional<Authenticator> authenticator, List<SchemaInfo> schemas, PathStyle pathStyle) {
@@ -482,18 +492,20 @@ public final class MicrosoftClientBuilder<T> {
         if (authenticator.isPresent()) {
             auth = authenticator.get();
         } else {
+            String url = tokenUrl.orElseGet(() -> tenantNameAndEndpoints
+                    .map(x -> x.authenticationEndpoint() + x.tenantName() + OAUTH2_TOKEN_URL_SUFFIX)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "must provide one of tokenUrl or tenantNameAndEndpoints")));
             AccessTokenProvider accessTokenProvider = accessTokenProviderOverride //
                     .orElseGet(() -> ClientCredentialsAccessTokenProvider //
-                            .tenantName(tenantName) //
+                            .url(url) //
                             .resource(resource) //
                             .scope(scopes) //
                             .clientId(clientId) //
                             .clientSecret(clientSecret) //
                             .connectTimeoutMs(connectTimeoutMs, TimeUnit.MILLISECONDS) //
                             .readTimeoutMs(readTimeoutMs, TimeUnit.MILLISECONDS) //
-                            .refreshBeforeExpiry(refreshBeforeExpiryDurationMs,
-                                    TimeUnit.MILLISECONDS) //
-                            .authenticationEndpoint(authenticationEndpoint) //
+                            .refreshBeforeExpiry(refreshBeforeExpiryDurationMs, TimeUnit.MILLISECONDS) //
                             .proxyHost(proxyHost) //
                             .proxyPort(proxyPort) //
                             .proxyUsername(proxyUsername) //
@@ -501,39 +513,36 @@ public final class MicrosoftClientBuilder<T> {
                             .build());
             auth = new BearerAuthenticator(accessTokenProvider, baseUrl);
         }
-        return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
-                proxyUsername, proxyPassword, supplier, httpClientBuilderExtras, creator,
-                authenticationEndpoint, httpServiceTransformer, schemas, pathStyle);
+        return createService(baseUrl, auth, connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort, proxyUsername,
+                proxyPassword, supplier, httpClientBuilderExtras, creator, 
+                httpServiceTransformer, schemas, pathStyle);
     }
 
-    private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs,
-            long readTimeoutMs, Optional<String> proxyHost, Optional<Integer> proxyPort,
-            Optional<String> proxyUsername, Optional<String> proxyPassword,
-            Optional<Supplier<CloseableHttpClient>> supplier,
+    private static Supplier<CloseableHttpClient> createClientSupplier(long connectTimeoutMs, long readTimeoutMs,
+            Optional<String> proxyHost, Optional<Integer> proxyPort, Optional<String> proxyUsername,
+            Optional<String> proxyPassword, Optional<Supplier<CloseableHttpClient>> supplier,
             Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras) {
         final Supplier<CloseableHttpClient> clientSupplier;
         if (supplier.isPresent()) {
             clientSupplier = supplier.get();
         } else {
-            clientSupplier = () -> createHttpClient(connectTimeoutMs, readTimeoutMs, proxyHost,
-                    proxyPort, proxyUsername, proxyPassword, httpClientBuilderExtras);
+            clientSupplier = () -> createHttpClient(connectTimeoutMs, readTimeoutMs, proxyHost, proxyPort,
+                    proxyUsername, proxyPassword, httpClientBuilderExtras);
         }
         return clientSupplier;
     }
 
     @SuppressWarnings("resource")
-    private static <T> T createService(String baseUrl, Authenticator authenticator,
-            long connectTimeoutMs, long readTimeoutMs, //
+    private static <T> T createService(String baseUrl, Authenticator authenticator, long connectTimeoutMs,
+            long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword,
             Optional<Supplier<CloseableHttpClient>> supplier,
-            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras,
-            Creator<T> creator, String authenticationEndpoint, //
+            Optional<Function<HttpClientBuilder, HttpClientBuilder>> httpClientBuilderExtras, Creator<T> creator,
             Function<? super HttpService, ? extends HttpService> httpServiceTransformer, //
             List<SchemaInfo> schemas, PathStyle pathStyle) {
-        final Supplier<CloseableHttpClient> clientSupplier = createClientSupplier(connectTimeoutMs,
-                readTimeoutMs, proxyHost, proxyPort, proxyUsername, proxyPassword, supplier,
-                httpClientBuilderExtras);
+        final Supplier<CloseableHttpClient> clientSupplier = createClientSupplier(connectTimeoutMs, readTimeoutMs,
+                proxyHost, proxyPort, proxyUsername, proxyPassword, supplier, httpClientBuilderExtras);
         Path basePath = new Path(baseUrl, pathStyle);
         HttpService httpService = new ApacheHttpClientHttpService( //
                 basePath, //
@@ -591,4 +600,24 @@ public final class MicrosoftClientBuilder<T> {
         return b.build();
     }
 
+    private static final class TenantNameAndEndpoint {
+        
+        private final String tenantName;
+        private final String authenticationEndpoint;
+
+        TenantNameAndEndpoint(String tenantName, String authenticationEndpoint) {
+            Preconditions.checkArgumentNotNull(tenantName, "tenantName");
+            Preconditions.checkArgumentNotNull(authenticationEndpoint, "authenticationEndpoint");
+            this.tenantName = tenantName;
+            this.authenticationEndpoint = authenticationEndpoint;
+        }
+        
+        String tenantName() {
+            return tenantName;
+        }
+        
+        String authenticationEndpoint() {
+            return authenticationEndpoint;
+        }
+    }
 }

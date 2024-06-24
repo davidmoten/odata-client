@@ -39,7 +39,6 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private static final String APPLICATION_JSON = "application/json";
     private static final String REQUEST_HEADER = "Accept";
     private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
-    private static final String OAUTH2_TOKEN_URL_SUFFIX = "/oauth2/token";
 
     private static final String PARAMETER_SCOPE = "scope";
     private static final String PARAMETER_CLIENT_SECRET = "client_secret";
@@ -47,7 +46,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private static final String PARAMETER_CLIENT_ID = "client_id";
     private static final String PARAMETER_RESOURCE = "resource";
 
-    private final String tenantName;
+    private final String url;
     private final String clientId;
     private final String clientSecret;
     private final long refreshBeforeExpiryMs;
@@ -60,24 +59,22 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
     private final Optional<String> proxyUsername;
     private final Optional<String> proxyPassword;
 
-    private final String authenticationEndpoint;
     private long expiryTime;
     private String accessToken;
 
-    private ClientCredentialsAccessTokenProvider(String tenantName, String clientId,
+    private ClientCredentialsAccessTokenProvider(String url, String clientId,
             String clientSecret, long refreshBeforeExpiryMs, long connectTimeoutMs,
-            long readTimeoutMs, String authenticationEndpoint, String resource, List<String> scopes,
+            long readTimeoutMs, String resource, List<String> scopes,
             Optional<String> proxyHost, //
             Optional<Integer> proxyPort, //
             Optional<String> proxyUsername, Optional<String> proxyPassword) {
-        Preconditions.checkNotNull(tenantName);
+        Preconditions.checkNotNull(url);
         Preconditions.checkNotNull(clientId);
         Preconditions.checkNotNull(clientSecret);
         Preconditions.checkArgument(refreshBeforeExpiryMs >= 0,
                 "refreshBeforeExpiryMs must be >=0");
         Preconditions.checkArgument(connectTimeoutMs >= 0, "connectTimeoutMs must be >=0");
         Preconditions.checkArgument(readTimeoutMs >= 0, "readTimeoutMs must be >=0");
-        Preconditions.checkNotNull(authenticationEndpoint);
         Preconditions.checkNotNull(proxyHost);
         Preconditions.checkNotNull(proxyPort);
         Preconditions.checkNotNull(proxyUsername);
@@ -86,13 +83,12 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
                 "if proxyHost specified then so must proxyPort be specified");
         Preconditions.checkNotNull(resource);
         Preconditions.checkNotNull(scopes);
-        this.tenantName = tenantName;
+        this.url = url;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.refreshBeforeExpiryMs = refreshBeforeExpiryMs;
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
-        this.authenticationEndpoint = authenticationEndpoint;
         this.scopes = scopes;
         this.resource = resource;
         this.proxyHost = proxyHost;
@@ -100,9 +96,15 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         this.proxyUsername = proxyUsername;
         this.proxyPassword = proxyPassword;
     }
-
-    public static Builder tenantName(String tenantName) {
-        return new Builder(tenantName);
+    
+    /**
+     * Returns the token provider chained builder.
+     * 
+     * @param url the url that supplies tokens
+     * @return builder
+     */
+    public static BuilderWithUrl url(String url) {
+        return new BuilderWithUrl(url);
     }
 
     @Override
@@ -122,7 +124,7 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         // need to refresh the token
         try {
             log.debug("refreshing access token");
-            URL url = new URL(authenticationEndpoint + tenantName + OAUTH2_TOKEN_URL_SUFFIX);
+            URL url = new URL(this.url);
             final HttpsURLConnection con;
             if (proxyHost.isPresent()) {
                 InetSocketAddress proxyInet = new InetSocketAddress(proxyHost.get(),
@@ -213,8 +215,8 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         }
     }
 
-    public static final class Builder {
-        final String tenantName;
+    public static final class BuilderWithUrl {
+        final String url;
         List<String> scopes = new ArrayList<>();
         String resource;
         String clientId;
@@ -224,72 +226,71 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
         long refreshBeforeExpiryMs = Long.MAX_VALUE;
         long connectTimeoutMs = TimeUnit.SECONDS.toMillis(30);
         long readTimeoutMs = TimeUnit.SECONDS.toMillis(30);
-        String endpoint = AuthenticationEndpoint.GLOBAL.url();
         Optional<String> proxyHost = Optional.empty();
         Optional<Integer> proxyPort = Optional.empty();
         Optional<String> proxyUsername = Optional.empty();
         Optional<String> proxyPassword = Optional.empty();
 
-        Builder(String tenantName) {
-            this.tenantName = tenantName;
+        BuilderWithUrl(String url) {
+            this.url = url;
         }
 
-        public Builder2 resource(String resource) {
+        public BuilderWithResource resource(String resource) {
             this.resource = resource;
-            return new Builder2(this);
+            return new BuilderWithResource(this);
         }
 
     }
 
-    public static final class Builder2 {
+    public static final class BuilderWithResource {
 
-        private final Builder b;
+        private final BuilderWithUrl b;
 
-        Builder2(Builder b) {
+        BuilderWithResource(BuilderWithUrl b) {
             this.b = b;
         }
 
-        public Builder3 scope(List<String> scopes) {
+        public BuilderWithScope scope(List<String> scopes) {
             Preconditions.checkNotNull(scopes);
             b.scopes.addAll(scopes);
-            return new Builder3(b);
+            return new BuilderWithScope(b);
         }
 
     }
 
-    public static final class Builder3 {
+    public static final class BuilderWithScope {
 
-        private final Builder b;
+        private final BuilderWithUrl b;
 
-        public Builder3(Builder b) {
+        public BuilderWithScope(BuilderWithUrl b) {
             this.b = b;
         }
 
-        public Builder4 clientId(String clientId) {
+        public BuilderWithClientId clientId(String clientId) {
             b.clientId = clientId;
-            return new Builder4(b);
+            return new BuilderWithClientId(b);
         }
     }
 
-    public static final class Builder4 {
-        private final Builder b;
+    public static final class BuilderWithClientId {
+        private final BuilderWithUrl b;
 
-        Builder4(Builder b) {
+        BuilderWithClientId(BuilderWithUrl b) {
             this.b = b;
         }
 
-        public Builder5 clientSecret(String clientSecret) {
+        public BuilderWithClientSecret clientSecret(String clientSecret) {
             b.clientSecret = clientSecret;
-            return new Builder5(b);
+            return new BuilderWithClientSecret(b);
         }
 
     }
 
-    public static final class Builder5 {
+    public static final class BuilderWithClientSecret {
 
-        private final Builder b;
+        private final BuilderWithUrl b;
 
-        Builder5(Builder b) {
+        BuilderWithClientSecret(BuilderWithUrl b) {
             this.b = b;
         }
 
@@ -304,89 +305,73 @@ public final class ClientCredentialsAccessTokenProvider implements AccessTokenPr
          * @param unit     time unit for the duration
          * @return builder
          */
-        public Builder5 refreshBeforeExpiry(long duration, TimeUnit unit) {
+        public BuilderWithClientSecret refreshBeforeExpiry(long duration, TimeUnit unit) {
             b.refreshBeforeExpiryMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder5 connectTimeoutMs(long duration, TimeUnit unit) {
+        public BuilderWithClientSecret connectTimeoutMs(long duration, TimeUnit unit) {
             b.connectTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder5 readTimeoutMs(long duration, TimeUnit unit) {
+        public BuilderWithClientSecret readTimeoutMs(long duration, TimeUnit unit) {
             b.readTimeoutMs = unit.toMillis(duration);
             return this;
         }
 
-        public Builder5 scope(List<String> scopes) {
+        public BuilderWithClientSecret scope(List<String> scopes) {
             b.scopes.addAll(scopes);
             return this;
         }
 
-        /**
-         * Default value is {@link AuthenticationEndpoint#GLOBAL}.
-         * 
-         * @param endpoint microsoft authentication endpoint
-         * @return this
-         */
-        public Builder5 authenticationEndpoint(AuthenticationEndpoint endpoint) {
-            b.endpoint = endpoint.url();
-            return this;
-        }
-
-        public Builder5 authenticationEndpoint(String endpoint) {
-            b.endpoint = endpoint;
-            return this;
-        }
-
-        public Builder5 proxyHost(String proxyHost) {
+        public BuilderWithClientSecret proxyHost(String proxyHost) {
             Preconditions.checkNotNull(proxyHost);
             return proxyHost(Optional.of(proxyHost));
         }
 
-        public Builder5 proxyPort(int proxyPort) {
+        public BuilderWithClientSecret proxyPort(int proxyPort) {
             return proxyPort(Optional.of(proxyPort));
         }
 
-        public Builder5 proxyUsername(String username) {
+        public BuilderWithClientSecret proxyUsername(String username) {
             Preconditions.checkNotNull(username);
             return proxyUsername (Optional.of(username));
         }
 
-        public Builder5 proxyPassword(String password) {
+        public BuilderWithClientSecret proxyPassword(String password) {
             Preconditions.checkNotNull(password);
             return proxyPassword(Optional.of(password));
         }
         
-        public Builder5 proxyHost(Optional<String> proxyHost) {
+        public BuilderWithClientSecret proxyHost(Optional<String> proxyHost) {
             Preconditions.checkNotNull(proxyHost);
             b.proxyHost = proxyHost;
             return this;
         }
 
-        public Builder5 proxyPort(Optional<Integer> proxyPort) {
+        public BuilderWithClientSecret proxyPort(Optional<Integer> proxyPort) {
             Preconditions.checkNotNull(proxyPort);
             b.proxyPort = proxyPort;
             return this;
         }
 
-        public Builder5 proxyUsername(Optional<String> username) {
+        public BuilderWithClientSecret proxyUsername(Optional<String> username) {
             Preconditions.checkNotNull(username);
             b.proxyUsername = username;
             return this;
         }
 
-        public Builder5 proxyPassword(Optional<String> password) {
+        public BuilderWithClientSecret proxyPassword(Optional<String> password) {
             Preconditions.checkNotNull(password);
             b.proxyPassword = password;
             return this;
         }
 
         public ClientCredentialsAccessTokenProvider build() {
-            return new ClientCredentialsAccessTokenProvider(b.tenantName, b.clientId,
+            return new ClientCredentialsAccessTokenProvider(b.url, b.clientId,
                     b.clientSecret, b.refreshBeforeExpiryMs, b.connectTimeoutMs, b.readTimeoutMs,
-                    b.endpoint, b.resource, b.scopes, b.proxyHost, b.proxyPort, b.proxyUsername,
+                    b.resource, b.scopes, b.proxyHost, b.proxyPort, b.proxyUsername,
                     b.proxyPassword);
         }
     }

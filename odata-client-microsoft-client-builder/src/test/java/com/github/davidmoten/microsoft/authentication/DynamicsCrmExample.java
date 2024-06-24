@@ -1,23 +1,19 @@
-package com.github.davidmoten.microsoft.dynamics;
+package com.github.davidmoten.microsoft.authentication;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import com.github.davidmoten.guavamini.Preconditions;
 import com.github.davidmoten.microsoft.client.builder.Creator;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
-import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.UsernamePassword;
 import com.github.davidmoten.odata.client.ClientException;
 import com.github.davidmoten.odata.client.Context;
 import com.github.davidmoten.odata.client.HasContext;
-
 import com.github.davidmoten.odata.client.PathStyle;
-import microsoft.dynamics.crm.schema.SchemaInfo;
 
-public final class Dynamics {
+public final class DynamicsCrmExample{
 
-    private Dynamics() {
+    private DynamicsCrmExample() {
         // prevent instantiation
     }
 
@@ -46,34 +42,23 @@ public final class Dynamics {
          * @param baseUrl
          * @return builder
          */
-        public Builder3<T> baseUrl(String baseUrl) {
+        public BuilderWithBaseUrl<T> baseUrl(String baseUrl) {
             Preconditions.checkNotNull(baseUrl);
             this.baseUrl = Optional.of(baseUrl);
-            return new Builder3<T>(this);
+            return new BuilderWithBaseUrl<T>(this);
         }
-
     }
 
-    public static final class Builder3<T extends HasContext> {
+    public static final class BuilderWithBaseUrl<T extends HasContext> {
 
         private final Builder<T> b;
 
-        public Builder3(Builder<T> b) {
+        public BuilderWithBaseUrl(Builder<T> b) {
             this.b = b;
         }
-
-        public MicrosoftClientBuilder.BuilderWithBasicAuthentication<T> basicAuthentication(
-                Supplier<UsernamePassword> usernamePassword) {
-            return createBuilder().basicAuthentication(usernamePassword);
-        }
-
-        public MicrosoftClientBuilder.BuilderWithBasicAuthentication<T> basicAuthentication(
-                String username, String password) {
-            return basicAuthentication(() -> UsernamePassword.create(username, password));
-        }
-
-        public com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder<T> tenantName(String tenantName) {
-            return createBuilder().tenantName(tenantName);
+        
+        public com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder<T> tokenUrl(String tokenUrl) {
+            return createBuilder().tokenUrl(tokenUrl);
         }
 
         private MicrosoftClientBuilder<T> createBuilder() {
@@ -81,17 +66,17 @@ public final class Dynamics {
                 try {
                     return b.serviceCls.getConstructor(Context.class).newInstance(context);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                         | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                     throw new ClientException(e);
                 }
             };
             return MicrosoftClientBuilder //
                     .baseUrl(b.baseUrl.get()) //
                     .creator(creator) //
-                    .addSchema(SchemaInfo.INSTANCE) //
+                    // add your schema here
+                    // addSchema(SchemaInfo.) //
                     .pathStyle(b.pathStyle) //
                     .build();
         }
     }
-
 }
