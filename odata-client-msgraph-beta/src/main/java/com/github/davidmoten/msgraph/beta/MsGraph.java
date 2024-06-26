@@ -4,7 +4,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.github.davidmoten.microsoft.authentication.GraphConstants;
 import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder;
-import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder3;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.BuilderWithScopes;
+import com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.BuilderWithBasicAuthentication;
 import com.github.davidmoten.msgraph.builder.GraphExplorerHttpService;
 
 import odata.msgraph.client.beta.container.GraphService;
@@ -18,7 +19,7 @@ public final class MsGraph {
         // prevent instantiation
     }
 
-    public static Builder3<GraphService> tenantName(String tenantName) {
+    public static BuilderWithScopes<GraphService> tenantName(String tenantName) {
         return MicrosoftClientBuilder//
                 .baseUrl(MSGRAPH_BETA_BASE_URL) //
                 .creator(GraphService::new) //
@@ -31,7 +32,7 @@ public final class MsGraph {
                 .scope(GraphConstants.SCOPE_MS_GRAPH_DEFAULT);
     }
 
-    public static com.github.davidmoten.microsoft.client.builder.MicrosoftClientBuilder.Builder5<GraphService> explorer() {
+    public static BuilderWithBasicAuthentication<GraphService> explorer() {
         return MsGraph //
                 .tenantName("unused") //
                 .clientId("unused") //
