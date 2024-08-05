@@ -210,7 +210,7 @@ public final class RequestHelper {
         // get the response
         HttpResponse response = cp.context().service().post(cp.toUrl(), h, json, options);
 
-        checkResponseCode(cp, response, HttpURLConnection.HTTP_CREATED);
+        checkResponseCodeOk(cp, response);
 
         String text = response.getText();
 
