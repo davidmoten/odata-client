@@ -34,7 +34,7 @@
         <changelog.version>2.2</changelog.version>
         <nexus.staging.version>1.7.0</nexus.staging.version>
 
-        <jackson.version>2.18.1</jackson.version>
+        <jackson.version>2.18.2</jackson.version>
         <jackson.databind.version>2.18.2</jackson.databind.version>
         <junit.version>4.13.2</junit.version>
         <olingo.version>4.10.0</olingo.version>
