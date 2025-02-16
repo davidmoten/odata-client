@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.davidmoten</groupId>
         <artifactId>odata-client-parent</artifactId>
-        <version>0.2.3</version>
+        <version>0.2.4-SNAPSHOT</version>
     </parent>
     <artifactId>odata-client-microsoft-client-builder</artifactId>
     <name>${project.artifactId}</name>
