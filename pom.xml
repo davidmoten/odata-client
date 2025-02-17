@@ -42,7 +42,7 @@
         <slf4j.version>1.7.36</slf4j.version>
         <release.plugin.version>2.5.1</release.plugin.version>
         <jacoco.plugin.version>0.8.12</jacoco.plugin.version>
-        <spotbugs.plugin.version>4.8.6.6</spotbugs.plugin.version>
+        <spotbugs.plugin.version>4.9.1.0</spotbugs.plugin.version>
         <bundle.plugin.version>5.1.9</bundle.plugin.version>
         <log4j.version>2.24.3</log4j.version>
         <build.helper.version>3.6.0</build.helper.version>
