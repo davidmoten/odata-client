@@ -157,7 +157,7 @@ public final class Generator {
 			
 			log("  checking entities have keys");
             Util.types(schema, TEntityType.class) //
-                    .map(x -> new EntityType(x, names)) //
+                    .map(x -> new EntityType(schema, x, names)) //
                     .filter(x -> !x.hasKey()) //
                     .forEach(x -> log("    " + x.getFullType() + " has no keys"));
 
@@ -172,7 +172,7 @@ public final class Generator {
 			// write entityTypes
 			log("  writing entities");
 			Util.types(schema, TEntityType.class) // 
-					.forEach(x -> writeEntity(x, typeActions, typeFunctions));
+					.forEach(x -> writeEntity(schema, x, typeActions, typeFunctions));
 
 			// write complexTypes
 			log("  writing complex types");
@@ -548,9 +548,9 @@ public final class Generator {
                         : "";
     }
 
-	private void writeEntity(TEntityType entityType, Map<String, List<Action>> typeActions,
+	private void writeEntity(Schema schema, TEntityType entityType, Map<String, List<Action>> typeActions,
 			Map<String, List<Function>> typeFunctions) {
-		EntityType t = new EntityType(entityType, names);
+		EntityType t = new EntityType(schema, entityType, names);
 		t.getDirectoryEntity().mkdirs();
 		String simpleClassName = t.getSimpleClassName();
 		Imports imports = new Imports(t.getFullClassNameEntity());
@@ -1035,7 +1035,7 @@ public final class Generator {
 	}
 
 	private void writeComplexType(Schema schema, TComplexType complexType) {
-		ComplexType t = new ComplexType(complexType, names);
+		ComplexType t = new ComplexType(schema, complexType, names);
 		t.getDirectoryComplexType().mkdirs();
 		String simpleClassName = t.getSimpleClassName();
 		Imports imports = new Imports(t.getFullClassName());
@@ -1101,7 +1101,7 @@ public final class Generator {
 
 	private void writeEntityRequest(Schema schema, TEntityType entityType, Map<String, List<Action>> typeActions,
 			Map<String, List<Function>> typeFunctions) {
-		EntityType t = new EntityType(entityType, names);
+		EntityType t = new EntityType(schema, entityType, names);
 		names.getDirectoryEntityRequest(schema).mkdirs();
 		// TODO only write out those requests needed
 		String simpleClassName = t.getSimpleClassNameEntityRequest();
@@ -1417,7 +1417,7 @@ public final class Generator {
 	private void writeEntityCollectionRequest(Schema schema, TEntityType entityType,
 			Map<String, List<Action>> collectionTypeActions, Map<String, List<Function>> collectionTypeFunctions,
 			Set<String> collectionTypes) {
-		EntityType t = new EntityType(entityType, names);
+		EntityType t = new EntityType(schema, entityType, names);
 		if (!collectionTypes.contains(t.getFullType())) {
 			return;
 		}
@@ -1521,6 +1521,9 @@ public final class Generator {
 		// write Builder class
 		p.format("\n%spublic static final class Builder {\n", indent);
 		indent.right();
+		if (simpleClassName.equals("RunningOperation")) {
+		    System.out.println("here");
+		}
 		List<Field> fields = t.getFields(imports);
 
 		// write builder fields

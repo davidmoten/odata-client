@@ -565,7 +565,7 @@ public final class Names {
     }
 
     public EntityType getEntityType(String typeWithNamespace) {
-        return new EntityType(entityTypesFromNamespacedType.get(typeWithNamespace), this);
+        return new EntityType(getSchema(typeWithNamespace), entityTypesFromNamespacedType.get(typeWithNamespace), this);
     }
 
     public String getEnumInstanceName(TEnumType t, String name) {
