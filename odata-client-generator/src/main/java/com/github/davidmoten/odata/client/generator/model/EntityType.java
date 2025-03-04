@@ -16,10 +16,8 @@ import com.github.davidmoten.odata.client.generator.Util;
 
 public final class EntityType extends Structure<TEntityType> {
 
-    private Schema schema;
-
-    public EntityType(TEntityType c, Names names) {
-        super(c, TEntityType.class, names);
+    public EntityType(Schema schema, TEntityType c, Names names) {
+        super(schema, c, TEntityType.class, names);
     }
 
     @Override
@@ -47,8 +45,8 @@ public final class EntityType extends Structure<TEntityType> {
     }
 
     @Override
-    public Structure<TEntityType> create(TEntityType t) {
-        return new EntityType(t, names);
+    public Structure<TEntityType> create(Schema schema, TEntityType t) {
+        return new EntityType(schema, t, names);
     }
 
     @Override
@@ -83,13 +81,6 @@ public final class EntityType extends Structure<TEntityType> {
     @Override
     public String getPackage() {
         return names.getPackageEntity(schema());
-    }
-
-    private Schema schema() {
-        if (schema == null) {
-            schema = names.getSchema(value);
-        }
-        return schema;
     }
 
     public String getFullClassNameEntity() {

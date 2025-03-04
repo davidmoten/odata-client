@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.davidmoten.text.utils.WordWrap;
+import org.oasisopen.odata.csdl.v4.Schema;
 import org.oasisopen.odata.csdl.v4.TNavigationProperty;
 import org.oasisopen.odata.csdl.v4.TProperty;
 
@@ -26,14 +27,20 @@ public abstract class Structure<T> {
     protected final T value;
     private final Class<T> cls;
     protected final Names names;
+    private Schema schema;
 
-    public Structure(T value, Class<T> cls, Names names) {
+    public Structure(Schema schema, T value, Class<T> cls, Names names) {
+        this.schema = schema;
         this.value = value;
         this.cls = cls;
         this.names = names;
     }
+    
+    public Schema schema() {
+        return schema;
+    }
 
-    public abstract Structure<T> create(T t);
+    public abstract Structure<T> create(Schema schema, T t);
 
     public abstract String getName();
 
@@ -53,7 +60,7 @@ public abstract class Structure<T> {
 
     public final List<? extends Structure<T>> getHeirarchy() {
         List<Structure<T>> a = new LinkedList<>();
-        a.add(create(value));
+        a.add(create(schema(), value));
         Structure<T> st = this;
         while (true) {
             if (st.getBaseType() == null) {
@@ -61,11 +68,13 @@ public abstract class Structure<T> {
             } else {
                 String baseTypeSimpleName = names
                         .getSimpleTypeNameFromTypeWithNamespace(st.getBaseType());
+                Schema baseTypeSchema = names.getSchema(st.getBaseType());
                 // TODO make a map for lookup to increase perf
                 st = names.getSchemas() //
                         .stream() //
-                        .flatMap(schema -> Util.types(schema, cls)) //
-                        .map(this::create) //
+                        .filter(schema -> schema == baseTypeSchema) //
+                        .flatMap(schema ->  Util.types(schema, cls)) //
+                        .map(x -> create(schema, x)) //
                         .filter(x -> x.getName().equals(baseTypeSimpleName)) //
                         .findFirst() //
                         .get();
@@ -73,7 +82,7 @@ public abstract class Structure<T> {
             }
         }
     }
-
+    
     public final List<Field> getFields(Imports imports) {
         return getHeirarchy() //
                 .stream() //

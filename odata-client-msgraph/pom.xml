@@ -99,6 +99,10 @@
                                     <namespace>microsoft.graph.termStore</namespace>
                                     <packageName>odata.msgraph.client.termstore</packageName>
                                 </schema>
+                                <schema>
+                                    <namespace>microsoft.graph.partners.billing</namespace>
+                                    <packageName>odata.msgraph.client.partners.billing</packageName>
+                                </schema>
                             </schemas>
                         </configuration>
                     </execution>

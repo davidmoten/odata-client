@@ -14,8 +14,8 @@ import com.github.davidmoten.odata.client.generator.Util;
 
 public final class ComplexType extends Structure<TComplexType> {
 
-    public ComplexType(TComplexType c, Names names) {
-        super(c, TComplexType.class, names);
+    public ComplexType(Schema schema, TComplexType c, Names names) {
+        super(schema, c, TComplexType.class, names);
     }
 
     @Override
@@ -41,8 +41,8 @@ public final class ComplexType extends Structure<TComplexType> {
     }
 
     @Override
-    public Structure<TComplexType> create(TComplexType t) {
-        return new ComplexType(t, names);
+    public Structure<TComplexType> create(Schema schema, TComplexType t) {
+        return new ComplexType(schema, t, names);
     }
 
     @Override
@@ -58,10 +58,6 @@ public final class ComplexType extends Structure<TComplexType> {
     @Override
     public String getSimpleClassName() {
         return names.getSimpleClassNameComplexType(schema(), getName());
-    }
-
-    private Schema schema() {
-        return names.getSchema(value);
     }
 
     @Override
