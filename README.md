@@ -593,7 +593,7 @@ Email
   .send(client);
 ```
 
-The builder code above does quite a lot for you. For reference here's how you do it using the generated classes only:
+The builder code above does quite a lot for you. For reference here's how you do it using the generated classes only (don't do this yourself, use the above Email builder):
 
 ```java
 GraphService client = ...;
