@@ -671,7 +671,7 @@ public final class Names {
         return method.toString().toLowerCase(Locale.ENGLISH) + "Chunked" +  upperFirst(name);
     }
     
-    public Property fieldName(Structure<?> structure, String propertyName) {
+    public Property property(Structure<?> structure, String propertyName) {
         NamedStructure s = new NamedStructure(structure, propertyName);
         PropertyWithFieldName v = structureProperties.get(s);
         if (v == null) {

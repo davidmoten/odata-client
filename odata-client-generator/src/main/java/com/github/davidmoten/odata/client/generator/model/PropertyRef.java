@@ -33,6 +33,6 @@ public class PropertyRef {
     }
 
     public Property getReferredProperty() {
-        return names.fieldName(entityType, getName());
+        return names.property(entityType, getName());
     }
 }

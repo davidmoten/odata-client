@@ -1655,7 +1655,7 @@ public final class Generator {
     private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
             String simpleClassName, String fullType, boolean ofEntity, Set<String> methodNames, String propertyName,
             String t, boolean isCollection, boolean isStream, boolean isUnicode) {
-        String fieldName = names.fieldName(structure, propertyName).getFieldName();
+        String fieldName = names.property(structure, propertyName).getFieldName();
         structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
         		Collections.emptyMap());
         addPropertyAnnotation(imports, indent, p, propertyName);
