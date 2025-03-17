@@ -11,6 +11,7 @@
                 <Property Name="ID" Type="Edm.Int32"
                     Nullable="false" />
                 <Property Name="Name" Type="Edm.String" />
+                <Property Name="package" Type = "Edm.String" />
                 <NavigationProperty Name="Package" Type="Test1.A.Package" />
             </EntityType>
             <EntityType Name="Package">

@@ -2,6 +2,7 @@ package com.github.davidmoten.odata.client.generator;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,6 +26,8 @@ import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
+import com.github.davidmoten.odata.client.generator.model.Property;
+import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Names {
@@ -664,4 +667,35 @@ public final class Names {
         return method.toString().toLowerCase(Locale.ENGLISH) + "Chunked" +  upperFirst(name);
     }
 
+    public Property fieldName(Structure<?> structure, String propertyName) {
+        // field name to property/fieldName
+        Set<String> fieldNames = new HashSet<>();
+        // property name to field name
+        Map<String, PropertyWithFieldName> properties = new HashMap<>();
+        structure.getHeirarchy()
+                .stream() //
+                .flatMap(x -> x.getProperties().stream()) //
+                .sorted((a, b) -> a.getName().compareTo(b.getName())) //
+                .forEach(p -> {
+                    String fieldName = Names.getIdentifier(p.getName());
+                    while (fieldNames.contains(fieldName)) {
+                        fieldName += "_";
+                    }
+                    fieldNames.add(fieldName);
+                    properties.put(p.getName(), new PropertyWithFieldName(p, fieldName));
+                });
+        PropertyWithFieldName p = properties.get(propertyName);
+        return new Property(((TProperty) p.property), p.fieldName, this);
+    }
+    
+    private static final class PropertyWithFieldName {
+        final Object property;
+        final String fieldName;
+        
+        PropertyWithFieldName(Object property, String fieldName) {
+            this.property = property;
+            this.fieldName = fieldName;
+        }
+    }
+    
 }
