@@ -1655,12 +1655,12 @@ public final class Generator {
     private void printPropertyGetterAndSetters(Structure<?> structure, Imports imports, Indent indent, PrintWriter p,
             String simpleClassName, String fullType, boolean ofEntity, Set<String> methodNames, String propertyName,
             String t, boolean isCollection, boolean isStream, boolean isUnicode) {
-        String fieldName = Names.getIdentifier(propertyName);
+        String fieldName = names.property(structure, propertyName).getFieldName();
         structure.printPropertyJavadoc(p, indent, propertyName, "property " + propertyName,
         		Collections.emptyMap());
         addPropertyAnnotation(imports, indent, p, propertyName);
         p.format("\n%s@%s\n", indent, imports.add(JsonIgnore.class));
-        String methodName = Names.getGetterMethod(propertyName);
+        String methodName = Names.getGetterMethod(fieldName);
         methodNames.add(methodName);
         if (isCollection) {
         	String inner = names.getInnerType(t);

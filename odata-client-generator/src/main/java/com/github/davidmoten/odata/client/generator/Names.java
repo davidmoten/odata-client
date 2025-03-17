@@ -2,9 +2,11 @@ package com.github.davidmoten.odata.client.generator;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,8 @@ import com.github.davidmoten.guavamini.Sets;
 import com.github.davidmoten.odata.client.CollectionPageEntityRequest;
 import com.github.davidmoten.odata.client.HttpMethod;
 import com.github.davidmoten.odata.client.generator.model.EntityType;
+import com.github.davidmoten.odata.client.generator.model.Property;
+import com.github.davidmoten.odata.client.generator.model.Structure;
 import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Names {
@@ -52,6 +56,8 @@ public final class Names {
     private final Map<Object, Schema> objectToSchema;
 
     private final Documentation docs;
+    
+    private final Map<NamedStructure, PropertyWithFieldName> structureProperties;
 
     private Names(List<Schema> schemas, Options opts) {
         this.schemas = schemas;
@@ -65,6 +71,7 @@ public final class Names {
                         .map(t -> new SchemaAndType<Object>(s, t))) //
                 .collect(Collectors.toMap(st -> st.type, st -> st.schema));
         this.docs = new Documentation(schemas);
+        this.structureProperties = new HashMap<>(); // lazily loaded
     }
 
     // factory method
@@ -663,5 +670,66 @@ public final class Names {
     public static String getPutChunkedMethod(String name, HttpMethod method) {
         return method.toString().toLowerCase(Locale.ENGLISH) + "Chunked" +  upperFirst(name);
     }
+    
+    public Property property(Structure<?> structure, String propertyName) {
+        NamedStructure s = new NamedStructure(structure, propertyName);
+        PropertyWithFieldName v = structureProperties.get(s);
+        if (v == null) {
+            // lazy load
+            Set<String> fieldNames = new HashSet<>();
+            structure.getHeirarchy().stream() //
+                    .flatMap(x -> x.getProperties().stream()) //
+                    .sorted((a, b) -> a.getName().compareTo(b.getName())) //
+                    .forEach(p -> {
+                        String fieldName = Names.getIdentifier(p.getName());
+                        while (fieldNames.contains(fieldName)) {
+                            fieldName += "_";
+                        }
+                        fieldNames.add(fieldName);
+                        structureProperties.put(new NamedStructure(structure, p.getName()),
+                                new PropertyWithFieldName(p, fieldName));
+                    });
+        }
+        PropertyWithFieldName p = structureProperties.get(s);
+        return new Property(((TProperty) p.property), p.fieldName, this);
+    }
+    
+    private static final class PropertyWithFieldName {
+        final Object property;
+        final String fieldName;
+        
+        PropertyWithFieldName(Object property, String fieldName) {
+            this.property = property;
+            this.fieldName = fieldName;
+        }
+    }
+    
+    private static final class NamedStructure {
 
+        final Structure<?> structure;
+        final String propertyName;
+        
+        NamedStructure(Structure<?> structure, String propertyName) {
+            this.structure = structure;
+            this.propertyName = propertyName;
+        }
+        
+        @Override
+        public int hashCode() {
+            return Objects.hash(propertyName, structure);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            NamedStructure other = (NamedStructure) obj;
+            return Objects.equals(propertyName, other.propertyName) && Objects.equals(structure, other.structure);
+        }
+    }
+    
 }

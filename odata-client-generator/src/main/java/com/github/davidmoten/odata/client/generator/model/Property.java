@@ -4,15 +4,16 @@ import org.oasisopen.odata.csdl.v4.TProperty;
 
 import com.github.davidmoten.odata.client.generator.Imports;
 import com.github.davidmoten.odata.client.generator.Names;
-import com.github.davidmoten.odata.client.internal.EdmSchemaInfo;
 
 public final class Property {
 
     private final TProperty p;
+    private final String fieldName;
     private final Names names;
 
-    public Property(TProperty p, Names names) {
+    public Property(TProperty p, String fieldName, Names names) {
         this.p = p;
+        this.fieldName = fieldName;
         this.names = names;
     }
 
@@ -25,7 +26,7 @@ public final class Property {
     }
     
     public String getFieldName() {
-        return Names.getIdentifier(p.getName());
+        return fieldName;
     }
 
     public String getName() {

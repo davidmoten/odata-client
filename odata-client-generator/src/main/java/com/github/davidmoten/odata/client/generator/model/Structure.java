@@ -58,7 +58,7 @@ public abstract class Structure<T> {
 
     public abstract boolean isEntityType();
 
-    public final List<? extends Structure<T>> getHeirarchy() {
+    public final List<Structure<T>> getHeirarchy() {
         List<Structure<T>> a = new LinkedList<>();
         a.add(create(schema(), value));
         Structure<T> st = this;
