@@ -32,7 +32,7 @@
         <jxr.version>3.6.0</jxr.version>
         <taglist.version>3.2.1</taglist.version>
         <changelog.version>2.2</changelog.version>
-        <nexus.staging.version>1.7.0</nexus.staging.version>
+        <central.publishing.version>0.7.0</central.publishing.version>
 
         <jackson.version>2.19.0</jackson.version>
         <jackson.databind.version>2.19.0</jackson.databind.version>
@@ -56,11 +56,6 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
-
-    <ciManagement>
-        <system>Travis</system>
-        <url>https://travis-ci.org/davidmoten/odata-client</url>
-    </ciManagement>
 
     <issueManagement>
         <system>GitHub</system>
@@ -342,30 +337,28 @@
                         </executions>
                     </plugin>                    
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus.staging.version}</version>
+	                    <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central.publishing.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                            <excludeArtifacts>
+                                <excludeArtifact>odata-client-test-datascope</excludeArtifact>
+                                <excludeArtifact>odata-client-test-northwind</excludeArtifact>
+                                <excludeArtifact>odata-client-olingo-test-pin</excludeArtifact>
+                                <excludeArtifact>odata-client-test-report</excludeArtifact>
+                                <excludeArtifact>odata-client-test-sample-server</excludeArtifact>
+                                <excludeArtifact>odata-client-test-service</excludeArtifact>
+                                <excludeArtifact>odata-client-test-trip-pin</excludeArtifact>
+                                <excludeArtifact>odata-client-test-unit</excludeArtifact>
+                            </excludeArtifacts>
+						</configuration>
+				    </plugin>
                 </plugins>
             </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <name>Maven Central</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <name>Maven Central</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-                </repository>
-            </distributionManagement>
         </profile>
     </profiles>
 </project>

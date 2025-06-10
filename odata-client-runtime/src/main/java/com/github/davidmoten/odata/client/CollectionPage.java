@@ -30,6 +30,7 @@ import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
  *
  * @param <T> item type
  */
+@SuppressWarnings("OptionalAssignedToNull")
 @JsonIgnoreType
 @JsonPropertyOrder({"@odata.nextLink","@odata.deltaLink","value"})
 public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
