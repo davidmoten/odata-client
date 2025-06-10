@@ -39,7 +39,7 @@ public final class Names {
             "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
             "native", "new", "null", "package", "private", "protected", "public", "return", "short",
             "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws",
-            "transient", "true", "try", "void", "volatile", "while", "var");
+            "transient", "true", "try", "void", "volatile", "while", "var", "clone", "wait", "notify", "notifyAll");
     
     private static final String COLLECTION_PREFIX = "Collection(";
 
@@ -498,10 +498,8 @@ public final class Names {
                                         .equals(typeWithNamespace)) //
                                 .map(x -> x.schema) //
                                 .findFirst() //
-                                .<RuntimeException>orElseThrow(() -> {
-                                    throw new RuntimeException(
-                                            "type not found: " + typeWithNamespace);
-                                })));
+                                .<RuntimeException>orElseThrow(() -> new RuntimeException(
+                                        "type not found: " + typeWithNamespace))));
     }
 
     public File getClassFileEntityRequest(Schema schema, String name) {
