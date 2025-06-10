@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.github.davidmoten.odata.client.UnmappedFields;
 
+@SuppressWarnings("ALL")
 public final class UnmappedFieldsImpl implements UnmappedFields, Map<String, Object> {
 
     private final Map<String, Object> map;

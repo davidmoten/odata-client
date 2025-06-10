@@ -51,7 +51,7 @@ public final class MicrosoftClientBuilder<T> {
     private Optional<String> tokenUrl = Optional.empty();
     private Optional<TenantNameAndEndpoint> tenantNameAndEndpoint = Optional.empty();
     private String resource;
-    private List<String> scopes = new ArrayList<>();
+    private final List<String> scopes = new ArrayList<>();
     private String clientId;
     private String clientSecret;
     private long refreshBeforeExpiryDurationMs = TimeUnit.MINUTES.toMillis(5);
@@ -101,7 +101,7 @@ public final class MicrosoftClientBuilder<T> {
     public static final class BuilderWithCreator<T> {
 
         private final BuilderWithBaseUrl b;
-        private Creator<T> creator;
+        private final Creator<T> creator;
         private final List<SchemaInfo> schemas = new ArrayList<>();
         private PathStyle pathStyle = PathStyle.IDENTIFIERS_AS_SEGMENTS;
 
@@ -532,7 +532,6 @@ public final class MicrosoftClientBuilder<T> {
         return clientSupplier;
     }
 
-    @SuppressWarnings("resource")
     private static <T> T createService(String baseUrl, Authenticator authenticator, long connectTimeoutMs,
             long readTimeoutMs, //
             Optional<String> proxyHost, Optional<Integer> proxyPort, //

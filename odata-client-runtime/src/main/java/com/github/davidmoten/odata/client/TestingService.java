@@ -276,13 +276,6 @@ public final class TestingService {
                             } else {
                                 responseExpected = readResource(url, responseResourceName);
                             }
-//                            final int responseCode;
-//                            if (resp.statusCode != HttpURLConnection.HTTP_OK) {
-//                                responseCode = resp.statusCode;
-//                            } else {
-//                                responseCode = url.contains("delta") ? HttpURLConnection.HTTP_OK
-//                                        : HttpURLConnection.HTTP_CREATED;
-//                            }
                             return new HttpResponse(resp.statusCode, responseExpected);
                         } else {
                             throw new RuntimeException(

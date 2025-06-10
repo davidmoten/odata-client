@@ -11,7 +11,7 @@ public enum HttpMethod {
     private static final Set<HttpMethod> createOrUpdateMethods = Collections
             .unmodifiableSet(Sets.newHashSet(PATCH, POST, PUT));
 
-    public static final Set<HttpMethod> createOrUpdateMethods() {
+    public static Set<HttpMethod> createOrUpdateMethods() {
         return createOrUpdateMethods;
     }
 

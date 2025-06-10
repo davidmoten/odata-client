@@ -22,10 +22,8 @@ public final class Options {
                 .stream() //
                 .filter(x -> namespace.equals(x.namespace)) //
                 .findFirst() //
-                .<IllegalArgumentException>orElseThrow(() -> {
-                    throw new IllegalArgumentException(
-                            "namespace not found in schemaOptions: " + namespace);
-                });
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException(
+                        "namespace not found in schemaOptions: " + namespace));
     }
 
 }
