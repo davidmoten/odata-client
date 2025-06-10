@@ -345,6 +345,16 @@
                             <publishingServerId>central</publishingServerId>
                             <autoPublish>true</autoPublish>
                             <waitUntil>published</waitUntil>
+                            <excludeArtifacts>
+                                <excludeArtifact>odata-client-test-datascope</excludeArtifact>
+                                <excludeArtifact>odata-client-test-northwind</excludeArtifact>
+                                <excludeArtifact>odata-client-olingo-test-pin</excludeArtifact>
+                                <excludeArtifact>odata-client-test-report</excludeArtifact>
+                                <excludeArtifact>odata-client-test-sample-server</excludeArtifact>
+                                <excludeArtifact>odata-client-test-service</excludeArtifact>
+                                <excludeArtifact>odata-client-test-trip-pin</excludeArtifact>
+                                <excludeArtifact>odata-client-test-unit</excludeArtifact>
+                            </excludeArtifacts>
 						</configuration>
 				    </plugin>
                 </plugins>
