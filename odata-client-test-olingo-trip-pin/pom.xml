@@ -46,14 +46,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${nexus.staging.version}</version>
-                <configuration>
-                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.olingo</groupId>
                 <artifactId>pojogen-maven-plugin</artifactId>
                 <version>${olingo.version}</version>
