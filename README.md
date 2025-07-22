@@ -1,7 +1,7 @@
 # odata-client
 <a href="https://github.com/davidmoten/odata-client/actions/workflows/ci.yml"><img src="https://github.com/davidmoten/odata-client/actions/workflows/ci.yml/badge.svg"/></a><br/>
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/odata-client-runtime/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/odata-client)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/odata-client/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/odata-client)<br/>
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.davidmoten/odata-client-maven-plugin)](https://central.sonatype.com/artifact/com.github.davidmoten/odata-client-maven-plugin)<br/>
 
 Generates java client for a service described by OData v4 metadata. Includes client libraries for Microsoft Graph primary and beta APIs, Graph Explorer API, Azure Analytics for DevOps APIs, and Microsoft Dynamics CRM. Microsoft Dynamics Finance and Operations client is in [another repo](https://github.com/davidmoten/microsoft-dynamics-finance-client).
 
