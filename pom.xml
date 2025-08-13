@@ -2,11 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.github.davidmoten</groupId>
+    <parent>
+        <groupId>com.github.davidmoten</groupId>
+        <artifactId>sonatype-parent</artifactId>
+        <version>0.2.4</version>
+    </parent>
     <artifactId>odata-client-parent</artifactId>
     <version>0.2.6-SNAPSHOT</version>
-
     <name>${project.artifactId}</name>
     <description>Generates odata clients</description>
     <packaging>pom</packaging>
@@ -337,7 +339,7 @@
                         </executions>
                     </plugin>                    
                     <plugin>
-	                    <groupId>org.sonatype.central</groupId>
+                        <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
                         <version>${central.publishing.version}</version>
                         <extensions>true</extensions>
@@ -355,8 +357,8 @@
                                 <excludeArtifact>odata-client-test-trip-pin</excludeArtifact>
                                 <excludeArtifact>odata-client-test-unit</excludeArtifact>
                             </excludeArtifacts>
-						</configuration>
-				    </plugin>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
