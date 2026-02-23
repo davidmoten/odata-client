@@ -37,7 +37,7 @@
         <central.publishing.version>0.10.0</central.publishing.version>
 
         <jackson.version>2.21.1</jackson.version>
-        <jackson.databind.version>2.21.0</jackson.databind.version>
+        <jackson.databind.version>2.21.1</jackson.databind.version>
         <junit.version>4.13.2</junit.version>
         <olingo.version>4.10.0</olingo.version>
         <httpclient.version>4.5.14</httpclient.version>
