@@ -25,6 +25,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     private Optional<Long> top;
     private Optional<String> select;
     private Optional<String> expand;
+    private Optional<Boolean> count;
     private String metadata;
     private Optional<String> urlOverride;
     private Optional<Long> connectTimeoutMs;
@@ -41,6 +42,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
                 Optional.empty(), // 
                 Optional.empty(), //
                 Optional.empty(), //
+                Optional.empty(), //
                 "minimal", //
                 Optional.empty(), //
                 Optional.empty(), //
@@ -52,7 +54,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     private CollectionNonEntityRequestOptionsBuilder(CollectionPageNonEntityRequest<T> request,
             List<RequestHeader> requestHeaders, Optional<String> search, Optional<String> filter,
             Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
-            Optional<String> select, Optional<String> expand, String metadata,
+            Optional<String> select, Optional<String> expand, Optional<Boolean> count, String metadata,
             Optional<String> urlOverride, Optional<Long> connectTimeoutMs, //
             Optional<Long> readTimeoutMs, Optional<String> deltaToken, Map<String, String> queries) {
         this.request = request;
@@ -64,6 +66,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         this.top = top;
         this.select = select;
         this.expand = expand;
+        this.count = count;
         this.metadata = metadata;
         this.urlOverride = urlOverride;
         this.connectTimeoutMs = connectTimeoutMs;
@@ -105,6 +108,19 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
         return this;
     }
 
+    /**
+     * Requests that the service include a count of the total number of items in the
+     * collection matching the filter criteria (if any). The count is returned in the
+     * {@code @odata.count} field of the response.
+     * 
+     * @param count true to request a count, false to not request a count
+     * @return this
+     */
+    public CollectionNonEntityRequestOptionsBuilder<T> count(boolean count) {
+        this.count = Optional.of(count);
+        return this;
+    }
+
     public CollectionNonEntityRequestOptionsBuilder<T> filter(String clause) {
         Preconditions.checkNotNull(clause);
         this.filter = Optional.of(clause);
@@ -137,7 +153,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
      */
     public <S extends T> CollectionNonEntityRequestOptionsBuilder<S> filter(Class<S> cls) {
         return new CollectionNonEntityRequestOptionsBuilder<S>(request.filter(cls), requestHeaders,
-                search, filter, orderBy, skip, top, select, expand, metadata, urlOverride, //
+                search, filter, orderBy, skip, top, select, expand, count, metadata, urlOverride, //
                 connectTimeoutMs, readTimeoutMs, deltaToken, queries);
     }
 
@@ -198,7 +214,7 @@ public final class CollectionNonEntityRequestOptionsBuilder<T> {
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
+                select, expand, count, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
     }
 
     public CollectionPage<T> get() {

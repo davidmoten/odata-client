@@ -17,6 +17,7 @@ final class CollectionRequestOptions implements RequestOptions {
     private final Optional<Long> top;
     private final Optional<String> select;
     private final Optional<String> expand;
+    private final Optional<Boolean> count;
     private final Optional<String> urlOverride;
     private final Optional<Long> connectTimeoutMs;
     private final Optional<Long> readTimeoutMs;
@@ -25,7 +26,8 @@ final class CollectionRequestOptions implements RequestOptions {
 
     CollectionRequestOptions(List<RequestHeader> requestHeaders, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip,
-            Optional<Long> top, Optional<String> select, Optional<String> expand, //
+            Optional<Long> top, Optional<String> select, Optional<String> expand,
+            Optional<Boolean> count, //
             Optional<String> urlOverride, Optional<Long> connectTimeoutMs, //
             Optional<Long> readTimeoutMs, Optional<String> deltaToken, //
             Map<String, String> queries) {
@@ -39,6 +41,7 @@ final class CollectionRequestOptions implements RequestOptions {
         this.top = top;
         this.select = select;
         this.expand = expand;
+        this.count = count;
         this.urlOverride = urlOverride;
         this.connectTimeoutMs = connectTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
@@ -61,6 +64,7 @@ final class CollectionRequestOptions implements RequestOptions {
         top.ifPresent(x -> map.put("$top", String.valueOf(x)));
         select.ifPresent(x -> map.put("$select", x));
         expand.ifPresent(x -> map.put("$expand", x));
+        count.ifPresent(x -> map.put("$count", String.valueOf(x)));
         deltaToken.ifPresent(x -> map.put("$deltatoken", x));
         map.putAll(queries);
         return map;

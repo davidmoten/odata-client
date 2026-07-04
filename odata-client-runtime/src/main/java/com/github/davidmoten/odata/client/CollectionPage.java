@@ -32,7 +32,7 @@ import com.github.davidmoten.odata.client.internal.UnmappedFieldsImpl;
  */
 @SuppressWarnings("OptionalAssignedToNull")
 @JsonIgnoreType
-@JsonPropertyOrder({"@odata.nextLink","@odata.deltaLink","value"})
+@JsonPropertyOrder({"@odata.nextLink","@odata.deltaLink","@odata.count","value"})
 public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     
 
@@ -41,6 +41,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     private final List<T> list;
     private final Optional<String> nextLink;
     private final Optional<String> deltaLink;
+    private final Optional<Long> count;
     private final List<RequestHeader> requestHeaders;
 	private final HttpRequestOptions options;
 	private final Consumer<? super CollectionPage<T>> listener;
@@ -52,6 +53,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     		List<T> list, //
             Optional<String> nextLink, //
             Optional<String> deltaLink, //
+            Optional<Long> count, //
             UnmappedFields unmappedFields, //
             List<RequestHeader> requestHeaders, //
             HttpRequestOptions options,
@@ -67,6 +69,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
         this.list = list == null ? Collections.emptyList() : list;
         this.nextLink = nextLink;
         this.deltaLink = deltaLink;
+        this.count = count;
         this.unmappedFields = unmappedFields;
         this.requestHeaders = requestHeaders;
         this.options = options;
@@ -80,7 +83,7 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     
     public CollectionPage(ContextPath contextPath, Class<T> cls, List<T> list,
             Optional<String> nextLink, List<RequestHeader> requestHeaders, HttpRequestOptions options) {
-    	this(contextPath, cls, list, nextLink, Optional.empty(), UnmappedFields.EMPTY, requestHeaders, options, null);
+    	this(contextPath, cls, list, nextLink, Optional.empty(), Optional.empty(), UnmappedFields.EMPTY, requestHeaders, options, null);
     }
 
     @Override
@@ -98,6 +101,20 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     @JsonProperty(value = "@odata.deltaLink")
     public Optional<String> deltaLink() {
     	return deltaLink;
+    }
+    
+    /**
+     * Returns the count of items in the collection as reported by the OData service
+     * via the {@code @odata.count} field. Only present when {@code $count=true} was
+     * requested.
+     * 
+     * @return the count of items, or empty if not requested or not returned by the service
+     */
+    @Override
+    @JsonInclude(Include.NON_NULL)
+    @JsonProperty(value = "@odata.count")
+    public Optional<Long> count() {
+    	return count;
     }
     
     /**
