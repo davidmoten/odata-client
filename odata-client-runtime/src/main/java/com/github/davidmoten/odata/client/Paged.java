@@ -17,17 +17,6 @@ public interface Paged<T, R extends Paged<T, R>> extends Iterable<T> {
 
     Optional<R> nextPage();
 
-    /**
-     * Returns the count of items in the collection as reported by the OData service
-     * via the {@code @odata.count} field. Only present when {@code $count=true} was
-     * requested.
-     * 
-     * @return the count of items, or empty if not requested or not returned by the service
-     */
-    default Optional<Long> count() {
-        return Optional.empty();
-    }
-
     default List<T> toList() {
         return Util.add(this, new ArrayList<T>());
     }

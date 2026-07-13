@@ -105,12 +105,12 @@ public final class CollectionPage<T> implements Paged<T, CollectionPage<T>> {
     
     /**
      * Returns the count of items in the collection as reported by the OData service
-     * via the {@code @odata.count} field. Only present when {@code $count=true} was
-     * requested.
+     * via the {@code @odata.count} field. Only present on the first page of a
+     * paginated response and only when {@code $count=true} was requested. Pages
+     * obtained via {@link #nextPage()} will return an empty value.
      * 
      * @return the count of items, or empty if not requested or not returned by the service
      */
-    @Override
     @JsonInclude(Include.NON_NULL)
     @JsonProperty(value = "@odata.count")
     public Optional<Long> count() {
