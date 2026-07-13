@@ -178,6 +178,10 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).select(clause);
     }
 
+    public CollectionNonEntityRequestOptionsBuilder<T> count(boolean count) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).count(count);
+    }
+
     public CollectionNonEntityRequestOptionsBuilder<T> metadataFull() {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).metadataFull();
     }
