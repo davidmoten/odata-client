@@ -212,11 +212,11 @@ public final class Serializer {
             HttpRequestOptions options, //
             Consumer<? super CollectionPage<T>> listener) {
         CollectionInfo<T> c = deserializeToCollection(json, cls, contextPath);
-        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, c.unmappedFields,
+        return new CollectionPage<T>(contextPath, cls, c.list, c.nextLink, c.deltaLink, c.count, c.unmappedFields,
                 requestHeaders, options, listener);
     }
     
-    private static final Set<String> COLLECTION_PAGE_FIELDS = Sets.newHashSet("value", "@odata.nextLink", "@odata.deltaLink");
+    private static final Set<String> COLLECTION_PAGE_FIELDS = Sets.newHashSet("value", "@odata.nextLink", "@odata.deltaLink", "@odata.count");
 
     private <T> CollectionInfo<T> deserializeToCollection(String json, Class<T> cls,
             ContextPath contextPath) {
@@ -235,6 +235,8 @@ public final class Serializer {
                     .map(JsonNode::asText);
             Optional<String> deltaLink = Optional.ofNullable(o.get("@odata.deltaLink"))
                     .map(JsonNode::asText);
+            Optional<Long> count = Optional.ofNullable(o.get("@odata.count"))
+                    .map(JsonNode::asLong);
             @SuppressWarnings("unchecked")
             Map<String, Object> map = m.convertValue(o, HashMap.class);
             UnmappedFieldsImpl u = new UnmappedFieldsImpl();
@@ -243,7 +245,7 @@ public final class Serializer {
                     u.put(entry.getKey(), entry.getValue());
                 }
             }
-            return new CollectionInfo<T>(list, nextLink, deltaLink, u);
+            return new CollectionInfo<T>(list, nextLink, deltaLink, count, u);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -254,12 +256,15 @@ public final class Serializer {
         final List<T> list;
         final Optional<String> nextLink;
         final Optional<String> deltaLink;
+        final Optional<Long> count;
         final UnmappedFields unmappedFields;
 
-        CollectionInfo(List<T> list, Optional<String> nextLink, Optional<String> deltaLink, UnmappedFields unmappedFields) {
+        CollectionInfo(List<T> list, Optional<String> nextLink, Optional<String> deltaLink,
+                Optional<Long> count, UnmappedFields unmappedFields) {
             this.list = list;
             this.nextLink = nextLink;
             this.deltaLink = deltaLink;
+            this.count = count;
             this.unmappedFields = unmappedFields;
         }
     }
