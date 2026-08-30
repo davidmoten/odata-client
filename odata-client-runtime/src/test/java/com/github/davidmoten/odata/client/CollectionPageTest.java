@@ -1,8 +1,5 @@
 package com.github.davidmoten.odata.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -19,6 +16,8 @@ import org.junit.Test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.odata.client.internal.ChangedFields;
+
+import static org.junit.Assert.*;
 
 public class CollectionPageTest {
 
@@ -39,6 +38,37 @@ public class CollectionPageTest {
                 });
         assertEquals(2, c.currentPage().size());
         assertEquals("Russell", c.currentPage().get(0).firstName);
+    }
+
+    @Test
+    public void testParseCountFromCollectionResponse() throws IOException {
+        String json = "{\"value\":[],\"@odata.count\":42}";
+        Serializer serializer = Serializer.INSTANCE;
+        HttpService service = createHttpService(json);
+        SchemaInfo schemaInfo = name -> Person.class;
+
+        Context context = new Context(serializer, service, Arrays.asList(schemaInfo));
+        CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,
+                new ContextPath(context, service.getBasePath()), Collections.emptyList(),
+                HttpRequestOptions.EMPTY, x -> {
+                });
+        assertTrue(c.count().isPresent());
+        assertEquals(Long.valueOf(42), c.count().get());
+    }
+
+    @Test
+    public void testParseCountMissingFromCollectionResponse() throws IOException {
+        String json = "{\"value\":[]}";
+        Serializer serializer = Serializer.INSTANCE;
+        HttpService service = createHttpService(json);
+        SchemaInfo schemaInfo = name -> Person.class;
+
+        Context context = new Context(serializer, service, Arrays.asList(schemaInfo));
+        CollectionPage<Person> c = serializer.deserializeCollectionPage(json, Person.class,
+                new ContextPath(context, service.getBasePath()), Collections.emptyList(),
+                HttpRequestOptions.EMPTY, x -> {
+                });
+        assertFalse(c.count().isPresent());
     }
 
     private static final byte[] EMPTY_ARRAY = new byte[0];
