@@ -163,6 +163,10 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(clause);
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> count(boolean count) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).count(count);
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> metadataFull() {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).metadataFull();
     }

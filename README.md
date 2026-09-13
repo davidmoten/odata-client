@@ -849,7 +849,6 @@ If choosing the JVM Http client (via `HttpURLConnection`) then the HTTP verb `PA
 * more decoupling of model from presentation in generation
 * use annotations (docs) in javadoc
 * support function composition
-* support `count`
 * support `raw`
 * support $ref
 * support updating/creating streams
