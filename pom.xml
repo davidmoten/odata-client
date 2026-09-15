@@ -47,7 +47,7 @@
         <spotbugs.plugin.version>4.10.4.1</spotbugs.plugin.version>
         <bundle.plugin.version>5.1.9</bundle.plugin.version>
         <log4j.version>2.26.1</log4j.version>
-        <build.helper.version>3.6.1</build.helper.version>
+        <build.helper.version>3.6.2</build.helper.version>
     </properties>
 
     <licenses>
