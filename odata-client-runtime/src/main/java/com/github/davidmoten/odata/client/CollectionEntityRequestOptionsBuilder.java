@@ -26,6 +26,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     private Optional<Long> top;
     private Optional<String> select;
     private Optional<String> expand;
+    private Optional<Boolean> count;
     private String metadata;
     // used to override the url for the situation where someone has a nextLink they want to load up later
     private Optional<String> urlOverride;
@@ -35,13 +36,14 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
 
     CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request) {
         this(request, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), "minimal", Optional.empty(), Optional.empty(), Optional.empty(), //
+                Optional.empty(), Optional.empty(), Optional.empty(), "minimal", Optional.empty(), Optional.empty(), Optional.empty(), //
                 Optional.empty(), new HashMap<>());
     }
     
     private CollectionEntityRequestOptionsBuilder(CollectionPageEntityRequest<T, R> request, Optional<String> search,
             Optional<String> filter, Optional<String> orderBy, Optional<Long> skip, Optional<Long> top,
-            Optional<String> select, Optional<String> expand, String metadata, Optional<String> urlOverride, //
+            Optional<String> select, Optional<String> expand, Optional<Boolean> count, String metadata,
+            Optional<String> urlOverride, //
             Optional<Long> connectTimeoutMs, Optional<Long> readTimeoutMs, Optional<String> deltaToken, //
             Map<String, String> queries) {
         this.request = request;
@@ -52,6 +54,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         this.top = top;
         this.select = select;
         this.expand = expand;
+        this.count = count;
         this.metadata = metadata;
         this.urlOverride = urlOverride;
         this.connectTimeoutMs = connectTimeoutMs;
@@ -90,6 +93,19 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     public CollectionEntityRequestOptionsBuilder<T, R> expand(String clause) {
         Preconditions.checkNotNull(clause);
         this.expand = Optional.of(clause);
+        return this;
+    }
+
+    /**
+     * Requests that the service include a count of the total number of items in the
+     * collection matching the filter criteria (if any). The count is returned in the
+     * {@code @odata.count} field of the response.
+     * 
+     * @param count true to request a count, false to not request a count
+     * @return this
+     */
+    public CollectionEntityRequestOptionsBuilder<T, R> count(boolean count) {
+        this.count = Optional.of(count);
         return this;
     }
 
@@ -160,7 +176,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     
     public <S extends T> CollectionEntityRequestOptionsBuilder<S, EntityRequest<S>> filter(Class<S> cls) {
         return new CollectionEntityRequestOptionsBuilder<S, EntityRequest<S>>(request.filter(cls), search, filter,
-                orderBy, skip, top, select, expand, metadata, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
+                orderBy, skip, top, select, expand, count, metadata, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
     }
 
 	public CollectionEntityRequestOptionsBuilder<T, R> query(String name, String value) {
@@ -171,7 +187,7 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     CollectionRequestOptions build() {
         requestHeaders.add(RequestHeader.acceptJsonWithMetadata(metadata));
         return new CollectionRequestOptions(requestHeaders, search, filter, orderBy, skip, top,
-                select, expand, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
+                select, expand, count, urlOverride, connectTimeoutMs, readTimeoutMs, deltaToken, queries);
     }
 
     public CollectionPage<T> get() {
